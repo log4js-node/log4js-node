@@ -12,23 +12,23 @@ Run the tests with `node tests.js`. They use the awesome [jspec](http://visionme
 
 See example.js:
 
-  var log4js = require('log4js-node');
-  log4js.addAppender(consoleAppender());
-  log4js.addAppender(fileAppender('logs/cheese.log'), 'cheese');
-  
-  var logger = log4js.getLogger('cheese');
-  logger.setLevel('ERROR');
-  
-  logger.trace('Entering cheese testing');
-  logger.debug('Got cheese.');
-  logger.info('Cheese is Gouda.');  
-  logger.warn('Cheese is quite smelly.');
-  logger.error('Cheese is too ripe!');
-  logger.fatal('Cheese was breeding ground for listeria.');
+    var log4js = require('log4js-node');
+    log4js.addAppender(consoleAppender());
+    log4js.addAppender(fileAppender('logs/cheese.log'), 'cheese');
+    
+    var logger = log4js.getLogger('cheese');
+    logger.setLevel('ERROR');
+    
+    logger.trace('Entering cheese testing');
+    logger.debug('Got cheese.');
+    logger.info('Cheese is Gouda.');  
+    logger.warn('Cheese is quite smelly.');
+    logger.error('Cheese is too ripe!');
+    logger.fatal('Cheese was breeding ground for listeria.');
   
 Output
-  \[2010-01-17 11:43:37.987\] \[ERROR\] cheese - Cheese is too ripe!
-  \[2010-01-17 11:43:37.990\] \[FATAL\] cheese - Cheese was breeding ground for listeria.
+    \[2010-01-17 11:43:37.987\] \[ERROR\] cheese - Cheese is too ripe!
+    \[2010-01-17 11:43:37.990\] \[FATAL\] cheese - Cheese was breeding ground for listeria.
 
   
 ## configuration
