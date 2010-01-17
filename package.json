@@ -1,0 +1,51 @@
+{
+   "name": "log4js-node",
+   "version": "0.1.0",
+   "description": "Port of Log4js to work with node.",
+   "keywords": [
+       "logging",
+       "log",
+       "log4j",
+       "node" 
+   ],
+   "maintainers": [
+       {
+           "name": "Gareth Jones",
+           "email": "gareth.jones@sensis.com.au",
+           "web": "http://github.com/csausdev/" 
+       } 
+   ],
+   "contributors": [
+       {
+           "name": "Gareth Jones",
+           "email": "gareth.jones@sensis.com.au",
+           "web": "http://github.com/csausdev/" 
+       } 
+   ],
+   "bugs": {
+       "web": "http://github.com/csausdev/log4js-node/issues" 
+   },
+   "licenses": [
+       {
+           "type": "Apache-2.0",
+           "url": "http://www.apache.org/licenses/LICENSE-2.0" 
+       } 
+   ],
+   "repositories": [
+       {
+           "type": "git",
+           "url": "http://github.com/csausdev/log4js-node.git" 
+       } 
+   ],
+   "dependencies": {
+   },
+   "implements": [],
+   "engines": ["node"],
+   "scripts": {
+       "test": "test.js" 
+   },
+   "directories": {
+       "lib": "lib",
+       "test": "spec"
+   } 
+}
