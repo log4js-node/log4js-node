@@ -27,8 +27,8 @@ See example.js:
     logger.fatal('Cheese was breeding ground for listeria.');
   
 Output
-    \[2010-01-17 11:43:37.987\] \[ERROR\] cheese - Cheese is too ripe!
-    \[2010-01-17 11:43:37.990\] \[FATAL\] cheese - Cheese was breeding ground for listeria.
+    [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
+    [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
 
   
 ## configuration
