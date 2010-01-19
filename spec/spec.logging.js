@@ -1,19 +1,18 @@
 posix = require('posix');
 
-waitForWriteAndThenRead = function(filename) {
+waitForWriteAndThenRead = function (filename) {
   //here's the tricky part - writes are asynchronous
   //so I'm going to make a promise, wait a bit and then
   //try to read the file.
   var content, promise = new process.Promise();
+  promise.addCallback(function() {
+    content = posix.cat(filename).timeout(500).wait();    
+  });
   setTimeout(function() {
     promise.emitSuccess();
-  }, 50);
-  promise.addCallback(function() {
-    posix.cat(filename).addCallback(
-      function(fileContents) { content = fileContents; }
-    ).wait();
-  }).wait();
-
+  }, 0);
+  
+  promise.wait();
   return content;
 }
 
@@ -161,13 +160,39 @@ describe 'log4js'
     end
   end
   
+  describe 'logLevelFilter'
+  
+    it 'should only pass log events greater than or equal to its own level'
+      var logEvent;
+      log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvent = evt; }));
+      logger.debug('this should not trigger an event');
+      logEvent.should.be undefined
+      
+      logger.warn('neither should this');
+      logEvent.should.be undefined
+      
+      logger.error('this should, though');
+      logEvent.should.not.be undefined
+      logEvent.message.should.be 'this should, though'
+      
+      logger.fatal('so should this')
+      logEvent.message.should.be 'so should this'
+    end
+    
+  end
+  
   describe 'configure'    
-    before
+    before_each
       log4js.clearAppenders();
       try {
         posix.unlink('./tmp-tests.log').wait();
       } catch(e) {
         print('Could not delete tmp-tests.log: '+e.message);
+      }
+      try {
+        posix.unlink('./tmp-tests-warnings.log').wait();
+      } catch (e) {
+        print('Could not delete tmp-tests-warnings.log: '+e.message);
       }
     end
 
@@ -183,6 +208,19 @@ describe 'log4js'
       logger.warn('this should fire an event');
       event.message.should.be 'this should fire an event'
       waitForWriteAndThenRead('./tmp-tests.log').should.be 'this should fire an event\n'
+    end
+    
+    it 'should handle logLevelFilter configuration'
+      log4js.configure('spec/fixtures/with-logLevelFilter.json');
+      event = undefined;
+      
+      logger.info('main');
+      logger.error('both');
+      logger.warn('both');
+      logger.debug('main');
+
+      waitForWriteAndThenRead('./tmp-tests.log').should.be 'main\nboth\nboth\nmain\n'
+      waitForWriteAndThenRead('./tmp-tests-warnings.log').should.be 'both\nboth\n'
     end
   end
 end
