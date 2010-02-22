@@ -1,28 +1,28 @@
 {
-  appenders: [
+  "appenders": [
     { 
-      category: "tests", 
-      type: "logLevelFilter",
-      level: "WARN",
-      appender: {
-        type: "file",
-        filename: "tmp-tests-warnings.log", 
-        layout: { 
-          type: "messagePassThrough" 
+      "category": "tests", 
+      "type": "logLevelFilter",
+      "level": "WARN",
+      "appender": {
+        "type": "file",
+        "filename": "tmp-tests-warnings.log", 
+        "layout": { 
+          "type": "messagePassThrough" 
         } 
       }
     },
     { 
-      category: "tests", 
-      type: "file",
-      filename: "tmp-tests.log", 
-      layout: { 
-        type: "messagePassThrough" 
+      "category": "tests", 
+      "type": "file",
+      "filename": "tmp-tests.log", 
+      "layout": { 
+        "type": "messagePassThrough" 
       } 
     }
   ],
   
-  levels: {
+  "levels": {
     "tests":  "DEBUG"
   }
 }

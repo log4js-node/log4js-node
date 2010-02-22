@@ -1,20 +1,9 @@
 fs = require('fs'), events = require('events');
 
-waitForWriteAndThenRead = function (filename) {
-  //here's the tricky part - writes are asynchronous
-  //so I'm going to make a promise, wait a bit and then
-  //try to read the file.
-  var content, promise = new events.Promise();
-  promise.addCallback(function() {
-    content = posix.readFileSync(filename);    
-  });
-  setTimeout(function() {
-    promise.emitSuccess();
-  }, 0);
-  
-  promise.wait();
-  return content;
-}
+waitForWriteAndThenReadFile = function (filename) {
+  process.loop();
+  return fs.readFileSync(filename);
+};
 
 describe 'log4js'
   before_each 
@@ -145,7 +134,7 @@ describe 'log4js'
     before
       log4js.clearAppenders();
       try {
-        posix.unlink('./tmp-tests.log').wait();
+        fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
         print('Could not delete tmp-tests.log: '+e.message);
       }
@@ -155,8 +144,7 @@ describe 'log4js'
       log4js.addAppender(log4js.fileAppender('./tmp-tests.log', log4js.messagePassThroughLayout), 'tests');
       logger.debug('this is a test');
       
-      var content = waitForWriteAndThenRead('./tmp-tests.log');      
-      content.should.be 'this is a test\n'
+      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'this is a test\n'
     end
   end
   
@@ -185,12 +173,12 @@ describe 'log4js'
     before_each
       log4js.clearAppenders();
       try {
-        posix.unlinkSync('./tmp-tests.log');
+        fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
         print('Could not delete tmp-tests.log: '+e.message);
       }
       try {
-        posix.unlinkSync('./tmp-tests-warnings.log');
+        fs.unlinkSync('./tmp-tests-warnings.log');
       } catch (e) {
         print('Could not delete tmp-tests-warnings.log: '+e.message);
       }
@@ -207,7 +195,7 @@ describe 'log4js'
       
       logger.warn('this should fire an event');
       event.message.should.be 'this should fire an event'
-      waitForWriteAndThenRead('./tmp-tests.log').should.be 'this should fire an event\n'
+      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'this should fire an event\n'
     end
     
     it 'should handle logLevelFilter configuration'
@@ -219,8 +207,8 @@ describe 'log4js'
       logger.warn('both');
       logger.debug('main');
 
-      waitForWriteAndThenRead('./tmp-tests.log').should.be 'main\nboth\nboth\nmain\n'
-      waitForWriteAndThenRead('./tmp-tests-warnings.log').should.be 'both\nboth\n'
+      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'main\nboth\nboth\nmain\n'
+      waitForWriteAndThenReadFile('./tmp-tests-warnings.log').should.be 'both\nboth\n'
     end
   end
 end
