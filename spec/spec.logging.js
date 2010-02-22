@@ -1,12 +1,12 @@
-posix = require('posix');
+fs = require('fs'), events = require('events');
 
 waitForWriteAndThenRead = function (filename) {
   //here's the tricky part - writes are asynchronous
   //so I'm going to make a promise, wait a bit and then
   //try to read the file.
-  var content, promise = new process.Promise();
+  var content, promise = new events.Promise();
   promise.addCallback(function() {
-    content = posix.cat(filename).timeout(500).wait();    
+    content = posix.readFileSync(filename);    
   });
   setTimeout(function() {
     promise.emitSuccess();
@@ -185,12 +185,12 @@ describe 'log4js'
     before_each
       log4js.clearAppenders();
       try {
-        posix.unlink('./tmp-tests.log').wait();
+        posix.unlinkSync('./tmp-tests.log');
       } catch(e) {
         print('Could not delete tmp-tests.log: '+e.message);
       }
       try {
-        posix.unlink('./tmp-tests-warnings.log').wait();
+        posix.unlinkSync('./tmp-tests-warnings.log');
       } catch (e) {
         print('Could not delete tmp-tests-warnings.log: '+e.message);
       }
