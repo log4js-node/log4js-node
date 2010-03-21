@@ -14,10 +14,6 @@ describe 'log4js'
     logger.addListener("log", function (logEvent) { event = logEvent; });    
   end
   
-  it 'should have a version'
-    log4js.version.should.not.be undefined
-  end
-
   describe 'getLogger'
           
     it 'should take a category and return a Logger'
