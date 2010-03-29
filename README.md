@@ -13,8 +13,8 @@ Run the tests with `node tests.js`. They use the awesome [jspec](http://visionme
 See example.js:
 
     var log4js = require('log4js-node');
-    log4js.addAppender(consoleAppender());
-    log4js.addAppender(fileAppender('logs/cheese.log'), 'cheese');
+    log4js.addAppender(log4js.consoleAppender());
+    log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
     
     var logger = log4js.getLogger('cheese');
     logger.setLevel('ERROR');
