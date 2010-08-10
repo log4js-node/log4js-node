@@ -4,6 +4,11 @@ This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
 and tidied up some of the javascript.
 
+## installation
+
+npm install log4js
+
+
 ## tests
 
 Run the tests with `node tests.js`. They use the awesome [jspec](http://visionmedia.github.com/jspec) - 3.1.3
