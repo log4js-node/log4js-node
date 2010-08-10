@@ -17,7 +17,7 @@ Run the tests with `node tests.js`. They use the awesome [jspec](http://visionme
 
 See example.js:
 
-    var log4js = require('log4js-node');
+    var log4js = require('log4js');
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
     
