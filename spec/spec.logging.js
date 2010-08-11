@@ -1,11 +1,15 @@
-fs = require('fs'), events = require('events');
-
-waitForWriteAndThenReadFile = function (filename) {
-  process.loop();
-  return fs.readFileSync(filename);
-};
-
 describe 'log4js'
+  before
+      extend(context, {
+        log4js : require("log4js"),
+        fs: require("fs"),
+        waitForWriteAndThenReadFile : function (filename) {
+          process.loop();
+          return fs.readFileSync(filename, "utf8");
+        }
+      });
+  end
+
   before_each 
     log4js.clearAppenders();
     event = '';
@@ -132,7 +136,7 @@ describe 'log4js'
       try {
         fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
-        print('Could not delete tmp-tests.log: '+e.message);
+        //print('Could not delete tmp-tests.log: '+e.message);
       }
     end
     
@@ -171,12 +175,12 @@ describe 'log4js'
       try {
         fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
-        print('Could not delete tmp-tests.log: '+e.message);
+        //print('Could not delete tmp-tests.log: '+e.message);
       }
       try {
         fs.unlinkSync('./tmp-tests-warnings.log');
       } catch (e) {
-        print('Could not delete tmp-tests-warnings.log: '+e.message);
+        //print('Could not delete tmp-tests-warnings.log: '+e.message);
       }
     end
 
@@ -207,9 +211,14 @@ describe 'log4js'
       waitForWriteAndThenReadFile('./tmp-tests-warnings.log').should.be 'both\nboth\n'
     end
   end
+  
 end
 
 describe 'Date'
+  before
+    require("log4js");
+  end
+  
   describe 'toFormattedString'
     it 'should add a toFormattedString method to Date'
       var date = new Date();
