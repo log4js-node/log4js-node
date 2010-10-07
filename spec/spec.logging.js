@@ -48,7 +48,6 @@ describe 'log4js'
   
   describe 'addAppender'
     before_each
-      log4js.clearAppenders();
       appenderEvent = undefined;
       appender = function(logEvent) { appenderEvent = logEvent; };
     end
@@ -72,6 +71,15 @@ describe 'log4js'
         
         appenderEvent.should.be event
         otherEvent.should.be event
+        
+        otherEvent = undefined;
+        appenderEvent = undefined;
+        log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
+        otherEvent.should.be undefined
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "this should not be propagated to otherEvent"
+        
+        cheeseLogger = null;
       end
     end
     
@@ -88,6 +96,45 @@ describe 'log4js'
       end
     end
     
+    describe 'with multiple categories'
+      it 'should register the function as a listener for all the categories'
+        log4js.addAppender(appender, 'tests', 'biscuits');
+        
+        logger.debug('this is a test');
+        appenderEvent.should.be event
+        appenderEvent = undefined;
+        
+        var otherLogger = log4js.getLogger('biscuits');
+        otherLogger.debug("mmm... garibaldis");
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "mmm... garibaldis"
+        appenderEvent = undefined;
+        
+        otherLogger = null;
+        
+        log4js.getLogger("something else").debug("pants");
+        appenderEvent.should.be undefined
+      end
+      
+      it 'should register the function when the list of categories is an array'
+        log4js.addAppender(appender, ['tests', 'pants']);
+        
+        logger.debug('this is a test');
+        appenderEvent.should.be event
+        appenderEvent = undefined;
+        
+        var otherLogger = log4js.getLogger('pants');
+        otherLogger.debug("big pants");
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "big pants"
+        appenderEvent = undefined;
+        
+        otherLogger = null;
+        
+        log4js.getLogger("something else").debug("pants");
+        appenderEvent.should.be undefined
+      end      
+    end
   end
   
   describe 'basicLayout'
@@ -189,6 +236,8 @@ describe 'log4js'
       //and sets the log level for "tests" to WARN
       log4js.configure('spec/fixtures/log4js.json');
       event = undefined;
+      logger = log4js.getLogger("tests");
+      logger.addListener("log", function(evt) { event = evt });
       
       logger.info('this should not fire an event');
       event.should.be undefined
@@ -200,7 +249,6 @@ describe 'log4js'
     
     it 'should handle logLevelFilter configuration'
       log4js.configure('spec/fixtures/with-logLevelFilter.json');
-      event = undefined;
       
       logger.info('main');
       logger.error('both');
