@@ -1,8 +1,6 @@
 require.paths.unshift("./spec/lib", "./lib");
 require("jspec");
 
-log4js = require("log4js-node");
-
 var sys = require("sys"), fs = require("fs");
 
 quit = process.exit
@@ -11,7 +9,7 @@ print = sys.puts
 readFile = function(path) {
   var result;
   try {
-    result = fs.readFileSync(path);
+    result = fs.readFileSync(path, "utf8");
   } catch (e) {
     throw e;
   }
@@ -37,7 +35,7 @@ if (process.ARGV[2]) {
   );
 }
 if (specsFound) {
-  JSpec.run({ reporter: JSpec.reporters.Terminal });
+  JSpec.run({ reporter: JSpec.reporters.Terminal, failuresOnly: false });
   JSpec.report();
 } else {
   print("No tests to run. This makes me sad.");
