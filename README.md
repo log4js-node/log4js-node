@@ -16,6 +16,13 @@ Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. I am s
 
 ## usage
 
+Minimalist version:
+           var log4js = require('log4js')();
+           var logger = log4js.getLogger();
+           logger.debug("Some debug messages");
+By default, log4js outputs to stdout with the basic layout, so for the above you would see:
+    [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
+
 See example.js:
 
     var log4js = require('log4js')(); //note the need to call the function
@@ -40,8 +47,8 @@ Output
 ## configuration
 
 You can either configure the appenders and log levels manually (as above), or provide a 
-configuration file (`log4js.configure('path/to/file.json')`). An example file can be found
-in test/log4js.json
+configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the log4js.js file). 
+An example file can be found in test/log4js.json
 
 ## todo
 

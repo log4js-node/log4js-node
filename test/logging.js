@@ -129,6 +129,66 @@ vows.describe('log4js').addBatch({
 	    assert.deepEqual(messages['tmp-tests.log'], ['main\n','both\n','both\n','main\n']);
 	    assert.deepEqual(messages['tmp-tests-warnings.log'], ['both\n','both\n']);
 	}
+    },
+
+    'with no appenders defined' : {
+        topic: function() {
+            var logger, message, log4js = require('../lib/log4js')(null, function (msg) { message = msg; } );
+	    logger = log4js.getLogger("some-logger");
+            logger.debug("This is a test");
+            return message;
+        },
+        'should default to the console appender': function(message) {
+            assert.isTrue(/This is a test$/.test(message));
+        }
+    },
+
+    'default setup': {
+        topic: function() {
+            var pathsChecked = [], 
+            message,
+            logger,
+            fakeFS = {
+                readFileSync: function (file, encoding) {
+                    assert.equal(file, '/path/to/config/log4js.json');
+                    assert.equal(encoding, 'utf8');
+                    return '{ "appenders" : [ { "type": "console", "layout": { "type": "messagePassThrough" }} ] }';
+                },
+                statSync: function (path) {
+                    pathsChecked.push(path);
+                    if (path === '/path/to/config/log4js.json') {
+                        return true;
+                    } else {
+                        throw new Error("no such file");
+                    }
+                }
+            },
+            fakeConsoleLog = function (msg) { message = msg; }, 
+            fakeRequirePath = [ '/a/b/c', '/some/other/path', '/path/to/config', '/some/later/directory' ],
+            log4js = require('../lib/log4js')(fakeFS, fakeConsoleLog, fakeRequirePath),
+            logger = log4js.getLogger('a-test');
+            logger.debug("this is a test");
+
+            return [ pathsChecked, message ];
+        },
+        
+        'should check current directory, require paths, and finally the module dir for log4js.json': function(args) {
+            var pathsChecked = args[0];
+            assert.deepEqual(pathsChecked, [
+                'log4js.json',
+                '/a/b/c/log4js.json', 
+                '/some/other/path/log4js.json', 
+                '/path/to/config/log4js.json', 
+                '/some/later/directory/log4js.json',
+                require('path').normalize(__dirname + '/../lib/log4js.json')
+            ]);
+        },
+        
+        'should configure log4js from first log4js.json found': function(args) {
+            var message = args[1];
+            assert.equal(message, 'this is a test');
+        }
     }
-	    
+                                                             
+ 
 }).export(module);
