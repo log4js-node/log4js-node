@@ -1,11 +1,15 @@
-fs = require('fs'), events = require('events');
-
-waitForWriteAndThenReadFile = function (filename) {
-  process.loop();
-  return fs.readFileSync(filename);
-};
-
 describe 'log4js'
+  before
+      extend(context, {
+        log4js : require("log4js"),
+        fs: require("fs"),
+        waitForWriteAndThenReadFile : function (filename) {
+          process.loop();
+          return fs.readFileSync(filename, "utf8");
+        }
+      });
+  end
+
   before_each 
     log4js.clearAppenders();
     event = '';
@@ -44,7 +48,6 @@ describe 'log4js'
   
   describe 'addAppender'
     before_each
-      log4js.clearAppenders();
       appenderEvent = undefined;
       appender = function(logEvent) { appenderEvent = logEvent; };
     end
@@ -68,6 +71,15 @@ describe 'log4js'
         
         appenderEvent.should.be event
         otherEvent.should.be event
+        
+        otherEvent = undefined;
+        appenderEvent = undefined;
+        log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
+        otherEvent.should.be undefined
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "this should not be propagated to otherEvent"
+        
+        cheeseLogger = null;
       end
     end
     
@@ -84,6 +96,45 @@ describe 'log4js'
       end
     end
     
+    describe 'with multiple categories'
+      it 'should register the function as a listener for all the categories'
+        log4js.addAppender(appender, 'tests', 'biscuits');
+        
+        logger.debug('this is a test');
+        appenderEvent.should.be event
+        appenderEvent = undefined;
+        
+        var otherLogger = log4js.getLogger('biscuits');
+        otherLogger.debug("mmm... garibaldis");
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "mmm... garibaldis"
+        appenderEvent = undefined;
+        
+        otherLogger = null;
+        
+        log4js.getLogger("something else").debug("pants");
+        appenderEvent.should.be undefined
+      end
+      
+      it 'should register the function when the list of categories is an array'
+        log4js.addAppender(appender, ['tests', 'pants']);
+        
+        logger.debug('this is a test');
+        appenderEvent.should.be event
+        appenderEvent = undefined;
+        
+        var otherLogger = log4js.getLogger('pants');
+        otherLogger.debug("big pants");
+        appenderEvent.should.not.be undefined
+        appenderEvent.message.should.be "big pants"
+        appenderEvent = undefined;
+        
+        otherLogger = null;
+        
+        log4js.getLogger("something else").debug("pants");
+        appenderEvent.should.be undefined
+      end      
+    end
   end
   
   describe 'basicLayout'
@@ -132,7 +183,7 @@ describe 'log4js'
       try {
         fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
-        print('Could not delete tmp-tests.log: '+e.message);
+        //print('Could not delete tmp-tests.log: '+e.message);
       }
     end
     
@@ -171,12 +222,12 @@ describe 'log4js'
       try {
         fs.unlinkSync('./tmp-tests.log');
       } catch(e) {
-        print('Could not delete tmp-tests.log: '+e.message);
+        //print('Could not delete tmp-tests.log: '+e.message);
       }
       try {
         fs.unlinkSync('./tmp-tests-warnings.log');
       } catch (e) {
-        print('Could not delete tmp-tests-warnings.log: '+e.message);
+        //print('Could not delete tmp-tests-warnings.log: '+e.message);
       }
     end
 
@@ -185,6 +236,8 @@ describe 'log4js'
       //and sets the log level for "tests" to WARN
       log4js.configure('spec/fixtures/log4js.json');
       event = undefined;
+      logger = log4js.getLogger("tests");
+      logger.addListener("log", function(evt) { event = evt });
       
       logger.info('this should not fire an event');
       event.should.be undefined
@@ -196,7 +249,6 @@ describe 'log4js'
     
     it 'should handle logLevelFilter configuration'
       log4js.configure('spec/fixtures/with-logLevelFilter.json');
-      event = undefined;
       
       logger.info('main');
       logger.error('both');
@@ -207,9 +259,14 @@ describe 'log4js'
       waitForWriteAndThenReadFile('./tmp-tests-warnings.log').should.be 'both\nboth\n'
     end
   end
+  
 end
 
 describe 'Date'
+  before
+    require("log4js");
+  end
+  
   describe 'toFormattedString'
     it 'should add a toFormattedString method to Date'
       var date = new Date();
