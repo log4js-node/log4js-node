@@ -4,20 +4,21 @@ This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
 and tidied up some of the javascript.
 
+NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
+
 ## installation
 
 npm install log4js
 
-
 ## tests
 
-Run the tests with `node tests.js`. They use the awesome [jspec](http://visionmedia.github.com/jspec) - 3.1.3
+Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. I am slowly porting the previous tests from jspec (run those with `node tests.js`), since jspec is no longer maintained.
 
 ## usage
 
 See example.js:
 
-    var log4js = require('log4js');
+    var log4js = require('log4js')(); //note the need to call the function
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
     
@@ -40,7 +41,7 @@ Output
 
 You can either configure the appenders and log levels manually (as above), or provide a 
 configuration file (`log4js.configure('path/to/file.json')`). An example file can be found
-in spec/fixtures/log4js.json
+in test/log4js.json
 
 ## todo
 
