@@ -61,7 +61,10 @@ vows.describe('log4js').addBatch({
 		    assert.isNull(arguments[2]);
 		    assert.equal(arguments[3], "utf8");
 		    logmessages.push(arguments[1]);
-		}
+		},
+                watchFile: function() {
+                    throw new Error("watchFile should not be called if logSize is not defined");
+                }
 	    },
 	    log4js = require('../lib/log4js')(fakeFS);
 	    log4js.clearAppenders();
@@ -91,7 +94,8 @@ vows.describe('log4js').addBatch({
             log4js = require('../lib/log4js')({
                 watchFile: function(file, options, callback) {
                     assert.equal(file, 'tests.log');
-                    assert.deepEqual(options, { persistent: true, interval: 30000 });
+                    assert.equal(options.persistent, false);
+                    assert.equal(options.interval, 30000);
                     assert.isFunction(callback);
                     watchCb = callback;
                 },
@@ -146,10 +150,10 @@ vows.describe('log4js').addBatch({
             assert.length(filesClosed, 2);
             //it should have renamed both the old log file, and the previous '.1' file
             assert.length(filesRenamed, 3);
-            assert.deepEqual(filesRenamed, ['tests.log', 'tests.log', 'tests.log.1' ]);
+            assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log' ]);
             //it should have renamed 2 more file
-            assert.length(existingFiles, 2);
-            assert.deepEqual(existingFiles, ['tests.log', 'tests.log.2', 'tests.log.1']);
+            assert.length(existingFiles, 4);
+            assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1', 'tests.log.2', 'tests.log.1']);
             //and opened a new log file
             assert.length(filesOpened, 3);
 
@@ -159,10 +163,10 @@ vows.describe('log4js').addBatch({
             assert.length(filesClosed, 3);
             //it should have renamed the old log file and the 2 backups, with the last one being overwritten.
             assert.length(filesRenamed, 5);
-            assert.deepEqual(filesRenamed, ['tests.log', 'tests.log', 'tests.log.1', 'tests.log', 'tests.log.1' ]);
+            assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log', 'tests.log.1', 'tests.log' ]);
             //it should have renamed 2 more files
-            assert.length(existingFiles, 5);
-            assert.deepEqual(existingFiles, ['tests.log', 'tests.log.2', 'tests.log.1', 'tests.log.2', 'tests.log.1']);
+            assert.length(existingFiles, 6);
+            assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1', 'tests.log.2', 'tests.log.1', 'tests.log.2', 'tests.log.1']);
             //and opened a new log file
             assert.length(filesOpened, 4);
         }
