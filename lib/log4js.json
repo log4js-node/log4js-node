@@ -1,10 +1,7 @@
 {
   "appenders": [
     {
-      "type": "console",
-      "layout": {
-        "type": "basic"
-      }
+      "type": "console"
     }
   ]
 }

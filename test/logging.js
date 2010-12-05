@@ -188,7 +188,24 @@ vows.describe('log4js').addBatch({
             var message = args[1];
             assert.equal(message, 'this is a test');
         }
+    },
+    
+    'colouredLayout': {
+        topic: function() {
+            return require('../lib/log4js')().colouredLayout;
+        },
+
+        'should apply level colour codes to output': function(layout) {
+            var output = layout({ 
+                message: "nonsense", 
+                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
+                categoryName: "cheese", 
+                level: { 
+                    colour: "green", 
+                    toString: function() { return "ERROR"; } 
+                }
+            });
+            assert.equal(output, '\033[90m[2010-12-05 14:18:30.045] \033[39m\033[32m[ERROR] \033[39m\033[90mcheese - \033[39mnonsense');
+        }
     }
-                                                             
- 
 }).export(module);
