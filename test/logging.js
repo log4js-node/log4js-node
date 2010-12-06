@@ -308,5 +308,22 @@ vows.describe('log4js').addBatch({
             });
             assert.equal(output, '\033[90m[2010-12-05 14:18:30.045] \033[39m\033[32m[ERROR] \033[39m\033[90mcheese - \033[39mnonsense');
         }
+    },
+
+    'messagePassThroughLayout': {
+        topic: function() {
+            return require('../lib/log4js')().messagePassThroughLayout;
+        },
+        'should take a logevent and output only the message' : function(layout) {
+            assert.equal(layout({ 
+                message: "nonsense", 
+                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
+                categoryName: "cheese", 
+                level: { 
+                    colour: "green", 
+                    toString: function() { return "ERROR"; } 
+                }
+            }), "nonsense");
+        }
     }
 }).export(module);
