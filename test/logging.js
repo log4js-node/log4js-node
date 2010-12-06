@@ -244,6 +244,91 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'addAppender' : {
+        topic: function() {
+            var log4js = require('../lib/log4js')();
+            log4js.clearAppenders();
+            return log4js;
+        },
+        'without a category': {
+            'should register the function as a listener for all loggers': function (log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
+                log4js.addAppender(appender);
+                logger.debug("This is a test");
+                assert.equal(appenderEvent.message, "This is a test");
+                assert.equal(appenderEvent.categoryName, "tests");
+                assert.equal(appenderEvent.level.toString(), "DEBUG");
+            },
+            'should also register as an appender for loggers if an appender for that category is defined': function (log4js) {
+                var otherEvent, appenderEvent, cheeseLogger;
+                log4js.addAppender(function (evt) { appenderEvent = evt; });
+                log4js.addAppender(function (evt) { otherEvent = evt; }, 'cheese');
+        
+                cheeseLogger = log4js.getLogger('cheese');
+                cheeseLogger.debug('This is a test');
+                assert.deepEqual(appenderEvent, otherEvent);
+                assert.equal(otherEvent.message, 'This is a test');
+                assert.equal(otherEvent.categoryName, 'cheese');
+        
+                otherEvent = undefined;
+                appenderEvent = undefined;
+                log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
+                assert.isUndefined(otherEvent);
+                assert.equal(appenderEvent.message, "this should not be propagated to otherEvent");
+            }
+        },
+    
+        'with a category': {
+            'should only register the function as a listener for that category': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
+                log4js.addAppender(appender, 'tests');
+                logger.debug('this is a category test');
+                assert.equal(appenderEvent.message, 'this is a category test');
+        
+                appenderEvent = undefined;
+                log4js.getLogger('some other category').debug('Cheese');
+                assert.isUndefined(appenderEvent);
+            }
+        },
+
+        'with multiple categories': {
+            'should register the function as a listener for all the categories': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger('tests');
+                log4js.addAppender(appender, 'tests', 'biscuits');
+        
+                logger.debug('this is a test');
+                assert.equal(appenderEvent.message, 'this is a test');
+                appenderEvent = undefined;
+        
+                var otherLogger = log4js.getLogger('biscuits');
+                otherLogger.debug("mmm... garibaldis");
+                assert.equal(appenderEvent.message, "mmm... garibaldis");
+
+                appenderEvent = undefined;
+                
+                log4js.getLogger("something else").debug("pants");
+                assert.isUndefined(appenderEvent);
+            },
+            'should register the function when the list of categories is an array': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; };
+                log4js.addAppender(appender, ['tests', 'pants']);
+        
+                log4js.getLogger('tests').debug('this is a test');
+                assert.equal(appenderEvent.message, 'this is a test');
+
+                appenderEvent = undefined;
+
+                log4js.getLogger('pants').debug("big pants");
+                assert.equal(appenderEvent.message, "big pants");
+
+                appenderEvent = undefined;
+                
+                log4js.getLogger("something else").debug("pants");
+                assert.isUndefined(appenderEvent);
+            }
+        }
+    },
+
     'default setup': {
         topic: function() {
             var pathsChecked = [], 

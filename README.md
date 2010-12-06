@@ -12,7 +12,7 @@ npm install log4js
 
 ## tests
 
-Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. I am slowly porting the previous tests from jspec (run those with `node tests.js`), since jspec is no longer maintained.
+Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. 
 
 ## usage
 
