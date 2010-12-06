@@ -325,5 +325,19 @@ vows.describe('log4js').addBatch({
                 }
             }), "nonsense");
         }
+    },
+
+    'Date extensions': {
+        topic: function() {
+            require('../lib/log4js');
+            return new Date(2010, 0, 11, 14, 31, 30, 5);
+        },
+        'should add a toFormattedString method to Date': function(date) {
+            assert.isFunction(date.toFormattedString);
+        },
+        'should default to a format': function(date) {
+            assert.equal(date.toFormattedString(), '2010-01-11 14:31:30.005');
+        }
     }
+
 }).export(module);

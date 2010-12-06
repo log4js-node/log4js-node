@@ -137,12 +137,6 @@ describe 'log4js'
     end
   end
   
-  describe 'messagePassThroughLayout'
-    it 'should take a logevent and output only the message'
-      logger.debug('this is a test');
-      log4js.messagePassThroughLayout(event).should.be 'this is a test'
-    end
-  end
   
   describe 'logLevelFilter'
   
@@ -168,20 +162,3 @@ describe 'log4js'
   
 end
 
-describe 'Date'
-  before
-    require("log4js");
-  end
-  
-  describe 'toFormattedString'
-    it 'should add a toFormattedString method to Date'
-      var date = new Date();
-      date.should.respond_to 'toFormattedString'
-    end
-    
-    it 'should default to a format'
-      var date = new Date(2010, 0, 11, 14, 31, 30, 5);
-      date.toFormattedString().should.be '2010-01-11 14:31:30.005'
-    end
-  end
-end
