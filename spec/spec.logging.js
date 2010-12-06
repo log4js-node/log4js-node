@@ -1,12 +1,7 @@
 describe 'log4js'
   before
       extend(context, {
-        log4js : require("log4js"),
-        fs: require("fs"),
-        waitForWriteAndThenReadFile : function (filename) {
-          process.loop();
-          return fs.readFileSync(filename, "utf8");
-        }
+          log4js : require("log4js")()
       });
   end
 
@@ -17,35 +12,7 @@ describe 'log4js'
     logger.setLevel("TRACE");
     logger.addListener("log", function (logEvent) { event = logEvent; });    
   end
-  
-  describe 'getLogger'
-          
-    it 'should take a category and return a Logger'
-      logger.category.should.be 'tests'
-      logger.level.should.be log4js.levels.TRACE
-      logger.should.respond_to 'debug'
-      logger.should.respond_to 'info'
-      logger.should.respond_to 'warn'
-      logger.should.respond_to 'error'
-      logger.should.respond_to 'fatal'
-    end
     
-    it 'should emit log events'
-      logger.trace("Trace event");
-      
-      event.level.toString().should.be 'TRACE'
-      event.message.should.be 'Trace event'
-      event.startTime.should.not.be undefined
-    end
-    
-    it 'should not emit events of a lower level than the minimum'
-      logger.setLevel("DEBUG");
-      event = undefined;
-      logger.trace("This should not generate a log message");
-      event.should.be undefined
-    end
-  end
-  
   describe 'addAppender'
     before_each
       appenderEvent = undefined;
@@ -170,112 +137,8 @@ describe 'log4js'
     end
   end
   
-  describe 'messagePassThroughLayout'
-    it 'should take a logevent and output only the message'
-      logger.debug('this is a test');
-      log4js.messagePassThroughLayout(event).should.be 'this is a test'
-    end
-  end
   
-  describe 'fileAppender'
-    before
-      log4js.clearAppenders();
-      try {
-        fs.unlinkSync('./tmp-tests.log');
-      } catch(e) {
-        //print('Could not delete tmp-tests.log: '+e.message);
-      }
-    end
-    
-    it 'should write log events to a file'
-      log4js.addAppender(log4js.fileAppender('./tmp-tests.log', log4js.messagePassThroughLayout), 'tests');
-      logger.debug('this is a test');
-      
-      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'this is a test\n'
-    end
-  end
   
-  describe 'logLevelFilter'
-  
-    it 'should only pass log events greater than or equal to its own level'
-      var logEvent;
-      log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvent = evt; }));
-      logger.debug('this should not trigger an event');
-      logEvent.should.be undefined
-      
-      logger.warn('neither should this');
-      logEvent.should.be undefined
-      
-      logger.error('this should, though');
-      logEvent.should.not.be undefined
-      logEvent.message.should.be 'this should, though'
-      
-      logger.fatal('so should this')
-      logEvent.message.should.be 'so should this'
-    end
-    
-  end
-  
-  describe 'configure'    
-    before_each
-      log4js.clearAppenders();
-      try {
-        fs.unlinkSync('./tmp-tests.log');
-      } catch(e) {
-        //print('Could not delete tmp-tests.log: '+e.message);
-      }
-      try {
-        fs.unlinkSync('./tmp-tests-warnings.log');
-      } catch (e) {
-        //print('Could not delete tmp-tests-warnings.log: '+e.message);
-      }
-    end
-
-    it 'should load appender configuration from a json file'
-      //this config file defines one file appender (to ./tmp-tests.log)
-      //and sets the log level for "tests" to WARN
-      log4js.configure('spec/fixtures/log4js.json');
-      event = undefined;
-      logger = log4js.getLogger("tests");
-      logger.addListener("log", function(evt) { event = evt });
-      
-      logger.info('this should not fire an event');
-      event.should.be undefined
-      
-      logger.warn('this should fire an event');
-      event.message.should.be 'this should fire an event'
-      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'this should fire an event\n'
-    end
-    
-    it 'should handle logLevelFilter configuration'
-      log4js.configure('spec/fixtures/with-logLevelFilter.json');
-      
-      logger.info('main');
-      logger.error('both');
-      logger.warn('both');
-      logger.debug('main');
-
-      waitForWriteAndThenReadFile('./tmp-tests.log').should.be 'main\nboth\nboth\nmain\n'
-      waitForWriteAndThenReadFile('./tmp-tests-warnings.log').should.be 'both\nboth\n'
-    end
-  end
   
 end
 
-describe 'Date'
-  before
-    require("log4js");
-  end
-  
-  describe 'toFormattedString'
-    it 'should add a toFormattedString method to Date'
-      var date = new Date();
-      date.should.respond_to 'toFormattedString'
-    end
-    
-    it 'should default to a format'
-      var date = new Date(2010, 0, 11, 14, 31, 30, 5);
-      date.toFormattedString().should.be '2010-01-11 14:31:30.005'
-    end
-  end
-end

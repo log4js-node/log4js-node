@@ -1,4 +1,4 @@
-var log4js = require('./lib/log4js');
+var log4js = require('./lib/log4js')();
 log4js.addAppender(log4js.consoleAppender());
 log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese');
   
