@@ -327,6 +327,25 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'logLevelFilter': {
+        topic: function() {
+            var log4js = require('../lib/log4js')(), logEvents = [], logger;
+            log4js.clearAppenders();
+            log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvents.push(evt); }));
+            logger = log4js.getLogger();
+            logger.debug('this should not trigger an event');
+            logger.warn('neither should this');
+            logger.error('this should, though');
+            logger.fatal('so should this');
+            return logEvents;
+        },
+        'should only pass log events greater than or equal to its own level' : function(logEvents) {
+            assert.length(logEvents, 2);
+            assert.equal(logEvents[0].message, 'this should, though');
+            assert.equal(logEvents[1].message, 'so should this');
+        }
+    },
+
     'Date extensions': {
         topic: function() {
             require('../lib/log4js');

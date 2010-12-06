@@ -138,26 +138,6 @@ describe 'log4js'
   end
   
   
-  describe 'logLevelFilter'
-  
-    it 'should only pass log events greater than or equal to its own level'
-      var logEvent;
-      log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvent = evt; }));
-      logger.debug('this should not trigger an event');
-      logEvent.should.be undefined
-      
-      logger.warn('neither should this');
-      logEvent.should.be undefined
-      
-      logger.error('this should, though');
-      logEvent.should.not.be undefined
-      logEvent.message.should.be 'this should, though'
-      
-      logger.fatal('so should this')
-      logEvent.message.should.be 'so should this'
-    end
-    
-  end
   
   
 end
