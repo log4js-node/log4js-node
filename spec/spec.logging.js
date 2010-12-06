@@ -104,39 +104,8 @@ describe 'log4js'
     end
   end
   
-  describe 'basicLayout'
-    it 'should take a logevent and output a formatted string'
-      logger.debug('this is a test');
-      var output = log4js.basicLayout(event);
-      output.should.match /\[.*?\] \[DEBUG\] tests - this is a test/
-    end
-    
-    it 'should output a stacktrace, message if the event has an error attached'
-      var error = new Error("Some made-up error");
-      var stack = error.stack.split(/\n/);
-      
-      logger.debug('this is a test', error);
-
-      var output = log4js.basicLayout(event);
-      var lines = output.split(/\n/);
-      lines.length.should.be stack.length+1 
-      lines[0].should.match /\[.*?\] \[DEBUG\] tests - this is a test/
-      lines[1].should.match /\[.*?\] \[DEBUG\] tests - Error: Some made-up error/
-      for (var i = 1; i < stack.length; i++) {
-        lines[i+1].should.eql stack[i]
-      }
-    end
-    
-    it 'should output a name and message if the event has something that pretends to be an error'
-      logger.debug('this is a test', { name: 'Cheese', message: 'Gorgonzola smells.' });
-      var output = log4js.basicLayout(event);
-      var lines = output.split(/\n/);
-      lines.length.should.be 2 
-      lines[0].should.match /\[.*?\] \[DEBUG\] tests - this is a test/
-      lines[1].should.match /\[.*?\] \[DEBUG\] tests - Cheese: Gorgonzola smells./
-    end
-  end
   
+
   
   
   
