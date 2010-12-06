@@ -15,9 +15,10 @@
    },
    "engines": [ "node >=0.1.100" ],
    "scripts": {
-       "test": "test.js" 
+       "test": "vows test/logging.js" 
    },
    "directories": {
-       "test": "spec"
+       "test": "test",
+       "lib": "lib"
    } 
 }
