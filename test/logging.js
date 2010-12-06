@@ -186,7 +186,10 @@ vows.describe('log4js').addBatch({
 		},
 		readFileSync: function(file, encoding) {
 		    return require('fs').readFileSync(file, encoding);
-		}
+		},
+                watchFile: function(file) {
+                    messages.watchedFile = file;
+                }
 	    },
 	    log4js = require('../lib/log4js')(fakeFS);
 	    return [ log4js, messages ];
@@ -220,7 +223,13 @@ vows.describe('log4js').addBatch({
 	    assert.length(messages['tmp-tests-warnings.log'], 2);
 	    assert.deepEqual(messages['tmp-tests.log'], ['main\n','both\n','both\n','main\n']);
 	    assert.deepEqual(messages['tmp-tests-warnings.log'], ['both\n','both\n']);
-	}
+	},
+        'should handle fileAppender with log rolling' : function(args) {
+            var log4js = args[0], messages = args[1];
+            delete messages['tmp-test.log'];
+            log4js.configure('test/with-log-rolling.json');
+            assert.equal(messages.watchedFile, 'tmp-test.log');
+        }            
     },
 
     'with no appenders defined' : {

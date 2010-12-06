@@ -2,7 +2,7 @@
 
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript.
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size.
 
 NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
 
@@ -47,12 +47,10 @@ Output
 ## configuration
 
 You can either configure the appenders and log levels manually (as above), or provide a 
-configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the log4js.js file). 
-An example file can be found in test/log4js.json
+configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file). 
+An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`
 
 ## todo
-
-I need to make a RollingFileAppender, which will do log rotation.
 
 patternLayout has no tests. This is mainly because I haven't found a use for it yet, 
 and am not entirely sure what it was supposed to do. It is more-or-less intact from 
