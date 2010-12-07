@@ -482,7 +482,7 @@ vows.describe('log4js').addBatch({
 
     'Date extensions': {
         topic: function() {
-            require('../lib/log4js');
+            require('../lib/log4js')();
             return new Date(2010, 0, 11, 14, 31, 30, 5);
         },
         'should add a toFormattedString method to Date': function(date) {
@@ -490,6 +490,37 @@ vows.describe('log4js').addBatch({
         },
         'should default to a format': function(date) {
             assert.equal(date.toFormattedString(), '2010-01-11 14:31:30.005');
+        }
+    },
+
+    'console' : {
+        topic: function() {
+            return require('../lib/log4js')();
+        },
+        'should replace console.log methods with log4js ones': function(log4js) {
+            var logEvent;
+            log4js.clearAppenders();
+            log4js.addAppender(function(evt) { logEvent = evt; });
+
+            console.log("Some debug message someone put in a module");
+            assert.equal(logEvent.message, "Some debug message someone put in a module");
+            assert.equal(logEvent.level.toString(), "INFO");
+            logEvent = undefined;
+            console.debug("Some debug");
+            assert.equal(logEvent.message, "Some debug");
+            assert.equal(logEvent.level.toString(), "DEBUG");
+            logEvent = undefined;
+            console.error("An error");
+            assert.equal(logEvent.message, "An error");
+            assert.equal(logEvent.level.toString(), "ERROR");
+            logEvent = undefined;
+            console.info("some info");
+            assert.equal(logEvent.message, "some info");
+            assert.equal(logEvent.level.toString(), "INFO");
+            logEvent = undefined;
+            console.trace("tracing");
+            assert.equal(logEvent.message, "tracing");
+            assert.equal(logEvent.level.toString(), "TRACE");
         }
     }
 
