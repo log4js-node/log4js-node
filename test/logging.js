@@ -29,6 +29,8 @@ vows.describe('log4js').addBatch({
 		logger.trace("Trace event 1");
 		logger.trace("Trace event 2");
 		logger.warn("Warning event");
+                logger.error("Aargh!", new Error("Pants are on fire!"));
+                logger.error("Simulated CouchDB problem", JSON.stringify({ err: 127, cause: "incendiary underwear" }));
 		return events;
 	    },
 
@@ -39,9 +41,20 @@ vows.describe('log4js').addBatch({
 	    },
 
 	    'should not emit events of a lower level': function(events) {
-		assert.length(events, 2);
+		assert.length(events, 4);
 		assert.equal(events[1].level.toString(), 'WARN');
-	    }
+	    },
+
+            'should include the error if passed in': function (events) {
+                assert.instanceOf(events[2].exception, Error);
+                assert.equal(events[2].exception.message, 'Pants are on fire!');
+            },
+
+            'should convert things that claim to be errors into Error objects': function (events) {
+                assert.instanceOf(events[3].exception, Error);
+                assert.equal(events[3].exception.message, '{"err":127,"cause":"incendiary underwear"}');
+            },
+                
 	},
 
     },
