@@ -30,7 +30,7 @@ vows.describe('log4js').addBatch({
 		logger.trace("Trace event 2");
 		logger.warn("Warning event");
                 logger.error("Aargh!", new Error("Pants are on fire!"));
-                logger.error("Simulated CouchDB problem", JSON.stringify({ err: 127, cause: "incendiary underwear" }));
+                logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
 		return events;
 	    },
 
@@ -52,7 +52,7 @@ vows.describe('log4js').addBatch({
 
             'should convert things that claim to be errors into Error objects': function (events) {
                 assert.instanceOf(events[3].exception, Error);
-                assert.equal(events[3].exception.message, '{"err":127,"cause":"incendiary underwear"}');
+                assert.equal(events[3].exception.message, "{ err: 127, cause: 'incendiary underwear' }");
             },
                 
 	},
