@@ -29,6 +29,8 @@ vows.describe('log4js').addBatch({
 		logger.trace("Trace event 1");
 		logger.trace("Trace event 2");
 		logger.warn("Warning event");
+                logger.error("Aargh!", new Error("Pants are on fire!"));
+                logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
 		return events;
 	    },
 
@@ -39,9 +41,20 @@ vows.describe('log4js').addBatch({
 	    },
 
 	    'should not emit events of a lower level': function(events) {
-		assert.length(events, 2);
+		assert.length(events, 4);
 		assert.equal(events[1].level.toString(), 'WARN');
-	    }
+	    },
+
+            'should include the error if passed in': function (events) {
+                assert.instanceOf(events[2].exception, Error);
+                assert.equal(events[2].exception.message, 'Pants are on fire!');
+            },
+
+            'should convert things that claim to be errors into Error objects': function (events) {
+                assert.instanceOf(events[3].exception, Error);
+                assert.equal(events[3].exception.message, "{ err: 127, cause: 'incendiary underwear' }");
+            },
+                
 	},
 
     },
@@ -244,6 +257,91 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'addAppender' : {
+        topic: function() {
+            var log4js = require('../lib/log4js')();
+            log4js.clearAppenders();
+            return log4js;
+        },
+        'without a category': {
+            'should register the function as a listener for all loggers': function (log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
+                log4js.addAppender(appender);
+                logger.debug("This is a test");
+                assert.equal(appenderEvent.message, "This is a test");
+                assert.equal(appenderEvent.categoryName, "tests");
+                assert.equal(appenderEvent.level.toString(), "DEBUG");
+            },
+            'should also register as an appender for loggers if an appender for that category is defined': function (log4js) {
+                var otherEvent, appenderEvent, cheeseLogger;
+                log4js.addAppender(function (evt) { appenderEvent = evt; });
+                log4js.addAppender(function (evt) { otherEvent = evt; }, 'cheese');
+        
+                cheeseLogger = log4js.getLogger('cheese');
+                cheeseLogger.debug('This is a test');
+                assert.deepEqual(appenderEvent, otherEvent);
+                assert.equal(otherEvent.message, 'This is a test');
+                assert.equal(otherEvent.categoryName, 'cheese');
+        
+                otherEvent = undefined;
+                appenderEvent = undefined;
+                log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
+                assert.isUndefined(otherEvent);
+                assert.equal(appenderEvent.message, "this should not be propagated to otherEvent");
+            }
+        },
+    
+        'with a category': {
+            'should only register the function as a listener for that category': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
+                log4js.addAppender(appender, 'tests');
+                logger.debug('this is a category test');
+                assert.equal(appenderEvent.message, 'this is a category test');
+        
+                appenderEvent = undefined;
+                log4js.getLogger('some other category').debug('Cheese');
+                assert.isUndefined(appenderEvent);
+            }
+        },
+
+        'with multiple categories': {
+            'should register the function as a listener for all the categories': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger('tests');
+                log4js.addAppender(appender, 'tests', 'biscuits');
+        
+                logger.debug('this is a test');
+                assert.equal(appenderEvent.message, 'this is a test');
+                appenderEvent = undefined;
+        
+                var otherLogger = log4js.getLogger('biscuits');
+                otherLogger.debug("mmm... garibaldis");
+                assert.equal(appenderEvent.message, "mmm... garibaldis");
+
+                appenderEvent = undefined;
+                
+                log4js.getLogger("something else").debug("pants");
+                assert.isUndefined(appenderEvent);
+            },
+            'should register the function when the list of categories is an array': function(log4js) {
+                var appenderEvent, appender = function(evt) { appenderEvent = evt; };
+                log4js.addAppender(appender, ['tests', 'pants']);
+        
+                log4js.getLogger('tests').debug('this is a test');
+                assert.equal(appenderEvent.message, 'this is a test');
+
+                appenderEvent = undefined;
+
+                log4js.getLogger('pants').debug("big pants");
+                assert.equal(appenderEvent.message, "big pants");
+
+                appenderEvent = undefined;
+                
+                log4js.getLogger("something else").debug("pants");
+                assert.isUndefined(appenderEvent);
+            }
+        }
+    },
+
     'default setup': {
         topic: function() {
             var pathsChecked = [], 
@@ -327,6 +425,55 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'basicLayout': {
+        topic: function() {
+            var layout = require('../lib/log4js')().basicLayout,
+            event = { 
+                message: 'this is a test', 
+                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
+                categoryName: "tests", 
+                level: { 
+                    colour: "green", 
+                    toString: function() { return "DEBUG"; } 
+                }
+            };
+            return [layout, event];
+        },
+        'should take a logevent and output a formatted string': function(args) {
+            var layout = args[0], event = args[1];
+            assert.equal(layout(event), "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
+        },
+        'should output a stacktrace, message if the event has an error attached': function(args) {
+            var layout = args[0], event = args[1], output, lines, 
+            error = new Error("Some made-up error"), 
+            stack = error.stack.split(/\n/);
+
+            event.exception = error;
+            output = layout(event);
+            lines = output.split(/\n/);
+
+            assert.length(lines, stack.length+1);
+            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
+            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Error: Some made-up error");
+            for (var i = 1; i < stack.length; i++) {
+                assert.equal(lines[i+1], stack[i]);
+            }
+        },    
+        'should output a name and message if the event has something that pretends to be an error': function(args) {
+            var layout = args[0], event = args[1], output, lines;
+            event.exception = { 
+                    name: 'Cheese', 
+                    message: 'Gorgonzola smells.' 
+            };
+            output = layout(event);
+            lines = output.split(/\n/);
+            
+            assert.length(lines, 2);
+            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
+            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Cheese: Gorgonzola smells.");
+        }
+    },
+
     'logLevelFilter': {
         topic: function() {
             var log4js = require('../lib/log4js')(), logEvents = [], logger;
@@ -348,7 +495,7 @@ vows.describe('log4js').addBatch({
 
     'Date extensions': {
         topic: function() {
-            require('../lib/log4js');
+            require('../lib/log4js')();
             return new Date(2010, 0, 11, 14, 31, 30, 5);
         },
         'should add a toFormattedString method to Date': function(date) {
@@ -356,6 +503,37 @@ vows.describe('log4js').addBatch({
         },
         'should default to a format': function(date) {
             assert.equal(date.toFormattedString(), '2010-01-11 14:31:30.005');
+        }
+    },
+
+    'console' : {
+        topic: function() {
+            return require('../lib/log4js')();
+        },
+        'should replace console.log methods with log4js ones': function(log4js) {
+            var logEvent;
+            log4js.clearAppenders();
+            log4js.addAppender(function(evt) { logEvent = evt; });
+
+            console.log("Some debug message someone put in a module");
+            assert.equal(logEvent.message, "Some debug message someone put in a module");
+            assert.equal(logEvent.level.toString(), "INFO");
+            logEvent = undefined;
+            console.debug("Some debug");
+            assert.equal(logEvent.message, "Some debug");
+            assert.equal(logEvent.level.toString(), "DEBUG");
+            logEvent = undefined;
+            console.error("An error");
+            assert.equal(logEvent.message, "An error");
+            assert.equal(logEvent.level.toString(), "ERROR");
+            logEvent = undefined;
+            console.info("some info");
+            assert.equal(logEvent.message, "some info");
+            assert.equal(logEvent.level.toString(), "INFO");
+            logEvent = undefined;
+            console.trace("tracing");
+            assert.equal(logEvent.message, "tracing");
+            assert.equal(logEvent.level.toString(), "TRACE");
         }
     }
 

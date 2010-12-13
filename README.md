@@ -2,7 +2,7 @@
 
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size.
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size. It also enhances the default console logging functions (console.log, console.debug, etc) so that they use log4js and can be directed to a file, with log rolling etc - which is handy if you have some third party modules that use console.log but want that output included in your application log files.
 
 NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
 
@@ -12,7 +12,7 @@ npm install log4js
 
 ## tests
 
-Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. I am slowly porting the previous tests from jspec (run those with `node tests.js`), since jspec is no longer maintained.
+Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. 
 
 ## usage
 
@@ -20,6 +20,9 @@ Minimalist version:
            var log4js = require('log4js')();
            var logger = log4js.getLogger();
            logger.debug("Some debug messages");
+Even more minimalist version:
+     require('log4js')();
+     console.debug("Some debug messages");
 By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
     [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 
