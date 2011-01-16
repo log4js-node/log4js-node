@@ -247,7 +247,9 @@ vows.describe('log4js').addBatch({
 
     'with no appenders defined' : {
         topic: function() {
-            var logger, message, log4js = require('../lib/log4js')(null, function (msg) { message = msg; } );
+            var logger, message, log4jsFn = require('../lib/log4js'), log4js;
+	    log4jsFn().clearAppenders();
+	    log4js = log4jsFn(null, function (msg) { message = msg; } );
 	    logger = log4js.getLogger("some-logger");
             logger.debug("This is a test");
             return message;
@@ -364,9 +366,14 @@ vows.describe('log4js').addBatch({
             },
             fakeConsoleLog = function (msg) { message = msg; }, 
             fakeRequirePath = [ '/a/b/c', '/some/other/path', '/path/to/config', '/some/later/directory' ],
-            log4js = require('../lib/log4js')(fakeFS, fakeConsoleLog, fakeRequirePath),
+	    log4jsFn = require('../lib/log4js'),
+            log4js, logger;
+	    
+	    log4jsFn().clearAppenders();
+	    log4js  = log4jsFn(fakeFS, fakeConsoleLog, fakeRequirePath);
             logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
+
 
             return [ pathsChecked, message ];
         },
@@ -478,8 +485,8 @@ vows.describe('log4js').addBatch({
         topic: function() {
             var log4js = require('../lib/log4js')(), logEvents = [], logger;
             log4js.clearAppenders();
-            log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvents.push(evt); }));
-            logger = log4js.getLogger();
+            log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvents.push(evt); }), "logLevelTest");
+            logger = log4js.getLogger("logLevelTest");
             logger.debug('this should not trigger an event');
             logger.warn('neither should this');
             logger.error('this should, though');
@@ -535,6 +542,19 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvent.message, "tracing");
             assert.equal(logEvent.level.toString(), "TRACE");
         }
+    },
+
+    'configuration persistence' : {
+	'should maintain appenders between requires': function () {
+	    var logEvent, firstLog4js = require('../lib/log4js')(), secondLog4js;
+	    firstLog4js.clearAppenders();
+	    firstLog4js.addAppender(function(evt) { logEvent = evt; });
+
+	    secondLog4js = require('../lib/log4js')();
+	    secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
+	    
+	    assert.equal(logEvent.message, "This should go to the appender defined in firstLog4js");
+	}
     }
 
 }).export(module);
