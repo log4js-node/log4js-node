@@ -242,7 +242,25 @@ vows.describe('log4js').addBatch({
             delete messages['tmp-test.log'];
             log4js.configure('test/with-log-rolling.json');
             assert.equal(messages.watchedFile, 'tmp-test.log');
-        }            
+        },
+        'should handle an object or a file name': function(args) {
+	    var log4js = args[0], 
+	    messages = args[1],
+	    config = {
+		"appenders": [
+		    {
+			"type" : "file",
+			"filename" : "cheesy-wotsits.log",
+			"maxLogSize" : 1024,
+			"backups" : 3,
+			"pollInterval" : 15
+		    }
+		]
+	    };
+	    delete messages['cheesy-wotsits.log'];
+	    log4js.configure(config);
+	    assert.equal(messages.watchedFile, 'cheesy-wotsits.log');
+	}
     },
 
     'with no appenders defined' : {
