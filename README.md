@@ -1,0 +1,71 @@
+# log4js-node
+
+This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
+framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size. It also enhances the default console logging functions (console.log, console.debug, etc) so that they use log4js and can be directed to a file, with log rolling etc - which is handy if you have some third party modules that use console.log but want that output included in your application log files.
+
+NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
+
+## installation
+
+npm install log4js
+
+## tests
+
+Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. 
+
+## usage
+
+Minimalist version:
+           var log4js = require('log4js')();
+           var logger = log4js.getLogger();
+           logger.debug("Some debug messages");
+Even more minimalist version:
+     require('log4js')();
+     console.debug("Some debug messages");
+By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
+    [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
+
+See example.js:
+
+    var log4js = require('log4js')(); //note the need to call the function
+    log4js.addAppender(log4js.consoleAppender());
+    log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
+    
+    var logger = log4js.getLogger('cheese');
+    logger.setLevel('ERROR');
+    
+    logger.trace('Entering cheese testing');
+    logger.debug('Got cheese.');
+    logger.info('Cheese is Gouda.');  
+    logger.warn('Cheese is quite smelly.');
+    logger.error('Cheese is too ripe!');
+    logger.fatal('Cheese was breeding ground for listeria.');
+  
+Output
+    [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
+    [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
+
+  
+## configuration
+
+You can either configure the appenders and log levels manually (as above), or provide a 
+configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file). 
+An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`
+You can also pass an object to the configure function, which has the same properties as the json versions.
+
+## todo
+
+patternLayout has no tests. This is mainly because I haven't found a use for it yet, 
+and am not entirely sure what it was supposed to do. It is more-or-less intact from 
+the original log4js.
+
+## author (of this node version)
+
+Gareth Jones (csausdev - gareth.jones@sensis.com.au)
+
+## License
+
+The original log4js was distributed under the Apache 2.0 License, and so is this. I've tried to
+keep the original copyright and author credits in place, except in sections that I have rewritten 
+extensively.
