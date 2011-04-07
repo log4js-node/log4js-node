@@ -1,6 +1,6 @@
 {
    "name": "log4js",
-   "version": "0.2.4",
+   "version": "0.2.5",
    "description": "Port of Log4js to work with node.",
    "keywords": [
        "logging",
@@ -15,7 +15,7 @@
    },
    "engines": [ "node >=0.1.100" ],
    "scripts": {
-       "test": "vows test/logging.js" 
+       "test": "vows test/*.js" 
    },
    "directories": {
        "test": "test",

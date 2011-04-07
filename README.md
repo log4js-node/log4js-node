@@ -12,7 +12,7 @@ npm install log4js
 
 ## tests
 
-Tests now use [vows](http://vowsjs.org), run with `vows test/logging.js`. 
+Tests now use [vows](http://vowsjs.org), run with `vows test/*.js`. 
 
 ## usage
 
@@ -59,6 +59,33 @@ You can also pass an object to the configure function, which has the same proper
 patternLayout has no tests. This is mainly because I haven't found a use for it yet, 
 and am not entirely sure what it was supposed to do. It is more-or-less intact from 
 the original log4js.
+
+## connect/express logger
+
+A connect/express logger has been added to log4js. This allows connect/express servers to log using log4js. See example-connect-logger.js. 
+
+    var log4js = require('./lib/log4js')();
+    log4js.addAppender(log4js.consoleAppender());
+    log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese');
+      
+    var logger = log4js.getLogger('cheese');
+    
+    logger.setLevel('INFO');
+    
+    var app = require('express').createServer();
+    app.configure(function() {
+        app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
+    });
+    app.get('/', function(req,res) {
+        res.send('hello world');
+    });
+    app.listen(5000);
+
+The options object that is passed to log4js.connectLogger supports a format string the same as the connect/express logger. For example:
+
+    app.configure(function() {
+        app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
+    });
 
 ## author (of this node version)
 
