@@ -2,9 +2,12 @@
 
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size. It also enhances the default console logging functions (console.log, console.debug, etc) so that they use log4js and can be directed to a file, with log rolling etc - which is handy if you have some third party modules that use console.log but want that output included in your application log files.
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size. 
 
 NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
+
+NOTE: I have disabled the console.log replacement which appeared in earlier versions, as console.log does some fancy formatting of output that log4js cannot handle. I don't want log4js breaking people's code mysteriously.
+
 
 ## installation
 
