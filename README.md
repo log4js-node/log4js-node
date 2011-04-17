@@ -23,9 +23,6 @@ Minimalist version:
            var log4js = require('log4js')();
            var logger = log4js.getLogger();
            logger.debug("Some debug messages");
-Even more minimalist version:
-     require('log4js')();
-     console.debug("Some debug messages");
 By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
     [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 
