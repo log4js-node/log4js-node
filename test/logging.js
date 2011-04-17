@@ -530,7 +530,7 @@ vows.describe('log4js').addBatch({
             assert.equal(date.toFormattedString(), '2010-01-11 14:31:30.005');
         }
     },
-
+/** Disabling the console.log replacement ****
     'console' : {
         topic: function() {
             return require('../lib/log4js')();
@@ -561,7 +561,7 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvent.level.toString(), "TRACE");
         }
     },
-
+*/
     'configuration persistence' : {
 	'should maintain appenders between requires': function () {
 	    var logEvent, firstLog4js = require('../lib/log4js')(), secondLog4js;
