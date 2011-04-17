@@ -20,5 +20,8 @@
    "directories": {
        "test": "test",
        "lib": "lib"
+   },
+   "devDependencies": {
+       "vows": ">=0.5.2"
    } 
 }
