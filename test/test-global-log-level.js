@@ -16,7 +16,7 @@ vows.describe('log4js global loglevel').addBatch({
             }
             assert.notEqual(log1.level.toString(), level);
 
-            log1.setLevel(level);
+            log4js.setGlobalLogLevel(level);
             assert.equal(log1.level.toString(), level);
 
             var log2 = log4js.getLogger('log2');
@@ -32,7 +32,7 @@ vows.describe('log4js global loglevel').addBatch({
             }
             assert.notEqual(log1.level.toString(), level);
 
-            log1.setLevel(level);
+            log4js.setGlobalLogLevel(level);
             assert.equal(log1.level.toString(), level);
             assert.equal(log2.level.toString(), level);
         },
@@ -49,12 +49,12 @@ vows.describe('log4js global loglevel').addBatch({
             var oldLevel = log1.level.toString();
             assert.equal(log2.level.toString(), oldLevel);
 
-            log2.setLocalLevel(level);
+            log2.setLevel(level);
             assert.equal(log1.level.toString(), oldLevel);
             assert.equal(log2.level.toString(), level);
             assert.notEqual(oldLevel, level);
 
-            log2.removeLocalLevel();
+            log2.removeLevel();
             assert.equal(log1.level.toString(), oldLevel);
             assert.equal(log2.level.toString(), oldLevel);
         },
@@ -68,7 +68,7 @@ vows.describe('log4js global loglevel').addBatch({
             assert.notEqual(log1.level.toString(), level);
 
             var oldLevel = log1.level.toString();
-            log4js.getLogger('log2').setLocalLevel(level);
+            log4js.getLogger('log2').setLevel(level);
 
             assert.equal(log1.level.toString(), oldLevel);
 
@@ -77,7 +77,7 @@ vows.describe('log4js global loglevel').addBatch({
             assert.equal(log2.level.toString(), level);
             assert.notEqual(oldLevel, level);
 
-            log2.removeLocalLevel();
+            log2.removeLevel();
             assert.equal(log1.level.toString(), oldLevel);
             assert.equal(log2.level.toString(), oldLevel);
         }
