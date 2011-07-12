@@ -1,10 +1,11 @@
-var vows = require('vows'), 
-assert = require('assert');
+var vows = require('vows')
+, assert = require('assert')
+, sandbox = require('sandboxed-module');
 
 vows.describe('log4js').addBatch({
     'getLogger': {
 	topic: function() {
-	    var log4js = require('../lib/log4js')();
+	    var log4js = require('../lib/log4js');
 	    log4js.clearAppenders();
 	    var logger = log4js.getLogger('tests');
 	    logger.setLevel("DEBUG");
@@ -20,7 +21,7 @@ vows.describe('log4js').addBatch({
 	    assert.isFunction(logger.error);
 	    assert.isFunction(logger.fatal);
 	},
-	
+
 	'log events' : {
 	    topic: function(logger) {
 		var events = [];
@@ -54,7 +55,7 @@ vows.describe('log4js').addBatch({
                 assert.instanceOf(events[3].exception, Error);
                 assert.equal(events[3].exception.message, "{ err: 127, cause: 'incendiary underwear' }");
             },
-                
+
 	},
 
     },
@@ -79,18 +80,25 @@ vows.describe('log4js').addBatch({
                     throw new Error("watchFile should not be called if logSize is not defined");
                 }
 	    },
-	    log4js = require('../lib/log4js')(fakeFS);
+	    log4js = sandbox.require(
+                '../lib/log4js',
+                {
+                    requires: {
+                        'fs': fakeFS
+                    }
+                }
+            );
 	    log4js.clearAppenders();
-	    
-	    appender = log4js.fileAppender('./tmp-tests.log', log4js.messagePassThroughLayout);
-	    log4js.addAppender(appender, 'file-test');	    
+
+	    appender = log4js.fileAppender('./tmp-tests.log', log4js.layouts.messagePassThroughLayout);
+	    log4js.addAppender(appender, 'file-test');
 
 	    var logger = log4js.getLogger('file-test');
 	    logger.debug("this is a test");
 
 	    return logmessages;
 	},
-	'should write log messages to file': function(logmessages) {	    
+	'should write log messages to file': function(logmessages) {
 	    assert.length(logmessages, 1);
 	    assert.equal(logmessages, "this is a test\n");
 	}
@@ -98,42 +106,49 @@ vows.describe('log4js').addBatch({
 
     'fileAppender - with rolling based on size and number of files to keep': {
         topic: function() {
-            var watchCb, 
-            filesOpened = [], 
-            filesClosed = [], 
+            var watchCb,
+            filesOpened = [],
+            filesClosed = [],
             filesRenamed = [],
             newFilenames = [],
             existingFiles = ['tests.log'],
-            log4js = require('../lib/log4js')({
-                watchFile: function(file, options, callback) {
-                    assert.equal(file, 'tests.log');
-                    assert.equal(options.persistent, false);
-                    assert.equal(options.interval, 30000);
-                    assert.isFunction(callback);
-                    watchCb = callback;
-                },
-                openSync: function(file) {
-                    assert.equal(file, 'tests.log');
-                    filesOpened.push(file);
-                    return file;
-                },
-                statSync: function(file) {
-                    if (existingFiles.indexOf(file) < 0) {
-                        throw new Error("this file doesn't exist");
-                    } else {
-                        return true;
-                    }
-                },
-                renameSync: function(oldFile, newFile) {
-                    filesRenamed.push(oldFile);
-                    existingFiles.push(newFile);
-                },
-                closeSync: function(file) {
-                    //it should always be closing tests.log
-                    assert.equal(file, 'tests.log');
-                    filesClosed.push(file);
-                }
-            });
+            log4js = sandbox.require(
+                '../lib/log4js'
+              , {
+                  requires: {
+                      'fs': {
+                          watchFile: function(file, options, callback) {
+                              assert.equal(file, 'tests.log');
+                              assert.equal(options.persistent, false);
+                              assert.equal(options.interval, 30000);
+                              assert.isFunction(callback);
+                              watchCb = callback;
+                          },
+                          openSync: function(file) {
+                              assert.equal(file, 'tests.log');
+                              filesOpened.push(file);
+                              return file;
+                          },
+                          statSync: function(file) {
+                              if (existingFiles.indexOf(file) < 0) {
+                                  throw new Error("this file doesn't exist");
+                              } else {
+                                  return true;
+                              }
+                          },
+                          renameSync: function(oldFile, newFile) {
+                              filesRenamed.push(oldFile);
+                              existingFiles.push(newFile);
+                          },
+                          closeSync: function(file) {
+                              //it should always be closing tests.log
+                              assert.equal(file, 'tests.log');
+                              filesClosed.push(file);
+                          }
+                      }
+                  }
+              }
+            );
             var appender = log4js.fileAppender('tests.log', log4js.messagePassThroughLayout, 1024, 2, 30);
             return [watchCb, filesOpened, filesClosed, filesRenamed, existingFiles];
         },
@@ -156,7 +171,7 @@ vows.describe('log4js').addBatch({
             assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1']);
             //and opened a new log file.
             assert.length(filesOpened, 2);
-            
+
             //now tell the watchCb that we've flipped over the threshold again
             watchCb({ size: 1025 }, { size: 123 });
             //it should have closed the old file
@@ -195,7 +210,7 @@ vows.describe('log4js').addBatch({
 		    if (!messages.hasOwnProperty(file)) {
 			messages[file] = [];
 		    }
-		    messages[file].push(message); 
+		    messages[file].push(message);
 		},
 		readFileSync: function(file, encoding) {
 		    return require('fs').readFileSync(file, encoding);
@@ -204,7 +219,14 @@ vows.describe('log4js').addBatch({
                     messages.watchedFile = file;
                 }
 	    },
-	    log4js = require('../lib/log4js')(fakeFS);
+	    log4js = sandbox.require(
+                '../lib/log4js'
+              , {
+                  requires: {
+                      'fs': fakeFS
+                  }
+              }
+            );
 	    return [ log4js, messages ];
 	},
 	'should load appender configuration from a json file': function(args) {
@@ -214,7 +236,7 @@ vows.describe('log4js').addBatch({
 	    //this config file defines one file appender (to ./tmp-tests.log)
 	    //and sets the log level for "tests" to WARN
 	    log4js.configure('test/log4js.json');
-	    var logger = log4js.getLogger("tests");	    
+	    var logger = log4js.getLogger("tests");
 	    logger.info('this should not be written to the file');
 	    logger.warn('this should be written to the file');
 	    assert.length(messages['tmp-tests.log'], 1);
@@ -244,7 +266,7 @@ vows.describe('log4js').addBatch({
             assert.equal(messages.watchedFile, 'tmp-test.log');
         },
         'should handle an object or a file name': function(args) {
-	    var log4js = args[0], 
+	    var log4js = args[0],
 	    messages = args[1],
 	    config = {
 		"appenders": [
@@ -265,9 +287,20 @@ vows.describe('log4js').addBatch({
 
     'with no appenders defined' : {
         topic: function() {
-            var logger, message, log4jsFn = require('../lib/log4js'), log4js;
-	    log4jsFn().clearAppenders();
-	    log4js = log4jsFn(null, function (msg) { message = msg; } );
+            var logger
+          , message
+          , log4js = sandbox.require(
+              '../lib/log4js'
+            , {
+                globals: {
+                  console: {
+                      log: function(msg) {
+                          message = msg;
+                      }
+                  }
+              }
+            }
+          );
 	    logger = log4js.getLogger("some-logger");
             logger.debug("This is a test");
             return message;
@@ -279,7 +312,7 @@ vows.describe('log4js').addBatch({
 
     'addAppender' : {
         topic: function() {
-            var log4js = require('../lib/log4js')();
+            var log4js = require('../lib/log4js');
             log4js.clearAppenders();
             return log4js;
         },
@@ -296,13 +329,13 @@ vows.describe('log4js').addBatch({
                 var otherEvent, appenderEvent, cheeseLogger;
                 log4js.addAppender(function (evt) { appenderEvent = evt; });
                 log4js.addAppender(function (evt) { otherEvent = evt; }, 'cheese');
-        
+
                 cheeseLogger = log4js.getLogger('cheese');
                 cheeseLogger.debug('This is a test');
                 assert.deepEqual(appenderEvent, otherEvent);
                 assert.equal(otherEvent.message, 'This is a test');
                 assert.equal(otherEvent.categoryName, 'cheese');
-        
+
                 otherEvent = undefined;
                 appenderEvent = undefined;
                 log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
@@ -310,14 +343,14 @@ vows.describe('log4js').addBatch({
                 assert.equal(appenderEvent.message, "this should not be propagated to otherEvent");
             }
         },
-    
+
         'with a category': {
             'should only register the function as a listener for that category': function(log4js) {
                 var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
                 log4js.addAppender(appender, 'tests');
                 logger.debug('this is a category test');
                 assert.equal(appenderEvent.message, 'this is a category test');
-        
+
                 appenderEvent = undefined;
                 log4js.getLogger('some other category').debug('Cheese');
                 assert.isUndefined(appenderEvent);
@@ -328,24 +361,24 @@ vows.describe('log4js').addBatch({
             'should register the function as a listener for all the categories': function(log4js) {
                 var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger('tests');
                 log4js.addAppender(appender, 'tests', 'biscuits');
-        
+
                 logger.debug('this is a test');
                 assert.equal(appenderEvent.message, 'this is a test');
                 appenderEvent = undefined;
-        
+
                 var otherLogger = log4js.getLogger('biscuits');
                 otherLogger.debug("mmm... garibaldis");
                 assert.equal(appenderEvent.message, "mmm... garibaldis");
 
                 appenderEvent = undefined;
-                
+
                 log4js.getLogger("something else").debug("pants");
                 assert.isUndefined(appenderEvent);
             },
             'should register the function when the list of categories is an array': function(log4js) {
                 var appenderEvent, appender = function(evt) { appenderEvent = evt; };
                 log4js.addAppender(appender, ['tests', 'pants']);
-        
+
                 log4js.getLogger('tests').debug('this is a test');
                 assert.equal(appenderEvent.message, 'this is a test');
 
@@ -355,7 +388,7 @@ vows.describe('log4js').addBatch({
                 assert.equal(appenderEvent.message, "big pants");
 
                 appenderEvent = undefined;
-                
+
                 log4js.getLogger("something else").debug("pants");
                 assert.isUndefined(appenderEvent);
             }
@@ -364,144 +397,70 @@ vows.describe('log4js').addBatch({
 
     'default setup': {
         topic: function() {
-            var pathsChecked = [], 
+            var pathsChecked = [],
             message,
             logger,
+            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
             fakeFS = {
                 readFileSync: function (file, encoding) {
-                    assert.equal(file, '/path/to/config/log4js.json');
+                    assert.equal(file, modulePath);
                     assert.equal(encoding, 'utf8');
                     return '{ "appenders" : [ { "type": "console", "layout": { "type": "messagePassThrough" }} ] }';
                 },
                 statSync: function (path) {
                     pathsChecked.push(path);
-                    if (path === '/path/to/config/log4js.json') {
+                    if (path === modulePath) {
                         return true;
                     } else {
                         throw new Error("no such file");
                     }
                 }
             },
-            fakeConsoleLog = function (msg) { message = msg; }, 
-            fakeRequirePath = [ '/a/b/c', '/some/other/path', '/path/to/config', '/some/later/directory' ],
-	    log4jsFn = require('../lib/log4js'),
-            log4js, logger;
-	    
-	    log4jsFn().clearAppenders();
-	    log4js  = log4jsFn(fakeFS, fakeConsoleLog, fakeRequirePath);
-            logger = log4js.getLogger('a-test');
+            fakeConsole = {
+                log : function (msg) { message = msg; },
+                info: this.log,
+                warn: this.log,
+                debug: this.log,
+                error: this.log
+            },
+	    log4js = sandbox.require(
+                '../lib/log4js',
+                {
+                    requires: {
+                        'fs': fakeFS
+                    },
+                    globals: {
+                        'console': fakeConsole
+                    }
+                }
+            );
+
+	    logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
 
-
-            return [ pathsChecked, message ];
+            return [ pathsChecked, message, modulePath ];
         },
-        
+
         'should check current directory, require paths, and finally the module dir for log4js.json': function(args) {
             var pathsChecked = args[0];
-            assert.deepEqual(pathsChecked, [
-                'log4js.json',
-                '/a/b/c/log4js.json', 
-                '/some/other/path/log4js.json', 
-                '/path/to/config/log4js.json', 
-                '/some/later/directory/log4js.json',
-                require('path').normalize(__dirname + '/../lib/log4js.json')
-            ]);
+              expectedPaths = ['log4js.json'].concat(
+                  require.paths.map(function(item) {
+                      return item + '/log4js.json';
+                  }),
+                  args[2]
+              );
+            assert.deepEqual(pathsChecked, expectedPaths);
         },
-        
+
         'should configure log4js from first log4js.json found': function(args) {
             var message = args[1];
             assert.equal(message, 'this is a test');
         }
     },
-    
-    'colouredLayout': {
-        topic: function() {
-            return require('../lib/log4js')().colouredLayout;
-        },
-
-        'should apply level colour codes to output': function(layout) {
-            var output = layout({ 
-                message: "nonsense", 
-                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-                categoryName: "cheese", 
-                level: { 
-                    colour: "green", 
-                    toString: function() { return "ERROR"; } 
-                }
-            });
-            assert.equal(output, '\033[90m[2010-12-05 14:18:30.045] \033[39m\033[32m[ERROR] \033[39m\033[90mcheese - \033[39mnonsense');
-        }
-    },
-
-    'messagePassThroughLayout': {
-        topic: function() {
-            return require('../lib/log4js')().messagePassThroughLayout;
-        },
-        'should take a logevent and output only the message' : function(layout) {
-            assert.equal(layout({ 
-                message: "nonsense", 
-                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-                categoryName: "cheese", 
-                level: { 
-                    colour: "green", 
-                    toString: function() { return "ERROR"; } 
-                }
-            }), "nonsense");
-        }
-    },
-
-    'basicLayout': {
-        topic: function() {
-            var layout = require('../lib/log4js')().basicLayout,
-            event = { 
-                message: 'this is a test', 
-                startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-                categoryName: "tests", 
-                level: { 
-                    colour: "green", 
-                    toString: function() { return "DEBUG"; } 
-                }
-            };
-            return [layout, event];
-        },
-        'should take a logevent and output a formatted string': function(args) {
-            var layout = args[0], event = args[1];
-            assert.equal(layout(event), "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-        },
-        'should output a stacktrace, message if the event has an error attached': function(args) {
-            var layout = args[0], event = args[1], output, lines, 
-            error = new Error("Some made-up error"), 
-            stack = error.stack.split(/\n/);
-
-            event.exception = error;
-            output = layout(event);
-            lines = output.split(/\n/);
-
-            assert.length(lines, stack.length+1);
-            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Error: Some made-up error");
-            for (var i = 1; i < stack.length; i++) {
-                assert.equal(lines[i+1], stack[i]);
-            }
-        },    
-        'should output a name and message if the event has something that pretends to be an error': function(args) {
-            var layout = args[0], event = args[1], output, lines;
-            event.exception = { 
-                    name: 'Cheese', 
-                    message: 'Gorgonzola smells.' 
-            };
-            output = layout(event);
-            lines = output.split(/\n/);
-            
-            assert.length(lines, 2);
-            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Cheese: Gorgonzola smells.");
-        }
-    },
 
     'logLevelFilter': {
         topic: function() {
-            var log4js = require('../lib/log4js')(), logEvents = [], logger;
+            var log4js = require('../lib/log4js'), logEvents = [], logger;
             log4js.clearAppenders();
             log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvents.push(evt); }), "logLevelTest");
             logger = log4js.getLogger("logLevelTest");
@@ -518,59 +477,62 @@ vows.describe('log4js').addBatch({
         }
     },
 
-    'Date extensions': {
-        topic: function() {
-            require('../lib/log4js')();
-            return new Date(2010, 0, 11, 14, 31, 30, 5);
-        },
-        'should add a toFormattedString method to Date': function(date) {
-            assert.isFunction(date.toFormattedString);
-        },
-        'should default to a format': function(date) {
-            assert.equal(date.toFormattedString(), '2010-01-11 14:31:30.005');
-        }
-    },
-/** Disabling the console.log replacement ****
     'console' : {
         topic: function() {
-            return require('../lib/log4js')();
-        },
-        'should replace console.log methods with log4js ones': function(log4js) {
-            var logEvent;
-            log4js.clearAppenders();
-            log4js.addAppender(function(evt) { logEvent = evt; });
+            var fakeConsole = {}
+          , logEvents = []
+          , log4js;
 
-            console.log("Some debug message someone put in a module");
-            assert.equal(logEvent.message, "Some debug message someone put in a module");
-            assert.equal(logEvent.level.toString(), "INFO");
-            logEvent = undefined;
-            console.debug("Some debug");
-            assert.equal(logEvent.message, "Some debug");
-            assert.equal(logEvent.level.toString(), "DEBUG");
-            logEvent = undefined;
-            console.error("An error");
-            assert.equal(logEvent.message, "An error");
-            assert.equal(logEvent.level.toString(), "ERROR");
-            logEvent = undefined;
-            console.info("some info");
-            assert.equal(logEvent.message, "some info");
-            assert.equal(logEvent.level.toString(), "INFO");
-            logEvent = undefined;
-            console.trace("tracing");
-            assert.equal(logEvent.message, "tracing");
-            assert.equal(logEvent.level.toString(), "TRACE");
+            ['trace','debug','log','info','warn','error'].forEach(function(fn) {
+                fakeConsole[fn] = function() {
+                    throw new Error("this should not be called.");
+                };
+            });
+
+            log4js = sandbox.require(
+                '../lib/log4js'
+              , {
+                  globals: {
+                      console: fakeConsole
+                  }
+              }
+            );
+
+            log4js.clearAppenders();
+            log4js.addAppender(function(evt) {
+                logEvents.push(evt);
+            });
+
+            fakeConsole.log("Some debug message someone put in a module");
+            fakeConsole.debug("Some debug");
+            fakeConsole.error("An error");
+            fakeConsole.info("some info");
+            fakeConsole.warn("a warning");
+
+            return logEvents;
+        },
+        'should replace console.log methods with log4js ones': function(logEvents) {
+            assert.equal(logEvents[0].message, "Some debug message someone put in a module");
+            assert.equal(logEvents[0].level.toString(), "INFO");
+            assert.equal(logEvents[1].message, "Some debug");
+            assert.equal(logEvents[1].level.toString(), "DEBUG");
+            assert.equal(logEvents[2].message, "An error");
+            assert.equal(logEvents[2].level.toString(), "ERROR");
+            assert.equal(logEvents[3].message, "some info");
+            assert.equal(logEvents[3].level.toString(), "INFO");
+            assert.equal(logEvents[4].message, "a warning");
+            assert.equal(logEvents[4].level.toString(), "WARN");
         }
     },
-*/
     'configuration persistence' : {
 	'should maintain appenders between requires': function () {
-	    var logEvent, firstLog4js = require('../lib/log4js')(), secondLog4js;
+	    var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
 	    firstLog4js.clearAppenders();
 	    firstLog4js.addAppender(function(evt) { logEvent = evt; });
 
-	    secondLog4js = require('../lib/log4js')();
+	    secondLog4js = require('../lib/log4js');
 	    secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
-	    
+
 	    assert.equal(logEvent.message, "This should go to the appender defined in firstLog4js");
 	}
     }

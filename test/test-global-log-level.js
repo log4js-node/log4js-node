@@ -4,7 +4,7 @@ assert = require('assert');
 vows.describe('log4js global loglevel').addBatch({
     'global loglevel' : {
         topic: function() {
-            var log4js = require('../lib/log4js')();
+            var log4js = require('../lib/log4js');
             return log4js;
         },
 
@@ -59,7 +59,7 @@ vows.describe('log4js global loglevel').addBatch({
             assert.equal(log2.level.toString(), oldLevel);
         },
 
-        'preload loglevevl': function(log4js) {
+        'preload loglevel': function(log4js) {
             var log1 = log4js.getLogger('log1');
             var level = 'OFF';
             if (log1.level.toString() == level) {
