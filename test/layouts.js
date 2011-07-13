@@ -13,11 +13,10 @@ vows.describe('log4js layouts').addBatch({
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "cheese",
                 level: {
-                    colour: "green",
                     toString: function() { return "ERROR"; }
                 }
             });
-            assert.equal(output, '\033[32m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mnonsense');
+            assert.equal(output, '\033[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mnonsense');
         },
 
         'should support the console.log format for the message': function(layout) {
@@ -26,11 +25,10 @@ vows.describe('log4js layouts').addBatch({
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "cheese",
                 level: {
-                    colour: "green",
                     toString: function() { return "ERROR"; }
                 }
             });
-            assert.equal(output, '\033[32m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mthing 2');
+            assert.equal(output, '\033[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mthing 2');
         }
     },
 

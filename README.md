@@ -2,12 +2,9 @@
 
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size. 
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions. 
 
-NOTE: since v0.2.0 require('log4js') returns a function, so you need to call that function in your code before you can use it. I've done this to make testing easier (allows dependency injection).
-
-NOTE: I have disabled the console.log replacement which appeared in earlier versions, as console.log does some fancy formatting of output that log4js cannot handle. I don't want log4js breaking people's code mysteriously.
-
+NOTE: in v0.2.x require('log4js') returned a function, and you needed to call that function in your code before you could use it. This was to make testing easier. v0.3.x make use of [felixge's sandbox-module](https://github.com/felixge/sandbox-module), so we don't need to return a function.
 
 ## installation
 
@@ -21,7 +18,7 @@ Tests now use [vows](http://vowsjs.org), run with `vows test/*.js`.
 
 Minimalist version:
 
-           var log4js = require('log4js')();
+           var log4js = require('log4js');
            var logger = log4js.getLogger();
            logger.debug("Some debug messages");
 
@@ -31,7 +28,7 @@ By default, log4js outputs to stdout with the coloured layout (thanks to [masylu
 
 See example.js:
 
-    var log4js = require('log4js')(); //note the need to call the function
+    var log4js = require('log4js'); //note the need to call the function
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
     
@@ -68,7 +65,7 @@ the original log4js.
 
 A connect/express logger has been added to log4js. This allows connect/express servers to log using log4js. See example-connect-logger.js. 
 
-    var log4js = require('./lib/log4js')();
+    var log4js = require('./lib/log4js');
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese');
       
