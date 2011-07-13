@@ -37,7 +37,7 @@ vows.describe('log4js').addBatch({
 
 	    'should emit log events': function(events) {
 		assert.equal(events[0].level.toString(), 'DEBUG');
-		assert.equal(events[0].message, 'Debug event');
+		assert.equal(events[0].data[0], 'Debug event');
 		assert.instanceOf(events[0].startTime, Date);
 	    },
 
@@ -47,14 +47,9 @@ vows.describe('log4js').addBatch({
 	    },
 
             'should include the error if passed in': function (events) {
-                assert.instanceOf(events[2].exception, Error);
-                assert.equal(events[2].exception.message, 'Pants are on fire!');
-            },
-
-            'should convert things that claim to be errors into Error objects': function (events) {
-                assert.instanceOf(events[3].exception, Error);
-                assert.equal(events[3].exception.message, "{ err: 127, cause: 'incendiary underwear' }");
-            },
+                assert.instanceOf(events[2].data[1], Error);
+                assert.equal(events[2].data[1].message, 'Pants are on fire!');
+            }
 
 	},
 
@@ -321,7 +316,7 @@ vows.describe('log4js').addBatch({
                 var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
                 log4js.addAppender(appender);
                 logger.debug("This is a test");
-                assert.equal(appenderEvent.message, "This is a test");
+                assert.equal(appenderEvent.data[0], "This is a test");
                 assert.equal(appenderEvent.categoryName, "tests");
                 assert.equal(appenderEvent.level.toString(), "DEBUG");
             },
@@ -333,14 +328,14 @@ vows.describe('log4js').addBatch({
                 cheeseLogger = log4js.getLogger('cheese');
                 cheeseLogger.debug('This is a test');
                 assert.deepEqual(appenderEvent, otherEvent);
-                assert.equal(otherEvent.message, 'This is a test');
+                assert.equal(otherEvent.data[0], 'This is a test');
                 assert.equal(otherEvent.categoryName, 'cheese');
 
                 otherEvent = undefined;
                 appenderEvent = undefined;
                 log4js.getLogger('pants').debug("this should not be propagated to otherEvent");
                 assert.isUndefined(otherEvent);
-                assert.equal(appenderEvent.message, "this should not be propagated to otherEvent");
+                assert.equal(appenderEvent.data[0], "this should not be propagated to otherEvent");
             }
         },
 
@@ -349,7 +344,7 @@ vows.describe('log4js').addBatch({
                 var appenderEvent, appender = function(evt) { appenderEvent = evt; }, logger = log4js.getLogger("tests");
                 log4js.addAppender(appender, 'tests');
                 logger.debug('this is a category test');
-                assert.equal(appenderEvent.message, 'this is a category test');
+                assert.equal(appenderEvent.data[0], 'this is a category test');
 
                 appenderEvent = undefined;
                 log4js.getLogger('some other category').debug('Cheese');
@@ -363,12 +358,12 @@ vows.describe('log4js').addBatch({
                 log4js.addAppender(appender, 'tests', 'biscuits');
 
                 logger.debug('this is a test');
-                assert.equal(appenderEvent.message, 'this is a test');
+                assert.equal(appenderEvent.data[0], 'this is a test');
                 appenderEvent = undefined;
 
                 var otherLogger = log4js.getLogger('biscuits');
                 otherLogger.debug("mmm... garibaldis");
-                assert.equal(appenderEvent.message, "mmm... garibaldis");
+                assert.equal(appenderEvent.data[0], "mmm... garibaldis");
 
                 appenderEvent = undefined;
 
@@ -380,12 +375,12 @@ vows.describe('log4js').addBatch({
                 log4js.addAppender(appender, ['tests', 'pants']);
 
                 log4js.getLogger('tests').debug('this is a test');
-                assert.equal(appenderEvent.message, 'this is a test');
+                assert.equal(appenderEvent.data[0], 'this is a test');
 
                 appenderEvent = undefined;
 
                 log4js.getLogger('pants').debug("big pants");
-                assert.equal(appenderEvent.message, "big pants");
+                assert.equal(appenderEvent.data[0], "big pants");
 
                 appenderEvent = undefined;
 
@@ -472,8 +467,8 @@ vows.describe('log4js').addBatch({
         },
         'should only pass log events greater than or equal to its own level' : function(logEvents) {
             assert.length(logEvents, 2);
-            assert.equal(logEvents[0].message, 'this should, though');
-            assert.equal(logEvents[1].message, 'so should this');
+            assert.equal(logEvents[0].data[0], 'this should, though');
+            assert.equal(logEvents[1].data[0], 'so should this');
         }
     },
 
@@ -509,18 +504,23 @@ vows.describe('log4js').addBatch({
             fakeConsole.info("some info");
             fakeConsole.warn("a warning");
 
+            fakeConsole.log("cheese (%s) and biscuits (%s)", "gouda", "garibaldis");
+            fakeConsole.log({ lumpy: "tapioca" });
+            fakeConsole.log("count %d", 123);
+            fakeConsole.log("stringify %j", { lumpy: "tapioca" });
+
             return logEvents;
         },
         'should replace console.log methods with log4js ones': function(logEvents) {
-            assert.equal(logEvents[0].message, "Some debug message someone put in a module");
+            assert.equal(logEvents[0].data[0], "Some debug message someone put in a module");
             assert.equal(logEvents[0].level.toString(), "INFO");
-            assert.equal(logEvents[1].message, "Some debug");
+            assert.equal(logEvents[1].data[0], "Some debug");
             assert.equal(logEvents[1].level.toString(), "DEBUG");
-            assert.equal(logEvents[2].message, "An error");
+            assert.equal(logEvents[2].data[0], "An error");
             assert.equal(logEvents[2].level.toString(), "ERROR");
-            assert.equal(logEvents[3].message, "some info");
+            assert.equal(logEvents[3].data[0], "some info");
             assert.equal(logEvents[3].level.toString(), "INFO");
-            assert.equal(logEvents[4].message, "a warning");
+            assert.equal(logEvents[4].data[0], "a warning");
             assert.equal(logEvents[4].level.toString(), "WARN");
         }
     },
@@ -533,7 +533,7 @@ vows.describe('log4js').addBatch({
 	    secondLog4js = require('../lib/log4js');
 	    secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
 
-	    assert.equal(logEvent.message, "This should go to the appender defined in firstLog4js");
+	    assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
 	}
     }
 

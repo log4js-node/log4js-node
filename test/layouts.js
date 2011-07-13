@@ -9,7 +9,7 @@ vows.describe('log4js layouts').addBatch({
 
         'should apply level colour codes to output': function(layout) {
             var output = layout({
-                message: "nonsense",
+                data: ["nonsense"],
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "cheese",
                 level: {
@@ -17,7 +17,20 @@ vows.describe('log4js layouts').addBatch({
                     toString: function() { return "ERROR"; }
                 }
             });
-            assert.equal(output, '\033[90m[2010-12-05 14:18:30.045] \033[39m\033[32m[ERROR] \033[39m\033[90mcheese - \033[39mnonsense');
+            assert.equal(output, '\033[32m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mnonsense');
+        },
+
+        'should support the console.log format for the message': function(layout) {
+            var output = layout({
+                data: ["thing %d", 2],
+                startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+                categoryName: "cheese",
+                level: {
+                    colour: "green",
+                    toString: function() { return "ERROR"; }
+                }
+            });
+            assert.equal(output, '\033[32m[2010-12-05 14:18:30.045] [ERROR] cheese - \033[39mthing 2');
         }
     },
 
@@ -27,7 +40,7 @@ vows.describe('log4js layouts').addBatch({
         },
         'should take a logevent and output only the message' : function(layout) {
             assert.equal(layout({
-                message: "nonsense",
+                data: ["nonsense"],
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "cheese",
                 level: {
@@ -35,14 +48,25 @@ vows.describe('log4js layouts').addBatch({
                     toString: function() { return "ERROR"; }
                 }
             }), "nonsense");
-        }
+        },
+        'should support the console.log format for the message' : function(layout) {
+              assert.equal(layout({
+                  data: ["thing %d", 1]
+                , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+                , categoryName: "cheese"
+                , level : {
+                    colour: "green"
+                  , toString: function() { return "ERROR"; }
+                }
+              }), "thing 1");
+          }
     },
 
     'basicLayout': {
         topic: function() {
             var layout = require('../lib/layouts').basicLayout,
             event = {
-                message: 'this is a test',
+                data: ['this is a test'],
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "tests",
                 level: {
@@ -61,29 +85,29 @@ vows.describe('log4js layouts').addBatch({
             error = new Error("Some made-up error"),
             stack = error.stack.split(/\n/);
 
-            event.exception = error;
+            event.data = ['this is a test', error];
             output = layout(event);
             lines = output.split(/\n/);
 
             assert.length(lines, stack.length+1);
             assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Error: Some made-up error");
+            assert.equal(lines[1], "Error: Some made-up error");
             for (var i = 1; i < stack.length; i++) {
                 assert.equal(lines[i+1], stack[i]);
             }
         },
-        'should output a name and message if the event has something that pretends to be an error': function(args) {
+        'should output any extra data in the log event as util.inspect strings': function(args) {
             var layout = args[0], event = args[1], output, lines;
-            event.exception = {
+            event.data = ['this is a test', {
                     name: 'Cheese',
                     message: 'Gorgonzola smells.'
-            };
+            }];
             output = layout(event);
             lines = output.split(/\n/);
 
             assert.length(lines, 2);
             assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "[2010-12-05 14:18:30.045] [DEBUG] tests - Cheese: Gorgonzola smells.");
+            assert.equal(lines[1], "{ name: 'Cheese', message: 'Gorgonzola smells.' }");
         }
     }
 }).export(module);
