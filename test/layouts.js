@@ -1,6 +1,14 @@
 var vows = require('vows'),
 assert = require('assert');
 
+//used for patternLayout tests.
+function test(args, pattern, value) {
+    var layout = args[0]
+    , event = args[1];
+
+    assert.equal(layout(pattern)(event), value);
+}
+
 vows.describe('log4js layouts').addBatch({
     'colouredLayout': {
         topic: function() {
@@ -68,7 +76,6 @@ vows.describe('log4js layouts').addBatch({
                 startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
                 categoryName: "tests",
                 level: {
-                    colour: "green",
                     toString: function() { return "DEBUG"; }
                 }
             };
@@ -107,6 +114,88 @@ vows.describe('log4js layouts').addBatch({
             assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
             assert.equal(lines[1], "{ name: 'Cheese', message: 'Gorgonzola smells.' }");
         }
+    },
+
+    'patternLayout': {
+        topic: function() {
+            var event = {
+                data: ['this is a test'],
+                startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+                categoryName: "multiple.levels.of.tests",
+                level: {
+                    toString: function() { return "DEBUG"; }
+                }
+            }, layout = require('../lib/layouts').patternLayout;
+            return [layout, event];
+        },
+
+        'should default to "time logLevel loggerName - message"': function(args) {
+            test(args, null, "14:18:30 DEBUG multiple.levels.of.tests - this is a test\n");
+        },
+        '%r should output time only': function(args) {
+            test(args, '%r', '14:18:30');
+        },
+        '%p should output the log level': function(args) {
+            test(args, '%p', 'DEBUG');
+        },
+        '%c should output the log category': function(args) {
+            test(args, '%c', 'multiple.levels.of.tests');
+        },
+        '%m should output the log data': function(args) {
+            test(args, '%m', 'this is a test');
+        },
+        '%n should output a new line': function(args) {
+            test(args, '%n', '\n');
+        },
+        '%c should handle category names like java-style package names': function(args) {
+            test(args, '%c{1}', 'tests');
+            test(args, '%c{2}', 'of.tests');
+            test(args, '%c{3}', 'levels.of.tests');
+            test(args, '%c{4}', 'multiple.levels.of.tests');
+            test(args, '%c{5}', 'multiple.levels.of.tests');
+            test(args, '%c{99}', 'multiple.levels.of.tests');
+        },
+        '%d should output the date in ISO8601 format': function(args) {
+            test(args, '%d', '2010-12-05 14:18:30.045');
+        },
+        '%d should allow for format specification': function(args) {
+            test(args, '%d{ISO8601}', '2010-12-05 14:18:30.045');
+            test(args, '%d{ABSOLUTE}', '14:18:30.045');
+            test(args, '%d{DATE}', '05 12 2010 14:18:30.045');
+            test(args, '%d{yyyy MM dd}', '2010 12 05');
+            test(args, '%d{yyyy MM dd hh mm ss SSS}', '2010 12 05 14 18 30 045');
+        },
+        '%% should output %': function(args) {
+            test(args, '%%', '%');
+        },
+        'should output anything not preceded by % as literal': function(args) {
+            test(args, 'blah blah blah', 'blah blah blah');
+        },
+        'should handle complicated patterns': function(args) {
+            test(args,
+                 '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
+                 'this is a test\n of.tests at 14:18:30.045 cheese DEBUG\n'
+                );
+        },
+        'should truncate fields if specified': function(args) {
+            test(args, '%.4m', 'this');
+            test(args, '%.7m', 'this is');
+            test(args, '%.9m', 'this is a');
+            test(args, '%.14m', 'this is a test');
+            test(args, '%.2919102m', 'this is a test');
+        },
+        'should pad fields if specified': function(args) {
+            test(args, '%10p', '     DEBUG');
+            test(args, '%8p', '   DEBUG');
+            test(args, '%6p', ' DEBUG');
+            test(args, '%4p', 'DEBUG');
+            test(args, '%-4p', 'DEBUG');
+            test(args, '%-6p', 'DEBUG ');
+            test(args, '%-8p', 'DEBUG   ');
+            test(args, '%-10p', 'DEBUG     ');
+        }
+
     }
+
 }).export(module);
 
