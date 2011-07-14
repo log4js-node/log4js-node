@@ -4,7 +4,7 @@ This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
 and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions. 
 
-NOTE: in v0.2.x require('log4js') returned a function, and you needed to call that function in your code before you could use it. This was to make testing easier. v0.3.x make use of [felixge's sandbox-module](https://github.com/felixge/sandbox-module), so we don't need to return a function.
+NOTE: in v0.2.x require('log4js') returned a function, and you needed to call that function in your code before you could use it. This was to make testing easier. v0.3.x make use of [felixge's sandbox-module](https://github.com/felixge/node-sandboxed-module), so we don't need to return a function.
 
 ## installation
 
@@ -55,15 +55,9 @@ configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`
 You can also pass an object to the configure function, which has the same properties as the json versions.
 
-## todo
-
-patternLayout has no tests. This is mainly because I haven't found a use for it yet, 
-and am not entirely sure what it was supposed to do. It is more-or-less intact from 
-the original log4js.
-
 ## connect/express logger
 
-A connect/express logger has been added to log4js. This allows connect/express servers to log using log4js. See example-connect-logger.js. 
+A connect/express logger has been added to log4js, by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See example-connect-logger.js. 
 
     var log4js = require('./lib/log4js');
     log4js.addAppender(log4js.consoleAppender());
