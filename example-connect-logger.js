@@ -8,7 +8,7 @@ var app = require('express').createServer();
 app.configure(function() {
     app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 });
-app.get('/', function(req,res) {
-    res.send('hello world');
+app.get('*', function(req,res) {
+    res.send('hello world\n <a href="/cheese">cheese</a>\n');
 });
 app.listen(5000);
