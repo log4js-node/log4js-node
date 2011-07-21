@@ -108,7 +108,6 @@ vows.describe('log4js').addBatch({
             var watchCb,
             filesOpened = [],
             filesEnded = [],
-            filesDestroyedSoon = [],
             filesRenamed = [],
             newFilenames = [],
             existingFiles = ['tests.log'],
@@ -130,9 +129,6 @@ vows.describe('log4js').addBatch({
                               return {
                                   end: function() {
                                       filesEnded.push(file);
-                                  },
-                                  destroySoon: function() {
-                                      filesDestroyedSoon.push(file);
                                   }
                               };
                           },
@@ -152,16 +148,15 @@ vows.describe('log4js').addBatch({
               }
             );
             var appender = log4js.fileAppender('tests.log', log4js.messagePassThroughLayout, 1024, 2, 30);
-            return [watchCb, filesOpened, filesEnded, filesDestroyedSoon, filesRenamed, existingFiles];
+            return [watchCb, filesOpened, filesEnded, filesRenamed, existingFiles];
         },
 
         'should close current log file, rename all old ones, open new one on rollover': function(args) {
               var watchCb = args[0]
             , filesOpened = args[1]
             , filesEnded = args[2]
-            , filesDestroyedSoon = args[3]
-            , filesRenamed = args[4]
-            , existingFiles = args[5];
+            , filesRenamed = args[3]
+            , existingFiles = args[4];
               assert.isFunction(watchCb);
               //tell the watchCb that the file is below the threshold
               watchCb({ size: 891 }, { size: 0 });
@@ -171,7 +166,6 @@ vows.describe('log4js').addBatch({
               watchCb({ size: 1053 }, { size: 891 });
               //it should have closed the first log file.
               assert.length(filesEnded, 1);
-              assert.length(filesDestroyedSoon, 1);
               //it should have renamed the previous log file
               assert.length(filesRenamed, 1);
               //and we should have two files now
@@ -184,7 +178,6 @@ vows.describe('log4js').addBatch({
               watchCb({ size: 1025 }, { size: 123 });
               //it should have closed the old file
               assert.length(filesEnded, 2);
-              assert.length(filesDestroyedSoon, 2);
               //it should have renamed both the old log file, and the previous '.1' file
               assert.length(filesRenamed, 3);
               assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log' ]);
@@ -198,7 +191,6 @@ vows.describe('log4js').addBatch({
               watchCb({ size: 1024 }, { size: 234 });
               //close the old one again.
               assert.length(filesEnded, 3);
-              assert.length(filesDestroyedSoon, 3);
               //it should have renamed the old log file and the 2 backups, with the last one being overwritten.
               assert.length(filesRenamed, 5);
               assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log', 'tests.log.1', 'tests.log' ]);
