@@ -56,6 +56,19 @@ An example file can be found in `test/log4js.json`. An example config file with 
 By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels
 to occur without restarting the application.
 
+To turn off configuration file change checking, configure with:
+
+   var log4js = require('log4js');
+   log4js.configure(undefined, {}); // load 'log4js.json' from NODE_PATH
+
+Or:
+
+   log4js.configure('my_log4js_configuration.json', {});
+
+To specify a different period:
+
+   log4js.configure(undefined, { reloadSecs: 300 }); // load 'log4js.json' from NODE_PATH
+
 You can also pass an object to the configure function, which has the same properties as the json versions.
 
 ## connect/express logger
