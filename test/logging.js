@@ -4,82 +4,82 @@ var vows = require('vows')
 
 vows.describe('log4js').addBatch({
     'getLogger': {
-	topic: function() {
-	    var log4js = require('../lib/log4js');
-	    log4js.clearAppenders();
-	    var logger = log4js.getLogger('tests');
-	    logger.setLevel("DEBUG");
-	    return logger;
-	},
+        topic: function() {
+            var log4js = require('../lib/log4js');
+            log4js.clearAppenders();
+            var logger = log4js.getLogger('tests');
+            logger.setLevel("DEBUG");
+            return logger;
+        },
 
-	'should take a category and return a logger': function(logger) {
-	    assert.equal(logger.category, 'tests');
-	    assert.equal(logger.level.toString(), "DEBUG");
-	    assert.isFunction(logger.debug);
-	    assert.isFunction(logger.info);
-	    assert.isFunction(logger.warn);
-	    assert.isFunction(logger.error);
-	    assert.isFunction(logger.fatal);
-	},
+        'should take a category and return a logger': function(logger) {
+            assert.equal(logger.category, 'tests');
+            assert.equal(logger.level.toString(), "DEBUG");
+            assert.isFunction(logger.debug);
+            assert.isFunction(logger.info);
+            assert.isFunction(logger.warn);
+            assert.isFunction(logger.error);
+            assert.isFunction(logger.fatal);
+        },
 
-	'log events' : {
-	    topic: function(logger) {
-		var events = [];
-		logger.addListener("log", function (logEvent) { events.push(logEvent); });
-		logger.debug("Debug event");
-		logger.trace("Trace event 1");
-		logger.trace("Trace event 2");
-		logger.warn("Warning event");
+        'log events' : {
+            topic: function(logger) {
+                var events = [];
+                logger.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.debug("Debug event");
+                logger.trace("Trace event 1");
+                logger.trace("Trace event 2");
+                logger.warn("Warning event");
                 logger.error("Aargh!", new Error("Pants are on fire!"));
                 logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
-		return events;
-	    },
+                return events;
+            },
 
-	    'should emit log events': function(events) {
-		assert.equal(events[0].level.toString(), 'DEBUG');
-		assert.equal(events[0].data[0], 'Debug event');
-		assert.instanceOf(events[0].startTime, Date);
-	    },
+            'should emit log events': function(events) {
+                assert.equal(events[0].level.toString(), 'DEBUG');
+                assert.equal(events[0].data[0], 'Debug event');
+                assert.instanceOf(events[0].startTime, Date);
+            },
 
-	    'should not emit events of a lower level': function(events) {
-		assert.length(events, 4);
-		assert.equal(events[1].level.toString(), 'WARN');
-	    },
+            'should not emit events of a lower level': function(events) {
+                assert.length(events, 4);
+                assert.equal(events[1].level.toString(), 'WARN');
+            },
 
             'should include the error if passed in': function (events) {
                 assert.instanceOf(events[2].data[1], Error);
                 assert.equal(events[2].data[1].message, 'Pants are on fire!');
             }
 
-	},
+        },
 
     },
 
     'fileAppender': {
-	topic: function() {
-	    var appender
+        topic: function() {
+            var appender
           , logmessages = []
           , thing = "thing"
           , fakeFS = {
-		createWriteStream: function() {
-		    assert.equal(arguments[0], './tmp-tests.log');
-		    assert.isObject(arguments[1]);
-		    assert.equal(arguments[1].flags, 'a');
+                createWriteStream: function() {
+                    assert.equal(arguments[0], './tmp-tests.log');
+                    assert.isObject(arguments[1]);
+                    assert.equal(arguments[1].flags, 'a');
                     assert.equal(arguments[1].mode, 0644);
                     assert.equal(arguments[1].encoding, 'utf8');
-		    return {
+                    return {
                         write: function(message) {
                             logmessages.push(message);
                         }
                       , end: function() {}
                       , destroySoon: function() {}
                     };
-		},
+                },
                 watchFile: function() {
                     throw new Error("watchFile should not be called if logSize is not defined");
                 }
-	    },
-	    log4js = sandbox.require(
+            },
+            log4js = sandbox.require(
                 '../lib/log4js',
                 {
                     requires: {
@@ -87,20 +87,20 @@ vows.describe('log4js').addBatch({
                     }
                 }
             );
-	    log4js.clearAppenders();
+            log4js.clearAppenders();
 
-	    appender = log4js.fileAppender('./tmp-tests.log', log4js.layouts.messagePassThroughLayout);
-	    log4js.addAppender(appender, 'file-test');
+            appender = log4js.fileAppender('./tmp-tests.log', log4js.layouts.messagePassThroughLayout);
+            log4js.addAppender(appender, 'file-test');
 
-	    var logger = log4js.getLogger('file-test');
-	    logger.debug("this is a test");
+            var logger = log4js.getLogger('file-test');
+            logger.debug("this is a test");
 
-	    return logmessages;
-	},
-	'should write log messages to file': function(logmessages) {
-	    assert.length(logmessages, 1);
-	    assert.equal(logmessages, "this is a test\n");
-	}
+            return logmessages;
+        },
+        'should write log messages to file': function(logmessages) {
+            assert.length(logmessages, 1);
+            assert.equal(logmessages, "this is a test\n");
+        }
     },
 
     'fileAppender - with rolling based on size and number of files to keep': {
@@ -203,28 +203,28 @@ vows.describe('log4js').addBatch({
     },
 
     'configure' : {
-	topic: function() {
-	    var messages = {}, fakeFS = {
-		createWriteStream: function(file) {
-		    return {
+        topic: function() {
+            var messages = {}, fakeFS = {
+                createWriteStream: function(file) {
+                    return {
                         write: function(message) {
                             if (!messages.hasOwnProperty(file)) {
-			        messages[file] = [];
-		            }
-		            messages[file].push(message);
+                                messages[file] = [];
+                            }
+                            messages[file].push(message);
                         }
                       , end: function() {}
                       , destroySoon: function() {}
                     };
-		},
-		readFileSync: function(file, encoding) {
-		    return require('fs').readFileSync(file, encoding);
-		},
+                },
+                readFileSync: function(file, encoding) {
+                    return require('fs').readFileSync(file, encoding);
+                },
                 watchFile: function(file) {
                     messages.watchedFile = file;
                 }
-	    },
-	    log4js = sandbox.require(
+            },
+            log4js = sandbox.require(
                 '../lib/log4js'
               , {
                   requires: {
@@ -232,38 +232,38 @@ vows.describe('log4js').addBatch({
                   }
               }
             );
-	    return [ log4js, messages ];
-	},
-	'should load appender configuration from a json file': function(args) {
-	    var log4js = args[0], messages = args[1];
-	    delete messages['tmp-tests.log'];
-	    log4js.clearAppenders();
-	    //this config file defines one file appender (to ./tmp-tests.log)
-	    //and sets the log level for "tests" to WARN
-	    log4js.configure('test/log4js.json');
-	    var logger = log4js.getLogger("tests");
-	    logger.info('this should not be written to the file');
-	    logger.warn('this should be written to the file');
-	    assert.length(messages['tmp-tests.log'], 1);
-	    assert.equal(messages['tmp-tests.log'][0], 'this should be written to the file\n');
-	},
-	'should handle logLevelFilter configuration': function(args) {
-	    var log4js = args[0], messages = args[1];
-	    delete messages['tmp-tests.log'];
-	    delete messages['tmp-tests-warnings.log'];
-	    log4js.clearAppenders();
-	    log4js.configure('test/with-logLevelFilter.json');
-	    var logger = log4js.getLogger("tests");
-	    logger.info('main');
-	    logger.error('both');
-	    logger.warn('both');
-	    logger.debug('main');
+            return [ log4js, messages ];
+        },
+        'should load appender configuration from a json file': function(args) {
+            var log4js = args[0], messages = args[1];
+            delete messages['tmp-tests.log'];
+            log4js.clearAppenders();
+            //this config file defines one file appender (to ./tmp-tests.log)
+            //and sets the log level for "tests" to WARN
+            log4js.configure('test/log4js.json');
+            var logger = log4js.getLogger("tests");
+            logger.info('this should not be written to the file');
+            logger.warn('this should be written to the file');
+            assert.length(messages['tmp-tests.log'], 1);
+            assert.equal(messages['tmp-tests.log'][0], 'this should be written to the file\n');
+        },
+        'should handle logLevelFilter configuration': function(args) {
+            var log4js = args[0], messages = args[1];
+            delete messages['tmp-tests.log'];
+            delete messages['tmp-tests-warnings.log'];
+            log4js.clearAppenders();
+            log4js.configure('test/with-logLevelFilter.json');
+            var logger = log4js.getLogger("tests");
+            logger.info('main');
+            logger.error('both');
+            logger.warn('both');
+            logger.debug('main');
 
-	    assert.length(messages['tmp-tests.log'], 4);
-	    assert.length(messages['tmp-tests-warnings.log'], 2);
-	    assert.deepEqual(messages['tmp-tests.log'], ['main\n','both\n','both\n','main\n']);
-	    assert.deepEqual(messages['tmp-tests-warnings.log'], ['both\n','both\n']);
-	},
+            assert.length(messages['tmp-tests.log'], 4);
+            assert.length(messages['tmp-tests-warnings.log'], 2);
+            assert.deepEqual(messages['tmp-tests.log'], ['main\n','both\n','both\n','main\n']);
+            assert.deepEqual(messages['tmp-tests-warnings.log'], ['both\n','both\n']);
+        },
         'should handle fileAppender with log rolling' : function(args) {
             var log4js = args[0], messages = args[1];
             delete messages['tmp-test.log'];
@@ -271,23 +271,23 @@ vows.describe('log4js').addBatch({
             assert.equal(messages.watchedFile, 'tmp-test.log');
         },
         'should handle an object or a file name': function(args) {
-	    var log4js = args[0],
-	    messages = args[1],
-	    config = {
-		"appenders": [
-		    {
-			"type" : "file",
-			"filename" : "cheesy-wotsits.log",
-			"maxLogSize" : 1024,
-			"backups" : 3,
-			"pollInterval" : 15
-		    }
-		]
-	    };
-	    delete messages['cheesy-wotsits.log'];
-	    log4js.configure(config);
-	    assert.equal(messages.watchedFile, 'cheesy-wotsits.log');
-	}
+            var log4js = args[0],
+            messages = args[1],
+            config = {
+                "appenders": [
+                    {
+                        "type" : "file",
+                        "filename" : "cheesy-wotsits.log",
+                        "maxLogSize" : 1024,
+                        "backups" : 3,
+                        "pollInterval" : 15
+                    }
+                ]
+            };
+            delete messages['cheesy-wotsits.log'];
+            log4js.configure(config);
+            assert.equal(messages.watchedFile, 'cheesy-wotsits.log');
+        }
     },
 
     'with no appenders defined' : {
@@ -306,7 +306,7 @@ vows.describe('log4js').addBatch({
               }
             }
           );
-	    logger = log4js.getLogger("some-logger");
+            logger = log4js.getLogger("some-logger");
             logger.debug("This is a test");
             return message;
         },
@@ -428,7 +428,7 @@ vows.describe('log4js').addBatch({
                 debug: this.log,
                 error: this.log
             },
-	    log4js = sandbox.require(
+            log4js = sandbox.require(
                 '../lib/log4js',
                 {
                     requires: {
@@ -440,7 +440,7 @@ vows.describe('log4js').addBatch({
                 }
             );
 
-	    logger = log4js.getLogger('a-test');
+            logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
 
             return [ pathsChecked, message, modulePath ];
@@ -535,16 +535,81 @@ vows.describe('log4js').addBatch({
         }
     },
     'configuration persistence' : {
-	'should maintain appenders between requires': function () {
-	    var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
-	    firstLog4js.clearAppenders();
-	    firstLog4js.addAppender(function(evt) { logEvent = evt; });
+        'should maintain appenders between requires': function () {
+            var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
+            firstLog4js.clearAppenders();
+            firstLog4js.addAppender(function(evt) { logEvent = evt; });
 
-	    secondLog4js = require('../lib/log4js');
-	    secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
+            secondLog4js = require('../lib/log4js');
+            secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
 
-	    assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
-	}
+            assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
+        }
+    },
+    'configuration reload' : {
+        topic: function() {
+            var pathsChecked = [],
+            messages = [],
+            logger,
+            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+            fakeFS = {
+                config: { appenders: [ { type: 'console', layout: { type: 'messagePassThrough' } } ],
+                          levels: { 'a-test' : 'INFO' } },
+                readFileSync: function (file, encoding) {
+                    assert.equal(file, modulePath);
+                    assert.equal(encoding, 'utf8');
+                    return JSON.stringify(fakeFS.config);
+                },
+                statSync: function (path) {
+                    pathsChecked.push(path);
+                    if (path === modulePath) {
+                        return { mtime: new Date() };
+                    } else {
+                        throw new Error("no such file");
+                    }
+                }
+            },
+            fakeConsole = {
+                log : function (msg) { messages.push(msg); },
+                info: this.log,
+                warn: this.log,
+                debug: this.log,
+                error: this.log
+            },
+            setIntervalCallback,
+            fakeSetInterval = function(cb, timeout) {
+                setIntervalCallback = cb;
+            },
+            log4js = sandbox.require(
+                '../lib/log4js',
+                {
+                    requires: {
+                        'fs': fakeFS
+                    },
+                    globals: {
+                        'console': fakeConsole,
+                        'setInterval' : fakeSetInterval,
+                    }
+                }
+            );
+
+            logger = log4js.getLogger('a-test');
+            logger.info("info1");
+            logger.debug("debug2 - should be ignored");
+            delete fakeFS.config.levels;
+            setIntervalCallback();
+            logger.info("info3");
+            logger.debug("debug4");
+
+            return [ pathsChecked, messages, modulePath ];
+        },
+        'should configure log4js from first log4js.json found': function(args) {
+            var messages = args[1];
+            assert.length(messages, 3);
+            assert.equal(messages[0], 'info1');
+            assert.equal(messages[1], 'info3'); 
+            assert.equal(messages[2], 'debug4');
+        }
     }
 
 }).export(module);

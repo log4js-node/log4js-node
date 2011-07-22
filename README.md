@@ -52,7 +52,10 @@ Output:
 
 You can either configure the appenders and log levels manually (as above), or provide a 
 configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file). 
-An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`
+An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
+By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels
+to occur without restarting the application.
+
 You can also pass an object to the configure function, which has the same properties as the json versions.
 
 ## connect/express logger
