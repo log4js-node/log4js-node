@@ -65,7 +65,19 @@ vows.describe('log4js layouts').addBatch({
                   , toString: function() { return "ERROR"; }
                 }
               }), "thing 1");
-          }
+          },
+        'should output the first item even if it is not a string': function(layout) {
+            assert.equal(layout({
+                data: [ { thing: 1} ]
+              , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+              , categoryName: "cheese"
+              , level: {
+                  colour: "green"
+                , toString: function() { return "ERROR"; }
+              }
+            }), "{ thing: 1 }");
+        }
+
     },
 
     'basicLayout': {
