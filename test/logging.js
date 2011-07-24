@@ -55,153 +55,6 @@ vows.describe('log4js').addBatch({
 
     },
 
-    'fileAppender': {
-	topic: function() {
-	    var appender
-          , logmessages = []
-          , thing = "thing"
-          , fakeFS = {
-		createWriteStream: function() {
-		    assert.equal(arguments[0], './tmp-tests.log');
-		    assert.isObject(arguments[1]);
-		    assert.equal(arguments[1].flags, 'a');
-                    assert.equal(arguments[1].mode, 0644);
-                    assert.equal(arguments[1].encoding, 'utf8');
-		    return {
-                        write: function(message) {
-                            logmessages.push(message);
-                        }
-                      , end: function() {}
-                      , destroySoon: function() {}
-                    };
-		},
-                watchFile: function() {
-                    throw new Error("watchFile should not be called if logSize is not defined");
-                }
-	    },
-	    log4js = sandbox.require(
-                '../lib/log4js',
-                {
-                    requires: {
-                        'fs': fakeFS
-                    }
-                }
-            );
-	    log4js.clearAppenders();
-
-	    appender = log4js.fileAppender('./tmp-tests.log', log4js.layouts.messagePassThroughLayout);
-	    log4js.addAppender(appender, 'file-test');
-
-	    var logger = log4js.getLogger('file-test');
-	    logger.debug("this is a test");
-
-	    return logmessages;
-	},
-	'should write log messages to file': function(logmessages) {
-	    assert.length(logmessages, 1);
-	    assert.equal(logmessages, "this is a test\n");
-	}
-    },
-
-    'fileAppender - with rolling based on size and number of files to keep': {
-        topic: function() {
-            var watchCb,
-            filesOpened = [],
-            filesEnded = [],
-            filesRenamed = [],
-            newFilenames = [],
-            existingFiles = ['tests.log'],
-            log4js = sandbox.require(
-                '../lib/log4js'
-              , {
-                  requires: {
-                      'fs': {
-                          watchFile: function(file, options, callback) {
-                              assert.equal(file, 'tests.log');
-                              assert.equal(options.persistent, false);
-                              assert.equal(options.interval, 30000);
-                              assert.isFunction(callback);
-                              watchCb = callback;
-                          },
-                          createWriteStream: function(file) {
-                              assert.equal(file, 'tests.log');
-                              filesOpened.push(file);
-                              return {
-                                  end: function() {
-                                      filesEnded.push(file);
-                                  }
-                              };
-                          },
-                          statSync: function(file) {
-                              if (existingFiles.indexOf(file) < 0) {
-                                  throw new Error("this file doesn't exist");
-                              } else {
-                                  return true;
-                              }
-                          },
-                          renameSync: function(oldFile, newFile) {
-                              filesRenamed.push(oldFile);
-                              existingFiles.push(newFile);
-                          }
-                      }
-                  }
-              }
-            );
-            var appender = log4js.fileAppender('tests.log', log4js.messagePassThroughLayout, 1024, 2, 30);
-            return [watchCb, filesOpened, filesEnded, filesRenamed, existingFiles];
-        },
-
-        'should close current log file, rename all old ones, open new one on rollover': function(args) {
-              var watchCb = args[0]
-            , filesOpened = args[1]
-            , filesEnded = args[2]
-            , filesRenamed = args[3]
-            , existingFiles = args[4];
-              assert.isFunction(watchCb);
-              //tell the watchCb that the file is below the threshold
-              watchCb({ size: 891 }, { size: 0 });
-              //filesOpened should still be the first one.
-              assert.length(filesOpened, 1);
-              //tell the watchCb that the file is now over the threshold
-              watchCb({ size: 1053 }, { size: 891 });
-              //it should have closed the first log file.
-              assert.length(filesEnded, 1);
-              //it should have renamed the previous log file
-              assert.length(filesRenamed, 1);
-              //and we should have two files now
-              assert.length(existingFiles, 2);
-              assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1']);
-              //and opened a new log file.
-              assert.length(filesOpened, 2);
-
-              //now tell the watchCb that we've flipped over the threshold again
-              watchCb({ size: 1025 }, { size: 123 });
-              //it should have closed the old file
-              assert.length(filesEnded, 2);
-              //it should have renamed both the old log file, and the previous '.1' file
-              assert.length(filesRenamed, 3);
-              assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log' ]);
-              //it should have renamed 2 more file
-              assert.length(existingFiles, 4);
-              assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1', 'tests.log.2', 'tests.log.1']);
-              //and opened a new log file
-              assert.length(filesOpened, 3);
-
-              //tell the watchCb we've flipped again.
-              watchCb({ size: 1024 }, { size: 234 });
-              //close the old one again.
-              assert.length(filesEnded, 3);
-              //it should have renamed the old log file and the 2 backups, with the last one being overwritten.
-              assert.length(filesRenamed, 5);
-              assert.deepEqual(filesRenamed, ['tests.log', 'tests.log.1', 'tests.log', 'tests.log.1', 'tests.log' ]);
-              //it should have renamed 2 more files
-              assert.length(existingFiles, 6);
-              assert.deepEqual(existingFiles, ['tests.log', 'tests.log.1', 'tests.log.2', 'tests.log.1', 'tests.log.2', 'tests.log.1']);
-              //and opened a new log file
-              assert.length(filesOpened, 4);
-          }
-    },
-
     'configure' : {
 	topic: function() {
 	    var messages = {}, fakeFS = {
@@ -217,6 +70,9 @@ vows.describe('log4js').addBatch({
                       , destroySoon: function() {}
                     };
 		},
+                readdirSync: function(dir) {
+                    return require('fs').readdirSync(dir);
+                },
 		readFileSync: function(file, encoding) {
 		    return require('fs').readFileSync(file, encoding);
 		},
@@ -407,6 +263,9 @@ vows.describe('log4js').addBatch({
             logger,
             modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
             fakeFS = {
+                readdirSync: function(dir) {
+                    return require('fs').readdirSync(dir);
+                },
                 readFileSync: function (file, encoding) {
                     assert.equal(file, modulePath);
                     assert.equal(encoding, 'utf8');
