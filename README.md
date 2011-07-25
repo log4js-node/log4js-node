@@ -58,16 +58,16 @@ to occur without restarting the application.
 
 To turn off configuration file change checking, configure with:
 
-   var log4js = require('log4js');
-   log4js.configure(undefined, {}); // load 'log4js.json' from NODE_PATH
+    var log4js = require('log4js');
+    log4js.configure(undefined, {}); // load 'log4js.json' from NODE_PATH
 
 Or:
 
-   log4js.configure('my_log4js_configuration.json', {});
+    log4js.configure('my_log4js_configuration.json', {});
 
 To specify a different period:
 
-   log4js.configure(undefined, { reloadSecs: 300 }); // load 'log4js.json' from NODE_PATH
+    log4js.configure(undefined, { reloadSecs: 300 }); // load 'log4js.json' from NODE_PATH
 
 You can also pass an object to the configure function, which has the same properties as the json versions.
 
