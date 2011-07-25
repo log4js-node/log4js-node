@@ -6,7 +6,7 @@
       "level": "WARN",
       "appender": {
         "type": "file",
-        "filename": "tmp-tests-warnings.log", 
+        "filename": "test/logLevelFilter-warnings.log", 
         "layout": { 
           "type": "messagePassThrough" 
         } 
@@ -15,7 +15,7 @@
     { 
       "category": "tests", 
       "type": "file",
-      "filename": "tmp-tests.log", 
+      "filename": "test/logLevelFilter.log", 
       "layout": { 
         "type": "messagePassThrough" 
       } 

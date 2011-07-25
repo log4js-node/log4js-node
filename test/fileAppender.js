@@ -14,6 +14,7 @@ function remove(filename) {
 }
 
 vows.describe('log4js fileAppender').addBatch({
+
     'with default fileAppender settings': {
         topic: function() {
             var testFile = __dirname + '/fa-default-test.log'
@@ -118,6 +119,62 @@ vows.describe('log4js fileAppender').addBatch({
                 },
                 'should be the second log message': function(err, contents) {
                     assert.include(contents, 'This is the second log message.');
+                }
+            }
+        }
+    }
+}).addBatch({
+    'configure' : {
+        'with fileAppender': {
+	    topic: function() {
+	        var log4js = require('../lib/log4js')
+              , logger;
+	        //this config file defines one file appender (to ./tmp-tests.log)
+	        //and sets the log level for "tests" to WARN
+                log4js.configure('test/log4js.json');
+                logger = log4js.getLogger('tests');
+	        logger.info('this should not be written to the file');
+	        logger.warn('this should be written to the file');
+
+                fs.readFile('tmp-tests.log', 'utf8', this.callback);
+	    },
+	    'should load appender configuration from a json file': function(err, contents) {
+	        assert.include(contents, 'this should be written to the file\n');
+                assert.equal(contents.indexOf('this should not be written to the file'), -1);
+	    },
+            'and log rolling': {
+                topic: function() {
+                    var sandbox = require('sandboxed-module')
+                  , that = this
+                  , fileAppender = sandbox.require(
+                      '../lib/appenders/file.js'
+                    , { requires:
+                        { 'fs':
+                          {
+                              watchFile: function(filename, options, cb) {
+                                  that.callback(null, filename);
+                              }
+                            , createWriteStream: function() {
+                                  return {
+                                      on: function() {}
+                                    , end: function() {}
+                                    , destroy: function() {}
+                                  };
+                              }
+                          }
+                        }
+                      }
+                    );
+
+                    fileAppender.configure({
+                        filename: "cheese.log"
+                      , maxLogSize: 100
+                      , backups: 5
+                      , pollInterval: 30
+                    });
+                },
+                'should watch the log file': function(watchedFile) {
+                    assert.equal(watchedFile, 'cheese.log');
                 }
             }
         }
