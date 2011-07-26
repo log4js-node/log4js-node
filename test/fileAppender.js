@@ -36,17 +36,21 @@ vows.describe('log4js fileAppender').addBatch({
     'with a max file size and no backups': {
         topic: function() {
             var testFile = __dirname + '/fa-maxFileSize-test.log'
-          , logger = log4js.getLogger('max-file-size');
+          , logger = log4js.getLogger('max-file-size')
+          , that = this;
             remove(testFile);
-            //log file of 50 bytes maximum, no backups, check every 10ms for changes
-            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 50, 0, 0.01), 'max-file-size');
+            remove(testFile + '.1');
+            //log file of 100 bytes maximum, no backups, check every 10ms for changes
+            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 100, 0, 0.01), 'max-file-size');
             logger.info("This is the first log message.");
+            logger.info("This is an intermediate log message.");
             //we have to wait before writing the second one, because node is too fast for the file system.
-            var that = this;
             setTimeout(function() {
                 logger.info("This is the second log message.");
+            }, 200);
+            setTimeout(function() {
                 fs.readFile(testFile, "utf8", that.callback);
-            }, 500);
+            }, 400);
         },
         'log file should only contain the second message': function(err, fileContents) {
             assert.include(fileContents, "This is the second log message.\n");
@@ -56,9 +60,10 @@ vows.describe('log4js fileAppender').addBatch({
             topic: function() {
                 fs.readdir(__dirname, this.callback);
             },
-            'starting with the test file name should be one': function(err, files) {
+            'starting with the test file name should be two': function(err, files) {
+                //there will always be one backup if you've specified a max log size
                 var logFiles = files.filter(function(file) { return file.indexOf('fa-maxFileSize-test.log') > -1; });
-                assert.length(logFiles, 1);
+                assert.length(logFiles, 2);
             }
         }
     },
