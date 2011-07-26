@@ -65,7 +65,19 @@ vows.describe('log4js layouts').addBatch({
                   , toString: function() { return "ERROR"; }
                 }
               }), "thing 1");
-          }
+          },
+        'should output the first item even if it is not a string': function(layout) {
+            assert.equal(layout({
+                data: [ { thing: 1} ]
+              , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+              , categoryName: "cheese"
+              , level: {
+                  colour: "green"
+                , toString: function() { return "ERROR"; }
+              }
+            }), "{ thing: 1 }");
+        }
+
     },
 
     'basicLayout': {
@@ -90,29 +102,24 @@ vows.describe('log4js layouts').addBatch({
             error = new Error("Some made-up error"),
             stack = error.stack.split(/\n/);
 
-            event.data = ['this is a test', error];
+            event.data = ['this is a test ', error];
             output = layout(event);
             lines = output.split(/\n/);
 
-            assert.length(lines, stack.length+1);
-            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "Error: Some made-up error");
+            assert.length(lines, stack.length);
+            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error");
             for (var i = 1; i < stack.length; i++) {
-                assert.equal(lines[i+1], stack[i]);
+                assert.equal(lines[i+1], stack[i+1]);
             }
         },
         'should output any extra data in the log event as util.inspect strings': function(args) {
             var layout = args[0], event = args[1], output, lines;
-            event.data = ['this is a test', {
+            event.data = ['this is a test ', {
                     name: 'Cheese',
                     message: 'Gorgonzola smells.'
             }];
             output = layout(event);
-            lines = output.split(/\n/);
-
-            assert.length(lines, 2);
-            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
-            assert.equal(lines[1], "{ name: 'Cheese', message: 'Gorgonzola smells.' }");
+            assert.equal(output, "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test { name: 'Cheese', message: 'Gorgonzola smells.' }");
         }
     },
 
