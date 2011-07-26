@@ -4,54 +4,54 @@ var vows = require('vows')
 
 vows.describe('log4js').addBatch({
     'getLogger': {
-	topic: function() {
-	    var log4js = require('../lib/log4js');
-	    log4js.clearAppenders();
-	    var logger = log4js.getLogger('tests');
-	    logger.setLevel("DEBUG");
-	    return logger;
-	},
+        topic: function() {
+            var log4js = require('../lib/log4js');
+            log4js.clearAppenders();
+            var logger = log4js.getLogger('tests');
+            logger.setLevel("DEBUG");
+            return logger;
+        },
 
-	'should take a category and return a logger': function(logger) {
-	    assert.equal(logger.category, 'tests');
-	    assert.equal(logger.level.toString(), "DEBUG");
-	    assert.isFunction(logger.debug);
-	    assert.isFunction(logger.info);
-	    assert.isFunction(logger.warn);
-	    assert.isFunction(logger.error);
-	    assert.isFunction(logger.fatal);
-	},
+        'should take a category and return a logger': function(logger) {
+            assert.equal(logger.category, 'tests');
+            assert.equal(logger.level.toString(), "DEBUG");
+            assert.isFunction(logger.debug);
+            assert.isFunction(logger.info);
+            assert.isFunction(logger.warn);
+            assert.isFunction(logger.error);
+            assert.isFunction(logger.fatal);
+        },
 
-	'log events' : {
-	    topic: function(logger) {
-		var events = [];
-		logger.addListener("log", function (logEvent) { events.push(logEvent); });
-		logger.debug("Debug event");
-		logger.trace("Trace event 1");
-		logger.trace("Trace event 2");
-		logger.warn("Warning event");
+        'log events' : {
+            topic: function(logger) {
+                var events = [];
+                logger.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.debug("Debug event");
+                logger.trace("Trace event 1");
+                logger.trace("Trace event 2");
+                logger.warn("Warning event");
                 logger.error("Aargh!", new Error("Pants are on fire!"));
                 logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
-		return events;
-	    },
+                return events;
+            },
 
-	    'should emit log events': function(events) {
-		assert.equal(events[0].level.toString(), 'DEBUG');
-		assert.equal(events[0].data[0], 'Debug event');
-		assert.instanceOf(events[0].startTime, Date);
-	    },
+            'should emit log events': function(events) {
+                assert.equal(events[0].level.toString(), 'DEBUG');
+                assert.equal(events[0].data[0], 'Debug event');
+                assert.instanceOf(events[0].startTime, Date);
+            },
 
-	    'should not emit events of a lower level': function(events) {
-		assert.length(events, 4);
-		assert.equal(events[1].level.toString(), 'WARN');
-	    },
+            'should not emit events of a lower level': function(events) {
+                assert.length(events, 4);
+                assert.equal(events[1].level.toString(), 'WARN');
+            },
 
             'should include the error if passed in': function (events) {
                 assert.instanceOf(events[2].data[1], Error);
                 assert.equal(events[2].data[1].message, 'Pants are on fire!');
             }
 
-	},
+        },
 
     },
 
@@ -65,7 +65,7 @@ vows.describe('log4js').addBatch({
 
     'configuration when passed as object': {
         topic: function() {
-	    var appenderConfig
+            var appenderConfig
           , log4js = sandbox.require(
               '../lib/log4js'
             , { requires:
@@ -82,22 +82,22 @@ vows.describe('log4js').addBatch({
               }
           )
           , config = {
-		"appenders": [
-		    {
-			"type" : "file",
-			"filename" : "cheesy-wotsits.log",
-			"maxLogSize" : 1024,
-			"backups" : 3,
-			"pollInterval" : 15
-		    }
-		]
-	    };
-	    log4js.configure(config);
+                "appenders": [
+                    {
+                        "type" : "file",
+                        "filename" : "cheesy-wotsits.log",
+                        "maxLogSize" : 1024,
+                        "backups" : 3,
+                        "pollInterval" : 15
+                    }
+                ]
+            };
+            log4js.configure(config);
             return appenderConfig;
         },
         'should be passed to appender config': function(configuration) {
-	    assert.equal(configuration.filename, 'cheesy-wotsits.log');
-	}
+            assert.equal(configuration.filename, 'cheesy-wotsits.log');
+        }
     },
 
     'configuration when passed as filename': {
@@ -169,7 +169,7 @@ vows.describe('log4js').addBatch({
                 }
               }
           );
-	    logger = log4js.getLogger("some-logger");
+            logger = log4js.getLogger("some-logger");
             logger.debug("This is a test");
         },
         'should default to the console appender': function(evt) {
@@ -295,7 +295,7 @@ vows.describe('log4js').addBatch({
                     return fakeConsole.appender();
                 }
             },
-	    log4js = sandbox.require(
+            log4js = sandbox.require(
                 '../lib/log4js',
                 {
                     requires: {
@@ -305,7 +305,7 @@ vows.describe('log4js').addBatch({
                 }
             );
 
-	    logger = log4js.getLogger('a-test');
+            logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
             return [ pathsChecked, appenderEvent, modulePath ];
         },
@@ -380,16 +380,87 @@ vows.describe('log4js').addBatch({
         }
     },
     'configuration persistence' : {
-	'should maintain appenders between requires': function () {
-	    var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
-	    firstLog4js.clearAppenders();
-	    firstLog4js.addAppender(function(evt) { logEvent = evt; });
+        'should maintain appenders between requires': function () {
+            var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
+            firstLog4js.clearAppenders();
+            firstLog4js.addAppender(function(evt) { logEvent = evt; });
 
-	    secondLog4js = require('../lib/log4js');
-	    secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
+            secondLog4js = require('../lib/log4js');
+            secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
 
-	    assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
-	}
+            assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
+        }
+    },
+    'configuration reload' : {
+        topic: function() {
+            var pathsChecked = [],
+            logEvents = [],
+            logger,
+            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+            fakeFS = {
+                config: { appenders: [ { type: 'console', layout: { type: 'messagePassThrough' } } ],
+                          levels: { 'a-test' : 'INFO' } },
+                readdirSync: function(dir) {
+                    return require('fs').readdirSync(dir);
+                },
+                readFileSync: function (file, encoding) {
+                    assert.equal(file, modulePath);
+                    assert.equal(encoding, 'utf8');
+                    return JSON.stringify(fakeFS.config);
+                },
+                statSync: function (path) {
+                    pathsChecked.push(path);
+                    if (path === modulePath) {
+                        return { mtime: new Date() };
+                    } else {
+                        throw new Error("no such file");
+                    }
+                }
+            },
+            fakeConsole = {
+                'name': 'console', 
+                'appender': function () {
+                    return function(evt) { logEvents.push(evt); };
+                }, 
+                'configure': function (config) {
+                    return fakeConsole.appender();
+                }
+            },
+            setIntervalCallback,
+            fakeSetInterval = function(cb, timeout) {
+                setIntervalCallback = cb;
+            },
+            log4js = sandbox.require(
+                '../lib/log4js',
+                {
+                    requires: {
+                        'fs': fakeFS, 
+                        './appenders/console.js': fakeConsole
+                    },
+                    globals: {
+                        'console': fakeConsole,
+                        'setInterval' : fakeSetInterval,
+                    }
+                }
+            );
+
+            logger = log4js.getLogger('a-test');
+            logger.info("info1");
+            logger.debug("debug2 - should be ignored");
+            delete fakeFS.config.levels;
+            setIntervalCallback();
+            logger.info("info3");
+            logger.debug("debug4");
+
+            return [ pathsChecked, logEvents, modulePath ];
+        },
+        'should configure log4js from first log4js.json found': function(args) {
+            var logEvents = args[1];
+            assert.length(logEvents, 3);
+            assert.equal(logEvents[0].data[0], 'info1');
+            assert.equal(logEvents[1].data[0], 'info3'); 
+            assert.equal(logEvents[2].data[0], 'debug4');
+        }
     }
 
 }).export(module);
