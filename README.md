@@ -1,5 +1,7 @@
 # log4js-node
 
+NOTE: v0.3.8 of log4js is the last that will work with node versions older than 0.4. To use v0.3.9 you will need node 0.4 or later.
+
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
 and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions. 

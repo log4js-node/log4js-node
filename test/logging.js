@@ -264,7 +264,7 @@ vows.describe('log4js').addBatch({
 
     'default setup': {
         topic: function() {
-            var pathsChecked = [],
+            var pathLoaded,
             appenderEvent,
             logger,
             modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
@@ -273,17 +273,9 @@ vows.describe('log4js').addBatch({
                     return require('fs').readdirSync(dir);
                 },
                 readFileSync: function (file, encoding) {
-                    assert.equal(file, modulePath);
+                    pathLoaded = file;
                     assert.equal(encoding, 'utf8');
                     return '{ "appenders" : [ { "type": "console", "layout": { "type": "messagePassThrough" }} ] }';
-                },
-                statSync: function (path) {
-                    pathsChecked.push(path);
-                    if (path === modulePath) {
-                        return true;
-                    } else {
-                        throw new Error("no such file");
-                    }
                 }
             },
             fakeConsole = {
@@ -307,18 +299,12 @@ vows.describe('log4js').addBatch({
 
             logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
-            return [ pathsChecked, appenderEvent, modulePath ];
+            return [ pathLoaded, appenderEvent, modulePath ];
         },
 
-        'should check current directory, require paths, and finally the module dir for log4js.json': function(args) {
-            var pathsChecked = args[0];
-              expectedPaths = ['log4js.json'].concat(
-                  require.paths.map(function(item) {
-                      return item + '/log4js.json';
-                  }),
-                  args[2]
-              );
-            assert.deepEqual(pathsChecked, expectedPaths);
+        'should use require.resolve to find log4js.json': function(args) {
+            var pathLoaded = args[0], modulePath = args[2];
+            assert.equal(pathLoaded, modulePath);
         },
 
         'should configure log4js from first log4js.json found': function(args) {
