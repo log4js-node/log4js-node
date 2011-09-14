@@ -57,14 +57,14 @@ vows.describe('log4js layouts').addBatch({
         },
         'should support the console.log format for the message' : function(layout) {
               assert.equal(layout({
-                  data: ["thing %d", 1]
+                  data: ["thing %d", 1, "cheese"]
                 , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
                 , categoryName: "cheese"
                 , level : {
                     colour: "green"
                   , toString: function() { return "ERROR"; }
                 }
-              }), "thing 1");
+              }), "thing 1 'cheese'");
           },
         'should output the first item even if it is not a string': function(layout) {
             assert.equal(layout({
@@ -102,7 +102,7 @@ vows.describe('log4js layouts').addBatch({
             error = new Error("Some made-up error"),
             stack = error.stack.split(/\n/);
 
-            event.data = ['this is a test ', error];
+            event.data = ['this is a test', error];
             output = layout(event);
             lines = output.split(/\n/);
 
@@ -114,7 +114,7 @@ vows.describe('log4js layouts').addBatch({
         },
         'should output any extra data in the log event as util.inspect strings': function(args) {
             var layout = args[0], event = args[1], output, lines;
-            event.data = ['this is a test ', {
+            event.data = ['this is a test', {
                     name: 'Cheese',
                     message: 'Gorgonzola smells.'
             }];
