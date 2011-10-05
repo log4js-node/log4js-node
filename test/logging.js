@@ -109,6 +109,9 @@ vows.describe('log4js').addBatch({
               , { requires:
                   { 'fs':
                     {
+                        statSync: function() {
+                            return { mtime: Date.now() };
+                        },
                         readFileSync: function(filename) {
                             configFilename = filename;
                             return JSON.stringify({
@@ -268,6 +271,7 @@ vows.describe('log4js').addBatch({
             appenderEvent,
             logger,
             modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+            mtime = Date.now(),
             fakeFS = {
                 readdirSync: function(dir) {
                     return require('fs').readdirSync(dir);
@@ -276,6 +280,13 @@ vows.describe('log4js').addBatch({
                     pathLoaded = file;
                     assert.equal(encoding, 'utf8');
                     return '{ "appenders" : [ { "type": "console", "layout": { "type": "messagePassThrough" }} ] }';
+                },
+                statSync: function (path) {
+                    if (path === modulePath) {
+                        return { mtime: mtime };
+                    } else {
+                        throw new Error("no such file");
+                    }
                 }
             },
             fakeConsole = {
@@ -377,13 +388,14 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
         }
     },
-    'configuration reload' : {
+    'configuration reload with configuration changing' : {
         topic: function() {
             var pathsChecked = [],
             logEvents = [],
             logger,
             modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
             fakeFS = {
+                lastMtime: Date.now(),
                 config: { appenders: [ { type: 'console', layout: { type: 'messagePassThrough' } } ],
                           levels: { 'a-test' : 'INFO' } },
                 readdirSync: function(dir) {
@@ -397,7 +409,8 @@ vows.describe('log4js').addBatch({
                 statSync: function (path) {
                     pathsChecked.push(path);
                     if (path === modulePath) {
-                        return { mtime: new Date() };
+                        fakeFS.lastMtime += 1;
+                        return { mtime: new Date(fakeFS.lastMtime) };
                     } else {
                         throw new Error("no such file");
                     }
@@ -447,6 +460,85 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvents[0].data[0], 'info1');
             assert.equal(logEvents[1].data[0], 'info3');
             assert.equal(logEvents[2].data[0], 'debug4');
+        }
+    },
+    
+    'configuration reload with configuration staying the same' : {
+        topic: function() {
+            var pathsChecked = [],
+            fileRead = 0,
+            logEvents = [],
+            logger,
+            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+            mtime = new Date(),
+            fakeFS = {
+                config: { appenders: [ { type: 'console', layout: { type: 'messagePassThrough' } } ],
+                          levels: { 'a-test' : 'INFO' } },
+                readdirSync: function(dir) {
+                    return require('fs').readdirSync(dir);
+                },
+                readFileSync: function (file, encoding) {
+                    fileRead += 1;
+                    assert.isString(file);
+                    assert.equal(file, modulePath);
+                    assert.equal(encoding, 'utf8');
+                    return JSON.stringify(fakeFS.config);
+                },
+                statSync: function (path) {
+                    pathsChecked.push(path);
+                    if (path === modulePath) {
+                        return { mtime: mtime };
+                    } else {
+                        throw new Error("no such file");
+                    }
+                }
+            },
+            fakeConsole = {
+                'name': 'console', 
+                'appender': function () {
+                    return function(evt) { logEvents.push(evt); };
+                }, 
+                'configure': function (config) {
+                    return fakeConsole.appender();
+                }
+            },
+            setIntervalCallback,
+            fakeSetInterval = function(cb, timeout) {
+                setIntervalCallback = cb;
+            },
+            log4js = sandbox.require(
+                '../lib/log4js',
+                {
+                    requires: {
+                        'fs': fakeFS, 
+                        './appenders/console.js': fakeConsole
+                    },
+                    globals: {
+                        'console': fakeConsole,
+                        'setInterval' : fakeSetInterval,
+                    }
+                }
+            );
+
+            log4js.configure(modulePath, { reloadSecs: 3 });
+            logger = log4js.getLogger('a-test');
+            logger.info("info1");
+            logger.debug("debug2 - should be ignored");
+            setIntervalCallback();
+            logger.info("info3");
+            logger.debug("debug4");
+
+            return [ pathsChecked, logEvents, modulePath, fileRead ];
+        },
+        'should only read the configuration file once': function(args) {
+            var fileRead = args[3];
+            assert.equal(fileRead, 1);
+        },
+        'should configure log4js from first log4js.json found': function(args) {
+            var logEvents = args[1];
+            assert.length(logEvents, 2);
+            assert.equal(logEvents[0].data[0], 'info1');
+            assert.equal(logEvents[1].data[0], 'info3'); 
         }
     }
 
