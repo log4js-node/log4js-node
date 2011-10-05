@@ -425,10 +425,10 @@ vows.describe('log4js').addBatch({
                 }
             },
             fakeConsole = {
-                'name': 'console', 
+                'name': 'console',
                 'appender': function () {
                     return function(evt) { logEvents.push(evt); };
-                }, 
+                },
                 'configure': function (config) {
                     return fakeConsole.appender();
                 }
@@ -441,7 +441,7 @@ vows.describe('log4js').addBatch({
                 '../lib/log4js',
                 {
                     requires: {
-                        'fs': fakeFS, 
+                        'fs': fakeFS,
                         './appenders/console.js': fakeConsole
                     },
                     globals: {
@@ -451,7 +451,7 @@ vows.describe('log4js').addBatch({
                 }
             );
 
-            log4js.configure();
+            log4js.configure(undefined, { reloadSecs: 30 });
             logger = log4js.getLogger('a-test');
             logger.info("info1");
             logger.debug("debug2 - should be ignored");
@@ -466,7 +466,7 @@ vows.describe('log4js').addBatch({
             var logEvents = args[1];
             assert.length(logEvents, 3);
             assert.equal(logEvents[0].data[0], 'info1');
-            assert.equal(logEvents[1].data[0], 'info3'); 
+            assert.equal(logEvents[1].data[0], 'info3');
             assert.equal(logEvents[2].data[0], 'debug4');
         }
     },
