@@ -10,6 +10,7 @@ function fancyResultingHookioAppender(opts) {
   };
   fakeLog4Js.loadAppender = function (appender) {
     fakeLog4Js.appenderMakers[appender] = function (config) {
+      result.actualLoggerConfig = config;
       return function log(logEvent) {
         result.logged.push(logEvent);
       }
@@ -71,6 +72,10 @@ vows.describe('log4js hookioAppender').addBatch({
       assert.equal(result.logged[1].level.toString(), 'DEBUG');
       assert.equal(result.logged[1].data, 'OH WOW');
       assert.isTrue(typeof(result.logged[1].startTime) === 'object');
+    },
+
+    'the actual logger should get the right config': function (result) {
+      assert.equal(result.actualLoggerConfig.type, 'file');
     }
   },
   'worker': {
