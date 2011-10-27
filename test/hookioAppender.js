@@ -4,13 +4,18 @@ var sandbox = require('sandboxed-module');
 
 function fancyResultingHookioAppender(opts) {
   var result = { ons: {}, emissions: {}, logged: [] };
+
   var fakeLog4Js = {
-    appenderMakers: { file: function (config) {
+    appenderMakers: {}
+  };
+  fakeLog4Js.loadAppender = function (appender) {
+    fakeLog4Js.appenderMakers[appender] = function (config) {
       return function log(logEvent) {
         result.logged.push(logEvent);
       }
-    }}
+    };
   };
+
   var fakeHookIo = { Hook: function() { } };
   fakeHookIo.Hook.prototype.start = function () {
     result.startCalled = true;
@@ -30,6 +35,7 @@ function fancyResultingHookioAppender(opts) {
       result.ons[on].functionToExec(data);
     }
   };
+
   return { theResult: result,
     theModule: sandbox.require('../lib/appenders/hookio', {
       requires: {
