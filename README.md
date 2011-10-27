@@ -157,6 +157,7 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
       .use(cluster.pidfiles('run/pids'))
       .listen(3000);
 </pre>
+log4js-master/worker.json hookio appender parameters will be passed into the Hook constructor directly, so you can specify hook-port, hook-host etc.
 *NOTE* hook.io appender will currently (and probably indefinitely) explode if you enable hook.io debug because of the way log4js overrides console.log
 
 ## author (of this node version)
