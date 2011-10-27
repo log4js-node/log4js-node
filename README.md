@@ -102,7 +102,7 @@ The options object that is passed to log4js.connectLogger supports a format stri
 
 ## hook.io logger
 
-A [hook.io](https://github.com/hookio) logger has been added to logjs by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
+A [hook.io](https://github.com/hookio) logger has been added to log4js by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
 This was mainly created for [cluster](https://github.com/LearnBoost/cluster), but you can adapt the example to match your needs, you know, if it fits them.
 <pre>
     #### log4js-master.json ####
