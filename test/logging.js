@@ -69,7 +69,7 @@ vows.describe('log4js').addBatch({
           , log4js = sandbox.require(
               '../lib/log4js'
             , { requires:
-                { './appenders/file.js':
+                { './appenders/file':
                   {
                       name: "file"
                     , appender: function() {}
@@ -123,10 +123,10 @@ vows.describe('log4js').addBatch({
                             });
                         },
                         readdirSync: function() {
-                            return ['file.js'];
+                            return ['file'];
                         }
                     }
-                , './appenders/file.js':
+                , './appenders/file':
                     {
                       name: "file"
                     , appender: function() {}
@@ -168,7 +168,7 @@ vows.describe('log4js').addBatch({
               '../lib/log4js'
             , {
                 requires: {
-                    './appenders/console.js': fakeConsoleAppender
+                    './appenders/console': fakeConsoleAppender
                 }
               }
           );
@@ -303,7 +303,7 @@ vows.describe('log4js').addBatch({
                 {
                     requires: {
                         'fs': fakeFS
-                      , './appenders/console.js': fakeConsole
+                      , './appenders/console': fakeConsole
                     }
                 }
             );
@@ -434,7 +434,7 @@ vows.describe('log4js').addBatch({
                 {
                     requires: {
                         'fs': fakeFS,
-                        './appenders/console.js': fakeConsole
+                        './appenders/console': fakeConsole
                     },
                     globals: {
                         'console': fakeConsole,
@@ -462,7 +462,7 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvents[2].data[0], 'debug4');
         }
     },
-    
+
     'configuration reload with configuration staying the same' : {
         topic: function() {
             var pathsChecked = [],
@@ -494,10 +494,10 @@ vows.describe('log4js').addBatch({
                 }
             },
             fakeConsole = {
-                'name': 'console', 
+                'name': 'console',
                 'appender': function () {
                     return function(evt) { logEvents.push(evt); };
-                }, 
+                },
                 'configure': function (config) {
                     return fakeConsole.appender();
                 }
@@ -510,8 +510,8 @@ vows.describe('log4js').addBatch({
                 '../lib/log4js',
                 {
                     requires: {
-                        'fs': fakeFS, 
-                        './appenders/console.js': fakeConsole
+                        'fs': fakeFS,
+                        './appenders/console': fakeConsole
                     },
                     globals: {
                         'console': fakeConsole,
@@ -538,7 +538,7 @@ vows.describe('log4js').addBatch({
             var logEvents = args[1];
             assert.length(logEvents, 2);
             assert.equal(logEvents[0].data[0], 'info1');
-            assert.equal(logEvents[1].data[0], 'info3'); 
+            assert.equal(logEvents[1].data[0], 'info3');
         }
     }
 

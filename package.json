@@ -6,23 +6,26 @@
        "logging",
        "log",
        "log4j",
-       "node" 
+       "node"
    ],
    "main": "./lib/log4js",
    "author": "Gareth Jones <gareth.jones@sensis.com.au>",
    "bugs": {
-       "web": "http://github.com/csausdev/log4js-node/issues" 
+       "web": "http://github.com/csausdev/log4js-node/issues"
    },
    "engines": [ "node >=0.4" ],
    "scripts": {
-       "test": "vows test/*.js" 
+       "test": "vows test/*.js"
    },
    "directories": {
        "test": "test",
        "lib": "lib"
    },
+   "dependencies": {
+   },
    "devDependencies": {
        "vows": ">=0.5.2",
-       "sandboxed-module": ">= 0.1.1"
-   } 
+       "sandboxed-module": ">= 0.1.1",
+       "hook.io": "0.7.7"
+   }
 }
