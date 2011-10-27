@@ -125,6 +125,7 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
         }
       }]
     }
+
     #### log4js-worker.json ####
     {
       "appenders": [{
@@ -138,6 +139,7 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
         }
       }]
     }
+
     #### ilikebeans.js ####
     var cluster = require('cluster');
     var hookCluster = cluster('./doyoulikebeans');
