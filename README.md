@@ -143,7 +143,7 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
     var hookCluster = cluster('./doyoulikebeans');
 
     // Perform the once off configuration depending on type of cluster
-    if (aboutCluster.isMaster) {
+    if (hookCluster.isMaster) {
       require('log4js').configure('log4js-master.json');
     } else {
       require('log4js').configure('log4js-worker.json');
