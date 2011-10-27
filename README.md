@@ -2,9 +2,9 @@
 
 NOTE: v0.3.8 of log4js is the last that will work with node versions older than 0.4. To use v0.3.9 you will need node 0.4 or later.
 
-This is a conversion of the [log4js](http://log4js.berlios.de/index.html) 
+This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions. 
+and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions.
 
 NOTE: in v0.2.x require('log4js') returned a function, and you needed to call that function in your code before you could use it. This was to make testing easier. v0.3.x make use of [felixge's sandbox-module](https://github.com/felixge/node-sandboxed-module), so we don't need to return a function.
 
@@ -14,7 +14,7 @@ npm install log4js
 
 ## tests
 
-Tests now use [vows](http://vowsjs.org), run with `vows test/*.js`. 
+Tests now use [vows](http://vowsjs.org), run with `vows test/*.js`.
 
 ## usage
 
@@ -33,27 +33,27 @@ See example.js:
     var log4js = require('log4js'); //note the need to call the function
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
-    
+
     var logger = log4js.getLogger('cheese');
     logger.setLevel('ERROR');
-    
+
     logger.trace('Entering cheese testing');
     logger.debug('Got cheese.');
-    logger.info('Cheese is Gouda.');  
+    logger.info('Cheese is Gouda.');
     logger.warn('Cheese is quite smelly.');
     logger.error('Cheese is too ripe!');
     logger.fatal('Cheese was breeding ground for listeria.');
-  
+
 Output:
 
     [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
     [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
 
-  
+
 ## configuration
 
-You can either configure the appenders and log levels manually (as above), or provide a 
-configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file). 
+You can either configure the appenders and log levels manually (as above), or provide a
+configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file).
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
 By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels
 to occur without restarting the application.
@@ -75,16 +75,16 @@ You can also pass an object to the configure function, which has the same proper
 
 ## connect/express logger
 
-A connect/express logger has been added to log4js, by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See example-connect-logger.js. 
+A connect/express logger has been added to log4js, by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See example-connect-logger.js.
 
     var log4js = require('./lib/log4js');
     log4js.addAppender(log4js.consoleAppender());
     log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese');
-      
+
     var logger = log4js.getLogger('cheese');
-    
+
     logger.setLevel('INFO');
-    
+
     var app = require('express').createServer();
     app.configure(function() {
         app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
@@ -100,6 +100,62 @@ The options object that is passed to log4js.connectLogger supports a format stri
         app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
     });
 
+## hook.io logger
+
+A [hook.io](https://github.com/hookio) logger has been added to logjs by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
+This was mainly created for [cluster](https://github.com/LearnBoost/cluster), but you can adapt the example to match your needs, you know, if it fits them.
+<pre>
+    #### log4js-master.json ####
+    {
+      "appenders": [{
+        "type": "logLevelFilter",
+        "level": "DEBUG",
+        "appender": {
+          "type": "hookio",
+          "name": "hookio-logger",
+          "mode": "master",
+          "debug": false,
+          "appender": {
+            "type": "file",
+            "filename": "muffin.log",
+            "maxLogSize": 104857600,
+            "backups": 10,
+            "pollInterval": 15
+          }
+        }
+      }]
+    }
+    #### log4js-worker.json ####
+    {
+      "appenders": [{
+        "type": "logLevelFilter",
+        "level": "DEBUG",
+        "appender": {
+          "type": "hookio",
+          "name": "hookio-logger",
+          "mode": "worker",
+          "debug": false
+        }
+      }]
+    }
+    #### ilikebeans.js ####
+    var cluster = require('cluster');
+    var hookCluster = cluster('./doyoulikebeans');
+
+    // Perform the once off configuration depending on type of cluster
+    if (aboutCluster.isMaster) {
+      require('log4js').configure('log4js-master.json');
+    } else {
+      require('log4js').configure('log4js-worker.json');
+    }
+
+    // Standard cluster startup
+    hookCluster
+      .use(cluster.logger('run/logs'))
+      .use(cluster.pidfiles('run/pids'))
+      .listen(3000);
+</pre>
+
 ## author (of this node version)
 
 Gareth Jones (csausdev - gareth.jones@sensis.com.au)
@@ -107,5 +163,5 @@ Gareth Jones (csausdev - gareth.jones@sensis.com.au)
 ## License
 
 The original log4js was distributed under the Apache 2.0 License, and so is this. I've tried to
-keep the original copyright and author credits in place, except in sections that I have rewritten 
+keep the original copyright and author credits in place, except in sections that I have rewritten
 extensively.
