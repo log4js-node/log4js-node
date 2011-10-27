@@ -157,6 +157,7 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
       .use(cluster.pidfiles('run/pids'))
       .listen(3000);
 </pre>
+*NOTE* hook.io appender will currently (and probably indefinitely) explode if you enable hook.io debug because of the way log4js overrides console.log
 
 ## author (of this node version)
 
