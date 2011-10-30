@@ -3,7 +3,7 @@ var assert = require('assert');
 var sandbox = require('sandboxed-module');
 
 function fancyResultingHookioAppender(opts) {
-  var result = { ons: {}, emissions: {}, logged: [] };
+  var result = { ons: {}, emissions: {}, logged: [], configs: [] };
 
   var fakeLog4Js = {
     appenderMakers: {}
@@ -17,7 +17,7 @@ function fancyResultingHookioAppender(opts) {
     };
   };
 
-  var fakeHookIo = { Hook: function() { } };
+  var fakeHookIo = { Hook: function(config) { result.configs.push(config); } };
   fakeHookIo.Hook.prototype.start = function () {
     result.startCalled = true;
   };
@@ -52,7 +52,7 @@ vows.describe('log4js hookioAppender').addBatch({
   'master': {
     topic: function() {
       var fancy = fancyResultingHookioAppender();
-      var logger = fancy.theModule.configure({ name: 'ohno', mode: 'master', appender: { type: 'file' } });
+      var logger = fancy.theModule.configure({ name: 'ohno', mode: 'master', 'hook-port': 5001, appender: { type: 'file' } });
       logger({ level: { levelStr: 'INFO' }, data: "ALRIGHTY THEN", startTime: '2011-10-27T03:53:16.031Z' });
       logger({ level: { levelStr: 'DEBUG' }, data: "OH WOW", startTime: '2011-10-27T04:53:16.031Z'});
       return fancy.theResult;
@@ -60,6 +60,8 @@ vows.describe('log4js hookioAppender').addBatch({
 
     'should write to the actual appender': function (result) {
       assert.isTrue(result.startCalled);
+      assert.equal(result.configs.length, 1);
+      assert.equal(result.configs[0]['hook-port'], 5001);
       assert.equal(result.logged.length, 2);
       assert.equal(result.emissions['ohno::log'].length, 2);
       assert.equal(result.ons['*::ohno::log'].callingCount, 2);
