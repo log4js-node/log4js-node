@@ -160,6 +160,66 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
 log4js-master/worker.json hookio appender parameters will be passed into the Hook constructor directly, so you can specify hook-port, hook-host etc.
 *NOTE* hook.io appender will currently (and probably indefinitely) explode if you enable hook.io debug because of the way log4js overrides console.log
 
+## multiprocess (tcp socket) logger
+
+A multiprocess logger has been added to log4js by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
+This was mainly created for [cluster](https://github.com/LearnBoost/cluster), but you can adapt the example to match your needs, you know, if it fits them.
+<pre>
+    #### log4js-master.json ####
+    # Will listen for connections on port and host
+    {
+      "appenders": [{
+        "type": "logLevelFilter",
+        "level": "DEBUG",
+        "appender": {
+          "type": "multiprocess",
+          "mode": "master",
+          "loggerPort": 5001,
+          "loggerHost": "simonsaysdie",
+          "appender": {
+            "type": "file",
+            "filename": "muffin.log",
+            "maxLogSize": 104857600,
+            "backups": 10,
+            "pollInterval": 15
+          }
+        }
+      }]
+    }
+
+    #### log4js-worker.json ####
+    # Will connect to master (tcp server) and send stringified log events
+    {
+      "appenders": [{
+        "type": "logLevelFilter",
+        "level": "DEBUG",
+        "appender": {
+          "type": "multiprocess",
+          "mode": "worker",
+          "loggerPort": 5001,
+          "loggerHost": "simonsaysdie"
+        }
+      }]
+    }
+
+    #### ilikebeans.js ####
+    var cluster = require('cluster');
+    var immaCluster = cluster('./doyoulikebeans');
+
+    // Perform the once off configuration depending on type of cluster
+    if (immaCluster.isMaster) {
+      require('log4js').configure('log4js-master.json');
+    } else {
+      require('log4js').configure('log4js-worker.json');
+    }
+
+    // Standard cluster startup
+    immaCluster
+      .use(cluster.logger('run/logs'))
+      .use(cluster.pidfiles('run/pids'))
+      .listen(3000);
+</pre>
+
 ## author (of this node version)
 
 Gareth Jones (csausdev - gareth.jones@sensis.com.au)

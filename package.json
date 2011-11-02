@@ -26,6 +26,7 @@
    "devDependencies": {
        "vows": ">=0.5.2",
        "sandboxed-module": ">= 0.1.1",
-       "hook.io": "0.7.7"
+       "hook.io": "0.7.7",
+       "underscore": "1.2.1"
    }
 }
