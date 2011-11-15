@@ -24,7 +24,7 @@ vows.describe('log4js logLevelFilter').addBatch({
             return logEvents;
         },
         'should only pass log events greater than or equal to its own level' : function(logEvents) {
-            assert.length(logEvents, 2);
+            assert.equal(logEvents.length, 2);
             assert.equal(logEvents[0].data[0], 'this should, though');
             assert.equal(logEvents[1].data[0], 'so should this');
         }

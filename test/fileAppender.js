@@ -63,7 +63,7 @@ vows.describe('log4js fileAppender').addBatch({
             'starting with the test file name should be two': function(err, files) {
                 //there will always be one backup if you've specified a max log size
                 var logFiles = files.filter(function(file) { return file.indexOf('fa-maxFileSize-test.log') > -1; });
-                assert.length(logFiles, 2);
+                assert.equal(logFiles.length, 2);
             }
         }
     },
@@ -97,7 +97,7 @@ vows.describe('log4js fileAppender').addBatch({
                 return logFiles;
             },
             'should be 3': function (files) {
-                assert.length(files, 3);
+                assert.equal(files.length, 3);
             },
             'should be named in sequence': function (files) {
                 assert.deepEqual(files, ['fa-maxFileSize-with-backups-test.log', 'fa-maxFileSize-with-backups-test.log.1', 'fa-maxFileSize-with-backups-test.log.2']);

@@ -42,7 +42,7 @@ vows.describe('log4js').addBatch({
             },
 
             'should not emit events of a lower level': function(events) {
-                assert.length(events, 4);
+                assert.equal(events.length, 4);
                 assert.equal(events[1].level.toString(), 'WARN');
             },
 
@@ -456,7 +456,7 @@ vows.describe('log4js').addBatch({
         },
         'should configure log4js from first log4js.json found': function(args) {
             var logEvents = args[1];
-            assert.length(logEvents, 3);
+            assert.equal(logEvents.length, 3);
             assert.equal(logEvents[0].data[0], 'info1');
             assert.equal(logEvents[1].data[0], 'info3');
             assert.equal(logEvents[2].data[0], 'debug4');
@@ -536,7 +536,7 @@ vows.describe('log4js').addBatch({
         },
         'should configure log4js from first log4js.json found': function(args) {
             var logEvents = args[1];
-            assert.length(logEvents, 2);
+            assert.equal(logEvents.length, 2);
             assert.equal(logEvents[0].data[0], 'info1');
             assert.equal(logEvents[1].data[0], 'info3');
         }

@@ -106,7 +106,7 @@ vows.describe('log4js layouts').addBatch({
             output = layout(event);
             lines = output.split(/\n/);
 
-            assert.length(lines, stack.length);
+            assert.equal(lines.length, stack.length);
             assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error");
             for (var i = 1; i < stack.length; i++) {
                 assert.equal(lines[i+1], stack[i+1]);

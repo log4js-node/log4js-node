@@ -76,7 +76,7 @@ vows.describe('log4js connect logger').addBatch({
 
 	    'check message': function(messages) {
 		assert.isArray(messages);
-		assert.length(messages, 1);
+		assert.equal(messages.length, 1);
 		assert.equal(messages[0].level, levels.INFO);
 		assert.include(messages[0].message, 'GET');
 		assert.include(messages[0].message, 'http://url');
@@ -117,7 +117,7 @@ vows.describe('log4js connect logger').addBatch({
 
 	    'check message': function(messages) {
 		assert.isArray(messages);
-		assert.length(messages, 1);
+		assert.equal(messages.length, 1);
 		assert.equal(messages[0].level, levels.INFO);
 		assert.equal(messages[0].message, 'GET http://url');
 	    }
