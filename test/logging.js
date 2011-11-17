@@ -2,6 +2,34 @@ var vows = require('vows')
 , assert = require('assert')
 , sandbox = require('sandboxed-module');
 
+function setupConsoleTest() {
+    var fakeConsole = {}
+  , logEvents = []
+  , log4js;
+
+    ['trace','debug','log','info','warn','error'].forEach(function(fn) {
+        fakeConsole[fn] = function() {
+            throw new Error("this should not be called.");
+        };
+    });
+
+    log4js = sandbox.require(
+        '../lib/log4js'
+      , {
+          globals: {
+              console: fakeConsole
+          }
+      }
+    );
+
+    log4js.clearAppenders();
+    log4js.addAppender(function(evt) {
+        logEvents.push(evt);
+    });
+
+    return { log4js: log4js, logEvents: logEvents, fakeConsole: fakeConsole };
+}
+
 vows.describe('log4js').addBatch({
     'getLogger': {
         topic: function() {
@@ -268,7 +296,6 @@ vows.describe('log4js').addBatch({
     'default setup': {
         topic: function() {
             var pathLoaded,
-            appenderEvent,
             logger,
             modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
             mtime = Date.now(),
@@ -289,14 +316,18 @@ vows.describe('log4js').addBatch({
                     }
                 }
             },
+            appenderEvents = [],
             fakeConsole = {
                 'name': 'console'
               , 'appender': function () {
-                    return function(evt) { appenderEvent = evt; }
+                    return function(evt) { appenderEvents.push(evt); }
                 }
               , 'configure': function (config) {
                     return fakeConsole.appender();
                 }
+            },
+            globalConsole = {
+                log: function() { throw new Error("I should not be called."); }
             },
             log4js = sandbox.require(
                 '../lib/log4js',
@@ -304,13 +335,17 @@ vows.describe('log4js').addBatch({
                     requires: {
                         'fs': fakeFS
                       , './appenders/console': fakeConsole
+                    },
+                    globals: {
+                        console: globalConsole
                     }
                 }
             );
 
             logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
-            return [ pathLoaded, appenderEvent, modulePath ];
+            globalConsole.log("this should be logged");
+            return [ pathLoaded, appenderEvents, modulePath ];
         },
 
         'should use require.resolve to find log4js.json': function(args) {
@@ -319,61 +354,82 @@ vows.describe('log4js').addBatch({
         },
 
         'should configure log4js from first log4js.json found': function(args) {
-            var appenderEvent = args[1];
-            assert.equal(appenderEvent.data[0], 'this is a test');
+            var appenderEvents = args[1];
+            assert.equal(appenderEvents[0].data[0], 'this is a test');
+        },
+
+        'should replace console.log with log4js version': function(args) {
+            var appenderEvents = args[1];
+            assert.equal(appenderEvents[1].data[0], 'this should be logged');
         }
     },
 
     'console' : {
-        topic: function() {
-            var fakeConsole = {}
-          , logEvents = []
-          , log4js;
+        topic: setupConsoleTest,
 
-            ['trace','debug','log','info','warn','error'].forEach(function(fn) {
-                fakeConsole[fn] = function() {
-                    throw new Error("this should not be called.");
-                };
-            });
+        'when replaceConsole called': {
+            topic: function(test) {
+                test.log4js.replaceConsole();
 
-            log4js = sandbox.require(
-                '../lib/log4js'
-              , {
-                  globals: {
-                      console: fakeConsole
-                  }
-              }
-            );
+                test.fakeConsole.log("Some debug message someone put in a module");
+                test.fakeConsole.debug("Some debug");
+                test.fakeConsole.error("An error");
+                test.fakeConsole.info("some info");
+                test.fakeConsole.warn("a warning");
 
-            log4js.clearAppenders();
-            log4js.addAppender(function(evt) {
-                logEvents.push(evt);
-            });
+                test.fakeConsole.log("cheese (%s) and biscuits (%s)", "gouda", "garibaldis");
+                test.fakeConsole.log({ lumpy: "tapioca" });
+                test.fakeConsole.log("count %d", 123);
+                test.fakeConsole.log("stringify %j", { lumpy: "tapioca" });
 
-            fakeConsole.log("Some debug message someone put in a module");
-            fakeConsole.debug("Some debug");
-            fakeConsole.error("An error");
-            fakeConsole.info("some info");
-            fakeConsole.warn("a warning");
+                return test.logEvents;
+            },
 
-            fakeConsole.log("cheese (%s) and biscuits (%s)", "gouda", "garibaldis");
-            fakeConsole.log({ lumpy: "tapioca" });
-            fakeConsole.log("count %d", 123);
-            fakeConsole.log("stringify %j", { lumpy: "tapioca" });
-
-            return logEvents;
+            'should replace console.log methods with log4js ones': function(logEvents) {
+                assert.equal(logEvents.length, 9);
+                assert.equal(logEvents[0].data[0], "Some debug message someone put in a module");
+                assert.equal(logEvents[0].level.toString(), "INFO");
+                assert.equal(logEvents[1].data[0], "Some debug");
+                assert.equal(logEvents[1].level.toString(), "DEBUG");
+                assert.equal(logEvents[2].data[0], "An error");
+                assert.equal(logEvents[2].level.toString(), "ERROR");
+                assert.equal(logEvents[3].data[0], "some info");
+                assert.equal(logEvents[3].level.toString(), "INFO");
+                assert.equal(logEvents[4].data[0], "a warning");
+                assert.equal(logEvents[4].level.toString(), "WARN");
+                assert.equal(logEvents[5].data[0], "cheese (%s) and biscuits (%s)");
+                assert.equal(logEvents[5].data[1], "gouda");
+                assert.equal(logEvents[5].data[2], "garibaldis");
+            }
         },
-        'should replace console.log methods with log4js ones': function(logEvents) {
-            assert.equal(logEvents[0].data[0], "Some debug message someone put in a module");
-            assert.equal(logEvents[0].level.toString(), "INFO");
-            assert.equal(logEvents[1].data[0], "Some debug");
-            assert.equal(logEvents[1].level.toString(), "DEBUG");
-            assert.equal(logEvents[2].data[0], "An error");
-            assert.equal(logEvents[2].level.toString(), "ERROR");
-            assert.equal(logEvents[3].data[0], "some info");
-            assert.equal(logEvents[3].level.toString(), "INFO");
-            assert.equal(logEvents[4].data[0], "a warning");
-            assert.equal(logEvents[4].level.toString(), "WARN");
+        'when turned off': {
+            topic: function(test) {
+                test.log4js.restoreConsole();
+                try {
+                    test.fakeConsole.log("This should cause the error described in the setup");
+                } catch (e) {
+                    return e;
+                }
+            },
+            'should call the original console methods': function (err) {
+                assert.instanceOf(err, Error);
+                assert.equal(err.message, "this should not be called.");
+            }
+        },
+        'configuration': {
+            topic: function(test) {
+                test.log4js.replaceConsole();
+                test.log4js.configure({ doNotReplaceConsole: true });
+                try {
+                    test.fakeConsole.log("This should cause the error described in the setup");
+                } catch (e) {
+                    return e;
+                }
+            },
+            'should allow for turning off console replacement': function (err) {
+                assert.instanceOf(err, Error);
+                assert.equal(err.message, 'this should not be called.');
+            }
         }
     },
     'configuration persistence' : {
