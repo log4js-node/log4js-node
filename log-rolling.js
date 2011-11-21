@@ -4,16 +4,15 @@ var log4js = require('./lib/log4js')
 log4js.configure({
   "appenders": [
       {
+          type: "console"
+        , category: "console"
+      },
+      {
           "type": "file",
           "filename": "tmp-test.log",
           "maxLogSize": 1024,
           "backups": 3,
-          "pollInterval": 0.1,
           "category": "test"
-      },
-      {
-          type: "console"
-        , category: "console"
       }
   ]
 });
@@ -23,6 +22,6 @@ function doTheLogging(x) {
     log.info("Logging something %d", x);
 }
 
-for ( ; i < 100000; i++) {
+for ( ; i < 5000; i++) {
     doTheLogging(i);
 }

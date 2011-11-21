@@ -40,17 +40,15 @@ vows.describe('log4js fileAppender').addBatch({
           , that = this;
             remove(testFile);
             remove(testFile + '.1');
-            //log file of 100 bytes maximum, no backups, check every 10ms for changes
-            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 100, 0, 0.01), 'max-file-size');
+            //log file of 100 bytes maximum, no backups
+            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 100, 0), 'max-file-size');
             logger.info("This is the first log message.");
             logger.info("This is an intermediate log message.");
-            //we have to wait before writing the second one, because node is too fast for the file system.
-            setTimeout(function() {
-                logger.info("This is the second log message.");
-            }, 200);
+            logger.info("This is the second log message.");
+            //wait for the file system to catch up
             setTimeout(function() {
                 fs.readFile(testFile, "utf8", that.callback);
-            }, 400);
+            }, 100);
         },
         'log file should only contain the second message': function(err, fileContents) {
             assert.include(fileContents, "This is the second log message.\n");
@@ -75,21 +73,17 @@ vows.describe('log4js fileAppender').addBatch({
             remove(testFile+'.1');
             remove(testFile+'.2');
 
-            //log file of 50 bytes maximum, 2 backups, check every 10ms for changes
-            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 50, 2, 0.01), 'max-file-size-backups');
+            //log file of 50 bytes maximum, 2 backups
+            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 50, 2), 'max-file-size-backups');
             logger.info("This is the first log message.");
-            //we have to wait before writing the second one, because node is too fast for the file system.
+            logger.info("This is the second log message.");
+            logger.info("This is the third log message.");
+            logger.info("This is the fourth log message.");
             var that = this;
+            //give the system a chance to open the stream
             setTimeout(function() {
-                logger.info("This is the second log message.");
-            }, 200);
-            setTimeout(function() {
-                logger.info("This is the third log message.");
-            }, 400);
-            setTimeout(function() {
-                logger.info("This is the fourth log message.");
                 fs.readdir(__dirname, that.callback);
-            }, 600);
+            }, 100);
         },
         'the log files': {
             topic: function(files) {
@@ -146,42 +140,7 @@ vows.describe('log4js fileAppender').addBatch({
 	    'should load appender configuration from a json file': function(err, contents) {
 	        assert.include(contents, 'this should be written to the file\n');
                 assert.equal(contents.indexOf('this should not be written to the file'), -1);
-	    },
-            'and log rolling': {
-                topic: function() {
-                    var sandbox = require('sandboxed-module')
-                  , that = this
-                  , fileAppender = sandbox.require(
-                      '../lib/appenders/file.js'
-                    , { requires:
-                        { 'fs':
-                          {
-                              watchFile: function(filename, options, cb) {
-                                  that.callback(null, filename);
-                              }
-                            , createWriteStream: function() {
-                                  return {
-                                      on: function() {}
-                                    , end: function() {}
-                                    , destroy: function() {}
-                                  };
-                              }
-                          }
-                        }
-                      }
-                    );
-
-                    fileAppender.configure({
-                        filename: "cheese.log"
-                      , maxLogSize: 100
-                      , backups: 5
-                      , pollInterval: 30
-                    });
-                },
-                'should watch the log file': function(watchedFile) {
-                    assert.equal(watchedFile, 'cheese.log');
-                }
-            }
+	    }
         }
     }
 
