@@ -44,8 +44,8 @@ vows.describe('log4js logLevelFilter').addBatch({
 	    logger.error('both');
 	    logger.warn('both');
 	    logger.debug('main');
-
-	    return logger;
+            //wait for the file system to catch up
+            setTimeout(this.callback, 100);
         },
 	'tmp-tests.log': {
 	    topic: function() {

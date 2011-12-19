@@ -90,28 +90,36 @@ vows.describe('RollingFileStream').addBatch({
             remove(__dirname + "/test-rolling-file-stream-write-more");
             remove(__dirname + "/test-rolling-file-stream-write-more.1");
             var that = this, stream = new RollingFileStream(__dirname + "/test-rolling-file-stream-write-more", 45);
-            stream.on("open", function() { that.callback(null, stream); });
-        },
-        '(when open)': {
-            topic: function(stream) {
-                var that = this;
+            stream.on("open", function() {
                 for (var i=0; i < 7; i++) {
                     stream.write(i +".cheese\n", "utf8");
                 }
-                stream.end(function (err) {
-                    fs.readFile(__dirname + "/test-rolling-file-stream-write-more", "utf8", that.callback);
-                });
+                //wait for the file system to catch up with us
+                setTimeout(that.callback, 100);
+            });
+        },
+        'the number of files': {
+            topic: function() {
+                fs.readdir(__dirname, this.callback);
             },
-            'should write to the file': function(contents) {
-                assert.equal(contents, "5.cheese\n6.cheese\n");
+            'should be two': function(files) {
+                assert.equal(files.filter(function(file) { return file.indexOf('test-rolling-file-stream-write-more') > -1; }).length, 2);
+            }
+        },
+        'the first file': {
+            topic: function() {
+                fs.readFile(__dirname + "/test-rolling-file-stream-write-more", "utf8", this.callback);
             },
-            'the number of files': {
-                topic: function() {
-                    fs.readdir(__dirname, this.callback);
-                },
-                'should be two': function(files) {
-                    assert.equal(files.filter(function(file) { return file.indexOf('test-rolling-file-stream-write-more') > -1; }).length, 2);
-                }
+            'should contain the last two log messages': function(contents) {
+                assert.equal(contents, '5.cheese\n6.cheese\n');
+            }
+        },
+        'the second file': {
+            topic: function() {
+                fs.readFile(__dirname + '/test-rolling-file-stream-write-more.1', "utf8", this.callback);
+            },
+            'should contain the first five log messages': function(contents) {
+                assert.equal(contents, '0.cheese\n1.cheese\n2.cheese\n3.cheese\n4.cheese\n');
             }
         }
     }
