@@ -17,14 +17,16 @@ vows.describe('log4js fileAppender').addBatch({
 
     'with default fileAppender settings': {
         topic: function() {
-            var testFile = __dirname + '/fa-default-test.log'
+            var that = this, testFile = __dirname + '/fa-default-test.log'
           , logger = log4js.getLogger('default-settings');
             remove(testFile);
             log4js.addAppender(log4js.fileAppender(testFile), 'default-settings');
 
             logger.info("This should be in the file.");
 
-            fs.readFile(testFile, "utf8", this.callback);
+            setTimeout(function() {
+                fs.readFile(testFile, "utf8", that.callback);
+            }, 100);
         },
         'should write log messages to the file': function(err, fileContents) {
             assert.include(fileContents, "This should be in the file.\n");
@@ -94,7 +96,7 @@ vows.describe('log4js fileAppender').addBatch({
                 assert.equal(files.length, 3);
             },
             'should be named in sequence': function (files) {
-                assert.deepEqual(files, ['fa-maxFileSize-with-backups-test.log', 'fa-maxFileSize-with-backups-test.log.1', 'fa-maxFileSize-with-backups-test.log.2']);
+                assert.deepEqual(files.sort(), ['fa-maxFileSize-with-backups-test.log', 'fa-maxFileSize-with-backups-test.log.1', 'fa-maxFileSize-with-backups-test.log.2']);
             },
             'and the contents of the first file': {
                 topic: function(logFiles) {
