@@ -225,17 +225,17 @@ This was mainly created for [cluster](https://github.com/LearnBoost/cluster), bu
 A gelf logger has been added to log4js, by [arifamirani](https://github.com/arifamirani). This allows log4js to log to [GELF](http://www.graylog2.org/about/gelf) compatible servers such as [Graylog](http://www.graylog2.org/). This is currently configuration based and needs the following configuration to be added to log4j.json. For example:
 
 <pre>
-    {
-        "appenders": [  
-            {
-                "type": "gelf",
-                "host": "logs.mydomain.com", //defaults to localhost
-                "hostname":"mrs-dev", //defaults to the value returned by os.hostname()
-                "port": "12201", //defaults to 12201
-                "facility": "myapp" //defaults to nodejs-server
-            }
-        }
+  {
+    "appenders": [  
+      {
+        "type": "gelf",
+        "host": "logs.mydomain.com", //defaults to localhost
+        "hostname":"mrs-dev", //defaults to the value returned by os.hostname()
+        "port": "12201", //defaults to 12201
+        "facility": "myapp" //defaults to nodejs-server
+      }
     }
+  }
 </pre>
 
 ## author (of this node version)
