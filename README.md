@@ -73,6 +73,35 @@ To specify a different period:
 
 You can also pass an object to the configure function, which has the same properties as the json versions.
 
+For FileAppender you can also pass the path to the log directory as an option where all your log files would be stored.
+
+    log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
+
+If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
+
+    #### my_log4js_configuration.json ####
+    {
+      "appenders": [
+        {
+          "type": "file",
+          "filename": "relative/path/to/log_file.log",
+          "maxLogSize": 20480,
+          "backups": 3,
+          "pollInterval": 15,
+          "category": "relative-logger"
+        },
+        {
+          "type": "file",
+          "absolute": true,
+          "filename": "/absolute/path/to/log_file.log",
+          "maxLogSize": 20480,
+          "backups": 10,
+          "pollInterval": 15,
+          "category": "absolute-logger"          
+        }
+      ]
+    }
+
 ## connect/express logger
 
 A connect/express logger has been added to log4js, by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See example-connect-logger.js.
