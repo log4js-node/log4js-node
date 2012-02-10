@@ -1,30 +1,57 @@
 var vows = require('vows')
-, log4js = require('../lib/log4js')
 , assert = require('assert')
-, dgram = require("dgram");
+, sandbox = require('sandboxed-module')
+, fakeDgram = {
+    socket: {
+        packetLength: 0,
+        close: function() {
+        },
+        send: function(pkt, offset, pktLength, port, host) {
+            this.packet = pkt;
+            this.offset = offset;
+            this.packetLength = pktLength;
+            this.port = port;
+            this.host = host;
+        }
+    },
+    createSocket: function(type) {
+        this.type = type;
+        return this.socket;
+    }
+}
+, fakeCompressBuffer = {
+    compress: function(objectToCompress) {
+        this.uncompressed = objectToCompress;
+        return "I've been compressed";
+    }
+}
+, appender = sandbox.require('../lib/appenders/gelf', {
+    requires: {
+        dgram: fakeDgram,
+        "compress-buffer": fakeCompressBuffer
+    }
+})
+, log4js = require('../lib/log4js');
 
-var fakeClient = {
-  packetLength: 0,
-  close: function() {
-  },
-  send: function(pkt, offset, pktLength, port, host) {
-    this.packetLength = pktLength;
-  } 
-};
-
-log4js.configure({ "appenders": [{"type": "gelf", "client": fakeClient}] }, undefined);
+log4js.clearAppenders();
+log4js.addAppender(appender.configure({}), "gelf-test");
 
 vows.describe('log4js gelfAppender').addBatch({
 
     'with default gelfAppender settings': {
         topic: function() {
-            var logger = log4js.getLogger();
-            var self = this;
-            logger.info('Fake log message');
-            callback();
+            log4js.getLogger("gelf-test").info("This is a test");
+            return fakeDgram;
         },
-        'should receive log messages at the local gelf server': function(err, packet) {
-            assert.ok(fakeClient.packetLength > 0, "Recevied blank message");
+        'should send log messages via udp to the localhost gelf server': function(dgram) {
+            assert.equal(dgram.type, "udp4");
+            assert.equal(dgram.socket.host, "localhost");
+            assert.equal(dgram.socket.port, 12201);
+            assert.equal(dgram.socket.offset, 0);
+            assert.ok(dgram.socket.packetLength > 0, "Received blank message");
+        },
+        'should compress the log message': function(dgram) {
+            assert.equal(dgram.socket.packet, "I've been compressed");
         }
     }
 }).export(module);
