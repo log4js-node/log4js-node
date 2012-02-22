@@ -1,6 +1,6 @@
 {
    "name": "log4js",
-   "version": "0.4.1",
+   "version": "0.4.2",
    "description": "Port of Log4js to work with node.",
    "keywords": [
        "logging",
@@ -10,8 +10,12 @@
    ],
    "main": "./lib/log4js",
    "author": "Gareth Jones <gareth.jones@sensis.com.au>",
+   "repository": {
+       "type": "git",
+       "url": "https://github.com/nomiddlename/log4js-node.git"
+   },
    "bugs": {
-       "url": "http://github.com/csausdev/log4js-node/issues"
+       "url": "http://github.com/nomiddlename/log4js-node/issues"
    },
    "engines": [ "node >=0.4" ],
    "scripts": {

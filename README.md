@@ -1,4 +1,4 @@
-# log4js-node
+# log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
 
 NOTE: v0.3.8 of log4js is the last that will work with node versions older than 0.4. To use v0.3.9 you will need node 0.4 or later.
 
