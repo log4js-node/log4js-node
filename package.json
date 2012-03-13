@@ -26,7 +26,7 @@
        "lib": "lib"
    },
    "dependencies": {
-       "async": "0.1.15",
+       "async": "0.1.15"
    },
    "devDependencies": {
        "vows": ">=0.5.2",
