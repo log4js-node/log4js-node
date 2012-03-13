@@ -27,7 +27,6 @@
    },
    "dependencies": {
        "async": "0.1.15",
-       "compress-buffer": ">= 0.5.0"
    },
    "devDependencies": {
        "vows": ">=0.5.2",
