@@ -88,7 +88,7 @@ vows.describe('log4js fileAppender').addBatch({
             //give the system a chance to open the stream
             setTimeout(function() {
                 fs.readdir(__dirname, that.callback);
-            }, 100);
+            }, 200);
         },
         'the log files': {
             topic: function(files) {
