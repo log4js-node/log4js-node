@@ -1,5 +1,6 @@
 var vows = require('vows')
 , fs = require('fs')
+, path = require('path')
 , log4js = require('../lib/log4js')
 , assert = require('assert');
 
@@ -17,7 +18,8 @@ vows.describe('log4js fileAppender').addBatch({
 
     'with default fileAppender settings': {
         topic: function() {
-            var that = this, testFile = __dirname + '/fa-default-test.log'
+            var that = this
+          , testFile = path.join(__dirname, '/fa-default-test.log')
           , logger = log4js.getLogger('default-settings');
             remove(testFile);
             log4js.clearAppenders();
@@ -38,7 +40,7 @@ vows.describe('log4js fileAppender').addBatch({
     },
     'with a max file size and no backups': {
         topic: function() {
-            var testFile = __dirname + '/fa-maxFileSize-test.log'
+            var testFile = path.join(__dirname, '/fa-maxFileSize-test.log')
           , logger = log4js.getLogger('max-file-size')
           , that = this;
             remove(testFile);
@@ -71,7 +73,7 @@ vows.describe('log4js fileAppender').addBatch({
     },
     'with a max file size and 2 backups': {
         topic: function() {
-            var testFile = __dirname + '/fa-maxFileSize-with-backups-test.log'
+            var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-test.log')
           , logger = log4js.getLogger('max-file-size-backups');
             remove(testFile);
             remove(testFile+'.1');
@@ -103,26 +105,26 @@ vows.describe('log4js fileAppender').addBatch({
             },
             'and the contents of the first file': {
                 topic: function(logFiles) {
-                    fs.readFile(logFiles[0], "utf8", this.callback);
+                    fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
                 },
-                'should be the last log message': function(err, contents) {
-                    assert.include(contents, 'This is the fourth log message.');
+                'should be empty because the last log message triggers rolling': function(contents) {
+                    assert.isEmpty(contents);
                 }
             },
             'and the contents of the second file': {
                 topic: function(logFiles) {
-                    fs.readFile(logFiles[1], "utf8", this.callback);
+                    fs.readFile(path.join(__dirname, logFiles[1]), "utf8", this.callback);
                 },
-                'should be the third log message': function(err, contents) {
-                    assert.include(contents, 'This is the third log message.');
+                'should be the last log message': function(contents) {
+                    assert.include(contents, 'This is the fourth log message.');
                 }
             },
             'and the contents of the third file': {
                 topic: function(logFiles) {
-                    fs.readFile(logFiles[2], "utf8", this.callback);
+                    fs.readFile(path.join(__dirname, logFiles[2]), "utf8", this.callback);
                 },
-                'should be the second log message': function(err, contents) {
-                    assert.include(contents, 'This is the second log message.');
+                'should be the third log message': function(contents) {
+                    assert.include(contents, 'This is the third log message.');
                 }
             }
         }
