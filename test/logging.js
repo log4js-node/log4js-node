@@ -1,6 +1,7 @@
 var vows = require('vows')
 , assert = require('assert')
-, sandbox = require('sandboxed-module');
+, sandbox = require('sandboxed-module')
+, _ = require('underscore');
 
 function setupConsoleTest() {
     var fakeConsole = {}
@@ -208,6 +209,18 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'with no file appenders defined' : {
+        topic: function() {
+            var logger
+          , that = this
+          , log4js = sandbox.require('../lib/log4js');
+            logger = log4js.getLogger("some-logger");
+            logger.flush(this.callback);
+        },
+        'should invoke callback': function() {
+        }
+    },
+
     'addAppender' : {
         topic: function() {
             var log4js = require('../lib/log4js');
@@ -290,7 +303,29 @@ vows.describe('log4js').addBatch({
                 log4js.getLogger("something else").debug("pants");
                 assert.isUndefined(appenderEvent);
             }
+        },
+
+        'with flush supported and invoke flush': {
+            topic: function(log4js) {
+                var called = 0
+                var appender = {
+                    "log": function(evt) { }, 
+                    "flush": function(cb) { called++; cb(); }
+                }
+
+                logger = log4js.getLogger("test");
+                log4js.addAppender(appender);
+                log4js.addAppender(_.clone(appender));
+                var that = this;
+                logger.flush(function() {
+                  that.callback(null,called);
+                });
+            },
+            'should invoke flush in appender': function(called) {
+                assert.equal(called, 2);
+            }
         }
+
     },
 
     'default setup': {
