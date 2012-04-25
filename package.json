@@ -1,38 +1,41 @@
 {
-   "name": "log4js",
-   "version": "0.4.3",
-   "description": "Port of Log4js to work with node.",
-   "keywords": [
-       "logging",
-       "log",
-       "log4j",
-       "node"
-   ],
-   "main": "./lib/log4js",
-   "author": "Gareth Jones <gareth.jones@sensis.com.au>",
-   "repository": {
-       "type": "git",
-       "url": "https://github.com/nomiddlename/log4js-node.git"
-   },
-   "bugs": {
-       "url": "http://github.com/nomiddlename/log4js-node/issues"
-   },
-   "engines": [ "node >=0.4" ],
-   "scripts": {
-       "test": "vows test/*.js"
-   },
-   "directories": {
-       "test": "test",
-       "lib": "lib"
-   },
-   "dependencies": {
-       "async": "0.1.15",
-       "compress-buffer": "0.5.1"
-   },
-   "devDependencies": {
-       "vows": "0.6.2",
-       "sandboxed-module": "0.1.3",
-       "hook.io": "0.7.7",
-       "underscore": "1.2.1"
-   }
+  "name": "log4js",
+  "version": "0.4.5",
+  "description": "Port of Log4js to work with node.",
+  "keywords": [
+    "logging",
+    "log",
+    "log4j",
+    "node"
+  ],
+  "main": "./lib/log4js",
+  "author": "Gareth Jones <gareth.jones@sensis.com.au>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nomiddlename/log4js-node.git"
+  },
+  "bugs": {
+    "url": "http://github.com/nomiddlename/log4js-node/issues"
+  },
+  "engines": [
+    "node >=0.4"
+  ],
+  "scripts": {
+    "test": "vows test/*.js"
+  },
+  "directories": {
+    "test": "test",
+    "lib": "lib"
+  },
+  "dependencies": {
+    "async": "0.1.15",
+    "compress-buffer": "0.5.1"
+  },
+  "devDependencies": {
+    "vows": "0.6.2",
+    "sandboxed-module": "0.1.3",
+    "hook.io": "0.7.7",
+    "underscore": "1.2.1"
+  },
+  "optionalDependencies": {}
 }
