@@ -1,26 +1,20 @@
 var vows = require('vows')
 , assert = require('assert')
 , events = require('events')
+, util = require('util')
 , BufferedWriteStream = require('../lib/streams').BufferedWriteStream;
 
 function FakeStream() {
+    events.EventEmitter.call(this);
     this.writes = [];
     this.canWrite = false;
-    this.callbacks = {};
 }
-
-FakeStream.prototype.on = function(event, callback) {
-    this.callbacks[event] = callback;
-}
+util.inherits(FakeStream, events.EventEmitter);
 
 FakeStream.prototype.write = function(data, encoding) {
     assert.equal("utf8", encoding);
     this.writes.push(data);
     return this.canWrite;
-}
-
-FakeStream.prototype.emit = function(event, payload) {
-    this.callbacks[event](payload);
 }
 
 FakeStream.prototype.block = function() {
@@ -108,11 +102,17 @@ vows.describe('BufferedWriteStream').addBatch({
             stream.write("first write to notice stream is blocked", "utf8");
             stream.write("data while blocked", "utf8");
             stream.end();
-            return fakeStream.writes;
+            return fakeStream;
         },
-        'should send any buffered writes to the stream': function (writes) {
-            assert.equal(writes.length, 2);
-            assert.equal(writes[1], "data while blocked");
+        'when stream emit drain after end()': {
+            topic: function(stream) {
+                stream.emit('drain');
+                return stream.writes;
+            },
+            'should send any buffered writes to the stream': function (writes) {
+                assert.equal(writes.length, 2);
+                assert.equal(writes[1], "data while blocked");
+            }
         }
     },
     'when stream errors': {

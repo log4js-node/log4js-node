@@ -1,6 +1,7 @@
 var vows = require('vows')
 , assert = require('assert')
-, sandbox = require('sandboxed-module');
+, sandbox = require('sandboxed-module')
+, _ = require('underscore');
 
 function setupConsoleTest() {
     var fakeConsole = {}
@@ -43,6 +44,7 @@ vows.describe('log4js').addBatch({
         'should take a category and return a logger': function(logger) {
             assert.equal(logger.category, 'tests');
             assert.equal(logger.level.toString(), "DEBUG");
+            assert.equal(logger.getParent().category, '[default]');
             assert.isFunction(logger.debug);
             assert.isFunction(logger.info);
             assert.isFunction(logger.warn);
@@ -52,8 +54,9 @@ vows.describe('log4js').addBatch({
 
         'log events' : {
             topic: function(logger) {
-                var events = [];
-                logger.addListener("log", function (logEvent) { events.push(logEvent); });
+                var events = [[],[]];
+                logger.addListener("log", function (logEvent) { events[0].push(logEvent); });
+                logger.getParent().addListener("log", function (logEvent) { events[1].push(logEvent); });
                 logger.debug("Debug event");
                 logger.trace("Trace event 1");
                 logger.trace("Trace event 2");
@@ -64,19 +67,25 @@ vows.describe('log4js').addBatch({
             },
 
             'should emit log events': function(events) {
-                assert.equal(events[0].level.toString(), 'DEBUG');
-                assert.equal(events[0].data[0], 'Debug event');
-                assert.instanceOf(events[0].startTime, Date);
+                events.forEach(function(events){
+                    assert.equal(events[0].level.toString(), 'DEBUG');
+                    assert.equal(events[0].data[0], 'Debug event');
+                    assert.instanceOf(events[0].startTime, Date);
+                });
             },
 
             'should not emit events of a lower level': function(events) {
-                assert.equal(events.length, 4);
-                assert.equal(events[1].level.toString(), 'WARN');
+                events.forEach(function(events){
+                  assert.equal(events.length, 4);
+                  assert.equal(events[1].level.toString(), 'WARN');
+                });
             },
 
             'should include the error if passed in': function (events) {
-                assert.instanceOf(events[2].data[1], Error);
-                assert.equal(events[2].data[1].message, 'Pants are on fire!');
+                events.forEach(function(events){
+                  assert.instanceOf(events[2].data[1], Error);
+                  assert.equal(events[2].data[1].message, 'Pants are on fire!');
+                });
             }
 
         },
@@ -208,6 +217,18 @@ vows.describe('log4js').addBatch({
         }
     },
 
+    'with no file appenders defined' : {
+        topic: function() {
+            var logger
+          , that = this
+          , log4js = sandbox.require('../lib/log4js');
+            logger = log4js.getLogger("some-logger");
+            logger.flush(this.callback);
+        },
+        'should invoke callback': function() {
+        }
+    },
+
     'addAppender' : {
         topic: function() {
             var log4js = require('../lib/log4js');
@@ -290,7 +311,52 @@ vows.describe('log4js').addBatch({
                 log4js.getLogger("something else").debug("pants");
                 assert.isUndefined(appenderEvent);
             }
+        },
+
+        'with flush supported and invoke flush': {
+            topic: function(log4js) {
+                var called = 0
+                var appender = {
+                    "log": function(evt) { }, 
+                    "flush": function(cb) { called++; cb(); }
+                }
+
+                logger = log4js.getLogger("test");
+                log4js.addAppender(appender, "test");
+                log4js.addAppender(_.clone(appender), "test");
+                var that = this;
+                logger.flush(function() {
+                  that.callback(null,called);
+                });
+            },
+            'should invoke flush in appender': function(called) {
+                assert.equal(called, 2);
+            }
+        },
+
+        'with flush supported and invoke flushAllLoggers': {
+            topic: function(log4js) {
+                var called = 0
+                var appender = {
+                    "log": function(evt) { }, 
+                    "flush": function(cb) { called++; cb(); }
+                }
+
+                log4js.getLogger("test");
+                log4js.getLogger("test2");
+                log4js.addAppender(appender, "test");
+                log4js.addAppender(_.clone(appender), "test2");
+                log4js.addAppender(_.clone(appender));
+                var that = this;
+                log4js.flushAllLoggers(function() {
+                  that.callback(null,called);
+                });
+            },
+            'should invoke flush in appender': function(called) {
+                assert.equal(called, 3);
+            }
         }
+
     },
 
     'default setup': {
