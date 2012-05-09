@@ -40,84 +40,84 @@ function MockResponse(statusCode) {
 
 vows.describe('log4js connect logger').addBatch({
   'getConnectLoggerModule': {
-	  topic: function() {
-	    var clm = require('../lib/connect-logger');
-	    return clm;
-	  },
-
-	  'should return a "connect logger" factory' : function(clm) {
-	    assert.isObject(clm);
-	  },
-
-	  'nolog String' : {
-	    topic: function(clm) {
-		    var ml = new MockLogger();
-		    var cl = clm.connectLogger(ml, {nolog: "\\.gif"});
-        return {cl: cl, ml: ml};
+      topic: function() {
+	  var clm = require('../lib/connect-logger');
+	  return clm;
       },
 
-      'check unmatch url request': {
-        topic: function(d){
-		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
-		      var res = new MockResponse(200);
-		      d.cl(req, res, function() { });
-          res.end('chunk', 'encoding');
-          return d.ml.messages;
-        }
-        , 'check message': function(messages){
-		      assert.isArray(messages);
-		      assert.equal(messages.length, 1);
-		      assert.equal(messages[0].level, levels.INFO);
-		      assert.include(messages[0].message, 'GET');
-		      assert.include(messages[0].message, 'http://url');
-		      assert.include(messages[0].message, 'my.remote.addr');
-		      assert.include(messages[0].message, '200');
-          messages.pop();
+      'should return a "connect logger" factory' : function(clm) {
+	  assert.isObject(clm);
+      },
+
+      'nolog String' : {
+	  topic: function(clm) {
+	      var ml = new MockLogger();
+	      var cl = clm.connectLogger(ml, { nolog: "\\.gif" });
+              return {cl: cl, ml: ml};
+          },
+
+          'check unmatch url request': {
+              topic: function(d){
+		  var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
+		  var res = new MockResponse(200);
+		  d.cl(req, res, function() { });
+                  res.end('chunk', 'encoding');
+                  return d.ml.messages;
+              }
+            , 'check message': function(messages){
+		  assert.isArray(messages);
+		  assert.equal(messages.length, 1);
+		  assert.equal(messages[0].level, levels.INFO);
+		  assert.include(messages[0].message, 'GET');
+		  assert.include(messages[0].message, 'http://url');
+		  assert.include(messages[0].message, 'my.remote.addr');
+		  assert.include(messages[0].message, '200');
+                  messages.pop();
 	      }
-	    },
-      
-      'check match url request': {
+	  },
+
+          'check match url request': {
 	      topic: function(d) {
-		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
-		      var res = new MockResponse(200);
-		      d.cl(req, res, function() { });
-          res.end('chunk', 'encoding');
-          return d.ml.messages;
+		  var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
+		  var res = new MockResponse(200);
+		  d.cl(req, res, function() { });
+                  res.end('chunk', 'encoding');
+                  return d.ml.messages;
 	      }
-	      , 'check message': function(messages) {
-		      assert.isArray(messages);
-		      assert.equal(messages.length, 0);
+	    , 'check message': function(messages) {
+		  assert.isArray(messages);
+		  assert.equal(messages.length, 0);
 	      }
-	    }
+	  }
     },
-    
-	  'nolog Strings' : {
-	    topic: function(clm) {
-		    var ml = new MockLogger();
-		    var cl = clm.connectLogger(ml, {nolog: "\\.gif|\\.jpe?g"});
-        return {cl: cl, ml: ml};
-      },
 
-      'check unmatch url request (png)': {
-        topic: function(d){
-		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
-		      var res = new MockResponse(200);
-		      d.cl(req, res, function() { });
-          res.end('chunk', 'encoding');
-          return d.ml.messages;
-        }
-        , 'check message': function(messages){
-		      assert.isArray(messages);
-		      assert.equal(messages.length, 1);
-		      assert.equal(messages[0].level, levels.INFO);
-		      assert.include(messages[0].message, 'GET');
-		      assert.include(messages[0].message, 'http://url');
-		      assert.include(messages[0].message, 'my.remote.addr');
-		      assert.include(messages[0].message, '200');
-          messages.pop();
+      'nolog Strings' : {
+	  topic: function(clm) {
+	      var ml = new MockLogger();
+	      var cl = clm.connectLogger(ml, {nolog: "\\.gif|\\.jpe?g"});
+              return {cl: cl, ml: ml};
+          },
+
+          'check unmatch url request (png)': {
+              topic: function(d){
+		  var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
+		  var res = new MockResponse(200);
+		  d.cl(req, res, function() { });
+                  res.end('chunk', 'encoding');
+                  return d.ml.messages;
+              }
+            , 'check message': function(messages){
+		  assert.isArray(messages);
+		  assert.equal(messages.length, 1);
+		  assert.equal(messages[0].level, levels.INFO);
+		  assert.include(messages[0].message, 'GET');
+		  assert.include(messages[0].message, 'http://url');
+		  assert.include(messages[0].message, 'my.remote.addr');
+		  assert.include(messages[0].message, '200');
+                  messages.pop();
 	      }
-	    },
-      
+	  },
+
       'check match url request (gif)': {
 	      topic: function(d) {
 		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
@@ -171,7 +171,7 @@ vows.describe('log4js connect logger').addBatch({
           messages.pop();
 	      }
 	    },
-      
+
       'check match url request (gif)': {
 	      topic: function(d) {
 		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
@@ -185,7 +185,7 @@ vows.describe('log4js connect logger').addBatch({
 		      assert.equal(messages.length, 0);
 	      }
 	    },
-      
+
       'check match url request (jpeg)': {
 	      topic: function(d) {
 		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
@@ -226,7 +226,7 @@ vows.describe('log4js connect logger').addBatch({
           messages.pop();
 	      }
 	    },
-      
+
       'check match url request (gif)': {
 	      topic: function(d) {
 		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
@@ -240,7 +240,7 @@ vows.describe('log4js connect logger').addBatch({
 		      assert.equal(messages.length, 0);
 	      }
 	    },
-      
+
       'check match url request (jpeg)': {
 	      topic: function(d) {
 		      var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
