@@ -503,15 +503,14 @@ vows.describe('log4js').addBatch({
             logger = log4js.getLogger('a-test');
             logger.info("info1");
             logger.debug("debug2 - should be ignored");
-            delete fakeFS.config.levels;
+            fakeFS.config.levels['a-test'] = "DEBUG";
             setIntervalCallback();
             logger.info("info3");
             logger.debug("debug4");
 
-            return [ pathsChecked, logEvents, modulePath ];
+            return logEvents;
         },
-        'should configure log4js from first log4js.json found': function(args) {
-            var logEvents = args[1];
+        'should configure log4js from first log4js.json found': function(logEvents) {
             assert.equal(logEvents.length, 3);
             assert.equal(logEvents[0].data[0], 'info1');
             assert.equal(logEvents[1].data[0], 'info3');
