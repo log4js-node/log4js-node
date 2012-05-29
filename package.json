@@ -31,7 +31,7 @@
    "devDependencies": {
        "vows": "0.6.2",
        "sandboxed-module": "0.1.3",
-       "hook.io": "0.7.7",
+       "hook.io": "0.8.10",
        "underscore": "1.2.1"
    }
 }
