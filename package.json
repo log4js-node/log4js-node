@@ -17,7 +17,7 @@
    "bugs": {
        "url": "http://github.com/nomiddlename/log4js-node/issues"
    },
-   "engines": [ "node >=0.4" ],
+   "engines": [ "node >=0.6" ],
    "scripts": {
        "test": "vows test/*.js"
    },
