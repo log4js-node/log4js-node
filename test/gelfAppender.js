@@ -23,20 +23,20 @@ var vows = require('vows')
             return this.socket;
         }
     }
-  , fakeCompressBuffer = {
-      compress: function(objectToCompress) {
-          fakeCompressBuffer.uncompressed = objectToCompress;
+  , fakeZlib = {
+      gzip: function(objectToCompress, callback) {
+          fakeZlib.uncompressed = objectToCompress;
           if (compressedLength) {
-              return { length: compressedLength };
+              callback(null, { length: compressedLength });
           } else {
-              return "I've been compressed";
+              callback(null, "I've been compressed");
           }
       }
   }
   , appender = sandbox.require('../lib/appenders/gelf', {
       requires: {
           dgram: fakeDgram,
-          "compress-buffer": fakeCompressBuffer
+          zlib: fakeZlib
       }
   });
 
@@ -44,7 +44,7 @@ var vows = require('vows')
     log4js.addAppender(appender.configure(options || {}), category || "gelf-test");
     return {
         dgram: fakeDgram,
-        compress: fakeCompressBuffer,
+        compress: fakeZlib,
         logger: log4js.getLogger(category || "gelf-test")
     };
 };

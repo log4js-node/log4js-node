@@ -26,8 +26,7 @@
        "lib": "lib"
    },
    "dependencies": {
-       "async": "0.1.15",
-       "compress-buffer": "0.5.1"
+       "async": "0.1.15"
    },
    "devDependencies": {
        "vows": "0.6.2",
