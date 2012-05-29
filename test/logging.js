@@ -295,72 +295,46 @@ vows.describe('log4js').addBatch({
 
     'default setup': {
         topic: function() {
-            var pathLoaded,
-            logger,
-            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
-            mtime = Date.now(),
-            fakeFS = {
-                readdirSync: function(dir) {
-                    return require('fs').readdirSync(dir);
-                },
-                readFileSync: function (file, encoding) {
-                    pathLoaded = file;
-                    assert.equal(encoding, 'utf8');
-                    return '{ "appenders" : [ { "type": "console", "layout": { "type": "messagePassThrough" }} ] }';
-                },
-                statSync: function (path) {
-                    if (path === modulePath) {
-                        return { mtime: mtime };
-                    } else {
-                        throw new Error("no such file");
+            var appenderEvents = [],
+                fakeConsole = {
+                    'name': 'console'
+                  , 'appender': function () {
+                        return function(evt) {
+                            appenderEvents.push(evt);
+                        }
                     }
-                }
-            },
-            appenderEvents = [],
-            fakeConsole = {
-                'name': 'console'
-              , 'appender': function () {
-                    return function(evt) { appenderEvents.push(evt); }
-                }
-              , 'configure': function (config) {
-                    return fakeConsole.appender();
-                }
-            },
-            globalConsole = {
-                log: function() { throw new Error("I should not be called."); }
-            },
-            log4js = sandbox.require(
-                '../lib/log4js',
-                {
-                    requires: {
-                        'fs': fakeFS
-                      , './appenders/console': fakeConsole
-                    },
-                    globals: {
-                        console: globalConsole
+                  , 'configure': function (config) {
+                        return fakeConsole.appender();
                     }
-                }
-            );
+                },
+                globalConsole = {
+                    log: function() { }
+                },
+                log4js = sandbox.require(
+                    '../lib/log4js',
+                    {
+                        requires: {
+                            './appenders/console': fakeConsole
+                        },
+                        globals: {
+                            console: globalConsole
+                        }
+                    }
+                ),
+                logger = log4js.getLogger('a-test');
 
-            logger = log4js.getLogger('a-test');
             logger.debug("this is a test");
-            globalConsole.log("this should be logged");
-            return [ pathLoaded, appenderEvents, modulePath ];
+            globalConsole.log("this should not be logged");
+
+            return appenderEvents;
         },
 
-        'should use require.resolve to find log4js.json': function(args) {
-            var pathLoaded = args[0], modulePath = args[2];
-            assert.equal(pathLoaded, modulePath);
-        },
-
-        'should configure log4js from first log4js.json found': function(args) {
-            var appenderEvents = args[1];
+        'should configure a console appender': function(appenderEvents) {
             assert.equal(appenderEvents[0].data[0], 'this is a test');
         },
 
-        'should replace console.log with log4js version': function(args) {
-            var appenderEvents = args[1];
-            assert.equal(appenderEvents[1].data[0], 'this should be logged');
+        'should not replace console.log with log4js version': function(appenderEvents) {
+            assert.equal(appenderEvents.length, 1);
         }
     },
 
@@ -449,7 +423,7 @@ vows.describe('log4js').addBatch({
             var pathsChecked = [],
             logEvents = [],
             logger,
-            modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+            modulePath = 'path/to/log4js.json',
             fakeFS = {
                 lastMtime: Date.now(),
                 config: { appenders: [ { type: 'console', layout: { type: 'messagePassThrough' } } ],
@@ -499,7 +473,7 @@ vows.describe('log4js').addBatch({
                 }
             );
 
-            log4js.configure(undefined, { reloadSecs: 30 });
+            log4js.configure('path/to/log4js.json', { reloadSecs: 30 });
             logger = log4js.getLogger('a-test');
             logger.info("info1");
             logger.debug("debug2 - should be ignored");
@@ -511,10 +485,10 @@ vows.describe('log4js').addBatch({
             return logEvents;
         },
         'should configure log4js from first log4js.json found': function(logEvents) {
-            assert.equal(logEvents.length, 3);
             assert.equal(logEvents[0].data[0], 'info1');
             assert.equal(logEvents[1].data[0], 'info3');
             assert.equal(logEvents[2].data[0], 'debug4');
+            assert.equal(logEvents.length, 3);
         }
     },
 
