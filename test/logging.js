@@ -86,7 +86,7 @@ vows.describe('log4js').addBatch({
     'invalid configuration': {
         'should throw an exception': function() {
             assert.throws(function() {
-                log4js.configure({ "type": "invalid" });
+                require('log4js').configure({ "type": "invalid" });
             });
         }
     },
@@ -393,7 +393,7 @@ vows.describe('log4js').addBatch({
         'configuration': {
             topic: function(test) {
                 test.log4js.replaceConsole();
-                test.log4js.configure({ doNotReplaceConsole: true });
+                test.log4js.configure({ replaceConsole: false });
                 try {
                     test.fakeConsole.log("This should cause the error described in the setup");
                 } catch (e) {
@@ -407,14 +407,20 @@ vows.describe('log4js').addBatch({
         }
     },
     'configuration persistence' : {
-        'should maintain appenders between requires': function () {
-            var logEvent, firstLog4js = require('../lib/log4js'), secondLog4js;
+        topic: function() {
+            var logEvent,
+                firstLog4js = require('../lib/log4js'),
+                secondLog4js;
+
             firstLog4js.clearAppenders();
             firstLog4js.addAppender(function(evt) { logEvent = evt; });
 
             secondLog4js = require('../lib/log4js');
             secondLog4js.getLogger().info("This should go to the appender defined in firstLog4js");
 
+            return logEvent;
+        },
+        'should maintain appenders between requires': function (logEvent) {
             assert.equal(logEvent.data[0], "This should go to the appender defined in firstLog4js");
         }
     },

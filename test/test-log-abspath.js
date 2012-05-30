@@ -3,93 +3,66 @@ var vows = require('vows')
 , sandbox = require('sandboxed-module');
 
 vows.describe('log4js-abspath').addBatch({
-    'configuration is passed as object with options.cwd': {
+    'options': {
         topic: function() {
-            var appenderConfig
-          , log4js = sandbox.require(
-              '../lib/log4js'
-            , { requires:
-                { './appenders/file':
-                  {
-                      name: "file"
-                    , appender: function() {}
-                    , configure: function(configuration) {
-                          appenderConfig = configuration;
-                          return function() {};
+            var appenderOptions,
+                log4js = sandbox.require(
+                    '../lib/log4js',
+                    { requires:
+                      { './appenders/fake':
+                        {
+                            name: "fake",
+                            appender: function() {},
+                            configure: function(configuration, options) {
+                                appenderOptions = options;
+                                return function() {};
+                            }
+                        }
                       }
-                  }
-                }
-              }
-          )
-          , config = {
-                "appenders": [
-                    {
-                        "type" : "file",
-                        "filename" : "cheesy-wotsits.log",
-                        "maxLogSize" : 1024,
-                        "backups" : 3,
-                        "pollInterval" : 15
                     }
-                ]
-            };
+                ),
+                config = {
+                    "appenders": [
+                        {
+                            "type" : "fake",
+                            "filename" : "cheesy-wotsits.log"
+                        }
+                    ]
+                };
+
             log4js.configure(config, {
                 cwd: '/absolute/path/to'
             });
-            return appenderConfig;
+            return appenderOptions;
         },
-        'should be an absolute path': function(configuration) {
-            assert.equal(configuration.filename, '/absolute/path/to/cheesy-wotsits.log');
+        'should be passed to appenders during configuration': function(options) {
+            assert.equal(options.cwd, '/absolute/path/to');
         }
     },
 
-    'configuration passed as filename with options.cwd': {
+    'file appender': {
         topic: function() {
-            var appenderConfig
-          , configFilename
-          , log4js = sandbox.require(
-                '../lib/log4js'
-              , { requires:
-                  { 'fs':
-                    {
-                        statSync: function() {
-                            return { mtime: Date.now() };
-                        },
-                        readFileSync: function(filename) {
-                            configFilename = filename;
-                            return JSON.stringify({
-                                appenders: [
-                                    { type: "file"
-                                    , filename: "whatever.log"
-                                    }
-                                ]
-                            });
-                        },
-                        readdirSync: function() {
-                            return ['file'];
+            var fileOpened,
+                fileAppender = sandbox.require(
+                    '../lib/appenders/file',
+                    { requires:
+                      { '../streams':
+                        {
+                            RollingFileStream: function(file) {
+                                fileOpened = file;
+                            },
+                            BufferedWriteStream: function(other) {
+                                return { on: function() { }, end: function() {} }
+                            }
                         }
-                    }
-                , './appenders/file':
-                    {
-                      name: "file"
-                    , appender: function() {}
-                    , configure: function(configuration) {
-                          appenderConfig = configuration;
-                          return function() {};
                       }
                     }
-                  }
-                }
-          );
-            log4js.configure("/path/to/cheese.json", {
-                cwd: '/absolute/path/to'
-            });
-            return [ configFilename, appenderConfig ];
+                );
+            fileAppender.configure({ filename: "whatever.log", maxLogSize: 10 }, { cwd: '/absolute/path/to' });
+            return fileOpened;
         },
-        'should read the config from a file': function(args) {
-            assert.equal(args[0], '/path/to/cheese.json');
-        },
-        'should be an absolute path': function(args) {
-            assert.equal(args[1].filename, "/absolute/path/to/whatever.log");
+        'should prepend options.cwd to config.filename': function(fileOpened) {
+            assert.equal(fileOpened, "/absolute/path/to/whatever.log");
         }
     },
 }).export(module);
