@@ -22,8 +22,9 @@ vows.describe('log4js fileAppender').addBatch({
           , testFile = path.join(__dirname, '/fa-default-test.log')
           , logger = log4js.getLogger('default-settings');
             remove(testFile);
+            //log4js.configure({ appenders:[ { type: "file", filename: testFile, category: 'default-settings' } ] });
             log4js.clearAppenders();
-            log4js.addAppender(log4js.fileAppender(testFile), 'default-settings');
+            log4js.addAppender(require('../lib/appenders/file').appender(testFile), 'default-settings');
 
             logger.info("This should be in the file.");
 
@@ -47,7 +48,7 @@ vows.describe('log4js fileAppender').addBatch({
             remove(testFile + '.1');
             //log file of 100 bytes maximum, no backups
             log4js.clearAppenders();
-            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 100, 0), 'max-file-size');
+            log4js.addAppender(require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 100, 0), 'max-file-size');
             logger.info("This is the first log message.");
             logger.info("This is an intermediate log message.");
             logger.info("This is the second log message.");
@@ -81,7 +82,7 @@ vows.describe('log4js fileAppender').addBatch({
 
             //log file of 50 bytes maximum, 2 backups
             log4js.clearAppenders();
-            log4js.addAppender(log4js.fileAppender(testFile, log4js.layouts.basicLayout, 50, 2), 'max-file-size-backups');
+            log4js.addAppender(require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2), 'max-file-size-backups');
             logger.info("This is the first log message.");
             logger.info("This is the second log message.");
             logger.info("This is the third log message.");

@@ -15,7 +15,7 @@ vows.describe('log4js logLevelFilter').addBatch({
         topic: function() {
             var log4js = require('../lib/log4js'), logEvents = [], logger;
             log4js.clearAppenders();
-            log4js.addAppender(log4js.logLevelFilter('ERROR', function(evt) { logEvents.push(evt); }), "logLevelTest");
+            log4js.addAppender(require('../lib/appenders/logLevelFilter').appender('ERROR', function(evt) { logEvents.push(evt); }), "logLevelTest");
             logger = log4js.getLogger("logLevelTest");
             logger.debug('this should not trigger an event');
             logger.warn('neither should this');
