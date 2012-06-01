@@ -67,7 +67,7 @@ vows.describe('log4js connect logger').addBatch({
             , 'check message': function(messages){
 		  assert.isArray(messages);
 		  assert.equal(messages.length, 1);
-		  assert.equal(messages[0].level, levels.INFO);
+		  assert.ok(levels.INFO.isEqualTo(messages[0].level));
 		  assert.include(messages[0].message, 'GET');
 		  assert.include(messages[0].message, 'http://url');
 		  assert.include(messages[0].message, 'my.remote.addr');
@@ -109,7 +109,7 @@ vows.describe('log4js connect logger').addBatch({
             , 'check message': function(messages){
 		  assert.isArray(messages);
 		  assert.equal(messages.length, 1);
-		  assert.equal(messages[0].level, levels.INFO);
+		  assert.ok(levels.INFO.isEqualTo(messages[0].level));
 		  assert.include(messages[0].message, 'GET');
 		  assert.include(messages[0].message, 'http://url');
 		  assert.include(messages[0].message, 'my.remote.addr');
@@ -163,7 +163,7 @@ vows.describe('log4js connect logger').addBatch({
         , 'check message': function(messages){
 		      assert.isArray(messages);
 		      assert.equal(messages.length, 1);
-		      assert.equal(messages[0].level, levels.INFO);
+		      assert.ok(levels.INFO.isEqualTo(messages[0].level));
 		      assert.include(messages[0].message, 'GET');
 		      assert.include(messages[0].message, 'http://url');
 		      assert.include(messages[0].message, 'my.remote.addr');
@@ -218,7 +218,7 @@ vows.describe('log4js connect logger').addBatch({
         , 'check message': function(messages){
 		      assert.isArray(messages);
 		      assert.equal(messages.length, 1);
-		      assert.equal(messages[0].level, levels.INFO);
+		      assert.ok(levels.INFO.isEqualTo(messages[0].level));
 		      assert.include(messages[0].message, 'GET');
 		      assert.include(messages[0].message, 'http://url');
 		      assert.include(messages[0].message, 'my.remote.addr');

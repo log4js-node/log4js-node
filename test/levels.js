@@ -21,6 +21,12 @@ function assertThat(level) {
         },
         isNotGreaterThanOrEqualTo: function(levels) {
             assertForEach(assert.isFalse, level.isGreaterThanOrEqualTo, levels);
+        },
+        isEqualTo: function(levels) {
+            assertForEach(assert.isTrue, level.isEqualTo, levels);
+        },
+        isNotEqualTo: function(levels) {
+            assertForEach(assert.isFalse, level.isEqualTo, levels);
         }
     };
 }
@@ -45,6 +51,10 @@ vows.describe('levels').addBatch({
             },
             'should be greater than no levels': function(all) {
                 assertThat(all).isNotGreaterThanOrEqualTo([levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to ALL': function(all) {
+                assertThat(all).isEqualTo([levels.toLevel("ALL")]);
+                assertThat(all).isNotEqualTo([levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
             }
         },
         'TRACE': {
@@ -56,6 +66,10 @@ vows.describe('levels').addBatch({
             'should be greater than ALL': function(trace) {
                 assertThat(trace).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE]);
                 assertThat(trace).isNotGreaterThanOrEqualTo([levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to TRACE': function(trace) {
+                assertThat(trace).isEqualTo([levels.toLevel("TRACE")]);
+                assertThat(trace).isNotEqualTo([levels.ALL, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
             }
         },
         'DEBUG': {
@@ -67,6 +81,10 @@ vows.describe('levels').addBatch({
             'should be greater than TRACE': function(debug) {
                 assertThat(debug).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE]);
                 assertThat(debug).isNotGreaterThanOrEqualTo([levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to DEBUG': function(trace) {
+                assertThat(trace).isEqualTo([levels.toLevel("DEBUG")]);
+                assertThat(trace).isNotEqualTo([levels.ALL, levels.TRACE, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
             }
         },
         'INFO': {
@@ -78,6 +96,10 @@ vows.describe('levels').addBatch({
             'should be greater than DEBUG': function(info) {
                 assertThat(info).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG]);
                 assertThat(info).isNotGreaterThanOrEqualTo([levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to INFO': function(trace) {
+                assertThat(trace).isEqualTo([levels.toLevel("INFO")]);
+                assertThat(trace).isNotEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.WARN, levels.ERROR, levels.FATAL, levels.OFF]);
             }
         },
         'WARN': {
@@ -89,6 +111,10 @@ vows.describe('levels').addBatch({
             'should be greater than INFO': function(warn) {
                 assertThat(warn).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO]);
                 assertThat(warn).isNotGreaterThanOrEqualTo([levels.ERROR, levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to WARN': function(trace) {
+                assertThat(trace).isEqualTo([levels.toLevel("WARN")]);
+                assertThat(trace).isNotEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.ERROR, levels.FATAL, levels.OFF]);
             }
         },
         'ERROR': {
@@ -100,6 +126,10 @@ vows.describe('levels').addBatch({
             'should be greater than WARN': function(error) {
                 assertThat(error).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN]);
                 assertThat(error).isNotGreaterThanOrEqualTo([levels.FATAL, levels.OFF]);
+            },
+            'should only be equal to ERROR': function(trace) {
+                assertThat(trace).isEqualTo([levels.toLevel("ERROR")]);
+                assertThat(trace).isNotEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.FATAL, levels.OFF]);
             }
         },
         'FATAL': {
@@ -111,6 +141,10 @@ vows.describe('levels').addBatch({
             'should be greater than ERROR': function(fatal) {
                 assertThat(fatal).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR]);
                 assertThat(fatal).isNotGreaterThanOrEqualTo([levels.OFF]);
+            },
+            'should only be equal to FATAL': function(fatal) {
+                assertThat(fatal).isEqualTo([levels.toLevel("FATAL")]);
+                assertThat(fatal).isNotEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.OFF]);
             }
         },
         'OFF': {
@@ -120,6 +154,10 @@ vows.describe('levels').addBatch({
             },
             'should be greater than everything': function(off) {
                 assertThat(off).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL]);
+            },
+            'should only be equal to OFF': function(off) {
+                assertThat(off).isEqualTo([levels.toLevel("OFF")]);
+                assertThat(off).isNotEqualTo([levels.ALL, levels.TRACE, levels.DEBUG, levels.INFO, levels.WARN, levels.ERROR, levels.FATAL]);
             }
         }
     },
