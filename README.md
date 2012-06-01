@@ -1,20 +1,27 @@
 # log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
 
-NOTE: v0.3.8 of log4js is the last that will work with node versions older than 0.4. To use v0.3.9 you will need node 0.4 or later.
 
 This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
-framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code
-and tidied up some of the javascript. It includes a basic file logger, with log rolling based on file size, and also replaces node's console.log functions.
+framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript. 
 
-NOTE: in v0.2.x require('log4js') returned a function, and you needed to call that function in your code before you could use it. This was to make testing easier. v0.3.x make use of [felixge's sandbox-module](https://github.com/felixge/node-sandboxed-module), so we don't need to return a function.
+Out of the box it supports the following features:
+
+* coloured console logging
+* replacement of node's console.log functions (optional)
+* file appender, with log rolling based on file size
+* SMTP appender
+* GELF appender
+* hook.io appender
+* multiprocess appender (useful when you've got worker processes)
+* a logger for connect/express servers
+* configurable log message layout/patterns
+* different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
+
 
 ## installation
 
 npm install log4js
 
-## tests
-
-Tests now use [vows](http://vowsjs.org), run with `vows test/*.js`.
 
 ## usage
 
@@ -30,9 +37,11 @@ By default, log4js outputs to stdout with the coloured layout (thanks to [masylu
 
 See example.js:
 
-    var log4js = require('log4js'); //note the need to call the function
-    log4js.addAppender(log4js.consoleAppender());
-    log4js.addAppender(log4js.fileAppender('logs/cheese.log'), 'cheese');
+    var log4js = require('log4js'); 
+    log4js.loadAppender('console');
+    log4js.loadAppender('file');
+    log4js.addAppender(log4js.appenders.console());
+    log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
 
     var logger = log4js.getLogger('cheese');
     logger.setLevel('ERROR');
@@ -48,30 +57,33 @@ Output:
 
     [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
     [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
+    
+The first 5 lines of the code above could also be written as:
 
+    var log4js = require('log4js');
+    log4js.configure({
+	    appenders: [
+		    { type: 'console' },
+		    { type: 'file', filename: 'logs/cheese.log', category: 'cheese' }
+	    ]
+    });
+    
 
 ## configuration
 
-You can either configure the appenders and log levels manually (as above), or provide a
-configuration file (`log4js.configure('path/to/file.json')`) explicitly, or just let log4js look for a file called `log4js.json` (it looks in the current directory first, then the require paths, and finally looks for the default config included in the same directory as the `log4js.js` file).
+You can configure the appenders and log levels manually (as above), or provide a
+configuration file (`log4js.configure('path/to/file.json')`), or a configuration object.
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
-By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels
-to occur without restarting the application.
+By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels to occur without restarting the application.
 
 To turn off configuration file change checking, configure with:
 
     var log4js = require('log4js');
-    log4js.configure(undefined, {}); // load 'log4js.json' from NODE_PATH
-
-Or:
-
     log4js.configure('my_log4js_configuration.json', {});
 
 To specify a different period:
 
-    log4js.configure(undefined, { reloadSecs: 300 }); // load 'log4js.json' from NODE_PATH
-
-You can also pass an object to the configure function, which has the same properties as the json versions.
+    log4js.configure('file.json', { reloadSecs: 300 });
 
 For FileAppender you can also pass the path to the log directory as an option where all your log files would be stored.
 
@@ -101,175 +113,14 @@ If you have already defined an absolute path for one of the FileAppenders in the
         }
       ]
     }
+    
+Documentation for most of the core appenders can be found on the [wiki](wiki/Appenders), otherwise take a look at the tests and the examples.
 
-## connect/express logger
+## Documentation
+See the [wiki](wiki). Improve the [wiki](wiki), please.
 
-A connect/express logger has been added to log4js, by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See example-connect-logger.js.
-
-    var log4js = require('./lib/log4js');
-    log4js.addAppender(log4js.consoleAppender());
-    log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese');
-
-    var logger = log4js.getLogger('cheese');
-
-    logger.setLevel('INFO');
-
-    var app = require('express').createServer();
-    app.configure(function() {
-        app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
-    });
-    app.get('/', function(req,res) {
-        res.send('hello world');
-    });
-    app.listen(5000);
-
-The options object that is passed to log4js.connectLogger supports a format string the same as the connect/express logger. For example:
-
-    app.configure(function() {
-        app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
-    });
-
-## hook.io logger
-
-A [hook.io](https://github.com/hookio) logger has been added to log4js by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
-This was mainly created for [cluster](https://github.com/LearnBoost/cluster), but you can adapt the example to match your needs, you know, if it fits them.
-<pre>
-    #### log4js-master.json ####
-    {
-      "appenders": [{
-        "type": "logLevelFilter",
-        "level": "DEBUG",
-        "appender": {
-          "type": "hookio",
-          "name": "hookio-logger",
-          "mode": "master",
-          "debug": false,
-          "appender": {
-            "type": "file",
-            "filename": "muffin.log",
-            "maxLogSize": 104857600,
-            "backups": 10,
-            "pollInterval": 15
-          }
-        }
-      }]
-    }
-
-    #### log4js-worker.json ####
-    {
-      "appenders": [{
-        "type": "logLevelFilter",
-        "level": "DEBUG",
-        "appender": {
-          "type": "hookio",
-          "name": "hookio-logger",
-          "mode": "worker",
-          "debug": false
-        }
-      }]
-    }
-
-    #### ilikebeans.js ####
-    var cluster = require('cluster');
-    var hookCluster = cluster('./doyoulikebeans');
-
-    // Perform the once off configuration depending on type of cluster
-    if (hookCluster.isMaster) {
-      require('log4js').configure('log4js-master.json');
-    } else {
-      require('log4js').configure('log4js-worker.json');
-    }
-
-    // Standard cluster startup
-    hookCluster
-      .use(cluster.logger('run/logs'))
-      .use(cluster.pidfiles('run/pids'))
-      .listen(3000);
-</pre>
-log4js-master/worker.json hookio appender parameters will be passed into the Hook constructor directly, so you can specify hook-port, hook-host etc.
-*NOTE* hook.io appender will currently (and probably indefinitely) explode if you enable hook.io debug because of the way log4js overrides console.log
-
-## multiprocess (tcp socket) logger
-
-A multiprocess logger has been added to log4js by [dbrain](https://github.com/dbrain). This allows multiple worker processes to log through a single master process, avoiding issues with rolling etc. in a clustered environment.
-This was mainly created for [cluster](https://github.com/LearnBoost/cluster), but you can adapt the example to match your needs, you know, if it fits them.
-<pre>
-    #### log4js-master.json ####
-    # Will listen for connections on port and host
-    {
-      "appenders": [{
-        "type": "logLevelFilter",
-        "level": "DEBUG",
-        "appender": {
-          "type": "multiprocess",
-          "mode": "master",
-          "loggerPort": 5001,
-          "loggerHost": "simonsaysdie",
-          "appender": {
-            "type": "file",
-            "filename": "muffin.log",
-            "maxLogSize": 104857600,
-            "backups": 10,
-            "pollInterval": 15
-          }
-        }
-      }]
-    }
-
-    #### log4js-worker.json ####
-    # Will connect to master (tcp server) and send stringified log events
-    {
-      "appenders": [{
-        "type": "logLevelFilter",
-        "level": "DEBUG",
-        "appender": {
-          "type": "multiprocess",
-          "mode": "worker",
-          "loggerPort": 5001,
-          "loggerHost": "simonsaysdie"
-        }
-      }]
-    }
-
-    #### ilikebeans.js ####
-    var cluster = require('cluster');
-    var immaCluster = cluster('./doyoulikebeans');
-
-    // Perform the once off configuration depending on type of cluster
-    if (immaCluster.isMaster) {
-      require('log4js').configure('log4js-master.json');
-    } else {
-      require('log4js').configure('log4js-worker.json');
-    }
-
-    // Standard cluster startup
-    immaCluster
-      .use(cluster.logger('run/logs'))
-      .use(cluster.pidfiles('run/pids'))
-      .listen(3000);
-</pre>
-
-## gelf logger
-
-A gelf logger has been added to log4js, by [arifamirani](https://github.com/arifamirani). This allows log4js to log to [GELF](http://www.graylog2.org/about/gelf) compatible servers such as [Graylog](http://www.graylog2.org/). This is currently configuration based and needs the following configuration to be added to log4j.json. For example:
-
-<pre>
-  {
-    "appenders": [  
-      {
-        "type": "gelf",
-        "host": "logs.mydomain.com", //defaults to localhost
-        "hostname":"mrs-dev", //defaults to the value returned by os.hostname()
-        "port": "12201", //defaults to 12201
-        "facility": "myapp" //defaults to nodejs-server
-      }
-    }
-  }
-</pre>
-
-## author (of this node version)
-
-Gareth Jones (csausdev - gareth.jones@sensis.com.au)
+## Contributing
+Contributions welcome, but take a look at the [rules](wiki/Contributing) first.
 
 ## License
 
