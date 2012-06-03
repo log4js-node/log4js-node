@@ -17,6 +17,16 @@ Out of the box it supports the following features:
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
 
+NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of node's console.log functions. Do this either by calling `log4js.replaceConsole()` or configuring with an object or json file like this:
+
+```javascript
+{
+    appenders: [
+        { type: "console" }
+    ],
+    replaceConsole: true
+}
+```
 
 ## installation
 
