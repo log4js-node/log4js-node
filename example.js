@@ -1,6 +1,19 @@
 var log4js = require('./lib/log4js');
 //log the cheese logger messages to a file, and the console ones as well.
-log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese', 'console');
+log4js.configure({
+    appenders: [
+        {
+            type: "file",
+            filename: "cheese.log",
+            categories: [ 'cheese','console' ]
+        },
+        {
+            type: "console"
+        }
+    ],
+    replaceConsole: true
+});
+//log4js.addAppender(log4js.fileAppender('cheese.log'), 'cheese', 'console');
 
 var logger = log4js.getLogger('cheese');
 //only errors and above get logged.
