@@ -1,7 +1,11 @@
+//remember to change the require to just 'log4js' if you've npm install'ed it
 var log4js = require('./lib/log4js');
+//by default the console appender is loaded
 //log4js.loadAppender('console');
-log4js.loadAppender('file');
+//you'd only need to add the console appender if you
+//had previously called log4js.clearAppenders();
 //log4js.addAppender(log4js.appenders.console());
+log4js.loadAppender('file');
 log4js.addAppender(log4js.appenders.file('cheese.log'), 'cheese');
 
 var logger = log4js.getLogger('cheese');
