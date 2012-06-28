@@ -5,7 +5,7 @@ log4js.configure({
         {
             type: "file",
             filename: "cheese.log",
-            categories: [ 'cheese','console' ]
+            category: [ 'cheese','console' ]
         },
         {
             type: "console"
@@ -30,6 +30,10 @@ logger.warn('Cheese is quite smelly.');
 //these end up on the console and in cheese.log
 logger.error('Cheese %s is too ripe!', "gouda");
 logger.fatal('Cheese was breeding ground for listeria.');
+
+//these don't end up in cheese.log, but will appear on the console
+var anotherLogger = log4js.getLogger('another');
+anotherLogger.debug("Just checking");
 
 
 
