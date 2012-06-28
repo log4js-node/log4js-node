@@ -35,12 +35,13 @@ By default, log4js outputs to stdout with the coloured layout (thanks to [masylu
 
     [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 
-See example.js:
+See example.js for a full example, but here's a snippet (also in fromreadme.js):
 
     var log4js = require('log4js'); 
-    log4js.loadAppender('console');
+    //console log is loaded by default, so you won't normally need to do this
+    //log4js.loadAppender('console');
     log4js.loadAppender('file');
-    log4js.addAppender(log4js.appenders.console());
+    //log4js.addAppender(log4js.appenders.console());
     log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
 
     var logger = log4js.getLogger('cheese');
