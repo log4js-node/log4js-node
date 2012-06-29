@@ -17,6 +17,16 @@ Out of the box it supports the following features:
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
 
+NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of node's console.log functions. Do this either by calling `log4js.replaceConsole()` or configuring with an object or json file like this:
+
+```javascript
+{
+    appenders: [
+        { type: "console" }
+    ],
+    replaceConsole: true
+}
+```
 
 ## installation
 
@@ -115,13 +125,13 @@ If you have already defined an absolute path for one of the FileAppenders in the
       ]
     }
     
-Documentation for most of the core appenders can be found on the [wiki](wiki/Appenders), otherwise take a look at the tests and the examples.
+Documentation for most of the core appenders can be found on the [wiki](log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
 
 ## Documentation
-See the [wiki](wiki). Improve the [wiki](wiki), please.
+See the [wiki](log4js-node/wiki). Improve the [wiki](log4js-node/wiki), please.
 
 ## Contributing
-Contributions welcome, but take a look at the [rules](wiki/Contributing) first.
+Contributions welcome, but take a look at the [rules](log4js-node/wiki/Contributing) first.
 
 ## License
 
