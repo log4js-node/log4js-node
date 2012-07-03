@@ -576,5 +576,4 @@ vows.describe('log4js').addBatch({
             assert.equal(logEvents[1].data[0], 'info3');
         }
     }
-
 }).export(module);
