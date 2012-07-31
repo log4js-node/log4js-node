@@ -19,7 +19,7 @@
    },
    "engines": [ "node >=0.6" ],
    "scripts": {
-       "test": "vows test/*.js"
+       "test": "vows"
    },
    "directories": {
        "test": "test",
