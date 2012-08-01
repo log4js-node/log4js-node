@@ -76,7 +76,49 @@ vows.describe('log4js layouts').addBatch({
                 , toString: function() { return "ERROR"; }
               }
             }), "{ thing: 1 }");
+        },
+        'should print the stacks of a passed error objects': function(layout) { 
+            assert.isArray(layout({
+                data: [ new Error() ]
+              , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+              , categoryName: "cheese"
+              , level: {
+                  colour: "green"
+                , toString: function() { return "ERROR"; }
+              }
+            }).match(/Error\s+at Object\.<anonymous>\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
+            , 'regexp did not return a match');
+        },
+        'with passed augmented errors': 
+        { topic:
+          function(layout){ 
+              var e = new Error("My Unique Error Message");
+              e.augmented = "My Unique attribute value"
+              e.augObj = { at1: "at2" }
+              return layout({
+                  data: [ e ]
+                , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+                , categoryName: "cheese"
+                , level: {
+                    colour: "green"
+                  , toString: function() { return "ERROR"; }
+                }
+              });
+          },
+          'should print error the contained error message': function(layoutOutput) { 
+              var m = layoutOutput.match(/\{ \[Error: My Unique Error Message\]/);
+              assert.isArray(m);
+          },
+          'should print error augmented string attributes': function(layoutOutput) { 
+              var m = layoutOutput.match(/augmented:\s'My Unique attribute value'/);
+              assert.isArray(m);
+          },
+          'should print error augmented object attributes': function(layoutOutput) { 
+              var m = layoutOutput.match(/augObj:\s\{ at1: 'at2' \}/);
+              assert.isArray(m);
+          }
         }
+
 
     },
 
@@ -106,10 +148,11 @@ vows.describe('log4js layouts').addBatch({
             output = layout(event);
             lines = output.split(/\n/);
 
-            assert.equal(lines.length, stack.length);
-            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error");
+            assert.equal(lines.length - 1, stack.length);
+            assert.equal(lines[0], "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]");
+
             for (var i = 1; i < stack.length; i++) {
-                assert.equal(lines[i+1], stack[i+1]);
+                assert.equal(lines[i+2], stack[i+1]);
             }
         },
         'should output any extra data in the log event as util.inspect strings': function(args) {
