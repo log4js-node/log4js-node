@@ -15,6 +15,24 @@ function remove(filename) {
 }
 
 vows.describe('log4js fileAppender').addBatch({
+    'adding multiple fileAppenders': {
+      topic: function () {
+          var listenersCount = process.listeners('exit').length
+            , logger = log4js.getLogger('default-settings')
+            , count = 5, logfile;
+
+          while (count--) {
+              logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
+              log4js.addAppender(require('../lib/appenders/file').appender(logfile), 'default-settings');
+          }
+
+          return listenersCount;
+      },
+
+      'does not adds more than one `exit` listeners': function (initialCount) {
+          assert.ok(process.listeners('exit').length <= initialCount + 1);
+      }
+    },
 
     'with default fileAppender settings': {
         topic: function() {
