@@ -77,7 +77,7 @@ vows.describe('log4js layouts').addBatch({
               }
             }), "{ thing: 1 }");
         },
-        'should print the stacks of a passed error objects': function(layout) { 
+        'should print the stacks of a passed error objects': function(layout) {
             assert.isArray(layout({
                 data: [ new Error() ]
               , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
@@ -86,12 +86,12 @@ vows.describe('log4js layouts').addBatch({
                   colour: "green"
                 , toString: function() { return "ERROR"; }
               }
-            }).match(/Error\s+at Object\.<anonymous>\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
+            }).match(/Error\s+at Object\..*\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
             , 'regexp did not return a match');
         },
-        'with passed augmented errors': 
+        'with passed augmented errors':
         { topic:
-          function(layout){ 
+          function(layout){
               var e = new Error("My Unique Error Message");
               e.augmented = "My Unique attribute value"
               e.augObj = { at1: "at2" }
@@ -105,15 +105,15 @@ vows.describe('log4js layouts').addBatch({
                 }
               });
           },
-          'should print error the contained error message': function(layoutOutput) { 
+          'should print error the contained error message': function(layoutOutput) {
               var m = layoutOutput.match(/\{ \[Error: My Unique Error Message\]/);
               assert.isArray(m);
           },
-          'should print error augmented string attributes': function(layoutOutput) { 
+          'should print error augmented string attributes': function(layoutOutput) {
               var m = layoutOutput.match(/augmented:\s'My Unique attribute value'/);
               assert.isArray(m);
           },
-          'should print error augmented object attributes': function(layoutOutput) { 
+          'should print error augmented object attributes': function(layoutOutput) {
               var m = layoutOutput.match(/augObj:\s\{ at1: 'at2' \}/);
               assert.isArray(m);
           }
