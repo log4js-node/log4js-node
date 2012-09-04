@@ -19,11 +19,11 @@ vows.describe('RollingFileStream').addBatch({
             return new RollingFileStream("test-rolling-file-stream", 1024, 5);
         },
         'should take a filename, file size in bytes, number of backups as arguments and return a FileWriteStream': function(stream) {
-                                                                              assert.instanceOf(stream, fs.FileWriteStream);
-                                                                              assert.equal(stream.filename, "test-rolling-file-stream");
-                                                                              assert.equal(stream.size, 1024);
-                                                                              assert.equal(stream.backups, 5);
-                                                                          },
+            assert.instanceOf(stream, fs.FileWriteStream);
+            assert.equal(stream.filename, "test-rolling-file-stream");
+            assert.equal(stream.size, 1024);
+            assert.equal(stream.backups, 5);
+        },
         'with default settings for the underlying stream': function(stream) {
             assert.equal(stream.mode, 420);
             assert.equal(stream.flags, 'a');
