@@ -110,7 +110,6 @@ If you have already defined an absolute path for one of the FileAppenders in the
           "filename": "relative/path/to/log_file.log",
           "maxLogSize": 20480,
           "backups": 3,
-          "pollInterval": 15,
           "category": "relative-logger"
         },
         {
@@ -119,7 +118,6 @@ If you have already defined an absolute path for one of the FileAppenders in the
           "filename": "/absolute/path/to/log_file.log",
           "maxLogSize": 20480,
           "backups": 10,
-          "pollInterval": 15,
           "category": "absolute-logger"          
         }
       ]

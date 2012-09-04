@@ -115,8 +115,7 @@ vows.describe('log4js').addBatch({
                         "type" : "file",
                         "filename" : "cheesy-wotsits.log",
                         "maxLogSize" : 1024,
-                        "backups" : 3,
-                        "pollInterval" : 15
+                        "backups" : 3
                     }
                 ]
             };
