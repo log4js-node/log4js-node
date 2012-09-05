@@ -2,7 +2,7 @@ var vows = require('vows')
 , assert = require('assert')
 , events = require('events')
 , fs = require('fs')
-, RollingFileStream = require('../lib/streams').RollingFileStream;
+, RollingFileStream = require('../../lib/streams').RollingFileStream;
 
 function remove(filename) {
     try {

@@ -1,7 +1,7 @@
 var vows = require('vows')
 , assert = require('assert')
 , events = require('events')
-, BufferedWriteStream = require('../lib/streams').BufferedWriteStream;
+, BufferedWriteStream = require('../../lib/streams').BufferedWriteStream;
 
 function FakeStream() {
     this.writes = [];
