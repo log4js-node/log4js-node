@@ -120,7 +120,7 @@ vows.describe('log4js configure').addBatch({
                                          'fs': fakeFS,
                                        }
                                      });
-
+            delete process.env.LOG4JS_CONFIG;
             return fileRead;
           },
           'should load the specified local configuration file' : function(fileRead) {
