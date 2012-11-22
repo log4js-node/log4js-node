@@ -243,9 +243,9 @@ vows.describe('log4js layouts').addBatch({
             test(args, '%-6p', 'DEBUG ');
             test(args, '%-8p', 'DEBUG   ');
             test(args, '%-10p', 'DEBUG     ');
+        },
+        '%[%r%] should output colored time': function(args) {
+            test(args, '%[%r%]', '\033[36m14:18:30\033[39m');
         }
-
     }
-
 }).export(module);
-
