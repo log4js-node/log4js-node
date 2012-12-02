@@ -1,6 +1,6 @@
 {
    "name": "log4js",
-   "version": "0.5.5",
+   "version": "0.5.6",
    "description": "Port of Log4js to work with node.",
    "keywords": [
        "logging",
