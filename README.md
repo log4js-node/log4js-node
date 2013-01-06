@@ -36,49 +36,49 @@ npm install log4js
 ## usage
 
 Minimalist version:
-
-           var log4js = require('log4js');
-           var logger = log4js.getLogger();
-           logger.debug("Some debug messages");
-
+```javascript
+var log4js = require('log4js');
+var logger = log4js.getLogger();
+logger.debug("Some debug messages");
+```
 By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
 
     [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 
 See example.js for a full example, but here's a snippet (also in fromreadme.js):
+```javascript
+var log4js = require('log4js'); 
+//console log is loaded by default, so you won't normally need to do this
+//log4js.loadAppender('console');
+log4js.loadAppender('file');
+//log4js.addAppender(log4js.appenders.console());
+log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
+```javascript
+var logger = log4js.getLogger('cheese');
+logger.setLevel('ERROR');
 
-    var log4js = require('log4js'); 
-    //console log is loaded by default, so you won't normally need to do this
-    //log4js.loadAppender('console');
-    log4js.loadAppender('file');
-    //log4js.addAppender(log4js.appenders.console());
-    log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
-
-    var logger = log4js.getLogger('cheese');
-    logger.setLevel('ERROR');
-
-    logger.trace('Entering cheese testing');
-    logger.debug('Got cheese.');
-    logger.info('Cheese is Gouda.');
-    logger.warn('Cheese is quite smelly.');
-    logger.error('Cheese is too ripe!');
-    logger.fatal('Cheese was breeding ground for listeria.');
-
+logger.trace('Entering cheese testing');
+logger.debug('Got cheese.');
+logger.info('Cheese is Gouda.');
+logger.warn('Cheese is quite smelly.');
+logger.error('Cheese is too ripe!');
+logger.fatal('Cheese was breeding ground for listeria.');
+```
 Output:
 
     [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
     [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
     
 The first 5 lines of the code above could also be written as:
-
-    var log4js = require('log4js');
-    log4js.configure({
-            appenders: [
-                    { type: 'console' },
-                    { type: 'file', filename: 'logs/cheese.log', category: 'cheese' }
-            ]
-    });
-    
+```javascript
+var log4js = require('log4js');
+log4js.configure({
+        appenders: [
+                { type: 'console' },
+                { type: 'file', filename: 'logs/cheese.log', category: 'cheese' }
+        ]
+});
+```
 
 ## configuration
 
@@ -91,17 +91,20 @@ By default, the configuration file is checked for changes every 60 seconds, and 
 
 To turn off configuration file change checking, configure with:
 
-    var log4js = require('log4js');
-    log4js.configure('my_log4js_configuration.json', {});
-
+```javascript
+var log4js = require('log4js');
+log4js.configure('my_log4js_configuration.json', {});
+```
 To specify a different period:
 
-    log4js.configure('file.json', { reloadSecs: 300 });
-
+```javascript
+log4js.configure('file.json', { reloadSecs: 300 });
+```
 For FileAppender you can also pass the path to the log directory as an option where all your log files would be stored.
 
-    log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
-
+```javascript
+log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
+```
 If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
 
     #### my_log4js_configuration.json ####
