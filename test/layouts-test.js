@@ -64,7 +64,7 @@ vows.describe('log4js layouts').addBatch({
                     colour: "green"
                   , toString: function() { return "ERROR"; }
                 }
-              }), "thing 1 'cheese'");
+              }), "thing 1 cheese");
           },
         'should output the first item even if it is not a string': function(layout) {
             assert.equal(layout({
@@ -89,21 +89,20 @@ vows.describe('log4js layouts').addBatch({
             }).match(/Error\s+at Object\..*\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
             , 'regexp did not return a match');
         },
-        'with passed augmented errors':
-        { topic:
-          function(layout){
-              var e = new Error("My Unique Error Message");
-              e.augmented = "My Unique attribute value"
-              e.augObj = { at1: "at2" }
-              return layout({
-                  data: [ e ]
-                , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
-                , categoryName: "cheese"
-                , level: {
-                    colour: "green"
-                  , toString: function() { return "ERROR"; }
-                }
-              });
+        'with passed augmented errors': { 
+          topic: function(layout){
+            var e = new Error("My Unique Error Message");
+            e.augmented = "My Unique attribute value"
+            e.augObj = { at1: "at2" }
+            return layout({
+              data: [ e ]
+              , startTime: new Date(2010, 11, 5, 14, 18, 30, 45)
+              , categoryName: "cheese"
+              , level: {
+                colour: "green"
+                , toString: function() { return "ERROR"; }
+              }
+            });
           },
           'should print error the contained error message': function(layoutOutput) {
               var m = layoutOutput.match(/\{ \[Error: My Unique Error Message\]/);
