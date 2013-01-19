@@ -21,10 +21,10 @@ NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of no
 
 ```javascript
 {
-    appenders: [
-        { type: "console" }
-    ],
-    replaceConsole: true
+  appenders: [
+    { type: "console" }
+  ],
+  replaceConsole: true
 }
 ```
 
@@ -42,9 +42,9 @@ var logger = log4js.getLogger();
 logger.debug("Some debug messages");
 ```
 By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
-
-    [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
-
+```bash
+[2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
+```
 See example.js for a full example, but here's a snippet (also in fromreadme.js):
 ```javascript
 var log4js = require('log4js'); 
@@ -53,7 +53,7 @@ var log4js = require('log4js');
 log4js.loadAppender('file');
 //log4js.addAppender(log4js.appenders.console());
 log4js.addAppender(log4js.appenders.file('logs/cheese.log'), 'cheese');
-```javascript
+
 var logger = log4js.getLogger('cheese');
 logger.setLevel('ERROR');
 
@@ -65,18 +65,18 @@ logger.error('Cheese is too ripe!');
 logger.fatal('Cheese was breeding ground for listeria.');
 ```
 Output:
-
-    [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
-    [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
-    
+```bash
+[2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
+[2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
+```    
 The first 5 lines of the code above could also be written as:
 ```javascript
 var log4js = require('log4js');
 log4js.configure({
-        appenders: [
-                { type: 'console' },
-                { type: 'file', filename: 'logs/cheese.log', category: 'cheese' }
-        ]
+  appenders: [
+    { type: 'console' },
+    { type: 'file', filename: 'logs/cheese.log', category: 'cheese' }
+  ]
 });
 ```
 
@@ -106,28 +106,28 @@ For FileAppender you can also pass the path to the log directory as an option wh
 log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
 ```
 If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
-
-    #### my_log4js_configuration.json ####
+```json
+#### my_log4js_configuration.json ####
+{
+  "appenders": [
     {
-      "appenders": [
-        {
-          "type": "file",
-          "filename": "relative/path/to/log_file.log",
-          "maxLogSize": 20480,
-          "backups": 3,
-          "category": "relative-logger"
-        },
-        {
-          "type": "file",
-          "absolute": true,
-          "filename": "/absolute/path/to/log_file.log",
-          "maxLogSize": 20480,
-          "backups": 10,
-          "category": "absolute-logger"          
-        }
-      ]
+      "type": "file",
+      "filename": "relative/path/to/log_file.log",
+      "maxLogSize": 20480,
+      "backups": 3,
+      "category": "relative-logger"
+    },
+    {
+      "type": "file",
+      "absolute": true,
+      "filename": "/absolute/path/to/log_file.log",
+      "maxLogSize": 20480,
+      "backups": 10,
+      "category": "absolute-logger"          
     }
-    
+  ]
+}
+```    
 Documentation for most of the core appenders can be found on the [wiki](log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
 
 ## Documentation
