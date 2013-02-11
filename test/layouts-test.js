@@ -4,9 +4,10 @@ assert = require('assert');
 //used for patternLayout tests.
 function test(args, pattern, value) {
     var layout = args[0]
-    , event = args[1];
+    , event = args[1]
+    , tokens = args[2];
 
-    assert.equal(layout(pattern)(event), value);
+    assert.equal(layout(pattern, tokens)(event), value);
 }
 
 vows.describe('log4js layouts').addBatch({
@@ -175,8 +176,12 @@ vows.describe('log4js layouts').addBatch({
                 level: {
                     toString: function() { return "DEBUG"; }
                 }
-            }, layout = require('../lib/layouts').patternLayout;
-            return [layout, event];
+            }, layout = require('../lib/layouts').patternLayout
+            , tokens = {
+                testString: 'testStringToken',
+                testFunction: function() { return 'testFunctionToken'; }
+            };
+            return [layout, event, tokens];
         },
 
         'should default to "time logLevel loggerName - message"': function(args) {
@@ -246,6 +251,18 @@ vows.describe('log4js layouts').addBatch({
         },
         '%[%r%] should output colored time': function(args) {
             test(args, '%[%r%]', '\033[36m14:18:30\033[39m');
-        }
+        },
+        '%x{testString} should output the string stored in tokens': function(args) {
+            test(args, '%x{testString}', 'testStringToken');
+        },
+        '%x{testFunction} should output the result of the function stored in tokens': function(args) {
+            test(args, '%x{testFunction}', 'testFunctionToken');
+        },
+        '%x{doesNotExist} should output the string stored in tokens': function(args) {
+            test(args, '%x{doesNotExist}', '%x{doesNotExist}');
+        },
+        '%x should output the string stored in tokens': function(args) {
+            test(args, '%x', '%x');
+        },
     }
 }).export(module);
