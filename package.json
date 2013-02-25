@@ -1,6 +1,6 @@
 {
    "name": "log4js",
-   "version": "0.5.6",
+   "version": "0.5.7",
    "description": "Port of Log4js to work with node.",
    "keywords": [
        "logging",
@@ -26,7 +26,8 @@
        "lib": "lib"
    },
    "dependencies": {
-       "async": "0.1.15"
+       "async": "0.1.15",
+       "dequeue": "1.0.3"
    },
    "devDependencies": {
        "vows": "0.6.2",
