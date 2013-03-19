@@ -108,7 +108,13 @@ vows.describe('log4js fileAppender').addBatch({
             var that = this;
             //give the system a chance to open the stream
             setTimeout(function() {
-                fs.readdir(__dirname, that.callback);
+              fs.readdir(__dirname, function(err, files) { 
+		if (files) { 
+		  that.callback(null, files.sort()); 
+		} else { 
+		  that.callback(err, files); 
+		}
+	      });
             }, 200);
         },
         'the log files': {
@@ -120,30 +126,30 @@ vows.describe('log4js fileAppender').addBatch({
                 assert.equal(files.length, 3);
             },
             'should be named in sequence': function (files) {
-                assert.deepEqual(files.sort(), ['fa-maxFileSize-with-backups-test.log', 'fa-maxFileSize-with-backups-test.log.1', 'fa-maxFileSize-with-backups-test.log.2']);
+                assert.deepEqual(files, ['fa-maxFileSize-with-backups-test.log', 'fa-maxFileSize-with-backups-test.log.1', 'fa-maxFileSize-with-backups-test.log.2']);
             },
             'and the contents of the first file': {
                 topic: function(logFiles) {
-                    fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
-                },
-                'should be empty because the last log message triggers rolling': function(contents) {
-                    assert.isEmpty(contents);
-                }
-            },
-            'and the contents of the second file': {
-                topic: function(logFiles) {
-                    fs.readFile(path.join(__dirname, logFiles[1]), "utf8", this.callback);
+                  fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
                 },
                 'should be the last log message': function(contents) {
                     assert.include(contents, 'This is the fourth log message.');
                 }
             },
-            'and the contents of the third file': {
+            'and the contents of the second file': {
                 topic: function(logFiles) {
-                    fs.readFile(path.join(__dirname, logFiles[2]), "utf8", this.callback);
+                  fs.readFile(path.join(__dirname, logFiles[1]), "utf8", this.callback);
                 },
                 'should be the third log message': function(contents) {
                     assert.include(contents, 'This is the third log message.');
+                }
+            },
+            'and the contents of the third file': {
+                topic: function(logFiles) {
+                  fs.readFile(path.join(__dirname, logFiles[2]), "utf8", this.callback);
+                },
+                'should be the second log message': function(contents) {
+                    assert.include(contents, 'This is the second log message.');
                 }
             }
         }

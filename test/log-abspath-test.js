@@ -50,9 +50,10 @@ vows.describe('log4js-abspath').addBatch({
                         {
                             RollingFileStream: function(file) {
                                 fileOpened = file;
-                            },
-                            BufferedWriteStream: function(other) {
-                                return { on: function() { }, end: function() {} }
+			      return {
+				on: function() {},
+				end: function() {}
+			      };
                             }
                         }
                       }

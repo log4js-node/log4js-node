@@ -5,13 +5,13 @@ var vows = require('vows'),
     log4js = require('../lib/log4js');
 
 function removeFile(filename) {
-    return function() {
-        fs.unlink(path.join(__dirname, filename), function(err) {
-            if (err) {
-                console.log("Could not delete ", filename, err);
-            }
-        });
-    };
+  return function() {
+    fs.unlink(path.join(__dirname, filename), function(err) {
+      if (err) {
+        console.log("Could not delete ", filename, err);
+      }
+    });
+  };
 }
 
 vows.describe('../lib/appenders/dateFile').addBatch({
