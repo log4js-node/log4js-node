@@ -130,13 +130,13 @@ If you have already defined an absolute path for one of the FileAppenders in the
   ]
 }
 ```    
-Documentation for most of the core appenders can be found on the [wiki](log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
+Documentation for most of the core appenders can be found on the [wiki](https://github.com/nomiddlename/log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
 
 ## Documentation
-See the [wiki](log4js-node/wiki). Improve the [wiki](log4js-node/wiki), please.
+See the [wiki](https://github.com/nomiddlename/log4js-node/wiki). Improve the [wiki](https://github.com/nomiddlename/log4js-node/wiki), please.
 
 ## Contributing
-Contributions welcome, but take a look at the [rules](log4js-node/wiki/Contributing) first.
+Contributions welcome, but take a look at the [rules](https://github.com/nomiddlename/log4js-node/wiki/Contributing) first.
 
 ## License
 
