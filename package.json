@@ -1,6 +1,6 @@
 {
    "name": "log4js",
-   "version": "0.6.0",
+   "version": "0.6.1",
    "description": "Port of Log4js to work with node.",
    "keywords": [
        "logging",
@@ -17,7 +17,9 @@
    "bugs": {
        "url": "http://github.com/nomiddlename/log4js-node/issues"
    },
-   "engines": [ "node >=0.10" ],
+   "engines": {
+     "node":  "~0.10"
+   },
    "scripts": {
        "test": "vows"
    },
