@@ -30,24 +30,24 @@ function makeFakeNet() {
             };
         },
         createServer: function(cb) {
-            var fakeNet = this;
-            cb({
-                remoteAddress: '1.2.3.4',
-                remotePort: '1234',
-                setEncoding: function(encoding) {
-                    fakeNet.encoding = encoding;
-                },
-                on: function(event, cb) {
-                    fakeNet.cbs[event] = cb;
-                }
-            });
+          var fakeNet = this;
+          cb({
+            remoteAddress: '1.2.3.4',
+            remotePort: '1234',
+            setEncoding: function(encoding) {
+              fakeNet.encoding = encoding;
+            },
+            on: function(event, cb) {
+              fakeNet.cbs[event] = cb;
+            }
+          });
 
-            return {
-                listen: function(port, host) {
-                    fakeNet.port = port;
-                    fakeNet.host = host;
-                }
-            };
+          return {
+            listen: function(port, host) {
+              fakeNet.port = port;
+              fakeNet.host = host;
+            }
+          };
         }
     };
 }
@@ -183,7 +183,6 @@ vows.describe('Multiprocess Appender').addBatch({
             topic: function(net) {
               var logString = JSON.stringify({ level: { level: 10000, levelStr: 'DEBUG' }, data: ['some debug']}) + '__LOG4JS__';
 
-                net.cbs['connect']();
                 net.cbs['data'](JSON.stringify({ level: { level: 40000, levelStr: 'ERROR' }, data: ['an error message'] }) + '__LOG4JS__');
                 net.cbs['data'](logString.substring(0, 10));
                 net.cbs['data'](logString.substring(10));
