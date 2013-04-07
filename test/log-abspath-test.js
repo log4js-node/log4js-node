@@ -56,6 +56,12 @@ vows.describe('log4js-abspath').addBatch({
 			      };
                             }
                         }
+                      },
+                      globals: {
+                        process: {
+                          version: "v0.10.1",
+                          on: function() {}
+                        }
                       }
                     }
                 );

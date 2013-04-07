@@ -18,7 +18,7 @@
     "url": "http://github.com/nomiddlename/log4js-node/issues"
   },
   "engines": {
-    "node": "~0.10"
+    "node": ">=0.6.0"
   },
   "scripts": {
     "test": "vows"
@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "async": "0.1.15",
-    "dequeue": "1.0.3"
+    "dequeue": "1.0.3",
+    "semver": "~1.1.4"
   },
   "devDependencies": {
     "vows": "0.7.0",

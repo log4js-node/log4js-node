@@ -2,6 +2,8 @@ var vows = require('vows')
 , fs = require('fs')
 , path = require('path')
 , log4js = require('../lib/log4js')
+, sandbox = require('sandboxed-module')
+, semver = require('semver')
 , assert = require('assert');
 
 log4js.clearAppenders();
@@ -17,9 +19,10 @@ function remove(filename) {
 vows.describe('log4js fileAppender').addBatch({
     'adding multiple fileAppenders': {
       topic: function () {
-          var listenersCount = process.listeners('exit').length
-            , logger = log4js.getLogger('default-settings')
-            , count = 5, logfile;
+        var listenersCount = process.listeners('exit').length
+        , logger = log4js.getLogger('default-settings')
+        , count = 5
+        , logfile;
 
           while (count--) {
               logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
@@ -109,12 +112,12 @@ vows.describe('log4js fileAppender').addBatch({
             //give the system a chance to open the stream
             setTimeout(function() {
               fs.readdir(__dirname, function(err, files) { 
-		if (files) { 
-		  that.callback(null, files.sort()); 
-		} else { 
-		  that.callback(err, files); 
-		}
-	      });
+		            if (files) { 
+		              that.callback(null, files.sort()); 
+		            } else { 
+		              that.callback(err, files); 
+		            }
+	            });
             }, 200);
         },
         'the log files': {
@@ -133,7 +136,14 @@ vows.describe('log4js fileAppender').addBatch({
                   fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
                 },
                 'should be the last log message': function(contents) {
+                  //there's a difference in behaviour between
+                  //old-style streams and new ones (the new ones are
+                  //correct)
+                  if (semver.satisfies(process.version, ">=0.10.0")) {
                     assert.include(contents, 'This is the fourth log message.');
+                  } else {
+                    assert.isEmpty(contents);
+                  }
                 }
             },
             'and the contents of the second file': {
@@ -141,7 +151,14 @@ vows.describe('log4js fileAppender').addBatch({
                   fs.readFile(path.join(__dirname, logFiles[1]), "utf8", this.callback);
                 },
                 'should be the third log message': function(contents) {
+                  //there's a difference in behaviour between
+                  //old-style streams and new ones (the new ones are
+                  //correct)
+                  if (semver.satisfies(process.version, ">=0.10.0")) {
                     assert.include(contents, 'This is the third log message.');
+                  } else {
+                    assert.include(contents, 'This is the fourth log message.');
+                  } 
                 }
             },
             'and the contents of the third file': {
@@ -149,31 +166,98 @@ vows.describe('log4js fileAppender').addBatch({
                   fs.readFile(path.join(__dirname, logFiles[2]), "utf8", this.callback);
                 },
                 'should be the second log message': function(contents) {
+                  //there's a difference in behaviour between
+                  //old-style streams and new ones (the new ones are
+                  //correct)
+                  if (semver.satisfies(process.version, ">=0.10.0")) {
                     assert.include(contents, 'This is the second log message.');
+                  } else {
+                    assert.include(contents, 'This is the third log message.');
+                  }
                 }
             }
         }
     }
 }).addBatch({
-    'configure' : {
-        'with fileAppender': {
+  'configure' : {
+    'with fileAppender': {
 	    topic: function() {
-	        var log4js = require('../lib/log4js')
-              , logger;
-	        //this config file defines one file appender (to ./tmp-tests.log)
-	        //and sets the log level for "tests" to WARN
-                log4js.configure('test/log4js.json');
-                logger = log4js.getLogger('tests');
-	        logger.info('this should not be written to the file');
-	        logger.warn('this should be written to the file');
+	      var log4js = require('../lib/log4js')
+        , logger;
+	      //this config file defines one file appender (to ./tmp-tests.log)
+	      //and sets the log level for "tests" to WARN
+        log4js.configure('test/log4js.json');
+        logger = log4js.getLogger('tests');
+	      logger.info('this should not be written to the file');
+	      logger.warn('this should be written to the file');
 
-                fs.readFile('tmp-tests.log', 'utf8', this.callback);
+        fs.readFile('tmp-tests.log', 'utf8', this.callback);
 	    },
 	    'should load appender configuration from a json file': function(err, contents) {
-	        assert.include(contents, 'this should be written to the file\n');
-                assert.equal(contents.indexOf('this should not be written to the file'), -1);
+	      assert.include(contents, 'this should be written to the file\n');
+        assert.equal(contents.indexOf('this should not be written to the file'), -1);
 	    }
-        }
     }
-
+  }
+}).addBatch({
+  'with node version less than 0.10': {
+    topic: function() {
+      var oldStyleStreamCreated = false
+      , appender = sandbox.require(
+        '../lib/appenders/file',
+        { 
+          globals: {
+            process: {
+              version: "v0.8.1",
+              on: function() {}
+            }
+          },
+          requires: {
+            '../old-streams': {
+              BufferedWriteStream: function() {
+                oldStyleStreamCreated = true;
+                this.on =  function() {};
+              },
+              RollingFileStream: function() {
+                this.on =  function() {};
+              }
+            }
+          }
+        }
+      ).appender('cheese.log', null, 1000, 1);
+      
+      return oldStyleStreamCreated;
+    },
+    'should load the old-style streams': function(loaded) {
+      assert.isTrue(loaded);
+    }
+  },
+  'with node version greater than or equal to 0.10': {
+    topic: function() {
+      var oldStyleStreamCreated = false
+      , appender = sandbox.require(
+        '../lib/appenders/file',
+        { 
+          globals: {
+            process: {
+              version: "v0.10.1",
+              on: function() {}
+            }
+          },
+          requires: {
+            '../streams': {
+              RollingFileStream: function() {
+                this.on =  function() {};
+              }
+            }
+          }
+        }
+      ).appender('cheese.log', null, 1000, 1);
+      
+      return oldStyleStreamCreated;
+    },
+    'should load the new streams': function(loaded) {
+      assert.isFalse(loaded);
+    }
+  }
 }).export(module);

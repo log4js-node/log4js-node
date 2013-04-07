@@ -1,8 +1,9 @@
 var vows = require('vows'),
-    assert = require('assert'),
-    path = require('path'),
-    fs = require('fs'),
-    log4js = require('../lib/log4js');
+assert = require('assert'),
+path = require('path'),
+fs = require('fs'),
+sandbox = require('sandboxed-module'),
+log4js = require('../lib/log4js');
 
 function removeFile(filename) {
   return function() {
@@ -95,4 +96,65 @@ vows.describe('../lib/appenders/dateFile').addBatch({
         }
 
     }
+}).addBatch({
+  'with node version less than 0.10': {
+    topic: function() {
+      var oldStyleStreamCreated = false
+      , appender = sandbox.require(
+        '../lib/appenders/dateFile',
+        { 
+          globals: {
+            process: {
+              version: "v0.8.1",
+              on: function() {}
+            }
+          },
+          requires: {
+            '../old-streams': {
+              BufferedWriteStream: function() {
+                oldStyleStreamCreated = true;
+                this.on =  function() {};
+              },
+              DateRollingFileStream: function() {
+                this.on =  function() {};
+              }
+            }
+          }
+        }
+      ).appender('cheese.log', null, 1000, 1);
+      
+      return oldStyleStreamCreated;
+    },
+    'should load the old-style streams': function(loaded) {
+      assert.isTrue(loaded);
+    }
+  },
+  'with node version greater than or equal to 0.10': {
+    topic: function() {
+      var oldStyleStreamCreated = false
+      , appender = sandbox.require(
+        '../lib/appenders/dateFile',
+        { 
+          globals: {
+            process: {
+              version: "v0.10.1",
+              on: function() {}
+            }
+          },
+          requires: {
+            '../streams': {
+              DateRollingFileStream: function() {
+                this.on =  function() {};
+              }
+            }
+          }
+        }
+      ).appender('cheese.log', null, 1000, 1);
+      
+      return oldStyleStreamCreated;
+    },
+    'should load the new streams': function(loaded) {
+      assert.isFalse(loaded);
+    }
+  }
 }).exportTo(module);
