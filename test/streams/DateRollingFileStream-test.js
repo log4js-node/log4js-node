@@ -1,9 +1,17 @@
 var vows = require('vows')
 , assert = require('assert')
-, streams = require('stream')
 , fs = require('fs')
-, DateRollingFileStream = require('../../lib/streams').DateRollingFileStream
+, semver = require('semver')
+, streams
+, DateRollingFileStream
 , testTime = new Date(2012, 8, 12, 10, 37, 11);
+
+if (semver.satisfies(process.version, '>=0.10.0')) {
+  streams = require('stream');
+} else {
+  streams = require('readable-stream');
+}
+DateRollingFileStream = require('../../lib/streams').DateRollingFileStream
 
 function cleanUp(filename) {
     return function() {

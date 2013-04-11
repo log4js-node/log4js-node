@@ -3,8 +3,16 @@ var vows = require('vows')
 , assert = require('assert')
 , events = require('events')
 , fs = require('fs')
-, streams = require('stream')
-, RollingFileStream = require('../../lib/streams').RollingFileStream;
+, semver = require('semver')
+, streams
+, RollingFileStream;
+
+if (semver.satisfies(process.version, '>=0.10.0')) {
+  streams = require('stream');
+} else {
+  streams = require('readable-stream');
+}
+RollingFileStream = require('../../lib/streams').RollingFileStream;
 
 function remove(filename) {
     try {
