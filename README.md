@@ -17,8 +17,6 @@ Out of the box it supports the following features:
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
 
-NOTE: version 0.6.0 onwards will only work with node v0.10.x upwards, since it makes use of the new streams API. If you're using node 0.8 or lower, use log4js@0.5.7.
-
 NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of node's console.log functions. Do this either by calling `log4js.replaceConsole()` or configuring with an object or json file like this:
 
 ```javascript
