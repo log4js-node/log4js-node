@@ -92,7 +92,43 @@ vows.describe('../lib/appenders/dateFile').addBatch({
 	        assert.include(contents, 'this should be written to the file\n');
                 assert.equal(contents.indexOf('this should not be written to the file'), -1);
 	    }
-        }
+        },
+	'with options.alwaysIncludePattern': {
+	  topic: function() {
+	    var log4js = require('../lib/log4js')
+	      , format = require('../lib/date_format')
+	      , logger
+	      , options = {
+		  "appenders": [
+		    {
+		      "category": "tests", 
+		      "type": "dateFile", 
+		      "filename": "test/date-file-test",
+		      "pattern": "-from-MM-dd.log",
+		      "alwaysIncludePattern": true,
+		      "layout": { 
+			"type": "messagePassThrough" 
+		      }
+		    }
+		  ]
+		}
+	      , thisTime = format.asString(options.appenders[0].pattern, new Date());
+	    log4js.clearAppenders();
+	    log4js.configure(options);
+	    logger = log4js.getLogger('tests');
+	    logger.warn('this should be written to the file');
+	    return thisTime;
+	  },
+	  teardown: function(topic) {
+	    removeFile('date-file-test' + topic);
+	  },
+	  'should create file with the correct pattern': function(topic) {
+	    assert.equal(fs.existsSync(path.join(__dirname, 'date-file-test' + topic)), true);
+	  },
+	  'should not create file with the base filename': function(topic) {
+	    assert.equal(fs.existsSync(path.join(__dirname, 'date-file-test')), false);
+	  }
+	}
 
     }
 }).exportTo(module);
