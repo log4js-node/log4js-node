@@ -72,63 +72,58 @@ vows.describe('../lib/appenders/dateFile').addBatch({
 
     }
 }).addBatch({
-    'configure': {
-        'with dateFileAppender': {
+  'configure': {
+    'with dateFileAppender': {
 	    topic: function() {
-	        var log4js = require('../lib/log4js')
-                  , logger;
-	        //this config file defines one file appender (to ./date-file-test.log)
-	        //and sets the log level for "tests" to WARN
-                log4js.configure('test/with-dateFile.json');
-                logger = log4js.getLogger('tests');
-	        logger.info('this should not be written to the file');
-	        logger.warn('this should be written to the file');
-
-                fs.readFile(path.join(__dirname, 'date-file-test.log'), 'utf8', this.callback);
+	      var log4js = require('../lib/log4js')
+        , logger;
+	      //this config file defines one file appender (to ./date-file-test.log)
+	      //and sets the log level for "tests" to WARN
+        log4js.configure('test/with-dateFile.json');
+        logger = log4js.getLogger('tests');
+	      logger.info('this should not be written to the file');
+	      logger.warn('this should be written to the file');
+        
+        fs.readFile(path.join(__dirname, 'date-file-test.log'), 'utf8', this.callback);
 	    },
-            teardown: removeFile('date-file-test.log'),
-
+      teardown: removeFile('date-file-test.log'),
+      
 	    'should load appender configuration from a json file': function(err, contents) {
-	        assert.include(contents, 'this should be written to the file' + require('os').EOL);
-                assert.equal(contents.indexOf('this should not be written to the file'), -1);
+	      assert.include(contents, 'this should be written to the file' + require('os').EOL);
+        assert.equal(contents.indexOf('this should not be written to the file'), -1);
 	    }
-        },
-	'with options.alwaysIncludePattern': {
-	  topic: function() {
-	    var log4js = require('../lib/log4js')
+    },
+	  'with options.alwaysIncludePattern': {
+	    topic: function() {
+	      var log4js = require('../lib/log4js')
 	      , format = require('../lib/date_format')
 	      , logger
 	      , options = {
-		  "appenders": [
-		    {
-		      "category": "tests", 
-		      "type": "dateFile", 
-		      "filename": "test/date-file-test",
-		      "pattern": "-from-MM-dd.log",
-		      "alwaysIncludePattern": true,
-		      "layout": { 
-			"type": "messagePassThrough" 
-		      }
+		      "appenders": [
+		        {
+		          "category": "tests", 
+		          "type": "dateFile", 
+		          "filename": "test/date-file-test",
+		          "pattern": "-from-MM-dd.log",
+		          "alwaysIncludePattern": true,
+		          "layout": { 
+			          "type": "messagePassThrough" 
+		          }
+		        }
+		      ]
 		    }
-		  ]
-		}
 	      , thisTime = format.asString(options.appenders[0].pattern, new Date());
-	    log4js.clearAppenders();
-	    log4js.configure(options);
-	    logger = log4js.getLogger('tests');
-	    logger.warn('this should be written to the file');
-	    return thisTime;
-	  },
-	  teardown: function(topic) {
-	    removeFile('date-file-test' + topic);
-	  },
-	  'should create file with the correct pattern': function(topic) {
-	    assert.equal(fs.existsSync(path.join(__dirname, 'date-file-test' + topic)), true);
-	  },
-	  'should not create file with the base filename': function(topic) {
-	    assert.equal(fs.existsSync(path.join(__dirname, 'date-file-test')), false);
+	      log4js.clearAppenders();
+	      log4js.configure(options);
+	      logger = log4js.getLogger('tests');
+	      logger.warn('this should be written to the file with the appended date');
+        this.teardown = removeFile('date-file-test' + thisTime);
+	      fs.readFile(path.join(__dirname, 'date-file-test' + thisTime), 'utf8', this.callback);
+	    },
+	    'should create file with the correct pattern': function(contents) {
+	      assert.include(contents, 'this should be written to the file with the appended date');
+	    }
 	  }
-	}
-
-    }
+      
+  }
 }).exportTo(module);

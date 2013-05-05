@@ -76,8 +76,8 @@ vows.describe('DateRollingFileStream').addBatch({
           var that = this,
           stream = new DateRollingFileStream(__dirname + '/test-date-rolling-file-stream-5', '.yyyy-MM-dd', null, now);
           stream.write("First message\n", 'utf8', function() {
-	    that.callback(null, stream);
-	  });
+	          that.callback(null, stream);
+	        });
         },
         teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-5'),
 
