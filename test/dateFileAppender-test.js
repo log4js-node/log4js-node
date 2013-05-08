@@ -113,6 +113,7 @@ vows.describe('../lib/appenders/dateFile').addBatch({
 		      ]
 		    }
 	      , thisTime = format.asString(options.appenders[0].pattern, new Date());
+	      fs.writeFileSync(path.join(__dirname, 'date-file-test' + thisTime), "this is existing data" + require('os').EOL, 'utf8');
 	      log4js.clearAppenders();
 	      log4js.configure(options);
 	      logger = log4js.getLogger('tests');
@@ -122,6 +123,9 @@ vows.describe('../lib/appenders/dateFile').addBatch({
 	    },
 	    'should create file with the correct pattern': function(contents) {
 	      assert.include(contents, 'this should be written to the file with the appended date');
+	    },
+	    'should not overwrite the file on open (bug found in issue #132)': function(contents) {
+	      assert.include(contents, 'this is existing data');
 	    }
 	  }
       
