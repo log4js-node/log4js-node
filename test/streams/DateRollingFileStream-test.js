@@ -125,6 +125,63 @@ vows.describe('DateRollingFileStream').addBatch({
                 }
             }
         }
+    },
+
+    'with alwaysIncludePattern': {
+        topic: function() {
+          var that = this,
+	      testTime = new Date(2012, 8, 12, 0, 10, 12),
+	      stream = new DateRollingFileStream(__dirname + '/test-date-rolling-file-stream-pattern', '.yyyy-MM-dd', {alwaysIncludePattern: true}, now);
+	      stream.write("First message\n", 'utf8', function() {
+	        that.callback(null, stream);
+	      });
+        },
+        teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12'),
+
+        'should create a file with the pattern set': {
+            topic: function(stream) {
+                fs.readFile(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', this.callback);
+            },
+            'file should contain first message': function(result) {
+                assert.equal(result.toString(), "First message\n");
+            }
+        },
+
+        'when the day changes': {
+            topic: function(stream) {
+              testTime = new Date(2012, 8, 13, 0, 10, 12);
+              stream.write("Second message\n", 'utf8', this.callback);
+            },
+            teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-13'),
+
+
+            'the number of files': {
+                topic: function() {
+                    fs.readdir(__dirname, this.callback);
+                },
+                'should be two': function(files) {
+                    assert.equal(files.filter(function(file) { return file.indexOf('test-date-rolling-file-stream-pattern') > -1; }).length, 2);
+                }
+            },
+
+            'the file with the later date': {
+                topic: function() {
+                    fs.readFile(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-13', this.callback);
+                },
+                'should contain the second message': function(contents) {
+                    assert.equal(contents.toString(), "Second message\n");
+                }
+            },
+
+            'the file with the date': {
+                topic: function() {
+                    fs.readFile(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', this.callback);
+                },
+                'should contain the first message': function(contents) {
+                    assert.equal(contents.toString(), "First message\n");
+                }
+            }
+        }
     }
 
 }).exportTo(module);
