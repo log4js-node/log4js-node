@@ -13,7 +13,8 @@ function setupLogging(category, options) {
 				sendMail: function (msg, callback) {
 				    msgs.push(msg);
 				    callback(null, true);
-				}
+				},
+        close: function() {}
 			};
 		}
     };
