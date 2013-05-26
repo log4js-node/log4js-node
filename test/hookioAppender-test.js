@@ -1,6 +1,7 @@
-var vows = require('vows');
-var assert = require('assert');
-var sandbox = require('sandboxed-module');
+"use strict";
+var vows = require('vows')
+, assert = require('assert')
+, sandbox = require('sandboxed-module');
 
 function fancyResultingHookioAppender(opts) {
   var result = { ons: {}, emissions: {}, logged: [], configs: [] };
@@ -13,7 +14,7 @@ function fancyResultingHookioAppender(opts) {
       result.actualLoggerConfig = config;
       return function log(logEvent) {
         result.logged.push(logEvent);
-      }
+      };
     };
   };
 
@@ -32,7 +33,8 @@ function fancyResultingHookioAppender(opts) {
     result.emissions[eventName].push({data: data});
     var on = '*::' + eventName;
     if (eventName !== 'hook::ready' && result.ons[on]) {
-      result.ons[on].callingCount = result.ons[on].callingCount ? result.ons[on].callingCount += 1 : 1;
+      result.ons[on].callingCount = 
+        result.ons[on].callingCount ? result.ons[on].callingCount += 1 : 1;
       result.ons[on].functionToExec(data);
     }
   };
@@ -52,9 +54,28 @@ vows.describe('log4js hookioAppender').addBatch({
   'master': {
     topic: function() {
       var fancy = fancyResultingHookioAppender();
-      var logger = fancy.theModule.configure({ name: 'ohno', mode: 'master', 'hook-port': 5001, appender: { type: 'file' } });
-      logger({ level: { levelStr: 'INFO' }, data: "ALRIGHTY THEN", startTime: '2011-10-27T03:53:16.031Z' });
-      logger({ level: { levelStr: 'DEBUG' }, data: "OH WOW", startTime: '2011-10-27T04:53:16.031Z'});
+      var logger = fancy.theModule.configure(
+        { 
+          name: 'ohno', 
+          mode: 'master', 
+          'hook-port': 5001, 
+          appender: { type: 'file' } 
+        }
+      );
+      logger(
+        { 
+          level: { levelStr: 'INFO' }, 
+          data: "ALRIGHTY THEN", 
+          startTime: '2011-10-27T03:53:16.031Z' 
+        }
+      );
+      logger(
+        { 
+          level: { levelStr: 'DEBUG' }, 
+          data: "OH WOW", 
+          startTime: '2011-10-27T04:53:16.031Z'
+        }
+      );
       return fancy.theResult;
     },
 
@@ -84,9 +105,21 @@ vows.describe('log4js hookioAppender').addBatch({
     'should emit logging events to the master': {
       topic: function() {
         var fancy = fancyResultingHookioAppender();
-        var logger = fancy.theModule.configure({ name: 'ohno', mode: 'worker', appender: { type: 'file' } });
-        logger({ level: { levelStr: 'INFO' }, data: "ALRIGHTY THEN", startTime: '2011-10-27T03:53:16.031Z' });
-        logger({ level: { levelStr: 'DEBUG' }, data: "OH WOW", startTime: '2011-10-27T04:53:16.031Z'});
+        var logger = fancy.theModule.configure({ 
+          name: 'ohno', 
+          mode: 'worker', 
+          appender: { type: 'file' } 
+        });
+        logger({ 
+          level: { levelStr: 'INFO' }, 
+          data: "ALRIGHTY THEN", 
+          startTime: '2011-10-27T03:53:16.031Z' 
+        });
+        logger({ 
+          level: { levelStr: 'DEBUG' }, 
+          data: "OH WOW", 
+          startTime: '2011-10-27T04:53:16.031Z'
+        });
         return fancy.theResult;
       },
 
