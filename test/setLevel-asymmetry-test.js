@@ -1,5 +1,9 @@
-// This test shows an asymmetry between setLevel and isLevelEnabled (in log4js-node@0.4.3 and earlier):
-// 1) setLevel("foo") works, but setLevel(log4js.levels.foo) silently does not (sets the level to TRACE).
+"use strict";
+/* jshint loopfunc: true */
+// This test shows an asymmetry between setLevel and isLevelEnabled 
+// (in log4js-node@0.4.3 and earlier):
+// 1) setLevel("foo") works, but setLevel(log4js.levels.foo) silently 
+//    does not (sets the level to TRACE).
 // 2) isLevelEnabled("foo") works as does isLevelEnabled(log4js.levels.foo).
 //
 
@@ -19,7 +23,8 @@ var strLevels= ['Trace','Debug','Info','Warn','Error','Fatal'];
 
 var log4jsLevels =[];
 // populate an array with the log4js.levels that match the strLevels.
-// Would be nice if we could iterate over log4js.levels instead, but log4js.levels.toLevel prevents that for now.
+// Would be nice if we could iterate over log4js.levels instead, 
+// but log4js.levels.toLevel prevents that for now.
 strLevels.forEach(function(l) {
   log4jsLevels.push(log4js.levels.toLevel(l));
 });
@@ -29,18 +34,19 @@ strLevels.forEach(function(l) {
 var levelTypes = {
   'string': strLevels,
   'log4js.levels.level': log4jsLevels,
-}
+};
 
 // Set up the basic vows batch for this test
 var batch = {
   setLevel: {
   }
-}
+};
 
 showProgress('Populating batch object...');
 
 // Populating the batch object programmatically,
-// as I don't have the patience to manually populate it with the (strLevels.length x levelTypes.length) ^ 2 = 144 possible test combinations
+// as I don't have the patience to manually populate it with 
+// the (strLevels.length x levelTypes.length) ^ 2 = 144 possible test combinations
 for (var type in levelTypes) {
   var context = 'is called with a '+type;
   var levelsToTest = levelTypes[type];
@@ -58,15 +64,30 @@ for (var type in levelTypes) {
         var t = type;
         var ct = comparisonType;
         var expectedResult = log4jsLevel.isLessThanOrEqualTo(comparisonLevel);
-        var vow = 'isLevelEnabled('+comparisonLevel+') called with a '+comparisonType+' should return '+expectedResult;
+        var vow = 'isLevelEnabled(' + comparisonLevel + 
+          ') called with a ' + comparisonType + 
+          ' should return ' + expectedResult;
         showProgress('Setting up the vows vow for '+vow);
 
         batch.setLevel[context][subContext][vow] = function(levelToSet) {
           logger.setLevel(levelToSet);
-          showProgress('*** Checking setLevel( '+level+' ) of type '+t+', and isLevelEnabled( '+comparisonLevel+' ) of type '+ct+'. Expecting: '+expectedResult);
-          assert.equal(logger.isLevelEnabled(comparisonLevel), expectedResult, 'Failed: calling setLevel( '+level+' ) with type '+type+', isLevelEnabled( '+comparisonLevel+' ) of type '+comparisonType+' did not return '+expectedResult);
+          showProgress(
+            '*** Checking setLevel( ' + level + 
+              ' ) of type ' + t + 
+              ', and isLevelEnabled( ' + comparisonLevel + 
+              ' ) of type ' + ct + '. Expecting: ' + expectedResult
+          );
+          assert.equal(
+            logger.isLevelEnabled(comparisonLevel), 
+            expectedResult, 
+            'Failed: calling setLevel( ' + level + 
+              ' ) with type ' + type + 
+              ', isLevelEnabled( ' + comparisonLevel + 
+              ' ) of type ' + comparisonType + 
+              ' did not return ' + expectedResult
+          );
         };
-      })
+      });
     }
   });
 
