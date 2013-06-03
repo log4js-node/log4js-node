@@ -26,7 +26,7 @@ vows.describe('log4js layouts').addBatch({
           toString: function() { return "ERROR"; }
         }
       });
-      assert.equal(output, '\0x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \0x1B[39mnonsense');
+      assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mnonsense');
     },
     
     'should support the console.log format for the message': function(layout) {
@@ -38,7 +38,7 @@ vows.describe('log4js layouts').addBatch({
           toString: function() { return "ERROR"; }
         }
       });
-      assert.equal(output, '\0x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \0x1B[39mthing 2');
+      assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mthing 2');
     }
   },
   
@@ -258,7 +258,7 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%-10p', 'DEBUG     ');
     },
     '%[%r%] should output colored time': function(args) {
-      test(args, '%[%r%]', '\0x1B[36m14:18:30\0x1B[39m');
+      test(args, '%[%r%]', '\x1B[36m14:18:30\x1B[39m');
     },
     '%x{testString} should output the string stored in tokens': function(args) {
       test(args, '%x{testString}', 'testStringToken');

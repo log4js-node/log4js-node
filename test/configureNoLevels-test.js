@@ -1,7 +1,10 @@
+"use strict";
 // This test shows unexpected behaviour for log4js.configure() in log4js-node@0.4.3 and earlier:
-// 1) log4js.configure(), log4js.configure(null), log4js.configure({}), log4js.configure(<some object with no levels prop>)
+// 1) log4js.configure(), log4js.configure(null),
+// log4js.configure({}), log4js.configure(<some object with no levels prop>)
 // all set all loggers levels to trace, even if they were previously set to something else.
-// 2) log4js.configure({levels:{}}), log4js.configure({levels: {foo: bar}}) leaves previously set logger levels intact.
+// 2) log4js.configure({levels:{}}), log4js.configure({levels: {foo:
+// bar}}) leaves previously set logger levels intact.
 //
 
 // Basic set up
@@ -28,7 +31,7 @@ var configs = {
   'has empty levels': {levels: {}},
   'has random levels': {levels: {foo: 'bar'}},
   'has some valid levels': {levels: {A: 'INFO'}}
-}
+};
 
 // Set up the basic vows batches for this test
 var batches = [];
@@ -60,13 +63,14 @@ function getTopLevelContext(nop, configToTest, name) {
       }
       return log4js;
     }
-  }
-};
+  };
+}
 
 showProgress('Populating batch object...');
 
-// Populating the batches programmatically,
-// as there are (configs.length x strLevels.length x strLevels.length) = 324 possible test combinations
+// Populating the batches programmatically, as there are 
+// (configs.length x strLevels.length x strLevels.length) = 324 
+// possible test combinations
 for (var cfg in configs) {
   var configToTest = configs[cfg];
   var nop = configToTest === 'nop';
@@ -84,43 +88,73 @@ for (var cfg in configs) {
   batch[context]= getTopLevelContext(nop, configToTest, context);
   batches.push(batch);
 
-  // each top-level context has strLevels sub-contexts, one per logger which has set to a specific level in the top-level context's topic
+  // each top-level context has strLevels sub-contexts, one per logger 
+  // which has set to a specific level in the top-level context's topic
   strLevels.forEach(function (baseLevel) {
     var baseLevelSubContext = 'and checking the logger whose level was set to '+baseLevel ;
-    batch[context][baseLevelSubContext] = {topic: baseLevel};
+    var subContext = { topic: baseLevel };
+    batch[context][baseLevelSubContext] = subContext;
 
     // each logging level has strLevels sub-contexts,
-    // to exhaustively test all the combinations of setLevel(baseLevel) and isLevelEnabled(comparisonLevel) per config
+    // to exhaustively test all the combinations of 
+    // setLevel(baseLevel) and isLevelEnabled(comparisonLevel) per config
     strLevels.forEach(function (comparisonLevel) {
       var comparisonLevelSubContext = 'with isLevelEnabled('+comparisonLevel+')';
 
-      // calculate this independently of log4js, but we'll add a vow later on to check that we're not mismatched with log4js
+      // calculate this independently of log4js, but we'll add a vow 
+      // later on to check that we're not mismatched with log4js
       var expectedResult = strLevels.indexOf(baseLevel) <= strLevels.indexOf(comparisonLevel);
 
-      // the topic simply gathers all the parameters for the vow into an object, to simplify the vow's work.
-      batch[context][baseLevelSubContext][comparisonLevelSubContext] = {topic: function(baseLevel, log4js){
-        return {comparisonLevel: comparisonLevel, baseLevel: baseLevel, log4js: log4js, expectedResult: expectedResult};
-      }};
-
-      var vow = 'should return '+expectedResult;
-      batch[context][baseLevelSubContext][comparisonLevelSubContext][vow] = function(topic){
-        var result = topic.log4js.getLogger(getLoggerName(topic.baseLevel)).isLevelEnabled(topic.log4js.levels.toLevel(topic.comparisonLevel));
-        assert.equal(result, topic.expectedResult, 'Failed: '+getLoggerName(topic.baseLevel)+'.isLevelEnabled( '+topic.comparisonLevel+' ) returned '+result);
+      // the topic simply gathers all the parameters for the vow 
+      // into an object, to simplify the vow's work.
+      subContext[comparisonLevelSubContext] = {
+        topic: function(baseLevel, log4js) {
+          return {
+            comparisonLevel: comparisonLevel, 
+            baseLevel: baseLevel, 
+            log4js: log4js, 
+            expectedResult: expectedResult
+          };
+        }
       };
 
-      // the extra vow to check the comparison between baseLevel and comparisonLevel we performed earlier matches log4js' comparison too
-      batch[context][baseLevelSubContext][comparisonLevelSubContext]['finally checking for comparison mismatch with log4js'] = function(topic){
-        var er = topic.log4js.levels.toLevel(topic.baseLevel).isLessThanOrEqualTo(topic.log4js.levels.toLevel(topic.comparisonLevel));
-        assert.equal(er, topic.expectedResult, 'Mismatch: for setLevel('+topic.baseLevel+') was expecting a comparison with '+topic.comparisonLevel+' to be '+topic.expectedResult);
+      var vow = 'should return '+expectedResult;
+      subContext[comparisonLevelSubContext][vow] = function(topic) {
+        var result = topic.log4js
+          .getLogger(getLoggerName(topic.baseLevel))
+          .isLevelEnabled(topic.log4js.levels.toLevel(topic.comparisonLevel));
+
+        assert.equal(
+          result, 
+          topic.expectedResult, 
+          'Failed: ' + getLoggerName(topic.baseLevel) + 
+            '.isLevelEnabled( ' + topic.comparisonLevel + ' ) returned ' + result
+        );
+      };
+
+      // the extra vow to check the comparison between baseLevel and
+      // comparisonLevel we performed earlier matches log4js'
+      // comparison too
+      var subSubContext = subContext[comparisonLevelSubContext];
+      subSubContext['finally checking for comparison mismatch with log4js'] = function(topic) {
+        var er = topic.log4js.levels.toLevel(topic.baseLevel)
+          .isLessThanOrEqualTo(topic.log4js.levels.toLevel(topic.comparisonLevel));
+        assert.equal(
+          er, 
+          topic.expectedResult, 
+          'Mismatch: for setLevel(' + topic.baseLevel + 
+            ') was expecting a comparison with ' + topic.comparisonLevel + 
+            ' to be ' + topic.expectedResult
+        );
       };
     });
   });
-};
+}
 
 showProgress('Running tests');
 var v = vows.describe('log4js.configure(), with or without a "levels" property');
 
-batches.forEach(function(batch) {v=v.addBatch(batch)});
+batches.forEach(function(batch) {v=v.addBatch(batch);});
 
 v.export(module);
 
