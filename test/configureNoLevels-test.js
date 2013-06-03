@@ -68,6 +68,77 @@ function getTopLevelContext(nop, configToTest, name) {
 
 showProgress('Populating batch object...');
 
+function checkForMismatch(topic) {
+  var er = topic.log4js.levels.toLevel(topic.baseLevel)
+    .isLessThanOrEqualTo(topic.log4js.levels.toLevel(topic.comparisonLevel));
+
+  assert.equal(
+    er, 
+    topic.expectedResult, 
+    'Mismatch: for setLevel(' + topic.baseLevel + 
+      ') was expecting a comparison with ' + topic.comparisonLevel + 
+      ' to be ' + topic.expectedResult
+  );
+}
+
+function checkExpectedResult(topic) {
+  var result = topic.log4js
+    .getLogger(getLoggerName(topic.baseLevel))
+    .isLevelEnabled(topic.log4js.levels.toLevel(topic.comparisonLevel));
+  
+  assert.equal(
+    result, 
+    topic.expectedResult, 
+    'Failed: ' + getLoggerName(topic.baseLevel) + 
+      '.isLevelEnabled( ' + topic.comparisonLevel + ' ) returned ' + result
+  );
+}
+
+function setupBaseLevelAndCompareToOtherLevels(baseLevel) {
+  var baseLevelSubContext = 'and checking the logger whose level was set to '+baseLevel ;
+  var subContext = { topic: baseLevel };
+  batch[context][baseLevelSubContext] = subContext;
+
+  // each logging level has strLevels sub-contexts,
+  // to exhaustively test all the combinations of 
+  // setLevel(baseLevel) and isLevelEnabled(comparisonLevel) per config
+  strLevels.forEach(compareToOtherLevels(subContext));
+}
+
+function compareToOtherLevels(subContext) {
+  var baseLevel = subContext.topic;
+
+  return function (comparisonLevel) {
+    var comparisonLevelSubContext = 'with isLevelEnabled('+comparisonLevel+')';
+
+    // calculate this independently of log4js, but we'll add a vow 
+    // later on to check that we're not mismatched with log4js
+    var expectedResult = strLevels.indexOf(baseLevel) <= strLevels.indexOf(comparisonLevel);
+
+    // the topic simply gathers all the parameters for the vow 
+    // into an object, to simplify the vow's work.
+    subContext[comparisonLevelSubContext] = {
+      topic: function(baseLevel, log4js) {
+        return {
+          comparisonLevel: comparisonLevel, 
+          baseLevel: baseLevel, 
+          log4js: log4js, 
+          expectedResult: expectedResult
+        };
+      }
+    };
+
+    var vow = 'should return '+expectedResult;
+    subContext[comparisonLevelSubContext][vow] = checkExpectedResult;
+    
+    // the extra vow to check the comparison between baseLevel and
+    // comparisonLevel we performed earlier matches log4js'
+    // comparison too
+    var subSubContext = subContext[comparisonLevelSubContext];
+    subSubContext['finally checking for comparison mismatch with log4js'] = checkForMismatch;
+  };
+}
+
 // Populating the batches programmatically, as there are 
 // (configs.length x strLevels.length x strLevels.length) = 324 
 // possible test combinations
@@ -90,65 +161,7 @@ for (var cfg in configs) {
 
   // each top-level context has strLevels sub-contexts, one per logger 
   // which has set to a specific level in the top-level context's topic
-  strLevels.forEach(function (baseLevel) {
-    var baseLevelSubContext = 'and checking the logger whose level was set to '+baseLevel ;
-    var subContext = { topic: baseLevel };
-    batch[context][baseLevelSubContext] = subContext;
-
-    // each logging level has strLevels sub-contexts,
-    // to exhaustively test all the combinations of 
-    // setLevel(baseLevel) and isLevelEnabled(comparisonLevel) per config
-    strLevels.forEach(function (comparisonLevel) {
-      var comparisonLevelSubContext = 'with isLevelEnabled('+comparisonLevel+')';
-
-      // calculate this independently of log4js, but we'll add a vow 
-      // later on to check that we're not mismatched with log4js
-      var expectedResult = strLevels.indexOf(baseLevel) <= strLevels.indexOf(comparisonLevel);
-
-      // the topic simply gathers all the parameters for the vow 
-      // into an object, to simplify the vow's work.
-      subContext[comparisonLevelSubContext] = {
-        topic: function(baseLevel, log4js) {
-          return {
-            comparisonLevel: comparisonLevel, 
-            baseLevel: baseLevel, 
-            log4js: log4js, 
-            expectedResult: expectedResult
-          };
-        }
-      };
-
-      var vow = 'should return '+expectedResult;
-      subContext[comparisonLevelSubContext][vow] = function(topic) {
-        var result = topic.log4js
-          .getLogger(getLoggerName(topic.baseLevel))
-          .isLevelEnabled(topic.log4js.levels.toLevel(topic.comparisonLevel));
-
-        assert.equal(
-          result, 
-          topic.expectedResult, 
-          'Failed: ' + getLoggerName(topic.baseLevel) + 
-            '.isLevelEnabled( ' + topic.comparisonLevel + ' ) returned ' + result
-        );
-      };
-
-      // the extra vow to check the comparison between baseLevel and
-      // comparisonLevel we performed earlier matches log4js'
-      // comparison too
-      var subSubContext = subContext[comparisonLevelSubContext];
-      subSubContext['finally checking for comparison mismatch with log4js'] = function(topic) {
-        var er = topic.log4js.levels.toLevel(topic.baseLevel)
-          .isLessThanOrEqualTo(topic.log4js.levels.toLevel(topic.comparisonLevel));
-        assert.equal(
-          er, 
-          topic.expectedResult, 
-          'Mismatch: for setLevel(' + topic.baseLevel + 
-            ') was expecting a comparison with ' + topic.comparisonLevel + 
-            ' to be ' + topic.expectedResult
-        );
-      };
-    });
-  });
+  strLevels.forEach(setupBaseLevelAndCompareToOtherLevels);
 }
 
 showProgress('Running tests');
