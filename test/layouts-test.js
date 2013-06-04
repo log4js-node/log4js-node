@@ -28,7 +28,6 @@ vows.describe('log4js layouts').addBatch({
       });
       assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mnonsense');
     },
-    
     'should support the console.log format for the message': function(layout) {
       var output = layout({
         data: ["thing %d", 2],
@@ -66,7 +65,7 @@ vows.describe('log4js layouts').addBatch({
           colour: "green", 
           toString: function() { return "ERROR"; }
         }
-      }), "thing 1 'cheese'");
+      }), "thing 1 cheese");
     },
     'should output the first item even if it is not a string': function(layout) {
       assert.equal(layout({
