@@ -99,7 +99,8 @@ vows.describe('../lib/appenders/dateFile').addBatch({
     },
     'with options.alwaysIncludePattern': {
       topic: function() {
-        var log4js = require('../lib/log4js')
+        var self = this
+        , log4js = require('../lib/log4js')
         , format = require('../lib/date_format')
         , logger
         , options = {
@@ -127,7 +128,10 @@ vows.describe('../lib/appenders/dateFile').addBatch({
         logger = log4js.getLogger('tests');
         logger.warn('this should be written to the file with the appended date');
         this.teardown = removeFile('date-file-test' + thisTime);
-        fs.readFile(path.join(__dirname, 'date-file-test' + thisTime), 'utf8', this.callback);
+        //wait for filesystem to catch up
+        setTimeout(function() {
+          fs.readFile(path.join(__dirname, 'date-file-test' + thisTime), 'utf8', self.callback);
+        }, 100);
       },
       'should create file with the correct pattern': function(contents) {
         assert.include(contents, 'this should be written to the file with the appended date');
