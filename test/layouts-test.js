@@ -90,9 +90,8 @@ vows.describe('log4js layouts').addBatch({
       }).match(/Error\s+at Object\..*\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
                      , 'regexp did not return a match');
     },
-    'with passed augmented errors':
-    { topic:
-      function(layout){
+    'with passed augmented errors': { 
+      topic: function(layout){
         var e = new Error("My Unique Error Message");
         e.augmented = "My Unique attribute value";
         e.augObj = { at1: "at2" };
@@ -186,7 +185,8 @@ vows.describe('log4js layouts').addBatch({
       }, layout = require('../lib/layouts').patternLayout
       , tokens = {
         testString: 'testStringToken',
-        testFunction: function() { return 'testFunctionToken'; }
+        testFunction: function() { return 'testFunctionToken'; },
+        fnThatUsesLogEvent: function(logEvent) { return logEvent.level.toString(); }
       };
       return [layout, event, tokens];
     },
@@ -233,6 +233,9 @@ vows.describe('log4js layouts').addBatch({
     'should output anything not preceded by % as literal': function(args) {
       test(args, 'blah blah blah', 'blah blah blah');
     },
+    'should output the original string if no replacer matches the token': function(args) {
+      test(args, '%a{3}', 'a{3}');
+    },
     'should handle complicated patterns': function(args) {
       test(args,
            '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
@@ -268,8 +271,21 @@ vows.describe('log4js layouts').addBatch({
     '%x{doesNotExist} should output the string stored in tokens': function(args) {
       test(args, '%x{doesNotExist}', '%x{doesNotExist}');
     },
+    '%x{fnThatUsesLogEvent} should be able to use the logEvent': function(args) {
+      test(args, '%x{fnThatUsesLogEvent}', 'DEBUG');
+    },
     '%x should output the string stored in tokens': function(args) {
       test(args, '%x', '%x');
     },
+  },
+  'layout makers': {
+    topic: require('../lib/layouts'),
+    'should have a maker for each layout': function(layouts) {
+      assert.ok(layouts.layout("messagePassThrough"));
+      assert.ok(layouts.layout("basic"));
+      assert.ok(layouts.layout("colored"));
+      assert.ok(layouts.layout("coloured"));
+      assert.ok(layouts.layout("pattern"));
+    }
   }
 }).export(module);
