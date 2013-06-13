@@ -363,6 +363,12 @@ vows.describe('levels').addBatch({
       assertThat(info).isLessThanOrEqualTo(['warn', 'ERROR', 'Fatal', 'off']);
     }
   },
+  'isEqualTo': {
+    topic: levels.INFO,
+    'should handle string arguments': function(info) {
+      assertThat(info).isEqualTo(["info", "INFO", "iNfO"]);
+    }
+  },
   'toLevel': {
     'with lowercase argument': {
       topic: levels.toLevel("debug"),
