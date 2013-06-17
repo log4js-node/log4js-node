@@ -127,6 +127,42 @@ vows.describe('log4js').addBatch({
     }
   },
 
+  'configuration that causes an error': {
+    topic: function() {
+      var log4js = sandbox.require(
+        '../lib/log4js', 
+        { 
+          requires: { 
+            './appenders/file': 
+            {
+              name: "file",
+              appender: function() {},
+              configure: function(configuration) {
+                throw new Error("oh noes");
+              }
+            }
+          }
+        }
+      ), 
+      config = { appenders: 
+                 [ { "type" : "file",
+                     "filename" : "cheesy-wotsits.log",
+                     "maxLogSize" : 1024,
+                     "backups" : 3
+                   }
+                 ]
+               };
+      try {
+        log4js.configure(config);
+      } catch (e) {
+        return e;
+      }    
+    },
+    'should wrap error in a meaningful message': function(e) {
+      assert.ok(e.message.indexOf('log4js configuration problem for') > -1);
+    }
+  },
+
   'configuration when passed as filename': {
     topic: function() {
       var appenderConfig, 
@@ -405,8 +441,11 @@ vows.describe('log4js').addBatch({
         assert.instanceOf(err, Error);
         assert.equal(err.message, "this should not be called.");
       }
-    },
-    'configuration': {
+    }
+  },
+  'console configuration': {
+    topic: setupConsoleTest,
+    'when disabled': {
       topic: function(test) {
         test.log4js.replaceConsole();
         test.log4js.configure({ replaceConsole: false });
@@ -419,6 +458,25 @@ vows.describe('log4js').addBatch({
       'should allow for turning off console replacement': function (err) {
         assert.instanceOf(err, Error);
         assert.equal(err.message, 'this should not be called.');
+      }
+    },
+    'when enabled': {
+      topic: function(test) {
+        test.log4js.restoreConsole();
+        test.log4js.configure({ replaceConsole: true });
+        //log4js.configure clears all appenders
+        test.log4js.addAppender(function(evt) {
+          test.logEvents.push(evt);
+        });
+
+        test.fakeConsole.debug("Some debug");
+        return test.logEvents;
+      },
+      
+      'should allow for turning on console replacement': function (logEvents) {
+        assert.equal(logEvents.length, 1);
+        assert.equal(logEvents[0].level.toString(), "DEBUG");
+        assert.equal(logEvents[0].data[0], "Some debug");
       }
     }
   },
@@ -598,6 +656,17 @@ vows.describe('log4js').addBatch({
       assert.equal(logEvents.length, 2);
       assert.equal(logEvents[0].data[0], 'info1');
       assert.equal(logEvents[1].data[0], 'info3');
+    }
+  },
+
+  'getDefaultLogger': {
+    topic: function() {
+      return require('../lib/log4js').getDefaultLogger();
+    },
+    'should return a logger': function(logger) {
+      assert.ok(logger.info);
+      assert.ok(logger.debug);
+      assert.ok(logger.error);
     }
   }
 }).export(module);
