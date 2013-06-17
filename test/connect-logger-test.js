@@ -1,3 +1,4 @@
+/* jshint maxparams:7 */
 "use strict";
 var vows = require('vows')
 , assert = require('assert')
@@ -20,15 +21,19 @@ function MockLogger() {
 
 }
 
-function MockRequest(remoteAddr, method, originalUrl) {
+function MockRequest(remoteAddr, method, originalUrl, headers) {
 
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.method = method;
   this.httpVersionMajor = '5';
   this.httpVersionMinor = '0';
-  this.headers = {};
+  this.headers = headers || {};
 
+  var self = this;
+  Object.keys(this.headers).forEach(function(key) {
+    self.headers[key.toLowerCase()] = self.headers[key];
+  });
 }
 
 function MockResponse() {
@@ -41,11 +46,11 @@ function MockResponse() {
 
 }
 
-function request(cl, method, url, code) {
-  var req = new MockRequest('my.remote.addr', method, url);
+function request(cl, method, url, code, reqHeaders, resHeaders) {
+  var req = new MockRequest('my.remote.addr', method, url, reqHeaders);
   var res = new MockResponse();
   cl(req, res, function() {});
-  res.writeHead(code);
+  res.writeHead(code, resHeaders);
   res.end('chunk','encoding');
 }
 
@@ -179,7 +184,43 @@ vows.describe('log4js connect logger').addBatch({
       'should call the format function': function(messages) {
         assert.equal(messages[0].message, 'I was called');
       }
-    }
+    },
+
+    'format that includes request headers': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, ':req[Content-Type]');
+        request(
+          cl, 
+          'GET', 'http://blah', 200, 
+          { 'Content-Type': 'application/json' }
+        );
+        return ml.messages;
+      },
+      'should output the request header': function(messages) {
+        assert.equal(messages[0].message, 'application/json');
+      }
+    },
+
+    'format that includes response headers': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, ':res[Content-Type]');
+        request(
+          cl,
+          'GET', 'http://blah', 200,
+          null,
+          { 'Content-Type': 'application/cheese' }
+        );
+        return ml.messages;
+      },
+
+      'should output the response header': function(messages) {
+        assert.equal(messages[0].message, 'application/cheese');
+      }
+    }                                          
     
   }
 }).export(module);
