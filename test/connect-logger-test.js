@@ -31,14 +31,22 @@ function MockRequest(remoteAddr, method, originalUrl) {
 
 }
 
-function MockResponse(statusCode) {
-
-  this.statusCode = statusCode;
+function MockResponse() {
   
-  this.end = function(chunk, encoding) {
-    
+  this.end = function(chunk, encoding) {    
   };
 
+  this.writeHead = function(code, headers) {
+  };
+
+}
+
+function request(cl, method, url, code) {
+  var req = new MockRequest('my.remote.addr', method, url);
+  var res = new MockResponse();
+  cl(req, res, function() {});
+  res.writeHead(code);
+  res.end('chunk','encoding');
 }
 
 vows.describe('log4js connect logger').addBatch({
@@ -68,10 +76,7 @@ vows.describe('log4js connect logger').addBatch({
       topic: function(clm) {
         var ml = new MockLogger();
         var cl = clm.connectLogger(ml);
-        var req = new MockRequest('my.remote.addr', 'GET', 'http://url');
-        var res = new MockResponse(200);
-        cl(req, res, function() { });
-        res.end('chunk', 'encoding');
+        request(cl, 'GET', 'http://url', 200);
         return ml.messages;
       },
 
@@ -91,10 +96,7 @@ vows.describe('log4js connect logger').addBatch({
         var ml = new MockLogger();
         ml.level = levels.FATAL;
         var cl = clm.connectLogger(ml);
-        var req = new MockRequest('my.remote.addr', 'GET', 'http://url');
-        var res = new MockResponse(200);
-        cl(req, res, function() { });
-        res.end('chunk', 'encoding');
+        request(cl, 'GET', 'http://url', 200);
         return ml.messages;
       },
       
@@ -109,10 +111,7 @@ vows.describe('log4js connect logger').addBatch({
         var ml = new MockLogger();
         ml.level = levels.INFO;
         var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url' } );
-        var req = new MockRequest('my.remote.addr', 'GET', 'http://url');
-        var res = new MockResponse(200);
-        cl(req, res, function() { });
-        res.end('chunk', 'encoding');
+        request(cl, 'GET', 'http://url', 200);
         return ml.messages;
       },
       
@@ -121,6 +120,64 @@ vows.describe('log4js connect logger').addBatch({
         assert.equal(messages.length, 1);
         assert.ok(levels.INFO.isEqualTo(messages[0].level));
         assert.equal(messages[0].message, 'GET http://url');
+      }
+    },
+
+    'logger with options as string': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, ':method :url');
+        request(cl, 'POST', 'http://meh', 200);
+        return ml.messages;
+      },
+      'should use the passed in format': function(messages) {
+        assert.equal(messages[0].message, 'POST http://meh');
+      }
+    },
+
+    'auto log levels': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, { level: 'auto', format: ':method :url' });
+        request(cl, 'GET', 'http://meh', 200);
+        request(cl, 'GET', 'http://meh', 201);
+        request(cl, 'GET', 'http://meh', 302);
+        request(cl, 'GET', 'http://meh', 404);
+        request(cl, 'GET', 'http://meh', 500);
+        return ml.messages;
+      },
+
+      'should use INFO for 2xx': function(messages) {
+        assert.ok(levels.INFO.isEqualTo(messages[0].level));
+        assert.ok(levels.INFO.isEqualTo(messages[1].level));
+      },
+
+      'should use WARN for 3xx': function(messages) {
+        assert.ok(levels.WARN.isEqualTo(messages[2].level));
+      },
+
+      'should use ERROR for 4xx': function(messages) {
+        assert.ok(levels.ERROR.isEqualTo(messages[3].level));
+      },
+
+      'should use ERROR for 5xx': function(messages) {
+        assert.ok(levels.ERROR.isEqualTo(messages[4].level));
+      }
+    },
+
+    'format using a function': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, function(req, res, formatFn) { return "I was called"; });
+        request(cl, 'GET', 'http://blah', 200);
+        return ml.messages;
+      },
+
+      'should call the format function': function(messages) {
+        assert.equal(messages[0].message, 'I was called');
       }
     }
     
