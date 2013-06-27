@@ -14,6 +14,11 @@ vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
             process: {
               version: '0.8.11'
             }
+          },
+          requires: {
+            'readable-stream': {
+              Writable: function() {}
+            }
           }
         }
       );
@@ -33,6 +38,11 @@ vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
           globals: {
             process: {
               version: '0.10.1'
+            }
+          },
+          requires: {
+            'stream': {
+              Writable: function() {}
             }
           }
         }
