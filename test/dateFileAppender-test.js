@@ -3,6 +3,7 @@ var vows = require('vows')
 , assert = require('assert')
 , path = require('path')
 , fs = require('fs')
+, sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js');
 
 function removeFile(filename) {
@@ -41,6 +42,46 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       
       'should only add one `exit` listener': function (initialCount) {
         assert.equal(process.listeners('exit').length, initialCount + 1);
+      },
+
+    },
+
+    'exit listener': {
+      topic: function() {
+        var exitListener
+        , openedFiles = []
+        , dateFileAppender = sandbox.require(
+          '../lib/appenders/dateFile',
+          {
+            globals: {
+              process: {
+                on: function(evt, listener) {
+                  exitListener = listener;
+                }
+              }
+            },
+            requires: {
+              '../streams': {
+                DateRollingFileStream: function(filename) {
+                  openedFiles.push(filename);
+
+                  this.end = function() {
+                    openedFiles.shift();
+                  };
+                }
+              }
+            }   
+          }
+        );
+        for (var i=0; i < 5; i += 1) {
+          dateFileAppender.appender('test' + i);
+        }
+        assert.isNotEmpty(openedFiles);
+        exitListener();
+        return openedFiles;
+      },
+      'should close all open files': function(openedFiles) {
+        assert.isEmpty(openedFiles);
       }
     },
     
@@ -139,7 +180,39 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       'should not overwrite the file on open (bug found in issue #132)': function(contents) {
         assert.include(contents, 'this is existing data');
       }
+    },
+    'with cwd option': {
+      topic: function() {
+        var fileOpened,
+        appender = sandbox.require(
+          '../lib/appenders/dateFile',
+          { requires:
+            { '../streams':
+              { DateRollingFileStream: 
+                function(file) {
+                  fileOpened = file;
+                  return {
+                    on: function() {},
+                    end: function() {}
+                  };
+                }
+              }
+            }
+          }
+        );
+        appender.configure(
+          { 
+            filename: "whatever.log", 
+            maxLogSize: 10 
+          }, 
+          { cwd: '/absolute/path/to' }
+        );
+        return fileOpened;
+      },
+      'should prepend options.cwd to config.filename': function(fileOpened) {
+        assert.equal(fileOpened, "/absolute/path/to/whatever.log");
+      }
     }
-      
+ 
   }
 }).exportTo(module);

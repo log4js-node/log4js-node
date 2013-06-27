@@ -2,6 +2,7 @@
 var vows = require('vows')
 , fs = require('fs')
 , path = require('path')
+, sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
 , assert = require('assert');
 
@@ -30,8 +31,49 @@ vows.describe('log4js fileAppender').addBatch({
       return listenersCount;
     },
     
-    'does not adds more than one `exit` listeners': function (initialCount) {
+    'does not add more than one `exit` listeners': function (initialCount) {
       assert.ok(process.listeners('exit').length <= initialCount + 1);
+    }
+  },
+
+  'exit listener': {
+    topic: function() {
+      var exitListener
+      , openedFiles = []
+      , fileAppender = sandbox.require(
+        '../lib/appenders/file',
+        {
+          globals: {
+            process: {
+              on: function(evt, listener) {
+                exitListener = listener;
+              }
+            }
+          },
+          requires: {
+            '../streams': {
+              RollingFileStream: function(filename) {
+                openedFiles.push(filename);
+                
+                this.end = function() {
+                  openedFiles.shift();
+                };
+
+                this.on = function() {};
+              }
+            }
+          }   
+        }
+      );
+      for (var i=0; i < 5; i += 1) {
+        fileAppender.appender('test' + i, null, 100);
+      }
+      assert.isNotEmpty(openedFiles);
+      exitListener();
+      return openedFiles;
+    },
+    'should close all open files': function(openedFiles) {
+      assert.isEmpty(openedFiles);
     }
   },
   
@@ -191,6 +233,47 @@ vows.describe('log4js fileAppender').addBatch({
         assert.include(contents, 'this should be written to the file\n');
         assert.equal(contents.indexOf('this should not be written to the file'), -1);
       }
+    }
+  }
+}).addBatch({
+  'when underlying stream errors': {
+    topic: function() {
+      var consoleArgs
+      , errorHandler
+      , fileAppender = sandbox.require(
+        '../lib/appenders/file',
+        {
+          globals: {
+            console: {
+              error: function() {
+                consoleArgs = Array.prototype.slice.call(arguments);
+              }
+            }
+          },
+          requires: {
+            '../streams': {
+              RollingFileStream: function(filename) {
+                
+                this.end = function() {};
+                this.on = function(evt, cb) {
+                  if (evt === 'error') {
+                    errorHandler = cb;
+                  }
+                };
+              }
+            }
+          }   
+        }
+      );
+      fileAppender.appender('test1.log', null, 100);
+      errorHandler({ error: 'aargh' });
+      return consoleArgs;
+    },
+    'should log the error to console.error': function(consoleArgs) {
+      assert.isNotEmpty(consoleArgs);
+      assert.equal(consoleArgs[0], 'log4js.fileAppender - Writing to file %s, error happened ');
+      assert.equal(consoleArgs[1], 'test1.log');
+      assert.equal(consoleArgs[2].error, 'aargh');
     }
   }
 
