@@ -253,4 +253,51 @@ vows.describe('Multiprocess Appender').addBatch({
       assert.equal(net.host, 'localhost');
     }
   }
+}).addBatch({
+  'configure': {
+    topic: function() {
+      var results = {}
+      , fakeNet = makeFakeNet()
+      , appender = sandbox.require(
+        '../lib/appenders/multiprocess',
+        {
+          requires: {
+            'net': fakeNet,
+            '../log4js': {
+              loadAppender: function(app) {
+                results.appenderLoaded = app;
+              },
+              appenderMakers: {
+                'madeupappender': function(config, options) {
+                  results.config = config;
+                  results.options = options;
+                }
+              }
+            }
+          }
+        }
+      ).configure(
+        {
+          mode: 'master',
+          appender: {
+            type: 'madeupappender',
+            cheese: 'gouda'
+          }
+        },
+        { crackers: 'jacobs' }
+      );
+
+      return results;
+        
+    },
+    'should load underlying appender for master': function(results) {
+      assert.equal(results.appenderLoaded, 'madeupappender');
+    },
+    'should pass config to underlying appender': function(results) {
+      assert.equal(results.config.cheese, 'gouda');
+    },
+    'should pass options to underlying appender': function(results) {
+      assert.equal(results.options.crackers, 'jacobs');
+    }
+  }
 }).exportTo(module);
