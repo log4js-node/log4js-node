@@ -3,12 +3,15 @@ var vows = require('vows')
 , assert = require('assert')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
+, realLayouts = require('../lib/layouts')
 , setupLogging = function(options, category, compressedLength) {
   var fakeDgram = {
     sent: false,
     socket: {
       packetLength: 0,
+      closed: false,
       close: function() {
+        this.closed = true;
       },
       send: function(pkt, offset, pktLength, port, host) {
         fakeDgram.sent = true;
@@ -27,6 +30,11 @@ var vows = require('vows')
   , fakeZlib = {
     gzip: function(objectToCompress, callback) {
       fakeZlib.uncompressed = objectToCompress;
+      if (this.shouldError) {
+        callback({ stack: "oh noes" });
+        return;
+      }
+
       if (compressedLength) {
         callback(null, { length: compressedLength });
       } else {
@@ -34,10 +42,35 @@ var vows = require('vows')
       }
     }
   }
+  , exitHandler
+  , fakeConsole = {
+    error: function(message) {
+      this.message = message;
+    }
+  }
+  , fakeLayouts = {
+    layout: function(type, options) {
+      this.type = type;
+      this.options = options;
+      return realLayouts.messagePassThroughLayout;
+    },
+    messagePassThroughLayout: realLayouts.messagePassThroughLayout
+  }
   , appender = sandbox.require('../lib/appenders/gelf', {
     requires: {
       dgram: fakeDgram,
-      zlib: fakeZlib
+      zlib: fakeZlib,
+      '../layouts': fakeLayouts
+    },
+    globals: {
+      process: {
+        on: function(evt, handler) {
+          if (evt === 'exit') {
+            exitHandler = handler;
+          }
+        }
+      },
+      console: fakeConsole
     }
   });
   
@@ -46,11 +79,12 @@ var vows = require('vows')
   return {
     dgram: fakeDgram,
     compress: fakeZlib,
+    exitHandler: exitHandler,
+    console: fakeConsole,
+    layouts: fakeLayouts,
     logger: log4js.getLogger(category || "gelf-test")
   };
 };
-
-//log4js.configure({ doNotReplaceConsole: true });
 
 vows.describe('log4js gelfAppender').addBatch({
   
@@ -134,6 +168,45 @@ vows.describe('log4js gelfAppender').addBatch({
         assert.equal(message.host, 'cheese');
         assert.equal(message.facility, 'nonsense');
       }
+    }
+  },
+
+  'on process.exit': {
+    topic: function() {
+      var setup = setupLogging();
+      setup.exitHandler();
+      return setup;
+    },
+    'should close open sockets': function(setup) {
+      assert.isTrue(setup.dgram.socket.closed);
+    }
+  },
+
+  'on zlib error': {
+    topic: function() {
+      var setup = setupLogging();
+      setup.compress.shouldError = true;
+      setup.logger.info('whatever');
+      return setup;
+    },
+    'should output to console.error': function(setup) {
+      assert.equal(setup.console.message, 'oh noes');
+    }
+  },
+
+  'with layout in configuration': {
+    topic: function() {
+      var setup = setupLogging({
+        layout: {
+          type: 'madeuplayout',
+          earlgrey: 'yes, please'
+        }
+      });
+      return setup;
+    },
+    'should pass options to layout': function(setup) {
+      assert.equal(setup.layouts.type, 'madeuplayout');
+      assert.equal(setup.layouts.options.earlgrey, 'yes, please');
     }
   }
 }).export(module);
