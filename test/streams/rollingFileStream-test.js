@@ -23,6 +23,10 @@ function remove(filename) {
   }
 }
 
+function create(filename) {
+  fs.writeFileSync(filename, "test file");
+}
+
 vows.describe('RollingFileStream').addBatch({
   'arguments': {
     topic: function() {
@@ -157,5 +161,50 @@ vows.describe('RollingFileStream').addBatch({
         assert.equal(contents, '0.cheese\n1.cheese\n2.cheese\n3.cheese\n4.cheese\n');
       }
     }
-  }
+  },
+  'when many files already exist': {
+    topic: function() {
+      remove(__dirname + '/test-rolling-stream-with-existing-files.11');
+      remove(__dirname + '/test-rolling-stream-with-existing-files.20');
+      remove(__dirname + '/test-rolling-stream-with-existing-files.-1');
+      remove(__dirname + '/test-rolling-stream-with-existing-files.1.1');
+      remove(__dirname + '/test-rolling-stream-with-existing-files.1');
+      
+
+      create(__dirname + '/test-rolling-stream-with-existing-files.11');
+      create(__dirname + '/test-rolling-stream-with-existing-files.20');
+      create(__dirname + '/test-rolling-stream-with-existing-files.-1');
+      create(__dirname + '/test-rolling-stream-with-existing-files.1.1');
+      create(__dirname + '/test-rolling-stream-with-existing-files.1');
+
+      var that = this
+      , stream = new RollingFileStream(
+        __dirname + "/test-rolling-stream-with-existing-files", 
+        45,
+        5
+      );
+      async.forEach(
+        [0, 1, 2, 3, 4, 5, 6], 
+        function(i, cb) {
+          stream.write(i +".cheese\n", "utf8", cb);
+        }, 
+        function() {
+          stream.end();
+          that.callback();
+        }
+      );
+    },
+    'the files': {
+      topic: function() {
+        fs.readdir(__dirname, this.callback);
+      },
+      'should be rolled': function(files) {
+        assert.include(files, 'test-rolling-stream-with-existing-files');
+        assert.include(files, 'test-rolling-stream-with-existing-files.1');
+        assert.include(files, 'test-rolling-stream-with-existing-files.2');
+        assert.include(files, 'test-rolling-stream-with-existing-files.11');
+        assert.include(files, 'test-rolling-stream-with-existing-files.20');
+      }
+    }
+  }  
 }).exportTo(module);
