@@ -659,6 +659,77 @@ vows.describe('log4js').addBatch({
     }
   },
 
+  'reload config when passed an object': {
+    topic: function() {
+      var test = setupConsoleTest();
+      test.log4js.configure({}, { reloadSecs: 30 });
+      return test.logEvents;
+    },
+    'should log a warning': function(events) {
+      assert.equal(events[0].level.toString(), 'WARN');
+      assert.equal(
+        events[0].data[0], 
+        'Ignoring configuration reload parameter for "object" configuration.'
+      );
+    }
+  },
+
+  'configure called twice with reload options': {
+    topic: function() {
+      var modulePath = require('path').normalize(__dirname + '/../lib/log4js.json'),
+      fakeFS = {
+        readFileSync: function (file, encoding) {
+          return JSON.stringify({});
+        },
+        statSync: function (path) {
+          return { mtime: new Date() };
+        }
+      },
+      fakeConsole = {
+        'name': 'console',
+        'appender': function () {
+          return function(evt) { };
+        },
+        'configure': function (config) {
+          return fakeConsole.appender();
+        }
+      },
+      setIntervalCallback,
+      intervalCleared = false,
+      clearedId,
+      fakeSetInterval = function(cb, timeout) {
+        setIntervalCallback = cb;
+        return 1234;
+      },
+      log4js = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            'fs': fakeFS,
+            './appenders/console': fakeConsole
+          },
+          globals: {
+            'console': fakeConsole,
+            'setInterval' : fakeSetInterval,
+            'clearInterval': function(interval) {
+              intervalCleared = true;
+              clearedId = interval;
+            }
+          }
+        }
+      );
+      
+      log4js.configure(modulePath, { reloadSecs: 3 });
+      log4js.configure(modulePath, { reloadSecs: 15 });
+      
+      return { cleared: intervalCleared, id: clearedId };
+    },
+    'should clear the previous interval': function(result) {
+      assert.isTrue(result.cleared);
+      assert.equal(result.id, 1234);
+    }
+  },
+
   'getDefaultLogger': {
     topic: function() {
       return require('../lib/log4js').getDefaultLogger();
