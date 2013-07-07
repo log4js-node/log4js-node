@@ -3,8 +3,9 @@ var vows = require('vows')
 , assert = require('assert')
 , sandbox = require('sandboxed-module');
 
-function fancyResultingHookioAppender(opts) {
-  var result = { ons: {}, emissions: {}, logged: [], configs: [] };
+function fancyResultingHookioAppender(hookNotReady) {
+  var emitHook = !hookNotReady
+  , result = { ons: {}, emissions: {}, logged: [], configs: [] };
 
   var fakeLog4Js = {
     appenderMakers: {}
@@ -24,7 +25,7 @@ function fancyResultingHookioAppender(opts) {
   };
   fakeHookIo.Hook.prototype.on = function (eventName, functionToExec) {
     result.ons[eventName] = { functionToExec: functionToExec };
-    if (eventName === 'hook::ready') {
+    if (emitHook && eventName === 'hook::ready') {
       functionToExec();
     }
   };
@@ -130,5 +131,46 @@ vows.describe('log4js hookioAppender').addBatch({
         assert.isUndefined(result.ons['*::ohno::log']);
       }
     }
+  },
+  'when hook not ready': {
+    topic: function() {
+      var fancy = fancyResultingHookioAppender(true)
+      , logger = fancy.theModule.configure({
+        name: 'ohno', 
+        mode: 'worker'
+      });
+
+      logger({ 
+        level: { levelStr: 'INFO' },
+        data: "something",
+        startTime: '2011-10-27T03:45:12.031Z'
+      });
+      return fancy;
+    },
+    'should buffer the log events': function(fancy) {
+      assert.isUndefined(fancy.theResult.emissions['ohno::log']);
+    },
+  },
+  'when hook ready': {
+    topic: function() {
+      var fancy = fancyResultingHookioAppender(true)
+      , logger = fancy.theModule.configure({
+        name: 'ohno', 
+        mode: 'worker'
+      });
+
+      logger({ 
+        level: { levelStr: 'INFO' },
+        data: "something",
+        startTime: '2011-10-27T03:45:12.031Z'
+      });
+
+      fancy.theResult.ons['hook::ready'].functionToExec();
+      return fancy;
+    },
+    'should emit the buffered events': function(fancy) {
+      assert.equal(fancy.theResult.emissions['ohno::log'].length, 1);
+    }
   }
+
 }).exportTo(module);
