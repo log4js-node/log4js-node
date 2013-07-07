@@ -20,15 +20,20 @@ vows.describe('date_format').addBatch({
         '2010-01-11 14:31:30.005'
       );
     },
-/* this test will only pass in Australia (GMT+11) - javascript doesn't
-   provide a way to change or specify a Date's timezone
     'should provide a ISO8601 with timezone offset format': function(date) {
+      date.getTimezoneOffset = function() { return -660; };
       assert.equal(
         dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date),
         "2010-01-11T14:31:30+1100"
       );
+
+      date.getTimezoneOffset = function() { return 120; };
+      assert.equal(
+        dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date),
+        "2010-01-11T14:31:30-0200"
+      );
+
     },
-*/
     'should provide a just-the-time format': function(date) {
       assert.equal(
         dateFormat.asString(dateFormat.ABSOLUTETIME_FORMAT, date),
