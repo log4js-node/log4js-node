@@ -208,5 +208,52 @@ vows.describe('log4js gelfAppender').addBatch({
       assert.equal(setup.layouts.type, 'madeuplayout');
       assert.equal(setup.layouts.options.earlgrey, 'yes, please');
     }
+  },
+
+  'with custom fields options': {
+    topic: function() {
+      var setup = setupLogging({
+        host: 'somewhere',
+        port: 12345,
+        hostname: 'cheese',
+        facility: 'nonsense',
+        customFields: {
+          _every1: 'Hello every one',
+          _every2: 'Hello every two'
+        }
+      });
+      var myFields = {
+        GELF: true,
+        _every2: 'Overwritten!',
+        _myField: 'This is my field!'
+      };
+      setup.logger.debug(myFields, "Just testing.");
+      return setup;
+    },
+    'the dgram packet': {
+      topic: function(setup) {
+        return setup.dgram;
+      },
+      'should pick up the options': function(dgram) {
+        assert.equal(dgram.socket.host, 'somewhere');
+        assert.equal(dgram.socket.port, 12345);
+      }
+    },
+    'the uncompressed packet': {
+      topic: function(setup) {
+        var message = JSON.parse(setup.compress.uncompressed);
+        return message;
+      },
+      'should pick up the options': function(message) {
+        assert.equal(message.host, 'cheese');
+        assert.equal(message.facility, 'nonsense');
+        assert.equal(message._every1, 'Hello every one'); // the default value
+        assert.equal(message._every2, 'Overwritten!'); // the overwritten value
+        assert.equal(message._myField, 'This is my field!'); // the value for this message only
+        assert.equal(message.short_message, 'Just testing.'); // skip the field object 
+        assert.equal(message.full_message, 'Just testing.'); // should be as same as short_message 
+      }
+    }
   }
+
 }).export(module);
