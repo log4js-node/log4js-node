@@ -57,16 +57,13 @@ vows.describe('../lib/logger').addBatch({
   },
 
   'log': {
-    topic: new Logger('testing'),
-    'should send log events to log4js': function(logger) {
-      var evt, original = log4js.dispatch;
-      log4js.dispatch = function(event) {
-        evt = event;
-      };
-
+    topic: function() {
+      var evt
+      , logger = new Logger('testing', null, function(event) { evt = event; });
       logger.log(levels.DEBUG, "cheese");
-      log4js.dispatch = original;
-
+      return evt;
+    },
+    'should send log events to log4js': function(evt) {
       assert.equal(evt.categoryName, 'testing');
       assert.equal(evt.level, levels.DEBUG);
       assert.equal(evt.data[0], "cheese");

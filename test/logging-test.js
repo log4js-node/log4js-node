@@ -54,6 +54,7 @@ vows.describe('log4js').addBatch({
     'log events' : {
       topic: function(logger) {
         var events = [];
+        var log4js = require('../lib/log4js');
         log4js.addAppender(function (logEvent) { events.push(logEvent); }, "tests");
         logger.debug("Debug event");
         logger.trace("Trace event 1");
