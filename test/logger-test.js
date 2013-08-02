@@ -2,7 +2,8 @@
 var vows = require('vows')
 , assert = require('assert')
 , levels = require('../lib/levels')
-, Logger = require('../lib/logger').Logger;
+, Logger = require('../lib/logger').Logger
+, log4js = require('../lib/log4js');
 
 vows.describe('../lib/logger').addBatch({
   'constructor with no parameters': {
@@ -52,6 +53,23 @@ vows.describe('../lib/logger').addBatch({
       assert.isTrue(logger.isWarnEnabled());
       assert.isTrue(logger.isErrorEnabled());
       assert.isTrue(logger.isFatalEnabled());
+    }
+  },
+
+  'log': {
+    topic: new Logger('testing'),
+    'should send log events to log4js': function(logger) {
+      var evt, original = log4js.dispatch;
+      log4js.dispatch = function(event) {
+        evt = event;
+      };
+
+      logger.log(levels.DEBUG, "cheese");
+      log4js.dispatch = original;
+
+      assert.equal(evt.categoryName, 'testing');
+      assert.equal(evt.level, levels.DEBUG);
+      assert.equal(evt.data[0], "cheese");
     }
   }
 }).exportTo(module);
