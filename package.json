@@ -31,7 +31,8 @@
     "async": "0.1.15",
     "dequeue": "1.0.3",
     "semver": "~1.1.4",
-    "readable-stream": "~1.0.2"
+    "readable-stream": "~1.0.2",
+    "weak": "~0.2.2"
   },
   "devDependencies": {
     "vows": "0.7.0",
