@@ -1,72 +1,52 @@
 "use strict";
-var vows = require('vows')
-, assert = require('assert')
-, levels = require('../lib/levels')
-, Logger = require('../lib/logger').Logger
-, log4js = require('../lib/log4js');
+var should = require('should')
+, Logger = require('../lib/logger');
 
-vows.describe('../lib/logger').addBatch({
-  'constructor with no parameters': {
-    topic: new Logger(),
-    'should use default category': function(logger) {
-      assert.equal(logger.category, Logger.DEFAULT_CATEGORY);
-    },
-    'should use TRACE log level': function(logger) {
-      assert.equal(logger.level, levels.TRACE);
-    }
-  },
+describe('../lib/logger', function() {
+  describe('Logger constructor', function() {
+    it('must be passed a dispatch delegate and a category', function() {
+      (function() { new Logger(); }).should.throw(
+        "Logger must have a dispatch delegate."
+      );
+      (function() { new Logger(function() {}); }).should.throw(
+        "Logger must have a category."
+      );
+    });
 
-  'constructor with category': {
-    topic: new Logger('cheese'),
-    'should use category': function(logger) {
-      assert.equal(logger.category, 'cheese');
-    },
-    'should use TRACE log level': function(logger) {
-      assert.equal(logger.level, levels.TRACE);
-    }
-  },
+  });
 
-  'constructor with category and level': {
-    topic: new Logger('cheese', 'debug'),
-    'should use category': function(logger) {
-      assert.equal(logger.category, 'cheese');
-    },
-    'should use level': function(logger) {
-      assert.equal(logger.level, levels.DEBUG);
-    }
-  },
+  describe('Logger instance', function() {
+    var event
+    , logger = new Logger(
+      function(evt) { event = evt; },
+      "exciting category"
+    );
 
-  'isLevelEnabled': {
-    topic: new Logger('cheese', 'info'),
-    'should provide a level enabled function for all levels': function(logger) {
-      assert.isFunction(logger.isTraceEnabled);
-      assert.isFunction(logger.isDebugEnabled);
-      assert.isFunction(logger.isInfoEnabled);
-      assert.isFunction(logger.isWarnEnabled);
-      assert.isFunction(logger.isErrorEnabled);
-      assert.isFunction(logger.isFatalEnabled);
-    },
-    'should return the right values': function(logger) {
-      assert.isFalse(logger.isTraceEnabled());
-      assert.isFalse(logger.isDebugEnabled());
-      assert.isTrue(logger.isInfoEnabled());
-      assert.isTrue(logger.isWarnEnabled());
-      assert.isTrue(logger.isErrorEnabled());
-      assert.isTrue(logger.isFatalEnabled());
-    }
-  },
+    beforeEach(function() {
+      event = null;
+    });
 
-  'log': {
-    topic: function() {
-      var evt
-      , logger = new Logger('testing', null, function(event) { evt = event; });
-      logger.log(levels.DEBUG, "cheese");
-      return evt;
-    },
-    'should send log events to log4js': function(evt) {
-      assert.equal(evt.categoryName, 'testing');
-      assert.equal(evt.level, levels.DEBUG);
-      assert.equal(evt.data[0], "cheese");
-    }
-  }
-}).exportTo(module);
+    it('should be immutable', function() {
+      logger.category = "rubbish";
+      logger.debug("thing");
+
+      event.category.should.equal("exciting category");
+    });
+
+    ['trace', 'debug', 'info', 'warn', 'error', 'fatal'].forEach(function(level) {
+      it('should have a ' + level + ' function', function() {
+        logger[level].should.be.a('function');
+      });
+    });
+
+    it('should send log events to the dispatch delegate', function() {
+      logger.debug("interesting thing");
+      event.should.have.property('category').equal('exciting category');
+      event.should.have.property('level').equal('debug');
+      event.should.have.property('data').eql(["interesting thing"]);
+      event.should.have.property('startTime');
+    });
+  });
+  
+});
+
