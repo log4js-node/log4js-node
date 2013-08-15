@@ -198,7 +198,7 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%r', '14:18:30');
     },
     '%d{ISO8601_WITH_TZ_OFFSET} should output time only': function(args) {
-      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30');
+      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30-0000');
     },
     '%d{yy.MM.dd.hh.mm.ss.sss} should output time only': function(args) {
       test(args, '%d{yy.MM.dd.hh.mm.ss.SSS}', '10.12.05.14.18.30.045');
