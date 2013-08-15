@@ -197,12 +197,6 @@ vows.describe('log4js layouts').addBatch({
     '%r should output time only': function(args) {
       test(args, '%r', '14:18:30');
     },
-    '%d{ISO8601_WITH_TZ_OFFSET} should output time only': function(args) {
-      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30-0000');
-    },
-    '%d{yy.MM.dd.hh.mm.ss.sss} should output time only': function(args) {
-      test(args, '%d{yy.MM.dd.hh.mm.ss.SSS}', '10.12.05.14.18.30.045');
-    },
     '%p should output the log level': function(args) {
       test(args, '%p', 'DEBUG');
     },
@@ -227,9 +221,11 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%d', '2010-12-05 14:18:30.045');
     },
     '%d should allow for format specification': function(args) {
+      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30-0000');
       test(args, '%d{ISO8601}', '2010-12-05 14:18:30.045');
       test(args, '%d{ABSOLUTE}', '14:18:30.045');
       test(args, '%d{DATE}', '05 12 2010 14:18:30.045');
+      test(args, '%d{yy MM dd hh mm ss}', '10 12 05 14 18 30');
       test(args, '%d{yyyy MM dd}', '2010 12 05');
       test(args, '%d{yyyy MM dd hh mm ss SSS}', '2010 12 05 14 18 30 045');
     },
