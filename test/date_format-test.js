@@ -41,9 +41,10 @@ vows.describe('date_format').addBatch({
       );
     },
     'should provide a custom format': function(date) {
+      date.getTimezoneOffset = function() { return 120; };
       assert.equal(
         dateFormat.asString("O.SSS.ss.mm.hh.dd.MM.yy", date),
-        '+1100.005.30.31.14.11.01.10'
+        '-0200.005.30.31.14.11.01.10'
       );
     }
   }
