@@ -197,6 +197,12 @@ vows.describe('log4js layouts').addBatch({
     '%r should output time only': function(args) {
       test(args, '%r', '14:18:30');
     },
+    '%d{ISO8601_WITH_TZ_OFFSET} should output time only': function(args) {
+      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-11-05T14:18:30');
+    },
+    '%d{yy.MM.dd.hh.mm.ss.sss} should output time only': function(args) {
+      test(args, '%d{yy.MM.dd.hh.mm.ss.sss}', '10.11.05.14.18.30.045');
+    },
     '%p should output the log level': function(args) {
       test(args, '%p', 'DEBUG');
     },
