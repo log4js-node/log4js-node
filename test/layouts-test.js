@@ -209,6 +209,9 @@ vows.describe('log4js layouts').addBatch({
     '%n should output a new line': function(args) {
       test(args, '%n', '\n');
     },
+    '%h should output hostname' : function(args) {
+      test(args, '%h', require('os').hostname().toString());
+    },
     '%c should handle category names like java-style package names': function(args) {
       test(args, '%c{1}', 'tests');
       test(args, '%c{2}', 'of.tests');
