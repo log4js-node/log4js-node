@@ -222,7 +222,7 @@ vows.describe('log4js fileAppender').addBatch({
         , logger;
         //this config file defines one file appender (to ./tmp-tests.log)
         //and sets the log level for "tests" to WARN
-        log4js.configure('test/log4js.json');
+        log4js.configure('./test/log4js.json');
         logger = log4js.getLogger('tests');
         logger.info('this should not be written to the file');
         logger.warn('this should be written to the file');
