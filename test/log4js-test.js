@@ -288,4 +288,34 @@ describe('../lib/log4js', function() {
 
     it('should reload configuration if specified');
   });
+
+  describe('with no configuration', function() {
+    var events = []
+    , log4js_sandboxed = sandbox.require(
+      '../lib/log4js',
+      {
+        requires: {
+          './appenders/console': {
+            configure: function() {
+              return function(event) { events.push(event); };
+            }
+          }
+        }
+      }
+    );
+
+    log4js_sandboxed.getLogger("blah").debug("goes to console");
+    log4js_sandboxed.getLogger("yawn").trace("does not go to console");
+    log4js_sandboxed.getLogger().error("also goes to console");
+
+    it('should log events of debug level and higher to console', function() {
+      events.should.have.length(2);
+      events[0].data[0].should.eql("goes to console");
+      events[0].category.should.eql("blah");
+      events[0].level.toString().should.eql("DEBUG");
+      events[1].data[0].should.eql("also goes to console");
+      events[1].category.should.eql("default");
+      events[1].level.toString().should.eql("ERROR");
+    });
+  });
 });
