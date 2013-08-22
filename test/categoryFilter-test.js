@@ -1,83 +1,96 @@
 'use strict';
 
-var vows = require('vows')
+var async = require('async')
+, should = require('should')
 , fs = require('fs')
+, path = require('path')
 , assert = require('assert');
 
-function remove(filename) {
-  try {
-    fs.unlinkSync(filename);
-  } catch (e) {
-    //doesn't really matter if it failed
-  }
+function remove() {
+  var files = Array.prototype.slice.call(arguments);
+  return function(done) {
+    async.forEach(
+      files.map(function(file) { return path.join(__dirname, file); }),
+      fs.unlink.bind(fs),
+      function() { done(); }
+    );
+  };
 }
 
-vows.describe('log4js categoryFilter').addBatch({
-  'appender': {
-    topic: function() {
+describe('log4js', function() {
+
+  before(
+    remove(
+      'test-category-filter-web.log', 
+      'test-category-filter-all.log'
+    )
+  );
+
+  after(
+    remove(
+      'test-category-filter-web.log',
+      'test-category-filter-all.log'
+    )
+  );
+
+  describe('category filtering', function() {
+    before(function() {
+      var log4js = require('../lib/log4js')
+      , webLogger = log4js.getLogger("web")
+      , appLogger = log4js.getLogger("app");
       
-      var log4js = require('../lib/log4js'), logEvents = [], webLogger, appLogger;
-      log4js.clearAppenders();
-      var appender = require('../lib/appenders/categoryFilter')
-        .appender(
-          ['app'], 
-          function(evt) { logEvents.push(evt); }
-        );
-      log4js.addAppender(appender, ["app","web"]);
-      
-      webLogger = log4js.getLogger("web");
-      appLogger = log4js.getLogger("app");
+      log4js.configure({
+        appenders: {
+          rest: { 
+            type: "file", 
+            layout: { type: "messagePassThrough" },
+            filename: path.join(__dirname, "test-category-filter-all.log") 
+          },
+          web: { 
+            type: "file", 
+            layout: { type: "messagePassThrough"}, 
+            filename: path.join(__dirname, "test-category-filter-web.log") 
+          }
+        },
+        categories: {
+          "default": { level: "debug", appenders: [ "rest" ] },
+          web: { level: "debug", appenders: [ "web" ] }
+        }
+      });
       
       webLogger.debug('This should get logged');
       appLogger.debug('This should not');
       webLogger.debug('Hello again');
       log4js.getLogger('db').debug('This shouldn\'t be included by the appender anyway');
-      
-      return logEvents;
-    },
-    'should only pass matching category' : function(logEvents) {
-      assert.equal(logEvents.length, 2);
-      assert.equal(logEvents[0].data[0], 'This should get logged');
-      assert.equal(logEvents[1].data[0], 'Hello again');
-    }
-  },
-  
-  'configure': {
-    topic: function() {
-      var log4js = require('../lib/log4js')
-      , logger, weblogger;
-      
-      remove(__dirname + '/categoryFilter-web.log');
-      remove(__dirname + '/categoryFilter-noweb.log');
-      
-      log4js.configure('test/with-categoryFilter.json');
-      logger = log4js.getLogger("app");
-      weblogger = log4js.getLogger("web");
-      
-      logger.info('Loading app');
-      logger.debug('Initialising indexes');
-      weblogger.info('00:00:00 GET / 200');
-      weblogger.warn('00:00:00 GET / 500');
-      //wait for the file system to catch up
-      setTimeout(this.callback, 100);
-    },
-    'tmp-tests.log': {
-      topic: function() {
-        fs.readFile(__dirname + '/categoryFilter-noweb.log', 'utf8', this.callback);
-      },
-      'should contain all log messages': function(contents) {
-        var messages = contents.trim().split('\n');
-        assert.deepEqual(messages, ['Loading app','Initialising indexes']);
-      }
-    },
-    'tmp-tests-web.log': {
-      topic: function() {
-        fs.readFile(__dirname + '/categoryFilter-web.log','utf8',this.callback);
-      },
-      'should contain only error and warning log messages': function(contents) {
-        var messages = contents.trim().split('\n');
-        assert.deepEqual(messages, ['00:00:00 GET / 200','00:00:00 GET / 500']);
-      }
-    }
-  }
-}).export(module);
+    });
+
+    it('should only pass matching category', function(done) {
+      setTimeout(function() {
+        fs.readFile(
+          path.join(__dirname, 'test-category-filter-web.log'), 
+          'utf8', 
+          function(err, contents) {
+            var lines = contents.trim().split('\n');
+            lines.should.eql(["This should get logged", "Hello again"]);
+            done(err);
+          }
+        );
+      }, 50);
+    });
+    
+    it('should send everything else to default appender', function(done) {
+      setTimeout(function() {
+        fs.readFile(
+          path.join(__dirname, 'test-category-filter-all.log'), 
+          'utf8', 
+          function(err, contents) {
+            var lines = contents.trim().split('\n');
+            lines.should.eql(["This should not", "This shouldn't be included by the appender anyway"]);
+            done(err);
+          }
+        );
+      }, 50);
+    });    
+
+  });
+});
