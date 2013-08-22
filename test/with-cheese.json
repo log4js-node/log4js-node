@@ -1,0 +1,9 @@
+{
+  "appenders": {
+    "thing": { "type": "cheese" }
+  },
+  "categories": {
+    "default": { "level": "DEBUG", "appenders": [ "thing" ] },
+    "noisy": { "level": "ERROR", "appenders": [ "thing" ] }
+  }
+}
