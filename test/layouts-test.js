@@ -209,6 +209,9 @@ vows.describe('log4js layouts').addBatch({
     '%n should output a new line': function(args) {
       test(args, '%n', '\n');
     },
+    '%h should output hostname' : function(args) {
+      test(args, '%h', require('os').hostname().toString());
+    },
     '%c should handle category names like java-style package names': function(args) {
       test(args, '%c{1}', 'tests');
       test(args, '%c{2}', 'of.tests');
@@ -221,9 +224,11 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%d', '2010-12-05 14:18:30.045');
     },
     '%d should allow for format specification': function(args) {
+      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30-0000');
       test(args, '%d{ISO8601}', '2010-12-05 14:18:30.045');
       test(args, '%d{ABSOLUTE}', '14:18:30.045');
       test(args, '%d{DATE}', '05 12 2010 14:18:30.045');
+      test(args, '%d{yy MM dd hh mm ss}', '10 12 05 14 18 30');
       test(args, '%d{yyyy MM dd}', '2010 12 05');
       test(args, '%d{yyyy MM dd hh mm ss SSS}', '2010 12 05 14 18 30 045');
     },
