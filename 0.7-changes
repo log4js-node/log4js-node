@@ -1,0 +1,10 @@
+LogEvent.categoryName -> LogEvent.category
+Logger is immutable (no setLevel any more)
+Log levels defined in configure call, nowhere else
+References to Loggers not retained
+Clustered appender, multiprocess appender removed - core handles clusters now
+Default category needs to be defined, with appender
+connect logger, gelf, smtp, hookio appenders removed from core.
+reload configuration removed from core - use 'watchr' or something instead
+appenders now only need to provide configure function
+log4js.configure now only takes single argument (no options)
