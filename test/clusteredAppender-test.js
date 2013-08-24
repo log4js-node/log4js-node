@@ -1,116 +1,145 @@
 "use strict";
-var assert = require('assert');
-var vows = require('vows');
-var layouts = require('../lib/layouts');
-var sandbox = require('sandboxed-module');
-var LoggingEvent = require('../lib/logger').LoggingEvent;
-var cluster = require('cluster');
+var should = require('should')
+, sandbox = require('sandboxed-module');
 
-vows.describe('log4js cluster appender').addBatch({
-	'when in master mode': {
-		topic: function() {
 
-			var registeredClusterEvents = [];
-			var loggingEvents = [];
-			
-			// Fake cluster module, so no cluster listeners be really added 
-			var fakeCluster = {
-			
-				on: function(event, callback) {
-					registeredClusterEvents.push(event);
-				},
-				
-				isMaster: true,
-				isWorker: false,
-				
-			};
-		
-			var fakeActualAppender = function(loggingEvent) {
-				loggingEvents.push(loggingEvent);
-			}
-			
-			// Load appender and fake modules in it
-			var appenderModule = sandbox.require('../lib/appenders/clustered', {
-				requires: {
-					'cluster': fakeCluster,
-				}
-			});
-		
-			var masterAppender = appenderModule.appender({
-				actualAppenders: [ fakeActualAppender ]
-			});
+describe('log4js in a cluster', function() {
+  describe('when in master mode', function() {
 
-			// Actual test - log message using masterAppender
-			masterAppender(new LoggingEvent('wovs', 'Info', ['masterAppender test']));
-			
-			var returnValue = {
-				registeredClusterEvents: registeredClusterEvents,
-				loggingEvents: loggingEvents,
-			};
-		
-			return returnValue;
-		}, 
-		
-		"should register 'fork' event listener on 'cluster'": function(topic) { 
-			assert.equal(topic.registeredClusterEvents[0], 'fork');
-		},
-		
-		"should log using actual appender": function(topic) {
-			assert.equal(topic.loggingEvents[0].data[0], 'masterAppender test');
-		},
-		
-	},
-	
-	'when in worker mode': {
-		
-		topic: function() {
-			
-			var registeredProcessEvents = [];
-			
-			// Fake cluster module, to fake we're inside a worker process
-			var fakeCluster = {
-			
-				isMaster: false,
-				isWorker: true,
-				
-			};
-			
-			var fakeProcess = {
-			
-				send: function(data) {
-					registeredProcessEvents.push(data);
-				},
-				
-			};
-			
-			// Load appender and fake modules in it
-			var appenderModule = sandbox.require('../lib/appenders/clustered', {
-				requires: {
-					'cluster': fakeCluster,
-				},
-				globals: {
-					'process': fakeProcess,
-				}
-			});
-			
-			var workerAppender = appenderModule.appender();
+    var log4js
+    , clusterOnFork = false
+    , workerCb 
+    , events = []
+    , worker = {
+      on: function(evt, cb) {
+        evt.should.eql('message');
+        this.cb = cb;
+      }
+    };
 
-			// Actual test - log message using masterAppender
-			workerAppender(new LoggingEvent('wovs', 'Info', ['workerAppender test']));
-			
-			var returnValue = {
-				registeredProcessEvents: registeredProcessEvents,
-			};
-			
-			return returnValue;
-		
-		},
-		
-		"worker appender should call process.send" : function(topic) {
-			assert.equal(topic.registeredProcessEvents[0].type, '::log-message');
-			assert.equal(JSON.parse(topic.registeredProcessEvents[0].event).data[0], "workerAppender test");
-		}
-		
-	}
+    before(function() {
+      log4js = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            'cluster': {
+              isMaster: true,
+              on: function(evt, cb) {
+                evt.should.eql('fork');
+                clusterOnFork = true;
+                cb(worker);
+              }
+            },
+            './appenders/console': {
+              configure: function() {
+                return function(event) {
+                  events.push(event);
+                };
+              }
+            }
+          }
+        }
+      );
+    });
 
-}).exportTo(module);
+    it('should listen for fork events', function() {
+      clusterOnFork.should.be.true;
+    });
+
+    it('should listen for messages from workers', function() {
+      //workerCb was created in a different context to the test
+      //(thanks to sandbox.require), so doesn't pick up the should prototype
+      (typeof worker.cb).should.eql('function');
+    });
+
+    it('should log valid ::log4js-message events', function() {
+      worker.cb({ 
+        type: '::log4js-message', 
+        event: JSON.stringify({ 
+          startTime: '2010-10-10 18:54:06', 
+          category: 'cheese', 
+          level: { levelStr: 'DEBUG' }, 
+          data: [ "blah" ] 
+        })
+      });
+      events.should.have.length(1);
+      events[0].data[0].should.eql("blah");
+      events[0].category.should.eql('cheese');
+      //startTime was created in a different context to the test
+      //(thanks to sandbox.require), so instanceof doesn't think
+      //it's a Date.
+      events[0].startTime.constructor.name.should.eql('Date');
+      events[0].level.toString().should.eql('DEBUG');
+    });
+
+    it('should handle invalid ::log4js-message events', function() {
+      worker.cb({
+        type: '::log4js-message',
+        event: "biscuits"
+      });
+      worker.cb({
+        type: '::log4js-message',
+        event: JSON.stringify({
+          startTime: 'whatever'
+        })
+      });
+
+      events.should.have.length(3);
+      events[1].data[0].should.eql('Unable to parse log:');
+      events[1].data[1].should.eql('biscuits');
+      events[1].category.should.eql('log4js');
+      events[1].level.toString().should.eql('ERROR');
+
+      events[2].data[0].should.eql('Unable to parse log:');
+      events[2].data[1].should.eql(JSON.stringify({ startTime: 'whatever'}));
+
+    });
+
+    it('should ignore other events', function() {
+      worker.cb({
+        type: "::blah-blah",
+        event: "blah"
+      });
+
+      events.should.have.length(3);
+    });
+
+  });
+
+  describe('when in worker mode', function() {
+    var log4js, events = [];
+
+    before(function() {
+      log4js = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            'cluster': {
+              isMaster: false,
+              on: function() {}
+            }
+          },
+          globals: {
+            'process': {
+              'send': function(event) {
+                events.push(event);
+              }
+            }
+          }
+        }
+      );
+      log4js.getLogger('test').debug("just testing");
+    });
+    
+    it('should emit ::log4js-message events', function() {
+      events.should.have.length(1);
+      events[0].type.should.eql('::log4js-message');
+      events[0].event.should.be.a('string');
+      
+      var evt = JSON.parse(events[0].event);
+      evt.category.should.eql('test');
+      evt.level.levelStr.should.eql('DEBUG');
+      evt.data[0].should.eql('just testing');
+    });
+  });
+});
