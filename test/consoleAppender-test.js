@@ -1,33 +1,31 @@
 "use strict";
-var assert = require('assert')
-, vows = require('vows')
-, layouts = require('../lib/layouts')
+var should = require('should')
 , sandbox = require('sandboxed-module');
 
-vows.describe('../lib/appenders/console').addBatch({
-  'appender': {
-    topic: function() {
-      var messages = []
-      , fakeConsole = {
-        log: function(msg) { messages.push(msg); }
-      }
-      , appenderModule = sandbox.require(
-        '../lib/appenders/console',
-        {
-          globals: {
-            'console': fakeConsole
-          }
-        }
-      )
-      , appender = appenderModule.appender(layouts.messagePassThroughLayout);
+describe('../lib/appenders/console', function() {
+  var messages = [];
 
-      appender({ data: ["blah"] });
-      return messages;
-    },
-
-    'should output to console': function(messages) {
-      assert.equal(messages[0], 'blah');
+  before(function() {
+    var fakeConsole = {
+      log: function(msg) { messages.push(msg); }
     }
-  }
+    , appenderModule = sandbox.require(
+      '../lib/appenders/console',
+      {
+        globals: {
+          'console': fakeConsole
+        }
+      }
+    )
+    , appender = appenderModule.configure(
+      { layout: { type: "messagePassThrough" } }
+    );
+
+    appender({ data: ["blah"] });
+  });
+
+  it('should output to console', function() {
+      messages.should.eql(["blah"]);
+  });
           
-}).exportTo(module);
+});
