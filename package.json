@@ -30,7 +30,8 @@
   "dependencies": {
     "async": "0.1.15",
     "semver": "~1.1.4",
-    "readable-stream": "~1.0.2"
+    "readable-stream": "~1.0.2",
+    "debug": "~0.7.2"
   },
   "devDependencies": {
     "sandboxed-module": "0.1.3",

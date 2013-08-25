@@ -39,7 +39,7 @@ describe('../lib/log4js', function() {
       (function() { log4js.configure(); }).should.throw(
         "ENOENT, no such file or directory 'made-up-file'"
       );
-      process.env.LOG4JS_CONFIG = null;
+      delete process.env.LOG4JS_CONFIG;
     });
 
     it('should complain if the config does not specify any appenders', function() {
@@ -286,7 +286,6 @@ describe('../lib/log4js', function() {
       
     });
 
-    it('should reload configuration if specified');
   });
 
   describe('with no configuration', function() {
