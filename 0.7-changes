@@ -10,3 +10,4 @@ appenders now only need to provide configure function
 log4js.configure now only takes single argument (no options)
 tests use mocha not vows
 replaced my debug lib with tjholowaychuk's debug (more of a standard)
+options.cwd removed - filenames should always be specified in full, not relative
