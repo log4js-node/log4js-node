@@ -14,7 +14,7 @@ describe('log4js layouts', function() {
       var output = layout({
         data: ["nonsense"],
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-        categoryName: "cheese",
+        category: "cheese",
         level: {
           toString: function() { return "ERROR"; }
         }
@@ -26,7 +26,7 @@ describe('log4js layouts', function() {
       var output = layout({
         data: ["thing %d", 2],
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-        categoryName: "cheese",
+        category: "cheese",
         level: {
           toString: function() { return "ERROR"; }
         }
@@ -43,7 +43,7 @@ describe('log4js layouts', function() {
       assert.equal(layout({
         data: ["nonsense"],
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-        categoryName: "cheese",
+        category: "cheese",
         level: {
           colour: "green",
           toString: function() { return "ERROR"; }
@@ -55,7 +55,7 @@ describe('log4js layouts', function() {
       assert.equal(layout({
         data: ["thing %d", 1, "cheese"], 
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        categoryName: "cheese", 
+        category: "cheese", 
         level : {
           colour: "green", 
           toString: function() { return "ERROR"; }
@@ -67,7 +67,7 @@ describe('log4js layouts', function() {
       assert.equal(layout({
         data: [ { thing: 1} ], 
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        categoryName: "cheese", 
+        category: "cheese", 
         level: {
           colour: "green", 
           toString: function() { return "ERROR"; }
@@ -81,7 +81,7 @@ describe('log4js layouts', function() {
           layout({
             data: [ new Error() ], 
             startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-            categoryName: "cheese", 
+            category: "cheese", 
             level: {
               colour: "green", 
               toString: function() { return "ERROR"; }
@@ -105,7 +105,7 @@ describe('log4js layouts', function() {
         layoutOutput = layout({
           data: [ e ], 
           startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-          categoryName: "cheese", 
+          category: "cheese", 
           level: {
             colour: "green", 
             toString: function() { return "ERROR"; }
@@ -136,7 +136,7 @@ describe('log4js layouts', function() {
     , event = {
       data: ['this is a test'],
       startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: "tests",
+      category: "tests",
       level: {
         toString: function() { return "DEBUG"; }
       }
@@ -188,7 +188,7 @@ describe('log4js layouts', function() {
     var event = {
       data: ['this is a test'],
       startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: "multiple.levels.of.tests",
+      category: "multiple.levels.of.tests",
       level: {
         toString: function() { return "DEBUG"; }
       }
