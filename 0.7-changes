@@ -11,3 +11,5 @@ log4js.configure now only takes single argument (no options)
 tests use mocha not vows
 replaced my debug lib with tjholowaychuk's debug (more of a standard)
 options.cwd removed - filenames should always be specified in full, not relative
+loglevelfilter changed to accept a list of log levels it allows
+appenders that wrap other appenders must reference them by name
