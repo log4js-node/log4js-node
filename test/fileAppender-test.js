@@ -1,22 +1,19 @@
 "use strict";
 var fs = require('fs')
+, async = require('async')
 , path = require('path')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
 , should = require('should');
 
-function remove(filename) {
-  try {
-    fs.unlinkSync(filename);
-  } catch (e) {
-    //doesn't really matter if it failed
-  }
+function remove(filename, cb) {
+  fs.unlink(filename, function(err) { cb(); });
 }
 
 describe('log4js fileAppender', function() {
 
   describe('adding multiple fileAppenders', function() {
-    var initialCount, listenersCount; 
+    var files = [], initialCount, listenersCount; 
 
     before(function() {
       var logfile
@@ -28,11 +25,16 @@ describe('log4js fileAppender', function() {
       while (count--) {
         logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
         config.appenders["file" + count] = { type: "file", filename: logfile };
+        files.push(logfile);
       }
 
       log4js.configure(config);
 
       listenersCount = process.listeners('exit').length;
+    });
+
+    after(function(done) {
+      async.forEach(files, remove, done);
     });
     
     it('does not add more than one `exit` listeners', function () {
@@ -83,34 +85,38 @@ describe('log4js fileAppender', function() {
   });
 
   describe('with default fileAppender settings', function() {
-    var fileContents;
+    var fileContents
+    , testFile = path.join(__dirname, '/fa-default-test.log');
 
     before(function(done) {
-      var that = this
-      , testFile = path.join(__dirname, '/fa-default-test.log')
-      , logger = log4js.getLogger('default-settings');
+      var logger = log4js.getLogger('default-settings');
 
-      remove(testFile);
+      remove(testFile, function() {
 
-      log4js.configure({
-        appenders: { 
-          "file": { type: "file", filename: testFile }
-        },
-        categories: {
+        log4js.configure({
+          appenders: { 
+            "file": { type: "file", filename: testFile }
+          },
+          categories: {
           default: { level: "debug", appenders: [ "file" ] }
-        }
-      });
-      
-      logger.info("This should be in the file.");
-      
-      setTimeout(function() {
-        fs.readFile(testFile, "utf8", function(err, contents) {
-          if (!err) {
-            fileContents = contents;
           }
-          done(err);
         });
-      }, 100);
+        
+        logger.info("This should be in the file.");
+        
+        setTimeout(function() {
+          fs.readFile(testFile, "utf8", function(err, contents) {
+            if (!err) {
+              fileContents = contents;
+            }
+            done(err);
+          });
+        }, 100);
+      });
+    });
+
+    after(function(done) {
+      remove(testFile, done);
     });
 
     it('should write log messages to the file', function() {
@@ -127,24 +133,32 @@ describe('log4js fileAppender', function() {
   describe('with a max file size and no backups', function() {
     var testFile = path.join(__dirname, '/fa-maxFileSize-test.log');
 
-    before(function() {
+    before(function(done) {
       var logger = log4js.getLogger('max-file-size');
 
-      remove(testFile);
-      remove(testFile + '.1');
+      async.forEach([
+        testFile,
+        testFile + '.1'
+      ], remove, function() {
 
-      //log file of 100 bytes maximum, no backups
-      log4js.configure({
-        appenders: {
-          "file": { type: "file", filename: testFile, maxLogSize: 100, backups: 0 }
-        },
-        categories: {
+        //log file of 100 bytes maximum, no backups
+        log4js.configure({
+          appenders: {
+            "file": { type: "file", filename: testFile, maxLogSize: 100, backups: 0 }
+          },
+          categories: {
           default: { level: "debug", appenders: [ "file" ] }
-        }
+          }
+        });
+        logger.info("This is the first log message.");
+        logger.info("This is an intermediate log message.");
+        logger.info("This is the second log message.");
+        done();
       });
-      logger.info("This is the first log message.");
-      logger.info("This is an intermediate log message.");
-      logger.info("This is the second log message.");
+    });
+
+    after(function(done) {
+      async.forEach([ testFile, testFile + '.1' ], remove, done);
     });
 
     describe('log file', function() {
@@ -177,26 +191,32 @@ describe('log4js fileAppender', function() {
   describe('with a max file size and 2 backups', function() {
     var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-test.log');
 
-    before(function() {
+    before(function(done) {
       var logger = log4js.getLogger('max-file-size-backups');
-      remove(testFile);
-      remove(testFile+'.1');
-      remove(testFile+'.2');
-      
-      //log file of 50 bytes maximum, 2 backups
-      log4js.configure({
-        appenders: {
-          "file": { type: "file", filename: testFile, maxLogSize: 50, backups: 2 }
-        },
-        categories: {
-          default: { level: "debug", appenders: [ "file" ] }
-        }
-      });
 
-      logger.info("This is the first log message.");
-      logger.info("This is the second log message.");
-      logger.info("This is the third log message.");
-      logger.info("This is the fourth log message.");
+      async.forEach([
+        testFile,
+        testFile+'.1',
+        testFile+'.2'
+      ], remove, function() {
+      
+        //log file of 50 bytes maximum, 2 backups
+        log4js.configure({
+          appenders: {
+            "file": { type: "file", filename: testFile, maxLogSize: 50, backups: 2 }
+          },
+          categories: {
+          default: { level: "debug", appenders: [ "file" ] }
+          }
+        });
+        
+        logger.info("This is the first log message.");
+        logger.info("This is the second log message.");
+        logger.info("This is the third log message.");
+        logger.info("This is the fourth log message.");
+
+        done();
+      });
     });
     
     describe('the log files', function() {
@@ -217,6 +237,10 @@ describe('log4js fileAppender', function() {
             }
           });
         }, 200);
+      });
+
+      after(function(done) {
+        async.forEach(logFiles, remove, done);
       });
 
       it('should be 3', function () {
