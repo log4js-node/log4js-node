@@ -199,7 +199,7 @@ describe('../lib/appenders/dateFile', function() {
                   done(err);
                 }
               );
-            }, 100);
+            }, 200);
           }
         );
       });

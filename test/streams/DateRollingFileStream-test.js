@@ -1,6 +1,5 @@
 "use strict";
-var vows = require('vows')
-, assert = require('assert')
+var should = require('should') 
 , fs = require('fs')
 , semver = require('semver')
 , streams
@@ -14,214 +13,242 @@ if (semver.satisfies(process.version, '>=0.10.0')) {
 }
 DateRollingFileStream = require('../../lib/streams').DateRollingFileStream;
 
-function cleanUp(filename) {
-  return function() {
-    fs.unlink(filename);
-  };
+function remove(filename, cb) {
+  fs.unlink(filename, function() { cb(); });
 }
 
 function now() {
   return testTime.getTime();
 }
 
-vows.describe('DateRollingFileStream').addBatch({
-  'arguments': {
-    topic: new DateRollingFileStream(
+describe('DateRollingFileStream', function() {
+  describe('arguments', function() {
+    var stream = new DateRollingFileStream(
       __dirname + '/test-date-rolling-file-stream-1', 
       'yyyy-mm-dd.hh'
-    ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-1'),
+    );
+
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-1', done);
+    });
     
-    'should take a filename and a pattern and return a WritableStream': function(stream) {
-      assert.equal(stream.filename, __dirname + '/test-date-rolling-file-stream-1');
-      assert.equal(stream.pattern, 'yyyy-mm-dd.hh');
-      assert.instanceOf(stream, streams.Writable);
-    },
-    'with default settings for the underlying stream': function(stream) {
-      assert.equal(stream.theStream.mode, 420);
-      assert.equal(stream.theStream.flags, 'a');
+    it('should take a filename and a pattern and return a WritableStream', function() {
+      stream.filename.should.eql(__dirname + '/test-date-rolling-file-stream-1');
+      stream.pattern.should.eql('yyyy-mm-dd.hh');
+      stream.should.be.instanceOf(streams.Writable);
+    });
+
+    it('with default settings for the underlying stream', function() {
+      stream.theStream.mode.should.eql(420);
+      stream.theStream.flags.should.eql('a');
       //encoding is not available on the underlying stream
       //assert.equal(stream.encoding, 'utf8');
-    }
-  },
+    });
+  });
   
-  'default arguments': {
-    topic: new DateRollingFileStream(__dirname + '/test-date-rolling-file-stream-2'),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-2'),
-    
-    'pattern should be .yyyy-MM-dd': function(stream) {
-      assert.equal(stream.pattern, '.yyyy-MM-dd');
-    }
-  },
+  describe('default arguments', function() {
+    var stream = new DateRollingFileStream(__dirname + '/test-date-rolling-file-stream-2');
 
-  'with stream arguments': {
-    topic: new DateRollingFileStream(
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-2', done);
+    });
+    
+    it('should have pattern of .yyyy-MM-dd', function() {
+      stream.pattern.should.eql('.yyyy-MM-dd');
+    });
+  });
+
+  describe('with stream arguments', function() {
+    var stream = new DateRollingFileStream(
       __dirname + '/test-date-rolling-file-stream-3', 
       'yyyy-MM-dd', 
       { mode: parseInt('0666', 8) }
-    ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-3'),
-    
-    'should pass them to the underlying stream': function(stream) {
-      assert.equal(stream.theStream.mode, parseInt('0666', 8));
-    }
-  },
+    );
 
-  'with stream arguments but no pattern': {
-    topic: new DateRollingFileStream(
+
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-3', done);
+    });
+    
+    it('should pass them to the underlying stream', function() {
+      stream.theStream.mode.should.eql(parseInt('0666', 8));
+    });
+  });
+
+  describe('with stream arguments but no pattern', function() {
+    var stream = new DateRollingFileStream(
       __dirname + '/test-date-rolling-file-stream-4', 
       { mode: parseInt('0666', 8) }
-    ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-4'),
-    
-    'should pass them to the underlying stream': function(stream) {
-      assert.equal(stream.theStream.mode, parseInt('0666', 8));
-    },
-    'should use default pattern': function(stream) {
-      assert.equal(stream.pattern, '.yyyy-MM-dd');
-    }
-  },
+    );
 
-  'with a pattern of .yyyy-MM-dd': {
-    topic: function() {
-      var that = this,
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-4', done);
+    });
+    
+    it('should pass them to the underlying stream', function() {
+      stream.theStream.mode.should.eql(parseInt('0666', 8));
+    });
+
+    it('should use default pattern', function() {
+      stream.pattern.should.eql('.yyyy-MM-dd');
+    });
+  });
+
+  describe('with a pattern of .yyyy-MM-dd', function() {
+
+    var stream;
+
+    before(function(done) {
       stream = new DateRollingFileStream(
         __dirname + '/test-date-rolling-file-stream-5', '.yyyy-MM-dd', 
         null, 
         now
       );
-      stream.write("First message\n", 'utf8', function() {
-        that.callback(null, stream);
-      });
-    },
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-5'),
+      stream.write("First message\n", 'utf8', done);
+    });
+
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-5', done);
+    });
     
-    'should create a file with the base name': {
-      topic: function(stream) {
-        fs.readFile(__dirname + '/test-date-rolling-file-stream-5', this.callback);
-      },
-      'file should contain first message': function(result) {
-        assert.equal(result.toString(), "First message\n");
-      }
-    },
+    it('should create a file with the base name', function(done) {
+      fs.readFile(__dirname + '/test-date-rolling-file-stream-5', 'utf8', function(err, contents) {
+        contents.should.eql("First message\n");
+        done(err);
+      });
+    });
 
-    'when the day changes': {
-      topic: function(stream) {
+    describe('when the day changes', function() {
+
+      before(function(done) {
         testTime = new Date(2012, 8, 13, 0, 10, 12);
-        stream.write("Second message\n", 'utf8', this.callback);
-      },
-      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-5.2012-09-12'),
+        stream.write("Second message\n", 'utf8', done);
+      });
 
+      after(function(done) {
+        remove(__dirname + '/test-date-rolling-file-stream-5.2012-09-12', done);
+      });
+
+      describe('the number of files', function() {
+        var files = [];
+
+        before(function(done) {
+          fs.readdir(__dirname, function(err, list) {
+            files = list;
+            done(err);
+          });
+        });
+
+        it('should be two', function() {
+          files.filter(
+            function(file) { 
+              return file.indexOf('test-date-rolling-file-stream-5') > -1; 
+            }
+          ).should.have.length(2);
+        });
+      });
       
-      'the number of files': {
-        topic: function() {
-          fs.readdir(__dirname, this.callback);
-        },
-        'should be two': function(files) {
-          assert.equal(
-            files.filter(
-              function(file) { 
-                return file.indexOf('test-date-rolling-file-stream-5') > -1; 
-              }
-            ).length, 
-            2
+      describe('the file without a date', function() {
+        it('should contain the second message', function(done) {
+          fs.readFile(
+            __dirname + '/test-date-rolling-file-stream-5', 'utf8',
+            function(err, contents) {
+              contents.should.eql("Second message\n");
+              done(err);
+            }
           );
-        }
-      },
+        });
+      });
       
-      'the file without a date': {
-        topic: function() {
-          fs.readFile(__dirname + '/test-date-rolling-file-stream-5', this.callback);
-        },
-        'should contain the second message': function(contents) {
-          assert.equal(contents.toString(), "Second message\n");
-        }
-      },
-      
-      'the file with the date': {
-        topic: function() {
-          fs.readFile(__dirname + '/test-date-rolling-file-stream-5.2012-09-12', this.callback);
-        },
-        'should contain the first message': function(contents) {
-          assert.equal(contents.toString(), "First message\n");
-        }
-      }
-    }
-  },
-  
-  'with alwaysIncludePattern': {
-    topic: function() {
-      var that = this,
+      describe('the file with the date', function() {
+        it('should contain the first message', function(done) {
+          fs.readFile(
+            __dirname + '/test-date-rolling-file-stream-5.2012-09-12', 'utf8',
+            function(err, contents) {
+              contents.should.eql("First message\n");
+              done(err);
+            }
+          );
+        });
+      });
+    });
+  });
+
+  describe('with alwaysIncludePattern', function() {
+    var stream;
+
+    before(function(done) {
       testTime = new Date(2012, 8, 12, 0, 10, 12),
       stream = new DateRollingFileStream(
         __dirname + '/test-date-rolling-file-stream-pattern', 
         '.yyyy-MM-dd', 
-        {alwaysIncludePattern: true}, 
+        { alwaysIncludePattern: true }, 
         now
       );
-      stream.write("First message\n", 'utf8', function() {
-        that.callback(null, stream);
-      });
-    },
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12'),
+      stream.write("First message\n", 'utf8', done);
+    });
+
+    after(function(done) {
+      remove(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', done);
+    });
     
-    'should create a file with the pattern set': {
-      topic: function(stream) {
-        fs.readFile(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', this.callback);
-      },
-      'file should contain first message': function(result) {
-        assert.equal(result.toString(), "First message\n");
-      }
-    },
+    it('should create a file with the pattern set', function(done) {
+      fs.readFile(
+        __dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', 'utf8',
+        function(err, contents) {
+          contents.should.eql("First message\n");
+          done(err);
+        }
+      );
+    });
     
-    'when the day changes': {
-      topic: function(stream) {
+    describe('when the day changes', function() {
+      before(function(done) {
         testTime = new Date(2012, 8, 13, 0, 10, 12);
-        stream.write("Second message\n", 'utf8', this.callback);
-      },
-      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-13'),
+        stream.write("Second message\n", 'utf8', done);
+      });
+
+      after(function(done) {
+        remove(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-13', done);
+      });
       
       
-      'the number of files': {
-        topic: function() {
-          fs.readdir(__dirname, this.callback);
-        },
-        'should be two': function(files) {
-          assert.equal(
+      describe('the number of files', function() {
+        it('should be two', function(done) {
+          fs.readdir(__dirname, function(err, files) {
             files.filter(
               function(file) { 
                 return file.indexOf('test-date-rolling-file-stream-pattern') > -1; 
               }
-            ).length, 
-            2
-          );
-        }
-      },
+            ).should.have.length(2);
+            done(err);
+          });
+        });
+      });
       
-      'the file with the later date': {
-        topic: function() {
+      describe('the file with the later date', function() {
+        it('should contain the second message', function(done) {
           fs.readFile(
-            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-13', 
-            this.callback
+            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-13', 'utf8',
+            function(err, contents) {
+              contents.should.eql("Second message\n");
+              done(err);
+            }
           );
-        },
-        'should contain the second message': function(contents) {
-          assert.equal(contents.toString(), "Second message\n");
-        }
-      },
+        });
+      });
       
-      'the file with the date': {
-        topic: function() {
+      describe('the file with the date', function() {
+        it('should contain the first message', function(done) {
           fs.readFile(
-            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', 
-            this.callback
+            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', 'utf8',
+            function(err, contents) {
+              contents.should.eql("First message\n");
+              done(err);
+            }
           );
-        },
-        'should contain the first message': function(contents) {
-          assert.equal(contents.toString(), "First message\n");
-        }
-      }
-    }
-  }
-
-}).exportTo(module);
+        });
+      });
+    });
+  });
+});

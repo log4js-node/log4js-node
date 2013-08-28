@@ -123,6 +123,8 @@ describe('log4js in a cluster', function() {
             'process': {
               'send': function(event) {
                 events.push(event);
+              },
+              'env': {
               }
             }
           }

@@ -1,12 +1,12 @@
 "use strict";
-var vows = require('vows')
-, assert = require('assert')
+var should = require('should')
 , fs = require('fs')
 , sandbox = require('sandboxed-module');
 
-vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
-  'when node version < 0.10.0': {
-    topic: function() {
+describe('../../lib/streams/BaseRollingFileStream', function() {
+  describe('when node version < 0.10.0', function() {
+    it('should use readable-stream to maintain compatibility', function() {
+    
       var streamLib = sandbox.load(
         '../../lib/streams/BaseRollingFileStream',
         {
@@ -22,16 +22,14 @@ vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
           }
         }
       );
-      return streamLib.required;
-    },
-    'it should use readable-stream to maintain compatibility': function(required) {
-      assert.ok(required['readable-stream']);
-      assert.ok(!required.stream);
-    }
-  },
 
-  'when node version > 0.10.0': {
-    topic: function() {
+      streamLib.required.should.have.property('readable-stream');
+      streamLib.required.should.not.have.property('stream');
+    });
+  });
+
+  describe('when node version > 0.10.0', function() {
+    it('should use the core stream module', function() {
       var streamLib = sandbox.load(
         '../../lib/streams/BaseRollingFileStream',
         {
@@ -47,47 +45,42 @@ vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
           }
         }
       );
-      return streamLib.required;
-    },
-    'it should use the core stream module': function(required) {
-      assert.ok(required.stream);
-      assert.ok(!required['readable-stream']);
-    }
-  },
 
-  'when no filename is passed': {
-    topic: require('../../lib/streams/BaseRollingFileStream'),
-    'it should throw an error': function(BaseRollingFileStream) {
-      try {
+      streamLib.required.should.have.property('stream');
+      streamLib.required.should.not.have.property('readable-stream');
+    });
+  });
+
+  describe('when no filename is passed', function() {
+    it('should throw an error', function() {
+      var BaseRollingFileStream = require('../../lib/streams/BaseRollingFileStream');
+      (function() {
         new BaseRollingFileStream();
-        assert.fail('should not get here');
-      } catch (e) {
-        assert.ok(e);
-      }
-    }
-  },
+      }).should.throw();
+    });
+  });
 
-  'default behaviour': {
-    topic: function() {
-      var BaseRollingFileStream = require('../../lib/streams/BaseRollingFileStream')
-      , stream = new BaseRollingFileStream('basetest.log');
-      return stream;
-    },
-    teardown: function() {
-      try {
-        fs.unlink('basetest.log');
-      } catch (e) {
-        console.error("could not remove basetest.log", e);
-      }
-    },
-    'it should not want to roll': function(stream) {
-      assert.isFalse(stream.shouldRoll());
-    },
-    'it should not roll': function(stream) {
+  describe('default behaviour', function() {
+    var stream;
+
+    before(function() {
+      var BaseRollingFileStream = require('../../lib/streams/BaseRollingFileStream');
+      stream = new BaseRollingFileStream('basetest.log');
+    });
+
+    after(function(done) {
+      fs.unlink('basetest.log', done);
+    });
+
+    it('should not want to roll', function() {
+      stream.shouldRoll().should.be.false;
+    });
+
+    it('should not roll', function() {
       var cbCalled = false;
       //just calls the callback straight away, no async calls
       stream.roll('basetest.log', function() { cbCalled = true; });
-      assert.isTrue(cbCalled);
-    }
-  }
-}).exportTo(module);
+      cbCalled.should.be.true;
+    });
+  });
+});

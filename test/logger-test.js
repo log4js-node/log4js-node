@@ -1,5 +1,6 @@
 "use strict";
 var should = require('should')
+, levels = require('../lib/levels')
 , Logger = require('../lib/logger');
 
 describe('../lib/logger', function() {
@@ -42,7 +43,7 @@ describe('../lib/logger', function() {
     it('should send log events to the dispatch delegate', function() {
       logger.debug("interesting thing");
       event.should.have.property('category').equal('exciting category');
-      event.should.have.property('level').equal('debug');
+      event.should.have.property('level').equal(levels.DEBUG);
       event.should.have.property('data').eql(["interesting thing"]);
       event.should.have.property('startTime');
     });
