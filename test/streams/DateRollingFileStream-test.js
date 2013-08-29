@@ -178,14 +178,19 @@ describe('DateRollingFileStream', function() {
     var stream;
 
     before(function(done) {
-      testTime = new Date(2012, 8, 12, 0, 10, 12),
-      stream = new DateRollingFileStream(
-        __dirname + '/test-date-rolling-file-stream-pattern', 
-        '.yyyy-MM-dd', 
-        { alwaysIncludePattern: true }, 
-        now
+      testTime = new Date(2012, 8, 12, 0, 10, 12);
+      remove(
+        __dirname + '/test-date-rolling-file-stream-pattern.2012-09-12',
+        function() {
+          stream = new DateRollingFileStream(
+            __dirname + '/test-date-rolling-file-stream-pattern', 
+            '.yyyy-MM-dd', 
+            { alwaysIncludePattern: true }, 
+            now
+          );
+          stream.write("First message\n", 'utf8', done);
+        }
       );
-      stream.write("First message\n", 'utf8', done);
     });
 
     after(function(done) {

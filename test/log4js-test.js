@@ -54,40 +54,44 @@ describe('../lib/log4js', function() {
 
     });
 
-    it('should complain if the config does not specify an appender for the default category', function() {
-
-      (function() { 
-        log4js.configure(
-          {
+    it(
+      'should complain if the config does not specify an appender for the default category', 
+      function() {
+        
+        (function() { 
+          log4js.configure(
+            {
+              appenders: { 
+                "console": { type: "console" } 
+              }, 
+              categories: {}
+            }
+          ); 
+        }).should.throw(
+          "You must specify an appender for the default category"
+        );
+        
+        (function() { 
+          log4js.configure({ 
             appenders: { 
               "console": { type: "console" } 
-            }, 
-            categories: {}
-          }
-        ); 
-      }).should.throw(
-        "You must specify an appender for the default category"
-      );
-
-      (function() { 
-        log4js.configure({ 
-          appenders: { 
-            "console": { type: "console" } 
-          },
-          categories: {
-            "cheese": { level: "DEBUG", appenders: [ "console" ] }
-          }
-        }); 
-      }).should.throw(
-        "You must specify an appender for the default category"
-      );
-
-    });
+            },
+            categories: {
+              "cheese": { level: "DEBUG", appenders: [ "console" ] }
+            }
+          }); 
+        }).should.throw(
+          "You must specify an appender for the default category"
+        );
+        
+      }
+    );
 
     it('should complain if a category does not specify level or appenders', function() {
       (function() {
         log4js.configure(
-          { appenders: { "console": { type: "console" } },
+          { 
+            appenders: { "console": { type: "console" } },
             categories: {
               "default": { thing: "thing" }
             }
@@ -99,7 +103,8 @@ describe('../lib/log4js', function() {
 
       (function() {
         log4js.configure(
-          { appenders: { "console": { type: "console" } },
+          { 
+            appenders: { "console": { type: "console" } },
             categories: {
               "default": { level: "DEBUG" }
             }
@@ -113,7 +118,8 @@ describe('../lib/log4js', function() {
     it('should complain if a category specifies a level that does not exist', function() {
       (function() {
         log4js.configure(
-          { appenders: { "console": { type: "console" }},
+          { 
+            appenders: { "console": { type: "console" }},
             categories: {
               "default": { level: "PICKLES" }
             }
@@ -128,7 +134,8 @@ describe('../lib/log4js', function() {
     it('should complain if a category specifies an appender that does not exist', function() {
       (function() {
         log4js.configure(
-          { appenders: { "console": { type: "console" }},
+          { 
+            appenders: { "console": { type: "console" }},
             categories: {
               "default": { level: "DEBUG", appenders: [ "cheese" ] }
             }
@@ -212,8 +219,8 @@ describe('../lib/log4js', function() {
     it('should read config from a file', function() {
       var events = [], log4js_sandbox = sandbox.require(
         '../lib/log4js',
-        { requires: 
-          { 
+        { 
+          requires: { 
             'cheese': {
               configure: function() {
                 return function(event) { events.push(event); };
@@ -235,8 +242,8 @@ describe('../lib/log4js', function() {
       , noisyLogger
       , log4js_sandbox = sandbox.require(
         '../lib/log4js',
-        { requires: 
-          { 
+        { 
+          requires: { 
             'cheese': {
               configure: function() {
                 return function(event) { events.push(event); };
@@ -264,8 +271,8 @@ describe('../lib/log4js', function() {
       var events = []
       , log4js_sandbox = sandbox.require(
         '../lib/log4js',
-        { requires: 
-          { 
+        { 
+          requires: { 
             'cheese': {
               configure: function() {
                 return function(event) { events.push(event); };

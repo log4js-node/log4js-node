@@ -1,12 +1,12 @@
 {
-  "build": "clean lint coverage test",
+  "build": "clean lint test coverage",
   "lint": {
     "type": "jshint"
   },
   "coverage": {
-    "type": "vows"
+    "type": "mocha-istanbul"
   },
   "test": {
-    "type": "vows"
+    "type": "mocha"
   }
 }

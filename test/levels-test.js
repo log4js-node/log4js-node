@@ -417,6 +417,11 @@ describe('../lib/levels', function() {
     it('should return the default value if argument is not recognised', function() {
       levels.toLevel("cheese", levels.DEBUG).should.eql(levels.DEBUG);
     });
+
+    it('should return the default value if argument is falsy', function() {
+      levels.toLevel(undefined, levels.DEBUG).should.eql(levels.DEBUG);
+      levels.toLevel(null, levels.DEBUG).should.eql(levels.DEBUG);
+    });
   });
 
 });

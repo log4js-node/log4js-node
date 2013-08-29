@@ -14,7 +14,7 @@ if (semver.satisfies(process.version, '>=0.10.0')) {
 RollingFileStream = require('../../lib/streams').RollingFileStream;
 
 function remove(filename, cb) {
-  fs.unlink(filename, function() { cb(); });
+  fs.unlink(filename, function(err) { cb(); });
 }
 
 function create(filename, cb) {

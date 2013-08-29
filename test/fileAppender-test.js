@@ -1,4 +1,5 @@
 "use strict";
+/*jshint expr:true */
 var fs = require('fs')
 , async = require('async')
 , path = require('path')
@@ -18,9 +19,12 @@ describe('log4js fileAppender', function() {
     before(function() {
       var logfile
       , count = 5
-      , config = { appenders: {}, categories: { default: { level: "debug", appenders: ["file0"] } } };
+      , config = { 
+        appenders: {}, 
+        categories: { default: { level: "debug", appenders: ["file0"] } } 
+      };
 
-      initialCount = process.listeners('exit').length
+      initialCount = process.listeners('exit').length;
 
       while (count--) {
         logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
@@ -98,7 +102,7 @@ describe('log4js fileAppender', function() {
             "file": { type: "file", filename: testFile }
           },
           categories: {
-          default: { level: "debug", appenders: [ "file" ] }
+            "default": { level: "debug", appenders: [ "file" ] }
           }
         });
         
@@ -147,7 +151,7 @@ describe('log4js fileAppender', function() {
             "file": { type: "file", filename: testFile, maxLogSize: 100, backups: 0 }
           },
           categories: {
-          default: { level: "debug", appenders: [ "file" ] }
+            "default": { level: "debug", appenders: [ "file" ] }
           }
         });
         logger.info("This is the first log message.");
@@ -206,7 +210,7 @@ describe('log4js fileAppender', function() {
             "file": { type: "file", filename: testFile, maxLogSize: 50, backups: 2 }
           },
           categories: {
-          default: { level: "debug", appenders: [ "file" ] }
+            "default": { level: "debug", appenders: [ "file" ] }
           }
         });
         
@@ -315,7 +319,8 @@ describe('log4js fileAppender', function() {
         }
       );
       fileAppender.configure({
-        filename: 'test1.log', maxLogSize: 100
+        filename: 'test1.log', 
+        maxLogSize: 100
       });
       errorHandler({ error: 'aargh' });
     });

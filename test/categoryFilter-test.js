@@ -85,7 +85,10 @@ describe('log4js', function() {
           'utf8', 
           function(err, contents) {
             var lines = contents.trim().split('\n');
-            lines.should.eql(["This should not", "This shouldn't be included by the appender anyway"]);
+            lines.should.eql([
+              "This should not", 
+              "This shouldn't be included by the appender anyway"
+            ]);
             done(err);
           }
         );

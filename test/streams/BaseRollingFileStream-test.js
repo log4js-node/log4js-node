@@ -73,14 +73,14 @@ describe('../../lib/streams/BaseRollingFileStream', function() {
     });
 
     it('should not want to roll', function() {
-      stream.shouldRoll().should.be.false;
+      stream.shouldRoll().should.eql(false);
     });
 
     it('should not roll', function() {
       var cbCalled = false;
       //just calls the callback straight away, no async calls
       stream.roll('basetest.log', function() { cbCalled = true; });
-      cbCalled.should.be.true;
+      cbCalled.should.eql(true);
     });
   });
 });

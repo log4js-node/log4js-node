@@ -15,10 +15,20 @@ describe('date_format', function() {
 
   it('should provide a ISO8601 with timezone offset format', function() {
     date.getTimezoneOffset = function() { return -660; };
-    dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date).should.eql("2010-01-11T14:31:30+1100");
+    dateFormat.asString(
+      dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, 
+      date
+    ).should.eql(
+      "2010-01-11T14:31:30+1100"
+    );
 
     date.getTimezoneOffset = function() { return 120; };
-    dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date).should.eql("2010-01-11T14:31:30-0200");
+    dateFormat.asString(
+      dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, 
+      date
+    ).should.eql(
+      "2010-01-11T14:31:30-0200"
+    );
   });
 
   it('should provide a just-the-time format', function() {

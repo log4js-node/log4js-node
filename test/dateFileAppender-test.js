@@ -1,4 +1,5 @@
 "use strict";
+/*jshint expr:true */
 var should = require('should') 
 , async = require('async')
 , path = require('path')

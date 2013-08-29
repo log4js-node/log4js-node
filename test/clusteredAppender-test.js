@@ -43,7 +43,7 @@ describe('log4js in a cluster', function() {
     });
 
     it('should listen for fork events', function() {
-      clusterOnFork.should.be.true;
+      clusterOnFork.should.eql(true);
     });
 
     it('should listen for messages from workers', function() {

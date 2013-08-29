@@ -10,6 +10,9 @@
   "maxlen": 100,
   "globals": {
     "describe": true,
-    "it": true
+    "it": true,
+    "before": true,
+    "beforeEach": true,
+    "after": true
   } 
 }

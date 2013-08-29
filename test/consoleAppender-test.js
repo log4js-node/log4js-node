@@ -25,7 +25,7 @@ describe('../lib/appenders/console', function() {
   });
 
   it('should output to console', function() {
-      messages.should.eql(["blah"]);
+    messages.should.eql(["blah"]);
   });
           
 });
