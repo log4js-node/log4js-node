@@ -31,7 +31,9 @@
     "async": "0.1.15",
     "semver": "~1.1.4",
     "readable-stream": "~1.0.2",
-    "debug": "~0.7.2"
+    "debug": "~0.7.2",
+    "streamroller": "0.0.0",
+    "date-format": "0.0.0"
   },
   "devDependencies": {
     "sandboxed-module": "0.1.3",

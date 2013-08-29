@@ -58,7 +58,7 @@ describe('../lib/appenders/dateFile', function() {
             }
           },
           requires: {
-            '../streams': {
+            'streamroller': {
               DateRollingFileStream: function(filename) {
                 openedFiles.push(filename);
                 
@@ -164,7 +164,7 @@ describe('../lib/appenders/dateFile', function() {
       
       before(function(done) {
         var log4js = require('../lib/log4js')
-        , format = require('../lib/date_format')
+        , format = require('date-format')
         , logger
         , options = {
           "appenders": {

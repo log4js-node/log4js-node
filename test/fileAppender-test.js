@@ -62,7 +62,7 @@ describe('log4js fileAppender', function() {
             }
           },
           requires: {
-            '../streams': {
+            'streamroller': {
               RollingFileStream: function(filename) {
                 openedFiles.push(filename);
                 
@@ -304,7 +304,7 @@ describe('log4js fileAppender', function() {
             }
           },
           requires: {
-            '../streams': {
+            'streamroller': {
               RollingFileStream: function(filename) {
                 
                 this.end = function() {};
