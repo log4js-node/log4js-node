@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "debug": "~0.7.2",
-    "streamroller": "0.0.0",
+    "streamroller": "0.0.1",
     "date-format": "0.0.0"
   },
   "devDependencies": {
