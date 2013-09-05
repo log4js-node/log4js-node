@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "async": "0.1.15",
+    "nodemailer": "0.5.2",
     "semver": "~1.1.4",
     "readable-stream": "~1.0.2"
   },
