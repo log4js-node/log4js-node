@@ -1,3 +1,5 @@
+changes
+=======
 LogEvent.categoryName -> LogEvent.category
 Logger is immutable (no setLevel any more)
 Log levels defined in configure call, nowhere else
@@ -15,3 +17,22 @@ loglevelfilter changed to accept a list of log levels it allows
 appenders that wrap other appenders must reference them by name
 extracted streams to streamroller
 extracted date_format.js to date-format
+console.log replacement has been removed.
+
+to-do
+=====
+documentation pages (gh-pages)
+* configuration
+* file appenders
+* layouts
+* optional components
+* writing your own appender (use couchdb as example)
+readme
+* getting started
+* typical config - file with max size, file with date rolling
+* optional components
+fix and publish the optional components
+* connect
+* smtp
+* gelf
+* hookio ?
