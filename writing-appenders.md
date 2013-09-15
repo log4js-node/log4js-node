@@ -62,3 +62,20 @@ Note that in addition to our couchdb appender config, the appenderMaker function
 The `layout` portion of the config can be passed directly to `layouts.layout(config.layout)` to generate a layout function.
 
 The appender function returned after processing your config should just take one argument: a log event. This function will be called for every log event that should be handled by your appender. In our case, with the config above, every log event of DEBUG level and above will be sent to our appender.
+
+Dependencies
+------------
+You should declare which version of log4js your appender works with by
+including a "peerDependencies" section in your package.json. e.g.
+
+    {
+        "name": "my-cool-appender",
+        "version": "0.0.1",
+        ...
+        "peerDependencies": {
+            "log4js": "0.7.x"
+        }
+    }
+    
+For more details on peer dependencies, see
+[this blog post](http://blog.nodejs.org/2013/02/07/peer-dependencies/).
