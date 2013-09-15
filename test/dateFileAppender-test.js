@@ -17,7 +17,7 @@ describe('../lib/appenders/dateFile', function() {
     var files = [], initialListeners;
 
     before(function() {
-      var dateFileAppender = require('../lib/appenders/dateFile'),
+      var dateFileAppender = require('../lib/appenders/dateFile')({ basicLayout: function() {} }),
       count = 5,
       logfile;
 
@@ -25,7 +25,7 @@ describe('../lib/appenders/dateFile', function() {
       
       while (count--) {
         logfile = path.join(__dirname, 'datefa-default-test' + count + '.log');
-        dateFileAppender.configure({
+        dateFileAppender({
           filename: logfile
         });
         files.push(logfile);
@@ -69,10 +69,10 @@ describe('../lib/appenders/dateFile', function() {
             }
           }   
         }
-      );
+      )({ basicLayout: function() {} });
 
       for (var i=0; i < 5; i += 1) {
-        dateFileAppender.configure({
+        dateFileAppender({
           filename: 'test' + i
         });
       }

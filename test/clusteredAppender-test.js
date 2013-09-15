@@ -30,12 +30,12 @@ describe('log4js in a cluster', function() {
                 cb(worker);
               }
             },
-            './appenders/console': {
-              configure: function() {
+            './appenders/console': function() {
+              return function() {
                 return function(event) {
                   events.push(event);
                 };
-              }
+              };
             }
           }
         }

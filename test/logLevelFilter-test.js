@@ -11,8 +11,8 @@ describe('log level filter', function() {
       var log4js_sandboxed = sandbox.require(
         '../lib/log4js',
         { requires: 
-          { './appenders/console':
-            { configure: function() { return function(evt) { events.push(evt); }; } }
+          { './appenders/console': function() {
+            return function() { return function(evt) { events.push(evt); }; }; }
           }
         }
       );

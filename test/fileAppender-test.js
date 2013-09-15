@@ -75,9 +75,9 @@ describe('log4js fileAppender', function() {
             }
           }   
         }
-      );
+      )(require('../lib/layouts'));
       for (var i=0; i < 5; i += 1) {
-        fileAppender.appender('test' + i, null, 100);
+        fileAppender({ filename: 'test' + i,  maxLogSize: 100 });
       }
       openedFiles.should.not.be.empty;
       exitListener();
@@ -317,8 +317,8 @@ describe('log4js fileAppender', function() {
             }
           }   
         }
-      );
-      fileAppender.configure({
+      )(require('../lib/layouts'));
+      fileAppender({
         filename: 'test1.log', 
         maxLogSize: 100
       });

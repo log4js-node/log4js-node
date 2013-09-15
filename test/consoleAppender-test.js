@@ -17,7 +17,7 @@ describe('../lib/appenders/console', function() {
         }
       }
     )
-    , appender = appenderModule.configure(
+    , appender = appenderModule(require('../lib/layouts'))(
       { layout: { type: "messagePassThrough" } }
     );
 

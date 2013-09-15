@@ -178,10 +178,10 @@ describe('../lib/log4js', function() {
         '../lib/log4js',
         { 
           requires: {
-            'cheese': {
-              configure: function() {
+            'cheese': function() {
+              return function() {
                 return function(evt) { events.push(evt); };
-              }
+              };
             }
           }
         }
@@ -198,6 +198,102 @@ describe('../lib/log4js', function() {
 
       events.should.have.length(1);
       events[0].data[0].should.eql("edam");
+
+    });
+
+    it('should only load third-party appenders once', function() {
+      var moduleCalled = 0
+      , log4js_sandbox = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            'cheese': function() {
+              moduleCalled += 1;
+              return function() {
+                return function() {};
+              };
+            }
+          }
+        }
+      );
+      log4js_sandbox.configure({
+        appenders: {
+          "thing1": { type: "cheese" },
+          "thing2": { type: "cheese" }
+        },
+        categories: {
+          default: { level: "DEBUG", appenders: [ "thing1", "thing2" ] }
+        }
+      });
+
+      moduleCalled.should.eql(1);
+    });
+
+    it('should pass layouts and levels to appender modules', function() {
+      var layouts
+      , levels
+      , log4js_sandbox = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            'cheese': function(arg1, arg2) {
+              layouts = arg1;
+              levels = arg2;
+              return function() { 
+                return function() {};
+              };
+            }
+          }
+        }
+      );
+      log4js_sandbox.configure({
+        appenders: {
+          "thing": { type: "cheese" }
+        },
+        categories: {
+          "default": { level: "debug", appenders: [ "thing" ] }
+        }
+      });
+
+      layouts.should.have.property("basicLayout");
+      levels.should.have.property("toLevel");
+    });
+
+    it('should pass config and appenderByName to appender makers', function() {
+      var otherAppender = function() { /* I do nothing */ }
+      , config
+      , other
+      , log4js_sandbox = sandbox.require(
+        '../lib/log4js',
+        { 
+          requires: {
+            'other': function() {
+              return function() {
+                return otherAppender;
+              };
+            },
+            'cheese': function() {
+              return function(arg1, arg2) {
+                config = arg1;
+                other = arg2("other");
+                return function() {};
+              };
+            }
+          }
+        }
+      );
+      log4js_sandbox.configure({
+        appenders: {
+          "other": { type: "other" },
+          "thing": { type: "cheese", something: "something" }
+        },
+        categories: {
+          default: { level: "debug", appenders: [ "other", "thing" ] }
+        }
+      });
+
+      other.should.equal(otherAppender);
+      config.should.have.property("something", "something");
 
     });
 
@@ -221,10 +317,10 @@ describe('../lib/log4js', function() {
         '../lib/log4js',
         { 
           requires: { 
-            'cheese': {
-              configure: function() {
+            'cheese': function() {
+              return function() {
                 return function(event) { events.push(event); };
-              }
+              };
             }
           }
         }
@@ -244,10 +340,10 @@ describe('../lib/log4js', function() {
         '../lib/log4js',
         { 
           requires: { 
-            'cheese': {
-              configure: function() {
+            'cheese': function() {
+              return function() {
                 return function(event) { events.push(event); };
-              }
+              };
             }
           }
         }
@@ -273,10 +369,10 @@ describe('../lib/log4js', function() {
         '../lib/log4js',
         { 
           requires: { 
-            'cheese': {
-              configure: function() {
+            'cheese': function() {
+              return function() {
                 return function(event) { events.push(event); };
-              }
+              };
             }
           }
         }
@@ -301,10 +397,10 @@ describe('../lib/log4js', function() {
       '../lib/log4js',
       {
         requires: {
-          './appenders/console': {
-            configure: function() {
+          './appenders/console': function() {
+            return function() {
               return function(event) { events.push(event); };
-            }
+            };
           }
         }
       }
