@@ -331,5 +331,20 @@ describe('log4js layouts', function() {
       assert.ok(layouts.layout("coloured"));
       assert.ok(layouts.layout("pattern"));
     });
+
+    it('should return falsy if a layout does not exist', function() {
+      assert.ok(!layouts.layout("cheese"));
+    });
+
+    it('should pass config to layouts that need it', function() {
+      var layout = layouts.layout(
+        "pattern", 
+        {
+          pattern: "%m"
+        }
+      );
+
+      assert.equal(layout({ data: [ "blah" ] }), "blah");
+    });
   });
 });

@@ -12,7 +12,10 @@ describe('log level filter', function() {
         '../lib/log4js',
         { requires: 
           { './appenders/console': function() {
-            return function() { return function(evt) { events.push(evt); }; }; }
+            return function() { 
+              return function(evt) { events.push(evt); }; 
+            }; 
+          }
           }
         }
       );
@@ -107,7 +110,7 @@ describe('log level filter', function() {
           "errors": {
             type: "logLevelFilter",
             allow: [ "cheese", "biscuits", "ERROR" ],
-            appender: { type: "console" }
+            appender: "console"
           }
         },
         categories: {
@@ -116,4 +119,23 @@ describe('log level filter', function() {
       });
     }).should.throw(/Unrecognised log level 'cheese'\./);
   });
+
+  it('should complain if the list of levels is empty', function() {
+    (function() {
+      log4js.configure({
+        appenders: {
+          "console": { type: "console" },
+          "errors": {
+            type: "logLevelFilter",
+            allow: [],
+            appender: "console"
+          }
+        },
+        categories: {
+          default: { level: "debug", appenders: [ "errors" ] }
+        }
+      });
+    }).should.throw(/No allowed log levels specified\./);
+  });
+
 });
