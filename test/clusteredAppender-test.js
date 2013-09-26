@@ -97,6 +97,7 @@ vows.describe('log4js cluster appender').addBatch({
 
 			// Actual test - log message using masterAppender
 			workerAppender(new LoggingEvent('wovs', 'Info', ['workerAppender test']));
+			workerAppender(new LoggingEvent('wovs', 'Info', [new Error('Error test')]));
 			
 			var returnValue = {
 				registeredProcessEvents: registeredProcessEvents,
@@ -109,6 +110,12 @@ vows.describe('log4js cluster appender').addBatch({
 		"worker appender should call process.send" : function(topic) {
 			assert.equal(topic.registeredProcessEvents[0].type, '::log-message');
 			assert.equal(JSON.parse(topic.registeredProcessEvents[0].event).data[0], "workerAppender test");
+		},
+		
+		"worker should serialize an Error correctly" : function(topic) {
+			var expected = { stack: 'Error: Error test\n    at Object.vows.describe.addBatch.when in worker mode.topic (/home/vagrant/log4js-node/test/clusteredAppender-test.js:100:53)\n    at run (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:134:35)\n    at EventEmitter.Suite.runBatch.callback (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:234:40)\n    at EventEmitter.emit (events.js:126:20)\n    at EventEmitter.vows.describe.options.Emitter.emit (/home/vagrant/log4js-node/node_modules/vows/lib/vows.js:237:24)\n    at Suite.runBatch.topic (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:169:45)\n    at process.startup.processNextTick.process._tickCallback (node.js:245:9)' };
+			assert.equal(topic.registeredProcessEvents[1].type, '::log-message');
+			assert.equal(JSON.stringify(JSON.parse(topic.registeredProcessEvents[1].event).data[0]), JSON.stringify(expected));
 		}
 		
 	}
