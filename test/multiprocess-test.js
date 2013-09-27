@@ -101,8 +101,11 @@ vows.describe('Multiprocess Appender').addBatch({
       assert.equal(net.createConnectionCalled, 2);
     },
     'should serialize an Error correctly': function(net) {
-      var expected = { stack: 'Error: Error test\n    at Object.vows.describe.addBatch.worker.topic (/home/vagrant/log4js-node/test/multiprocess-test.js:78:13)\n    at run (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:134:35)\n    at EventEmitter.Suite.runBatch.callback (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:234:40)\n    at EventEmitter.emit (events.js:126:20)\n    at EventEmitter.vows.describe.options.Emitter.emit (/home/vagrant/log4js-node/node_modules/vows/lib/vows.js:237:24)\n    at Suite.runBatch.topic (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:169:45)\n    at process.startup.processNextTick.process._tickCallback (node.js:245:9)' };
-	  assert.equal(net.data[8], JSON.stringify(expected));
+      assert(JSON.parse(net.data[8]).stack, "Expected:\n\n" + net.data[8] + "\n\n to have a 'stack' property");
+      var actual = JSON.parse(net.data[8]).stack;
+      var expectedRegex = /^Error: Error test/;
+      assert(actual.match(expectedRegex), "Expected: \n\n " + actual + "\n\n to match " + expectedRegex);
+
     }
   },
   'worker with timeout': {

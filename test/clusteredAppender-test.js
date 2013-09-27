@@ -113,9 +113,11 @@ vows.describe('log4js cluster appender').addBatch({
 		},
 		
 		"worker should serialize an Error correctly" : function(topic) {
-			var expected = { stack: 'Error: Error test\n    at Object.vows.describe.addBatch.when in worker mode.topic (/home/vagrant/log4js-node/test/clusteredAppender-test.js:100:53)\n    at run (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:134:35)\n    at EventEmitter.Suite.runBatch.callback (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:234:40)\n    at EventEmitter.emit (events.js:126:20)\n    at EventEmitter.vows.describe.options.Emitter.emit (/home/vagrant/log4js-node/node_modules/vows/lib/vows.js:237:24)\n    at Suite.runBatch.topic (/home/vagrant/log4js-node/node_modules/vows/lib/vows/suite.js:169:45)\n    at process.startup.processNextTick.process._tickCallback (node.js:245:9)' };
 			assert.equal(topic.registeredProcessEvents[1].type, '::log-message');
-			assert.equal(JSON.stringify(JSON.parse(topic.registeredProcessEvents[1].event).data[0]), JSON.stringify(expected));
+			assert(JSON.parse(topic.registeredProcessEvents[1].event).data[0].stack);
+			var actual = JSON.parse(topic.registeredProcessEvents[1].event).data[0].stack;
+			var expectedRegex = /^Error: Error test/;
+			assert(actual.match(expectedRegex), "Expected: \n\n " + actual + "\n\n to match " + expectedRegex);
 		}
 		
 	}
