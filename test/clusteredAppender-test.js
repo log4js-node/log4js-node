@@ -97,6 +97,7 @@ vows.describe('log4js cluster appender').addBatch({
 
 			// Actual test - log message using masterAppender
 			workerAppender(new LoggingEvent('wovs', 'Info', ['workerAppender test']));
+			workerAppender(new LoggingEvent('wovs', 'Info', [new Error('Error test')]));
 			
 			var returnValue = {
 				registeredProcessEvents: registeredProcessEvents,
@@ -109,6 +110,14 @@ vows.describe('log4js cluster appender').addBatch({
 		"worker appender should call process.send" : function(topic) {
 			assert.equal(topic.registeredProcessEvents[0].type, '::log-message');
 			assert.equal(JSON.parse(topic.registeredProcessEvents[0].event).data[0], "workerAppender test");
+		},
+		
+		"worker should serialize an Error correctly" : function(topic) {
+			assert.equal(topic.registeredProcessEvents[1].type, '::log-message');
+			assert(JSON.parse(topic.registeredProcessEvents[1].event).data[0].stack);
+			var actual = JSON.parse(topic.registeredProcessEvents[1].event).data[0].stack;
+			var expectedRegex = /^Error: Error test/;
+			assert(actual.match(expectedRegex), "Expected: \n\n " + actual + "\n\n to match " + expectedRegex);
 		}
 		
 	}

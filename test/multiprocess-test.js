@@ -75,6 +75,7 @@ vows.describe('Multiprocess Appender').addBatch({
       appender('after error, before connect');
       fakeNet.cbs.connect();
       appender('after error, after connect');
+	  appender(new Error('Error test'));
       
       return fakeNet;
     },
@@ -98,6 +99,13 @@ vows.describe('Multiprocess Appender').addBatch({
       assert.equal(net.data[6], JSON.stringify('after error, after connect'));
       assert.equal(net.data[7], '__LOG4JS__');
       assert.equal(net.createConnectionCalled, 2);
+    },
+    'should serialize an Error correctly': function(net) {
+      assert(JSON.parse(net.data[8]).stack, "Expected:\n\n" + net.data[8] + "\n\n to have a 'stack' property");
+      var actual = JSON.parse(net.data[8]).stack;
+      var expectedRegex = /^Error: Error test/;
+      assert(actual.match(expectedRegex), "Expected: \n\n " + actual + "\n\n to match " + expectedRegex);
+
     }
   },
   'worker with timeout': {
