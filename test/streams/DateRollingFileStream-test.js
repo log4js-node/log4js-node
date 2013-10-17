@@ -147,11 +147,12 @@ vows.describe('DateRollingFileStream').addBatch({
         }
       }
     }
-  },
+  }
   
+}).addBatch({
   'with alwaysIncludePattern': {
     topic: function() {
-      var that = this,
+      var that = this, stream;
       testTime = new Date(2012, 8, 12, 0, 10, 12),
       stream = new DateRollingFileStream(
         __dirname + '/test-date-rolling-file-stream-pattern', 
