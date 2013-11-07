@@ -292,5 +292,17 @@ vows.describe('log4js layouts').addBatch({
       assert.ok(layouts.layout("coloured"));
       assert.ok(layouts.layout("pattern"));
     }
+  },
+
+  'formatLogData': {
+    topic: function() {
+      return require('../lib/layouts').formatLogData;
+    },
+    'should format the log data': function(formatLogData) {
+      assert.strictEqual(formatLogData('wayne'), 'wayne');
+      assert.strictEqual(formatLogData('It %s', 'works'), 'It works');
+      assert.strictEqual(formatLogData('Number %d', 10), 'Number 10');
+      assert.strictEqual(formatLogData('Object %j', {name: 'wayne'}), 'Object {"name":"wayne"}');
+    }
   }
 }).export(module);
