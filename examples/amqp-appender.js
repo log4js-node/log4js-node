@@ -1,7 +1,7 @@
 //Note that amqp appender needs node-amqp to work.
 var log4js = require('../lib/log4js')
   , log
-  , logmailer
+  , amqpLogger
   , i = 0;
 log4js.configure({
   "appenders": [
