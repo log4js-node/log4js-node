@@ -17,29 +17,10 @@ function remove(filename) {
 }
 
 vows.describe('log4js fileSyncAppender').addBatch({
-  'adding multiple fileAppenders': {
-    topic: function () {
-      var listenersCount = process.listeners('exit').length
-      , logger = log4js.getLogger('default-settings')
-      , count = 5, logfile;
-      
-      while (count--) {
-        logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
-        log4js.addAppender(require('../lib/appenders/fileSync').appender(logfile), 'default-settings');
-      }
-      
-      return listenersCount;
-    },
-    
-    'does not add more than one `exit` listeners': function (initialCount) {
-      assert.ok(process.listeners('exit').length <= initialCount + 1);
-    }
-  },
-
-  'with default fileAppender settings': {
+  'with default fileSyncAppender settings': {
     topic: function() {
       var that = this
-      , testFile = path.join(__dirname, '/fa-default-test.log')
+      , testFile = path.join(__dirname, '/fa-default-sync-test.log')
       , logger = log4js.getLogger('default-settings');
       remove(testFile);
 
@@ -62,7 +43,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
   },
   'with a max file size and no backups': {
     topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-test.log')
+      var testFile = path.join(__dirname, '/fa-maxFileSize-sync-test.log')
       , logger = log4js.getLogger('max-file-size')
       , that = this;
       remove(testFile);
@@ -90,7 +71,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
       'starting with the test file name should be two': function(err, files) {
         //there will always be one backup if you've specified a max log size
         var logFiles = files.filter(
-          function(file) { return file.indexOf('fa-maxFileSize-test.log') > -1; }
+          function(file) { return file.indexOf('fa-maxFileSize-sync-test.log') > -1; }
         );
         assert.equal(logFiles.length, 2);
       }
@@ -98,7 +79,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
   },
   'with a max file size and 2 backups': {
     topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-test.log')
+      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-sync-test.log')
       , logger = log4js.getLogger('max-file-size-backups');
       remove(testFile);
       remove(testFile+'.1');
@@ -127,7 +108,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
     'the log files': {
       topic: function(files) {
         var logFiles = files.filter(
-          function(file) { return file.indexOf('fa-maxFileSize-with-backups-test.log') > -1; }
+          function(file) { return file.indexOf('fa-maxFileSize-with-backups-sync-test.log') > -1; }
         );
         return logFiles;
       },
@@ -136,9 +117,9 @@ vows.describe('log4js fileSyncAppender').addBatch({
       },
       'should be named in sequence': function (files) {
         assert.deepEqual(files, [
-          'fa-maxFileSize-with-backups-test.log', 
-          'fa-maxFileSize-with-backups-test.log.1', 
-          'fa-maxFileSize-with-backups-test.log.2'
+          'fa-maxFileSize-with-backups-sync-test.log', 
+          'fa-maxFileSize-with-backups-sync-test.log.1', 
+          'fa-maxFileSize-with-backups-sync-test.log.2'
         ]);
       },
       'and the contents of the first file': {
@@ -169,17 +150,17 @@ vows.describe('log4js fileSyncAppender').addBatch({
   }
 }).addBatch({
   'configure' : {
-    'with fileAppender': {
+    'with fileSyncAppender': {
       topic: function() {
         var log4js = require('../lib/log4js')
         , logger;
-        //this config defines one file appender (to ./tmp-tests.log)
+        //this config defines one file appender (to ./tmp-sync-tests.log)
         //and sets the log level for "tests" to WARN
         log4js.configure({
             appenders: [{ 
                 category: "tests", 
                 type: "file", 
-                filename: "tmp-tests.log", 
+                filename: "tmp-sync-tests.log", 
                 layout: { type: "messagePassThrough" } 
             }],
   
@@ -189,7 +170,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
         logger.info('this should not be written to the file');
         logger.warn('this should be written to the file');
         
-        fs.readFile('tmp-tests.log', 'utf8', this.callback);
+        fs.readFile('tmp-sync-tests.log', 'utf8', this.callback);
       },
       'should load appender configuration from a json file': function(err, contents) {
         assert.include(contents, 'this should be written to the file\n');
