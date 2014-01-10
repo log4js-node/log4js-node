@@ -12,6 +12,7 @@ Out of the box it supports the following features:
 * SMTP appender
 * GELF appender
 * hook.io appender
+* Loggly appender
 * multiprocess appender (useful when you've got worker processes)
 * a logger for connect/express servers
 * configurable log message layout/patterns
