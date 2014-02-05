@@ -147,11 +147,12 @@ vows.describe('DateRollingFileStream').addBatch({
         }
       }
     }
-  },
+  }
   
+}).addBatch({
   'with alwaysIncludePattern': {
     topic: function() {
-      var that = this,
+      var that = this, stream;
       testTime = new Date(2012, 8, 12, 0, 10, 12),
       stream = new DateRollingFileStream(
         __dirname + '/test-date-rolling-file-stream-pattern', 
@@ -224,4 +225,93 @@ vows.describe('DateRollingFileStream').addBatch({
     }
   }
 
+}).addBatch({
+  'with backups': {
+    'when alwaysIncludePattern is false': {
+      topic: function () {
+        var that = this, stream;
+        testTime = new Date(2013, 9, 15, 21, 51, 0),
+          stream = new DateRollingFileStream(
+            __dirname + '/test-date-rolling-file-backups-1',
+            '.yyyy-MM-dd',
+            {alwaysIncludePattern: false, backups: 1},
+            now
+          );
+        stream.write("20131015\n", 'utf8', function() {
+          that.callback(null, stream);
+        });
+      },
+      'day change twice': {
+        topic: function (stream) {
+          var that = this;
+          testTime = new Date(2013, 9, 16, 21, 51, 0);
+          stream.write("20131016\n", 'utf8', function() {
+            testTime = new Date(2013, 9, 17, 21, 51, 0);
+            stream.write("20131017\n", 'utf8', that.callback);
+          });
+        },
+        'the number of backup files': {
+          topic: function () {
+            fs.readdir(__dirname, this.callback);
+          },
+          'should be one': function(files) {
+            assert.equal(
+              files.filter(
+                function(file) {
+                  return file.indexOf('test-date-rolling-file-backups-1.2013-10') > -1;
+                }
+              ).length,
+              1
+            );
+          }
+        }
+      }
+    },
+    'when alwaysIncludePattern is true': {
+      topic: function () {
+        var that = this, stream;
+        testTime = new Date(2013, 9, 15, 21, 51, 0),
+          stream = new DateRollingFileStream(
+            __dirname + '/test-date-rolling-file-backups-2',
+            '.yyyy-MM-dd',
+            {alwaysIncludePattern: true, backups: 1},
+            now
+          );
+        stream.write("20131015\n", 'utf8', function() {
+          that.callback(null, stream);
+        });
+      },
+      'day change twice': {
+        topic: function (stream) {
+          var that = this;
+          testTime = new Date(2013, 9, 16, 21, 51, 0);
+          stream.write("20131016\n", 'utf8', function() {
+            testTime = new Date(2013, 9, 17, 21, 51, 0);
+            stream.write("20131017\n", 'utf8', that.callback);
+          });
+        },
+        'the number of backup files': {
+          topic: function () {
+            fs.readdir(__dirname, this.callback);
+          },
+          'should be one': function(files) {
+            assert.equal(
+              files.filter(
+                function(file) {
+                  return file.indexOf('test-date-rolling-file-backups-2.2013-10') > -1;
+                }
+              ).length,
+              2
+            );
+          }
+        }
+      }
+    },
+    teardown: function () {
+      fs.unlink(__dirname + '/test-date-rolling-file-backups-1');
+      fs.unlink(__dirname + '/test-date-rolling-file-backups-1.2013-10-16');
+      fs.unlink(__dirname + '/test-date-rolling-file-backups-2.2013-10-16');
+      fs.unlink(__dirname + '/test-date-rolling-file-backups-2.2013-10-17');
+    }
+  }
 }).exportTo(module);

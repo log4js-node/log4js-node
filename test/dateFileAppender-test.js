@@ -212,6 +212,74 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       'should prepend options.cwd to config.filename': function(fileOpened) {
         assert.equal(fileOpened, "/absolute/path/to/whatever.log");
       }
+    },
+    'with options.backups':{
+      'is ignored': {
+        topic: function() {
+          var result = {},
+            appender = sandbox.require(
+              '../lib/appenders/dateFile',
+              { requires:
+                { '../streams':
+                  { DateRollingFileStream:
+                    function(filename,pattern,options) {
+                      result.backups = options.backups;
+                      return {
+                        on: function() {},
+                        end: function() {}
+                      };
+                    }
+                  }
+                }
+              }
+            );
+          appender.configure({});
+          return result;
+        },
+        'should set undefined to underlying stream': function(result) {
+          assert.equal(result.backups, undefined);
+        }
+      },
+      'is positive integer number': {
+        topic: function() {
+          var backupsValue,
+            appender = sandbox.require(
+              '../lib/appenders/dateFile',
+              { requires:
+                { '../streams':
+                  { DateRollingFileStream:
+                    function(filename,pattern,options) {
+                      backupsValue = options.backups;
+                      return {
+                        on: function() {},
+                        end: function() {}
+                      };
+                    }
+                  }
+                }
+              }
+            );
+          appender.configure({ backups: 1});
+          return backupsValue;
+        },
+        'should set 1 to underlying stream': function(backupsValue) {
+          assert.equal(backupsValue, 1);
+        }
+      },
+      'is negative integer number': {
+        'should throw exception': function() {
+          assert.throws(function () {
+            require('../lib/appenders/dateFile').configure({ backups: -1});
+          }, Error, 'Parameter backups must be positive integer or can be ignored');
+        }
+      },
+      'is something else invalid': {
+        'should throw exception': function() {
+          assert.throws(function () {
+            require('../lib/appenders/dateFile').configure({ backups: 'invalid'});
+          }, Error, 'Parameter backups must be positive integer or can be ignored');
+        }
+      }
     }
  
   }
