@@ -9,7 +9,7 @@
     "node"
   ],
   "main": "./lib/log4js",
-  "author": "Gareth Jones <gareth.jones@sensis.com.au>",
+  "author": "Gareth Jones <gareth.nomiddlename@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/nomiddlename/log4js-node.git"
