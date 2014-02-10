@@ -3,6 +3,7 @@ var vows = require('vows')
 , assert = require('assert')
 , fs = require('fs')
 , semver = require('semver')
+, zlib = require('zlib')
 , streams
 , DateRollingFileStream
 , testTime = new Date(2012, 8, 12, 10, 37, 11);
@@ -221,6 +222,57 @@ vows.describe('DateRollingFileStream').addBatch({
           assert.equal(contents.toString(), "First message\n");
         }
       }
+    }
+  },
+
+  'with compression': {
+    topic: function() {
+      var that = this
+        , testTime = new Date(2012, 8, 12, 0, 10, 12)
+        , streamName = __dirname + '/test-date-rolling-file-stream-compression'
+        , stream = new DateRollingFileStream(
+            streamName,
+            '.yyyy-MM-dd',
+            {alwaysIncludePattern: true, compress: true},
+            now
+          );
+      stream.write("First message\n", 'utf8', function() {
+        that.callback(null, stream);
+      });
+    },
+
+    'when the day changes': {
+      topic: function(stream) {
+        testTime = new Date(2012, 8, 13, 0, 10, 12);
+        stream.write("Second message\n", 'utf8', this.callback);
+      },
+      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-compression.2012-09-13'),
+
+      'the current log should be created': {
+        topic: function() {
+          fs.readFile(__dirname + '/test-date-rolling-file-stream-compression.2012-09-13',
+            this.callback);
+        },
+
+        'the contents of the current log should be uncompressed': function(contents) {
+          assert.equal(contents.toString(), "Second message\n");
+        }
+      },
+
+      'the previous log should be rolled and gzipped': {
+        topic: function() {
+          fs.readFile(__dirname + '/test-date-rolling-file-stream-compression.2012-09-12.gz',
+            this.callback);
+        },
+        teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-compression.2012-09-12.gz'),
+
+        'the contents should be compressed': function(contents) {
+          zlib.gunzip(contents, function(uncompressed) {
+            assert.equal(uncompressed.toString(), "First message\n");
+          });
+        }
+      }
+
     }
   }
 
