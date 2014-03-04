@@ -70,7 +70,7 @@ vows.describe('log4js logglyAppender').addBatch({
         tags: ['loggly-tag1', 'loggly-tag2', 'loggly-tagn'] 
       });
       
-      setup.logger.log('Log event #1');
+      setup.logger.log('trace', 'Log event #1');
       return setup;
     },
     'there should be one message only': function (topic) {
