@@ -86,6 +86,21 @@ vows.describe('log4js configure').addBatch({
         assert.isFunction(log4js.appenderMakers['some/other/external']);
       }
     },
+    'when appender object loaded via loadAppender': {
+      topic: function() {
+        var testAppender = makeTestAppender(),
+            log4js = sandbox.require('../lib/log4js');
+
+        log4js.loadAppender('some/other/external', testAppender);
+        return log4js;
+      },
+      'should load appender with provided object': function(log4js) {
+        assert.ok(log4js.appenders['some/other/external']);
+      },
+      'should add appender configure function to appenderMakers': function(log4js) {
+        assert.isFunction(log4js.appenderMakers['some/other/external']);
+      }
+    },
     'when configuration file loaded via LOG4JS_CONFIG environment variable': {
       topic: function() {
         process.env.LOG4JS_CONFIG = 'some/path/to/mylog4js.json';
