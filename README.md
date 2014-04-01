@@ -1,7 +1,7 @@
 # log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
 
 
-This is a conversion of the [log4js](http://log4js.berlios.de/index.html)
+This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript. 
 
 Out of the box it supports the following features:
