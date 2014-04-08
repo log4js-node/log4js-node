@@ -135,6 +135,9 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       teardown: removeFile('date-file-test.log'),
       
       'should load appender configuration from a json file': function(err, contents) {
+        if (err) {
+          throw err;
+        }
         assert.include(contents, 'this should be written to the file' + EOL);
         assert.equal(contents.indexOf('this should not be written to the file'), -1);
       }
