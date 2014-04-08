@@ -4,7 +4,8 @@ var vows = require('vows')
 , path = require('path')
 , fs = require('fs')
 , sandbox = require('sandboxed-module')
-, log4js = require('../lib/log4js');
+, log4js = require('../lib/log4js')
+, EOL = require('os').EOL || '\n';
 
 function removeFile(filename) {
   return function() {
@@ -134,7 +135,10 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       teardown: removeFile('date-file-test.log'),
       
       'should load appender configuration from a json file': function(err, contents) {
-        assert.include(contents, 'this should be written to the file' + require('os').EOL);
+        if (err) {
+          throw err;
+        }
+        assert.include(contents, 'this should be written to the file' + EOL);
         assert.equal(contents.indexOf('this should not be written to the file'), -1);
       }
     },
@@ -161,7 +165,7 @@ vows.describe('../lib/appenders/dateFile').addBatch({
         , thisTime = format.asString(options.appenders[0].pattern, new Date());
         fs.writeFileSync(
           path.join(__dirname, 'date-file-test' + thisTime), 
-          "this is existing data" + require('os').EOL, 
+          "this is existing data" + EOL,
           'utf8'
         );
         log4js.clearAppenders();

@@ -75,13 +75,65 @@ vows.describe('log4js').addBatch({
         assert.equal(events[1].level.toString(), 'WARN');
       },
       
-      'should include the error if passed in': function (events) {
+      'should include the error if passed in': function(events) {
         assert.instanceOf(events[2].data[1], Error);
         assert.equal(events[2].data[1].message, 'Pants are on fire!');
       }
-      
+    }
+  },
+
+  'when shutdown is called': {
+    topic: function() {
+      var events = {
+       appenderShutdownCalled: false,
+       shutdownCallbackCalled: false
+      },
+      log4js = sandbox.require(
+        '../lib/log4js',
+        {
+          requires: {
+            './appenders/file':
+            {
+              name: "file",
+              appender: function() {},
+              configure: function(configuration) {
+                return function() {};
+              },
+              shutdown: function(cb) {
+                events.appenderShutdownCalled = true;
+                cb();
+              }
+            }
+          }
+        }
+      ),
+      shutdownCallback = function() {
+        events.shutdownCallbackCalled = true;
+      },
+      config = { appenders:
+                 [ { "type" : "file",
+                     "filename" : "cheesy-wotsits.log",
+                     "maxLogSize" : 1024,
+                     "backups" : 3
+                   }
+                 ]
+               };
+
+      log4js.configure(config);
+      log4js.shutdown(shutdownCallback);
+      // Re-enable log writing so other tests that use logger are not
+      // affected.
+      require('../lib/logger').enableAllLogWrites();
+      return events;
     },
-    
+
+    'should invoke appender shutdowns': function(events) {
+      assert.ok(events.appenderShutdownCalled);
+    },
+
+    'should call callback': function(events) {
+      assert.ok(events.shutdownCallbackCalled);
+    }
   },
   
   'invalid configuration': {
