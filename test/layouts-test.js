@@ -7,7 +7,7 @@ function test(args, pattern, value) {
   var layout = args[0]
   , event = args[1]
   , tokens = args[2];
-  
+
   assert.equal(layout(pattern, tokens)(event), value);
 }
 
@@ -16,7 +16,7 @@ vows.describe('log4js layouts').addBatch({
     topic: function() {
       return require('../lib/layouts').colouredLayout;
     },
-    
+
     'should apply level colour codes to output': function(layout) {
       var output = layout({
         data: ["nonsense"],
@@ -40,7 +40,7 @@ vows.describe('log4js layouts').addBatch({
       assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mthing 2');
     }
   },
-  
+
   'messagePassThroughLayout': {
     topic: function() {
       return require('../lib/layouts').messagePassThroughLayout;
@@ -58,49 +58,49 @@ vows.describe('log4js layouts').addBatch({
     },
     'should support the console.log format for the message' : function(layout) {
       assert.equal(layout({
-        data: ["thing %d", 1, "cheese"], 
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        categoryName: "cheese", 
+        data: ["thing %d", 1, "cheese"],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: "cheese",
         level : {
-          colour: "green", 
+          colour: "green",
           toString: function() { return "ERROR"; }
         }
       }), "thing 1 cheese");
     },
     'should output the first item even if it is not a string': function(layout) {
       assert.equal(layout({
-        data: [ { thing: 1} ], 
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        categoryName: "cheese", 
+        data: [ { thing: 1} ],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: "cheese",
         level: {
-          colour: "green", 
+          colour: "green",
           toString: function() { return "ERROR"; }
         }
       }), "{ thing: 1 }");
     },
     'should print the stacks of a passed error objects': function(layout) {
       assert.isArray(layout({
-        data: [ new Error() ], 
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        categoryName: "cheese", 
+        data: [ new Error() ],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: "cheese",
         level: {
-          colour: "green", 
+          colour: "green",
           toString: function() { return "ERROR"; }
         }
       }).match(/Error\s+at Object\..*\s+\((.*)test[\\\/]layouts-test\.js\:\d+\:\d+\)\s+at runTest/)
                      , 'regexp did not return a match');
     },
-    'with passed augmented errors': { 
+    'with passed augmented errors': {
       topic: function(layout){
         var e = new Error("My Unique Error Message");
         e.augmented = "My Unique attribute value";
         e.augObj = { at1: "at2" };
         return layout({
-          data: [ e ], 
-          startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-          categoryName: "cheese", 
+          data: [ e ],
+          startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+          categoryName: "cheese",
           level: {
-            colour: "green", 
+            colour: "green",
             toString: function() { return "ERROR"; }
           }
         });
@@ -118,10 +118,10 @@ vows.describe('log4js layouts').addBatch({
         assert.isArray(m);
       }
     }
-    
-    
+
+
   },
-  
+
   'basicLayout': {
     topic: function() {
       var layout = require('../lib/layouts').basicLayout,
@@ -143,17 +143,17 @@ vows.describe('log4js layouts').addBatch({
       var layout = args[0], event = args[1], output, lines,
       error = new Error("Some made-up error"),
       stack = error.stack.split(/\n/);
-      
+
       event.data = ['this is a test', error];
       output = layout(event);
       lines = output.split(/\n/);
-      
+
       assert.equal(lines.length - 1, stack.length);
       assert.equal(
-        lines[0], 
+        lines[0],
         "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
       );
-      
+
       for (var i = 1; i < stack.length; i++) {
         assert.equal(lines[i+2], stack[i+1]);
       }
@@ -166,13 +166,13 @@ vows.describe('log4js layouts').addBatch({
       }];
       output = layout(event);
       assert.equal(
-        output, 
-        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test " + 
+        output,
+        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test " +
           "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
       );
     }
   },
-  
+
   'patternLayout': {
     topic: function() {
       var event = {
@@ -188,9 +188,12 @@ vows.describe('log4js layouts').addBatch({
         testFunction: function() { return 'testFunctionToken'; },
         fnThatUsesLogEvent: function(logEvent) { return logEvent.level.toString(); }
       };
+
+      //override getTimezoneOffset
+      event.startTime.getTimezoneOffset = function() { return 0; };
       return [layout, event, tokens];
     },
-    
+
     'should default to "time logLevel loggerName - message"': function(args) {
       test(args, null, "14:18:30 DEBUG multiple.levels.of.tests - this is a test\n");
     },
