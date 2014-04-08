@@ -2,7 +2,8 @@
 var vows = require('vows')
 , assert = require('assert')
 , levels = require('../lib/levels')
-, Logger = require('../lib/logger').Logger;
+, loggerModule = require('../lib/logger')
+, Logger = loggerModule.Logger;
 
 vows.describe('../lib/logger').addBatch({
   'constructor with no parameters': {
@@ -52,6 +53,29 @@ vows.describe('../lib/logger').addBatch({
       assert.isTrue(logger.isWarnEnabled());
       assert.isTrue(logger.isErrorEnabled());
       assert.isTrue(logger.isFatalEnabled());
+    }
+  },
+
+  'should emit log events': {
+    topic: function() {
+      var events = [],
+          logger = new Logger();
+      logger.addListener('log', function (logEvent) { events.push(logEvent); });
+      logger.debug('Event 1');
+      loggerModule.disableAllLogWrites();
+      logger.debug('Event 2');
+      loggerModule.enableAllLogWrites();
+      logger.debug('Event 3');
+      return events;
+    },
+
+    'when log writes are enabled': function(events) {
+      assert.equal(events[0].data[0], 'Event 1');
+    },
+
+    'but not when log writes are disabled': function(events) {
+      assert.equal(events.length, 2);
+      assert.equal(events[1].data[0], 'Event 3');
     }
   }
 }).exportTo(module);
