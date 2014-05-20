@@ -37,7 +37,8 @@ vows.describe('log4js cluster appender').addBatch({
 			});
 		
 			var masterAppender = appenderModule.appender({
-				actualAppenders: [ fakeActualAppender ]
+				actualAppenders: [fakeActualAppender, fakeActualAppender, fakeActualAppender],
+                                appenders: [{}, {category: "test"}, {category: "wovs"}]
 			});
 
 			// Actual test - log message using masterAppender
@@ -56,7 +57,9 @@ vows.describe('log4js cluster appender').addBatch({
 		},
 		
 		"should log using actual appender": function(topic) {
+                        assert.equal(topic.loggingEvents.length, 2)
 			assert.equal(topic.loggingEvents[0].data[0], 'masterAppender test');
+                        assert.equal(topic.loggingEvents[1].data[0], 'masterAppender test');
 		},
 		
 	},
