@@ -134,6 +134,8 @@ Documentation for most of the core appenders can be found on the [wiki](https://
 ## Documentation
 See the [wiki](https://github.com/nomiddlename/log4js-node/wiki). Improve the [wiki](https://github.com/nomiddlename/log4js-node/wiki), please.
 
+There's also [an example application](https://github.com/nomiddlename/log4js-example).
+
 ## Contributing
 Contributions welcome, but take a look at the [rules](https://github.com/nomiddlename/log4js-node/wiki/Contributing) first.
 
