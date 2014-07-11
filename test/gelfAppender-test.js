@@ -165,7 +165,7 @@ vows.describe('log4js gelfAppender').addBatch({
       },
       'should pick up the options': function(message) {
         assert.equal(message.host, 'cheese');
-        assert.equal(message.facility, 'nonsense');
+        assert.equal(message._facility, 'nonsense');
       }
     }
   },
