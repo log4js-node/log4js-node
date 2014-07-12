@@ -119,8 +119,7 @@ vows.describe('log4js gelfAppender').addBatch({
         assert.equal(message.host, require('os').hostname());
         assert.equal(message.level, 6); //INFO
         assert.equal(message.facility, 'nodejs-server');
-        assert.equal(message.full_message, message.short_message);
-        assert.equal(message.full_message, 'This is a test');
+        assert.equal(message.short_message, 'This is a test');
       }
     }
   },
@@ -251,7 +250,6 @@ vows.describe('log4js gelfAppender').addBatch({
         assert.equal(message._every2, 'Overwritten!'); // the overwritten value
         assert.equal(message._myField, 'This is my field!'); // the value for this message only
         assert.equal(message.short_message, 'Just testing.'); // skip the field object 
-        assert.equal(message.full_message, 'Just testing.'); // should be as same as short_message 
       }
     }
   }
