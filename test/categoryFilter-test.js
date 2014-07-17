@@ -2,7 +2,8 @@
 
 var vows = require('vows')
 , fs = require('fs')
-, assert = require('assert');
+, assert = require('assert')
+, EOL = require('os').EOL || '\n';
 
 function remove(filename) {
   try {
@@ -66,7 +67,7 @@ vows.describe('log4js categoryFilter').addBatch({
         fs.readFile(__dirname + '/categoryFilter-noweb.log', 'utf8', this.callback);
       },
       'should contain all log messages': function(contents) {
-        var messages = contents.trim().split('\n');
+        var messages = contents.trim().split(EOL);
         assert.deepEqual(messages, ['Loading app','Initialising indexes']);
       }
     },
@@ -75,7 +76,7 @@ vows.describe('log4js categoryFilter').addBatch({
         fs.readFile(__dirname + '/categoryFilter-web.log','utf8',this.callback);
       },
       'should contain only error and warning log messages': function(contents) {
-        var messages = contents.trim().split('\n');
+        var messages = contents.trim().split(EOL);
         assert.deepEqual(messages, ['00:00:00 GET / 200','00:00:00 GET / 500']);
       }
     }
