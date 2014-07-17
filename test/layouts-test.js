@@ -1,6 +1,8 @@
 "use strict";
 var vows = require('vows')
-, assert = require('assert');
+, assert = require('assert')
+, os =  require('os')
+, EOL = os.EOL || '\n';
 
 //used for patternLayout tests.
 function test(args, pattern, value) {
@@ -195,7 +197,7 @@ vows.describe('log4js layouts').addBatch({
     },
 
     'should default to "time logLevel loggerName - message"': function(args) {
-      test(args, null, "14:18:30 DEBUG multiple.levels.of.tests - this is a test\n");
+      test(args, null, "14:18:30 DEBUG multiple.levels.of.tests - this is a test" + EOL);
     },
     '%r should output time only': function(args) {
       test(args, '%r', '14:18:30');
@@ -210,10 +212,10 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%m', 'this is a test');
     },
     '%n should output a new line': function(args) {
-      test(args, '%n', '\n');
+      test(args, '%n', EOL);
     },
     '%h should output hostname' : function(args) {
-      test(args, '%h', require('os').hostname().toString());
+      test(args, '%h', os.hostname().toString());
     },
     '%c should handle category names like java-style package names': function(args) {
       test(args, '%c{1}', 'tests');
@@ -247,7 +249,7 @@ vows.describe('log4js layouts').addBatch({
     'should handle complicated patterns': function(args) {
       test(args,
            '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
-           'this is a test\n of.tests at 14:18:30.045 cheese DEBUG\n'
+           'this is a test'+ EOL +' of.tests at 14:18:30.045 cheese DEBUG' + EOL
           );
     },
     'should truncate fields if specified': function(args) {
