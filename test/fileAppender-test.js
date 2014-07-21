@@ -237,7 +237,7 @@ vows.describe('log4js fileAppender').addBatch({
     }
   }
 }).addBatch({
-  'when direcory doesn\'t exists': {
+  'when directory doesn\'t exist': {
     topic: function () {
       try {
         require("../lib/dir_util").removeDirectory(__dirname + '/a');
