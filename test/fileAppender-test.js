@@ -237,6 +237,24 @@ vows.describe('log4js fileAppender').addBatch({
     }
   }
 }).addBatch({
+  'when direcory doesn\'t exists': {
+    topic: function () {
+      try {
+        require("../lib/dir_util").removeDirectory(__dirname + '/a');
+        var log4js = require('../lib/log4js');
+        var testLog = __dirname + '/a/b/c/d/tmp-tests.log';
+        log4js.configure({ appenders: [{ type: 'file', filename: testLog, category: 'xxxx' }] });
+        log4js.getLogger('xxxx').info("hello");
+        fs.exists(testLog, this.callback);
+      } catch (e) {
+        this.callback(false);
+      }
+    },
+    "should create it": function (aExists) {
+      assert.isTrue(aExists);
+    }
+  }
+}).addBatch({
   'when underlying stream errors': {
     topic: function() {
       var consoleArgs
