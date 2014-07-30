@@ -1,7 +1,9 @@
 "use strict";
 var vows = require('vows')
 , fs = require('fs')
-, assert = require('assert');
+, assert = require('assert')
+, os = require('os')
+, EOL = require('os').EOL || '\n';
 
 function remove(filename) {
   try {
@@ -60,8 +62,8 @@ vows.describe('log4js logLevelFilter').addBatch({
       topic: function() {
         fs.readFile(__dirname + '/logLevelFilter.log', 'utf8', this.callback);
       },
-      'should contain all log messages': function(contents) {
-        var messages = contents.trim().split('\n');
+      'should contain all log messages': function (contents) {
+        var messages = contents.trim().split(EOL);
         assert.deepEqual(messages, ['main','both','both','main']);
       }
     },
@@ -70,7 +72,7 @@ vows.describe('log4js logLevelFilter').addBatch({
         fs.readFile(__dirname + '/logLevelFilter-warnings.log','utf8',this.callback);
       },
       'should contain only error and warning log messages': function(contents) {
-        var messages = contents.trim().split('\n');
+        var messages = contents.trim().split(EOL);
         assert.deepEqual(messages, ['both','both']);
       }
     }

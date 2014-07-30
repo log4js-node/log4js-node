@@ -4,7 +4,8 @@ var vows = require('vows')
 , path = require('path')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
-, assert = require('assert');
+, assert = require('assert')
+, EOL = require('os').EOL || '\n';
 
 log4js.clearAppenders();
 
@@ -93,8 +94,8 @@ vows.describe('log4js fileAppender').addBatch({
         fs.readFile(testFile, "utf8", that.callback);
       }, 100);
     },
-    'should write log messages to the file': function(err, fileContents) {
-      assert.include(fileContents, "This should be in the file.\n");
+    'should write log messages to the file': function (err, fileContents) {
+      assert.include(fileContents, "This should be in the file." + EOL);
     },
     'log messages should be in the basic layout format': function(err, fileContents) {
       assert.match(
@@ -125,7 +126,7 @@ vows.describe('log4js fileAppender').addBatch({
       }, 100);
     },
     'log file should only contain the second message': function(err, fileContents) {
-      assert.include(fileContents, "This is the second log message.\n");
+      assert.include(fileContents, "This is the second log message.");
       assert.equal(fileContents.indexOf("This is the first log message."), -1);
     },
     'the number of files': {
@@ -229,8 +230,8 @@ vows.describe('log4js fileAppender').addBatch({
         
         fs.readFile('tmp-tests.log', 'utf8', this.callback);
       },
-      'should load appender configuration from a json file': function(err, contents) {
-        assert.include(contents, 'this should be written to the file\n');
+      'should load appender configuration from a json file': function (err, contents) {
+        assert.include(contents, 'this should be written to the file' + EOL);
         assert.equal(contents.indexOf('this should not be written to the file'), -1);
       }
     }

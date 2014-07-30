@@ -186,7 +186,7 @@ vows.describe('../lib/appenders/dateFile').addBatch({
       }
     },
     'with cwd option': {
-      topic: function() {
+      topic: function () {
         var fileOpened,
         appender = sandbox.require(
           '../lib/appenders/dateFile',
@@ -213,8 +213,9 @@ vows.describe('../lib/appenders/dateFile').addBatch({
         );
         return fileOpened;
       },
-      'should prepend options.cwd to config.filename': function(fileOpened) {
-        assert.equal(fileOpened, "/absolute/path/to/whatever.log");
+      'should prepend options.cwd to config.filename': function (fileOpened) {
+        var expected = path.sep + path.join("absolute", "path", "to", "whatever.log");
+        assert.equal(fileOpened, expected);
       }
     }
  

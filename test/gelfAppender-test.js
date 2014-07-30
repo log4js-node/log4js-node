@@ -73,7 +73,7 @@ var vows = require('vows')
       console: fakeConsole
     }
   });
-  
+
   log4js.clearAppenders();
   log4js.addAppender(appender.configure(options || {}), category || "gelf-test");
   return {
@@ -87,7 +87,7 @@ var vows = require('vows')
 };
 
 vows.describe('log4js gelfAppender').addBatch({
-  
+
   'with default gelfAppender settings': {
     topic: function() {
       var setup = setupLogging();
@@ -115,12 +115,10 @@ vows.describe('log4js gelfAppender').addBatch({
         return message;
       },
       'should be in the gelf format': function(message) {
-        assert.equal(message.version, '1.0');
+        assert.equal(message.version, '1.1');
         assert.equal(message.host, require('os').hostname());
         assert.equal(message.level, 6); //INFO
-        assert.equal(message.facility, 'nodejs-server');
-        assert.equal(message.full_message, message.short_message);
-        assert.equal(message.full_message, 'This is a test');
+        assert.equal(message.short_message, 'This is a test');
       }
     }
   },
@@ -166,7 +164,7 @@ vows.describe('log4js gelfAppender').addBatch({
       },
       'should pick up the options': function(message) {
         assert.equal(message.host, 'cheese');
-        assert.equal(message.facility, 'nonsense');
+        assert.equal(message._facility, 'nonsense');
       }
     }
   },
@@ -246,12 +244,11 @@ vows.describe('log4js gelfAppender').addBatch({
       },
       'should pick up the options': function(message) {
         assert.equal(message.host, 'cheese');
-        assert.equal(message.facility, 'nonsense');
+        assert.equal(message._facility, 'nonsense');
         assert.equal(message._every1, 'Hello every one'); // the default value
         assert.equal(message._every2, 'Overwritten!'); // the overwritten value
         assert.equal(message._myField, 'This is my field!'); // the value for this message only
-        assert.equal(message.short_message, 'Just testing.'); // skip the field object 
-        assert.equal(message.full_message, 'Just testing.'); // should be as same as short_message 
+        assert.equal(message.short_message, 'Just testing.'); // skip the field object
       }
     }
   }

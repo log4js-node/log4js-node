@@ -1,6 +1,7 @@
 "use strict";
 var vows = require('vows')
 , assert = require('assert')
+, path = require('path')
 , sandbox = require('sandboxed-module');
 
 vows.describe('log4js-abspath').addBatch({
@@ -69,7 +70,8 @@ vows.describe('log4js-abspath').addBatch({
       return fileOpened;
     },
     'should prepend options.cwd to config.filename': function(fileOpened) {
-      assert.equal(fileOpened, "/absolute/path/to/whatever.log");
+      var expected = path.sep + path.join("absolute", "path", "to", "whatever.log");
+      assert.equal(fileOpened, expected);
     }
   },
 }).export(module);
