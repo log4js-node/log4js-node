@@ -21,12 +21,12 @@ vows.describe('log4js logLevelFilter').addBatch({
       log4js.addAppender(
         require('../lib/appenders/logLevelFilter')
           .appender(
-            'ERROR', 
+            'ERROR',
             function(evt) { logEvents.push(evt); }
-          ), 
+          ),
         "logLevelTest"
       );
-      
+
       logger = log4js.getLogger("logLevelTest");
       logger.debug('this should not trigger an event');
       logger.warn('neither should this');
@@ -45,10 +45,10 @@ vows.describe('log4js logLevelFilter').addBatch({
     topic: function() {
       var log4js = require('../lib/log4js')
       , logger;
-      
+
       remove(__dirname + '/logLevelFilter.log');
       remove(__dirname + '/logLevelFilter-warnings.log');
-      
+
       log4js.configure('test/with-logLevelFilter.json');
       logger = log4js.getLogger("tests");
       logger.info('main');
@@ -56,7 +56,7 @@ vows.describe('log4js logLevelFilter').addBatch({
       logger.warn('both');
       logger.debug('main');
       //wait for the file system to catch up
-      setTimeout(this.callback, 100);
+      setTimeout(this.callback, 500);
     },
     'tmp-tests.log': {
       topic: function() {

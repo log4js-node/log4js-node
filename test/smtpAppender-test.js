@@ -7,7 +7,7 @@ var vows = require('vows')
 
 function setupLogging(category, options) {
   var msgs = [];
-  
+
   var fakeMailer = {
 		createTransport: function (name, options) {
 			return {
@@ -49,7 +49,7 @@ function setupLogging(category, options) {
   });
 
   log4js.addAppender(smtpModule.configure(options), category);
-  
+
   return {
 		logger: log4js.getLogger(category),
 		mailer: fakeMailer,
@@ -150,10 +150,10 @@ vows.describe('log4js smtpAppender').addBatch({
       }, 500);
       setTimeout(function () {
         setup.logger.info('Log event #3');
-      }, 1050);
+      }, 1100);
       setTimeout(function () {
         self.callback(null, setup);
-      }, 2100);
+      }, 3000);
     },
     'there should be three messages': function (result) {
       assert.equal(result.results.length, 3);
@@ -181,13 +181,13 @@ vows.describe('log4js smtpAppender').addBatch({
       }, 0);
       setTimeout(function () {
         setup.logger.info('Log event #2');
-      }, 500);
+      }, 100);
       setTimeout(function () {
         setup.logger.info('Log event #3');
-      }, 1050);
+      }, 1500);
       setTimeout(function () {
         self.callback(null, setup);
-      }, 2100);
+      }, 3000);
     },
     'there should be two messages': function (result) {
       assert.equal(result.results.length, 2);
@@ -218,7 +218,7 @@ vows.describe('log4js smtpAppender').addBatch({
           close: function() { }
         };
       };
-      
+
       setup.logger.info("This will break");
       return setup.console;
     },
@@ -228,6 +228,4 @@ vows.describe('log4js smtpAppender').addBatch({
       assert.equal(cons.errors[0].value.message, 'oh noes');
     }
   }
-
 }).export(module);
-
