@@ -38,13 +38,12 @@ vows.describe('log4js').addBatch({
             var log4js = require('../lib/log4js');
             log4js.clearAppenders();
             var logger = log4js.getBufferedLogger('tests');
-            logger.setLevel("DEBUG");
             return logger;
         },
 
         'should take a category and return a logger': function (logger) {
-            assert.equal(logger.category, 'tests');
-            assert.equal(logger.level.toString(), "DEBUG");
+            assert.equal(logger.target.category, 'tests');
+            assert.isFunction(logger.flush);
             assert.isFunction(logger.trace);
             assert.isFunction(logger.debug);
             assert.isFunction(logger.info);
@@ -54,9 +53,12 @@ vows.describe('log4js').addBatch({
         },
 
         'cache events': {
-            topic: function (logger) {
+            topic: function () {
+                var log4js = require('../lib/log4js');
+                log4js.clearAppenders();
+                var logger = log4js.getBufferedLogger('tests1');
                 var events = [];
-                logger.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.target.addListener("log", function (logEvent) { events.push(logEvent); });
                 logger.debug("Debug event");
                 logger.trace("Trace event 1");
                 logger.trace("Trace event 2");
@@ -66,30 +68,31 @@ vows.describe('log4js').addBatch({
                 return events;
             },
 
-            'should not emit log events until .flush() is called.': function (events) {
+            'should not emit log events if .flush() is not called.': function (events) {
                 assert.equal(events.length, 0);
+            }
+        },
+
+        'log events after flush() is called': {
+            topic: function () {
+                var log4js = require('../lib/log4js');
+                log4js.clearAppenders();
+                var logger = log4js.getBufferedLogger('tests2');
+                logger.target.setLevel("TRACE");
+                var events = [];
+                logger.target.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.debug("Debug event");
+                logger.trace("Trace event 1");
+                logger.trace("Trace event 2");
+                logger.warn("Warning event");
+                logger.error("Aargh!", new Error("Pants are on fire!"));
+                logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
+                logger.flush();
+                return events;
             },
 
-            'log events': {
-                topic: function (logger) {
-                    logger.flush();
-                },
-
-                'should emit log events after .flush() is called.': function (events) {
-                    assert.equal(events[0].level.toString(), 'DEBUG');
-                    assert.equal(events[0].data[0], 'Debug event');
-                    assert.instanceOf(events[0].startTime, Date);
-                },
-
-                'should not emit events of a lower level': function (events) {
-                    assert.equal(events.length, 4);
-                    assert.equal(events[1].level.toString(), 'WARN');
-                },
-
-                'should include the error if passed in': function (events) {
-                    assert.instanceOf(events[2].data[1], Error);
-                    assert.equal(events[2].data[1].message, 'Pants are on fire!');
-                }
+            'should emit log events when .flush() is called.': function (events) {
+                assert.equal(events.length, 6);
             }
         }
     }, 
