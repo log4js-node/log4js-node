@@ -32,6 +32,72 @@ function setupConsoleTest() {
 }
 
 vows.describe('log4js').addBatch({
+
+    'getBufferedLogger': {
+        topic: function () {
+            var log4js = require('../lib/log4js');
+            log4js.clearAppenders();
+            var logger = log4js.getBufferedLogger('tests');
+            return logger;
+        },
+
+        'should take a category and return a logger': function (logger) {
+            assert.equal(logger.target.category, 'tests');
+            assert.isFunction(logger.flush);
+            assert.isFunction(logger.trace);
+            assert.isFunction(logger.debug);
+            assert.isFunction(logger.info);
+            assert.isFunction(logger.warn);
+            assert.isFunction(logger.error);
+            assert.isFunction(logger.fatal);
+        },
+
+        'cache events': {
+            topic: function () {
+                var log4js = require('../lib/log4js');
+                log4js.clearAppenders();
+                var logger = log4js.getBufferedLogger('tests1');
+                var events = [];
+                logger.target.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.debug("Debug event");
+                logger.trace("Trace event 1");
+                logger.trace("Trace event 2");
+                logger.warn("Warning event");
+                logger.error("Aargh!", new Error("Pants are on fire!"));
+                logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
+                return events;
+            },
+
+            'should not emit log events if .flush() is not called.': function (events) {
+                assert.equal(events.length, 0);
+            }
+        },
+
+        'log events after flush() is called': {
+            topic: function () {
+                var log4js = require('../lib/log4js');
+                log4js.clearAppenders();
+                var logger = log4js.getBufferedLogger('tests2');
+                logger.target.setLevel("TRACE");
+                var events = [];
+                logger.target.addListener("log", function (logEvent) { events.push(logEvent); });
+                logger.debug("Debug event");
+                logger.trace("Trace event 1");
+                logger.trace("Trace event 2");
+                logger.warn("Warning event");
+                logger.error("Aargh!", new Error("Pants are on fire!"));
+                logger.error("Simulated CouchDB problem", { err: 127, cause: "incendiary underwear" });
+                logger.flush();
+                return events;
+            },
+
+            'should emit log events when .flush() is called.': function (events) {
+                assert.equal(events.length, 6);
+            }
+        }
+    }, 
+    
+   
   'getLogger': {
     topic: function() {
       var log4js = require('../lib/log4js');
