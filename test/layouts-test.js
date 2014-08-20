@@ -217,6 +217,9 @@ vows.describe('log4js layouts').addBatch({
     '%h should output hostname' : function(args) {
       test(args, '%h', os.hostname().toString());
     },
+    '%z should output pid' : function(args) {
+      test(args, '%z', process.pid);
+    },
     '%c should handle category names like java-style package names': function(args) {
       test(args, '%c{1}', 'tests');
       test(args, '%c{2}', 'of.tests');
