@@ -22,6 +22,7 @@ vows.describe('log4js logLevelFilter').addBatch({
         require('../lib/appenders/logLevelFilter')
           .appender(
             'ERROR',
+            undefined,
             function(evt) { logEvents.push(evt); }
           ),
         "logLevelTest"
@@ -48,13 +49,16 @@ vows.describe('log4js logLevelFilter').addBatch({
 
       remove(__dirname + '/logLevelFilter.log');
       remove(__dirname + '/logLevelFilter-warnings.log');
+      remove(__dirname + '/logLevelFilter-debugs.log');
 
       log4js.configure('test/with-logLevelFilter.json');
       logger = log4js.getLogger("tests");
-      logger.info('main');
-      logger.error('both');
-      logger.warn('both');
-      logger.debug('main');
+      logger.debug('debug');
+      logger.info('info');
+      logger.error('error');
+      logger.warn('warn');
+      logger.debug('debug');
+      logger.trace('trace');
       //wait for the file system to catch up
       setTimeout(this.callback, 500);
     },
@@ -64,7 +68,7 @@ vows.describe('log4js logLevelFilter').addBatch({
       },
       'should contain all log messages': function (contents) {
         var messages = contents.trim().split(EOL);
-        assert.deepEqual(messages, ['main','both','both','main']);
+        assert.deepEqual(messages, ['debug','info','error','warn','debug','trace']);
       }
     },
     'tmp-tests-warnings.log': {
@@ -73,7 +77,16 @@ vows.describe('log4js logLevelFilter').addBatch({
       },
       'should contain only error and warning log messages': function(contents) {
         var messages = contents.trim().split(EOL);
-        assert.deepEqual(messages, ['both','both']);
+        assert.deepEqual(messages, ['error','warn']);
+      }
+    },
+    'tmp-tests-debugs.log': {
+      topic: function() {
+        fs.readFile(__dirname + '/logLevelFilter-debugs.log','utf8',this.callback);
+      },
+      'should contain only trace and debug log messages': function(contents) {
+        var messages = contents.trim().split(EOL);
+        assert.deepEqual(messages, ['debug','debug','trace']);
       }
     }
   }
