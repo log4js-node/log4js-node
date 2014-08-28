@@ -28,9 +28,9 @@
     "lib": "lib"
   },
   "dependencies": {
-    "async": "0.1.15",
-    "semver": "~1.1.4",
-    "readable-stream": "~1.0.2"
+    "async": "~0.2.0",
+    "readable-stream": "~1.0.2",
+    "semver": "~1.1.4"
   },
   "devDependencies": {
     "vows": "0.7.0",
