@@ -5,6 +5,7 @@ var vows = require('vows')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
 , assert = require('assert')
+, zlib = require('zlib')
 , EOL = require('os').EOL || '\n';
 
 log4js.clearAppenders();
@@ -211,6 +212,79 @@ vows.describe('log4js fileAppender').addBatch({
         },
         'should be the second log message': function(contents) {
           assert.include(contents, 'This is the second log message.');
+        }
+      }
+    }
+  },
+  'with a max file size and 2 compressed backups': {
+    topic: function() {
+      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-compressed-test.log')
+      , logger = log4js.getLogger('max-file-size-backups');
+      remove(testFile);
+      remove(testFile+'.1.gz');
+      remove(testFile+'.2.gz');
+      
+      //log file of 50 bytes maximum, 2 backups
+      log4js.clearAppenders();
+      log4js.addAppender(
+        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2, null, true), 
+        'max-file-size-backups'
+      );
+      logger.info("This is the first log message.");
+      logger.info("This is the second log message.");
+      logger.info("This is the third log message.");
+      logger.info("This is the fourth log message.");
+      var that = this;
+      //give the system a chance to open the stream
+      setTimeout(function() {
+        fs.readdir(__dirname, function(err, files) { 
+          if (files) { 
+            that.callback(null, files.sort()); 
+          } else { 
+            that.callback(err, files); 
+          }
+        });
+      }, 200);
+    },
+    'the log files': {
+      topic: function(files) {
+        var logFiles = files.filter(
+          function(file) { return file.indexOf('fa-maxFileSize-with-backups-compressed-test.log') > -1; }
+        );
+        return logFiles;
+      },
+      'should be 3': function (files) {
+        assert.equal(files.length, 3);
+      },
+      'should be named in sequence': function (files) {
+        assert.deepEqual(files, [
+          'fa-maxFileSize-with-backups-compressed-test.log', 
+          'fa-maxFileSize-with-backups-compressed-test.log.1.gz', 
+          'fa-maxFileSize-with-backups-compressed-test.log.2.gz'
+        ]);
+      },
+      'and the contents of the first file': {
+        topic: function(logFiles) {
+          fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
+        },
+        'should be the last log message': function(contents) {
+          assert.include(contents, 'This is the fourth log message.');
+        }
+      },
+      'and the contents of the second file': {
+        topic: function(logFiles) {
+          zlib.gunzip(fs.readFileSync(path.join(__dirname, logFiles[1])), this.callback);
+        },
+        'should be the third log message': function(contents) {
+          assert.include(contents.toString('utf8'), 'This is the third log message.');
+        }
+      },
+      'and the contents of the third file': {
+        topic: function(logFiles) {
+          zlib.gunzip(fs.readFileSync(path.join(__dirname, logFiles[2])), this.callback);
+        },
+        'should be the second log message': function(contents) {
+          assert.include(contents.toString('utf8'), 'This is the second log message.');
         }
       }
     }
