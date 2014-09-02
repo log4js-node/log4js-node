@@ -122,7 +122,7 @@ vows.describe('RollingFileStream').addBatch({
         __dirname + "/test-rolling-file-stream-write-more", 
         45
       );
-      async.forEach(
+      async.each(
         [0, 1, 2, 3, 4, 5, 6], 
         function(i, cb) {
           stream.write(i +".cheese\n", "utf8", cb);
@@ -183,7 +183,7 @@ vows.describe('RollingFileStream').addBatch({
         45,
         5
       );
-      async.forEach(
+      async.each(
         [0, 1, 2, 3, 4, 5, 6], 
         function(i, cb) {
           stream.write(i +".cheese\n", "utf8", cb);
