@@ -149,7 +149,7 @@ vows.describe('log4js fileAppender').addBatch({
           file_sub1_sub12$sub1_sub13: fs.readFileSync(file_sub1_sub12$sub1_sub13).toString(),
           file_sub1_sub12: fs.readFileSync(file_sub1_sub12).toString()
         });        
-      }, 1000);
+      }, 3000);
     },
     'check file contents': function (err, fileContents) {
 
@@ -291,7 +291,7 @@ vows.describe('log4js fileAppender').addBatch({
       //log file of 50 bytes maximum, 2 backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2, null, true), 
+        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2, true), 
         'max-file-size-backups'
       );
       logger.info("This is the first log message.");
@@ -308,7 +308,7 @@ vows.describe('log4js fileAppender').addBatch({
             that.callback(err, files); 
           }
         });
-      }, 200);
+      }, 1000);
     },
     'the log files': {
       topic: function(files) {
