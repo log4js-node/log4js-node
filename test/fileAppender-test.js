@@ -105,6 +105,70 @@ vows.describe('log4js fileAppender').addBatch({
       );
     }
   },
+  'fileAppender subcategories': {
+    topic: function() {
+      var that = this;
+
+      log4js.clearAppenders();
+
+      function addAppender(cat) {
+        var testFile = path.join(__dirname, '/fa-subcategories-test-'+cat.join('-').replace(/\./g, "_")+'.log');
+        remove(testFile);
+        log4js.addAppender(require('../lib/appenders/file').appender(testFile), cat);
+        return testFile;
+      }
+
+      var file_sub1 = addAppender([ 'sub1']);
+      
+      var file_sub1_sub12$sub1_sub13 = addAppender([ 'sub1.sub12', 'sub1.sub13' ]);
+      
+      var file_sub1_sub12 = addAppender([ 'sub1.sub12' ]);
+
+      
+      var logger_sub1_sub12_sub123 = log4js.getLogger('sub1.sub12.sub123');
+      
+      var logger_sub1_sub13_sub133 = log4js.getLogger('sub1.sub13.sub133');
+
+      var logger_sub1_sub14 = log4js.getLogger('sub1.sub14');
+
+      var logger_sub2 = log4js.getLogger('sub2');
+      
+
+      logger_sub1_sub12_sub123.info('sub1_sub12_sub123');
+      
+      logger_sub1_sub13_sub133.info('sub1_sub13_sub133');
+
+      logger_sub1_sub14.info('sub1_sub14');
+
+      logger_sub2.info('sub2');
+           
+      
+      setTimeout(function() {
+        that.callback(null, {
+          file_sub1: fs.readFileSync(file_sub1).toString(),
+          file_sub1_sub12$sub1_sub13: fs.readFileSync(file_sub1_sub12$sub1_sub13).toString(),
+          file_sub1_sub12: fs.readFileSync(file_sub1_sub12).toString()
+        });        
+      }, 1000);
+    },
+    'check file contents': function (err, fileContents) {
+
+      // everything but category 'sub2'
+      assert.match(fileContents.file_sub1, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/);
+      assert.ok(fileContents.file_sub1.match(/sub123/) && fileContents.file_sub1.match(/sub133/) && fileContents.file_sub1.match(/sub14/));
+      assert.ok(!fileContents.file_sub1.match(/sub2/));
+
+      // only catgories starting with 'sub1.sub12' and 'sub1.sub13'
+      assert.match(fileContents.file_sub1_sub12$sub1_sub13, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/);
+      assert.ok(fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) && fileContents.file_sub1_sub12$sub1_sub13.match(/sub133/));
+      assert.ok(!fileContents.file_sub1_sub12$sub1_sub13.match(/sub14|sub2/));
+
+      // only catgories starting with 'sub1.sub12'
+      assert.match(fileContents.file_sub1_sub12, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/);
+      assert.ok(!fileContents.file_sub1_sub12.match(/sub14|sub2|sub13/));
+
+    }
+  },
   'with a max file size and no backups': {
     topic: function() {
       var testFile = path.join(__dirname, '/fa-maxFileSize-test.log')
