@@ -8,6 +8,7 @@
     "log4j",
     "node"
   ],
+  "license": "Apache-2.0",
   "main": "./lib/log4js",
   "author": "Gareth Jones <gareth.nomiddlename@gmail.com>",
   "repository": {
