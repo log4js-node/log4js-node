@@ -13,6 +13,7 @@ Out of the box it supports the following features:
 * GELF appender
 * hook.io appender
 * Loggly appender
+* Logstash UDP appender
 * multiprocess appender (useful when you've got worker processes)
 * a logger for connect/express servers
 * configurable log message layout/patterns
