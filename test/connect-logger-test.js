@@ -41,7 +41,7 @@ function MockRequest(remoteAddr, method, originalUrl, headers) {
 function MockResponse() {
   var r = this;
   this.end = function(chunk, encoding) {  
-      setImmediate(function(){ r.emit('finish') });
+      r.emit('finish');
   };
 
   this.writeHead = function(code, headers) {

@@ -37,7 +37,7 @@ function MockResponse(statusCode) {
   this.statusCode = statusCode;
 
   this.end = function(chunk, encoding) {
-      setImmediate(function(){ r.emit('finish') });
+      r.emit('finish');
   };
 }
 util.inherits(MockResponse, EE);
@@ -87,9 +87,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() {
+              cb(null, d.ml.messages);
+          },10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
