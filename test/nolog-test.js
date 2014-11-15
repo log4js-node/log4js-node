@@ -1,6 +1,8 @@
 "use strict";
 var vows = require('vows')
 , assert = require('assert')
+, util   = require('util')
+, EE     = require('events').EventEmitter
 , levels = require('../lib/levels');
 
 function MockLogger() {
@@ -31,13 +33,14 @@ function MockRequest(remoteAddr, method, originalUrl) {
 }
 
 function MockResponse(statusCode) {
-
+  var r = this;
   this.statusCode = statusCode;
 
   this.end = function(chunk, encoding) {
-    
+      r.emit('finish');
   };
 }
+util.inherits(MockResponse, EE);
 
 vows.describe('log4js connect logger').addBatch({
   'getConnectLoggerModule': {
@@ -61,9 +64,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() {
+              cb(null, d.ml.messages);
+          },10);
         }, 
         'check message': function(messages){
           assert.isArray(messages);
@@ -81,9 +87,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() {
+              cb(null, d.ml.messages);
+          },10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -103,9 +112,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages){
           assert.isArray(messages);
@@ -123,9 +135,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -136,9 +151,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -157,9 +175,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages){
           assert.isArray(messages);
@@ -177,9 +198,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -191,9 +215,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -212,9 +239,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages){
           assert.isArray(messages);
@@ -232,9 +262,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
@@ -246,9 +279,12 @@ vows.describe('log4js connect logger').addBatch({
         topic: function(d) {
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
           var res = new MockResponse(200);
+          var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          return d.ml.messages;
+          setTimeout(function() { 
+            cb(null, d.ml.messages) 
+          }, 10);
         }, 
         'check message': function(messages) {
           assert.isArray(messages);
