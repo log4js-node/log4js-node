@@ -108,8 +108,9 @@ For FileAppender you can also pass the path to the log directory as an option wh
 log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
 ```
 If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
-```json
+
 #### my_log4js_configuration.json ####
+```json
 {
   "appenders": [
     {
