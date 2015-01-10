@@ -5,6 +5,7 @@ var vows = require('vows')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
 , assert = require('assert')
+, zlib = require('zlib')
 , EOL = require('os').EOL || '\n';
 
 log4js.clearAppenders();
@@ -102,6 +103,70 @@ vows.describe('log4js fileAppender').addBatch({
         fileContents, 
           /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] default-settings - /
       );
+    }
+  },
+  'fileAppender subcategories': {
+    topic: function() {
+      var that = this;
+
+      log4js.clearAppenders();
+
+      function addAppender(cat) {
+        var testFile = path.join(__dirname, '/fa-subcategories-test-'+cat.join('-').replace(/\./g, "_")+'.log');
+        remove(testFile);
+        log4js.addAppender(require('../lib/appenders/file').appender(testFile), cat);
+        return testFile;
+      }
+
+      var file_sub1 = addAppender([ 'sub1']);
+      
+      var file_sub1_sub12$sub1_sub13 = addAppender([ 'sub1.sub12', 'sub1.sub13' ]);
+      
+      var file_sub1_sub12 = addAppender([ 'sub1.sub12' ]);
+
+      
+      var logger_sub1_sub12_sub123 = log4js.getLogger('sub1.sub12.sub123');
+      
+      var logger_sub1_sub13_sub133 = log4js.getLogger('sub1.sub13.sub133');
+
+      var logger_sub1_sub14 = log4js.getLogger('sub1.sub14');
+
+      var logger_sub2 = log4js.getLogger('sub2');
+      
+
+      logger_sub1_sub12_sub123.info('sub1_sub12_sub123');
+      
+      logger_sub1_sub13_sub133.info('sub1_sub13_sub133');
+
+      logger_sub1_sub14.info('sub1_sub14');
+
+      logger_sub2.info('sub2');
+           
+      
+      setTimeout(function() {
+        that.callback(null, {
+          file_sub1: fs.readFileSync(file_sub1).toString(),
+          file_sub1_sub12$sub1_sub13: fs.readFileSync(file_sub1_sub12$sub1_sub13).toString(),
+          file_sub1_sub12: fs.readFileSync(file_sub1_sub12).toString()
+        });        
+      }, 3000);
+    },
+    'check file contents': function (err, fileContents) {
+
+      // everything but category 'sub2'
+      assert.match(fileContents.file_sub1, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/);
+      assert.ok(fileContents.file_sub1.match(/sub123/) && fileContents.file_sub1.match(/sub133/) && fileContents.file_sub1.match(/sub14/));
+      assert.ok(!fileContents.file_sub1.match(/sub2/));
+
+      // only catgories starting with 'sub1.sub12' and 'sub1.sub13'
+      assert.match(fileContents.file_sub1_sub12$sub1_sub13, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/);
+      assert.ok(fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) && fileContents.file_sub1_sub12$sub1_sub13.match(/sub133/));
+      assert.ok(!fileContents.file_sub1_sub12$sub1_sub13.match(/sub14|sub2/));
+
+      // only catgories starting with 'sub1.sub12'
+      assert.match(fileContents.file_sub1_sub12, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/);
+      assert.ok(!fileContents.file_sub1_sub12.match(/sub14|sub2|sub13/));
+
     }
   },
   'with a max file size and no backups': {
@@ -211,6 +276,79 @@ vows.describe('log4js fileAppender').addBatch({
         },
         'should be the second log message': function(contents) {
           assert.include(contents, 'This is the second log message.');
+        }
+      }
+    }
+  },
+  'with a max file size and 2 compressed backups': {
+    topic: function() {
+      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-compressed-test.log')
+      , logger = log4js.getLogger('max-file-size-backups');
+      remove(testFile);
+      remove(testFile+'.1.gz');
+      remove(testFile+'.2.gz');
+      
+      //log file of 50 bytes maximum, 2 backups
+      log4js.clearAppenders();
+      log4js.addAppender(
+        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2, true), 
+        'max-file-size-backups'
+      );
+      logger.info("This is the first log message.");
+      logger.info("This is the second log message.");
+      logger.info("This is the third log message.");
+      logger.info("This is the fourth log message.");
+      var that = this;
+      //give the system a chance to open the stream
+      setTimeout(function() {
+        fs.readdir(__dirname, function(err, files) { 
+          if (files) { 
+            that.callback(null, files.sort()); 
+          } else { 
+            that.callback(err, files); 
+          }
+        });
+      }, 1000);
+    },
+    'the log files': {
+      topic: function(files) {
+        var logFiles = files.filter(
+          function(file) { return file.indexOf('fa-maxFileSize-with-backups-compressed-test.log') > -1; }
+        );
+        return logFiles;
+      },
+      'should be 3': function (files) {
+        assert.equal(files.length, 3);
+      },
+      'should be named in sequence': function (files) {
+        assert.deepEqual(files, [
+          'fa-maxFileSize-with-backups-compressed-test.log', 
+          'fa-maxFileSize-with-backups-compressed-test.log.1.gz', 
+          'fa-maxFileSize-with-backups-compressed-test.log.2.gz'
+        ]);
+      },
+      'and the contents of the first file': {
+        topic: function(logFiles) {
+          fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
+        },
+        'should be the last log message': function(contents) {
+          assert.include(contents, 'This is the fourth log message.');
+        }
+      },
+      'and the contents of the second file': {
+        topic: function(logFiles) {
+          zlib.gunzip(fs.readFileSync(path.join(__dirname, logFiles[1])), this.callback);
+        },
+        'should be the third log message': function(contents) {
+          assert.include(contents.toString('utf8'), 'This is the third log message.');
+        }
+      },
+      'and the contents of the third file': {
+        topic: function(logFiles) {
+          zlib.gunzip(fs.readFileSync(path.join(__dirname, logFiles[2])), this.callback);
+        },
+        'should be the second log message': function(contents) {
+          assert.include(contents.toString('utf8'), 'This is the second log message.');
         }
       }
     }

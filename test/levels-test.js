@@ -43,6 +43,7 @@ vows.describe('levels').addBatch({
       assert.isNotNull(levels.WARN);
       assert.isNotNull(levels.ERROR);
       assert.isNotNull(levels.FATAL);
+      assert.isNotNull(levels.MARK);
       assert.isNotNull(levels.OFF);
     },
     'ALL': {
@@ -56,7 +57,8 @@ vows.describe('levels').addBatch({
             levels.INFO, 
             levels.WARN, 
             levels.ERROR, 
-            levels.FATAL, 
+            levels.FATAL,
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -70,6 +72,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -84,6 +87,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -99,6 +103,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -113,6 +118,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -127,6 +133,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -141,6 +148,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -154,6 +162,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -168,6 +177,7 @@ vows.describe('levels').addBatch({
             levels.WARN, 
             levels.ERROR, 
             levels.FATAL, 
+            levels.MARK,
             levels.OFF
           ]
         );
@@ -180,6 +190,7 @@ vows.describe('levels').addBatch({
           levels.WARN, 
           levels.ERROR, 
           levels.FATAL, 
+          levels.MARK,
           levels.OFF
         ]);
         assertThat(info).isNotLessThanOrEqualTo([levels.ALL, levels.TRACE, levels.DEBUG]);
@@ -190,6 +201,7 @@ vows.describe('levels').addBatch({
           levels.WARN, 
           levels.ERROR, 
           levels.FATAL, 
+          levels.MARK,
           levels.OFF
         ]);
       },
@@ -202,6 +214,7 @@ vows.describe('levels').addBatch({
           levels.WARN, 
           levels.ERROR, 
           levels.FATAL, 
+          levels.MARK,
           levels.OFF
         ]);
       }
@@ -209,7 +222,7 @@ vows.describe('levels').addBatch({
     'WARN': {
       topic: levels.WARN,
       'should be less than ERROR': function(warn) {
-        assertThat(warn).isLessThanOrEqualTo([levels.ERROR, levels.FATAL, levels.OFF]);
+        assertThat(warn).isLessThanOrEqualTo([levels.ERROR, levels.FATAL, levels.MARK, levels.OFF]);
         assertThat(warn).isNotLessThanOrEqualTo([
           levels.ALL, 
           levels.TRACE, 
@@ -224,7 +237,7 @@ vows.describe('levels').addBatch({
           levels.DEBUG, 
           levels.INFO
         ]);
-        assertThat(warn).isNotGreaterThanOrEqualTo([levels.ERROR, levels.FATAL, levels.OFF]);
+        assertThat(warn).isNotGreaterThanOrEqualTo([levels.ERROR, levels.FATAL, levels.MARK, levels.OFF]);
       },
       'should only be equal to WARN': function(trace) {
         assertThat(trace).isEqualTo([levels.toLevel("WARN")]);
@@ -242,7 +255,7 @@ vows.describe('levels').addBatch({
     'ERROR': {
       topic: levels.ERROR,
       'should be less than FATAL': function(error) {
-        assertThat(error).isLessThanOrEqualTo([levels.FATAL, levels.OFF]);
+        assertThat(error).isLessThanOrEqualTo([levels.FATAL, levels.MARK, levels.OFF]);
         assertThat(error).isNotLessThanOrEqualTo([
           levels.ALL, 
           levels.TRACE, 
@@ -259,7 +272,7 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN
         ]);
-        assertThat(error).isNotGreaterThanOrEqualTo([levels.FATAL, levels.OFF]);
+        assertThat(error).isNotGreaterThanOrEqualTo([levels.FATAL, levels.MARK, levels.OFF]);
       },
       'should only be equal to ERROR': function(trace) {
         assertThat(trace).isEqualTo([levels.toLevel("ERROR")]);
@@ -270,6 +283,7 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN, 
           levels.FATAL, 
+          levels.MARK,
           levels.OFF
         ]);
       }
@@ -277,7 +291,7 @@ vows.describe('levels').addBatch({
     'FATAL': {
       topic: levels.FATAL,
       'should be less than OFF': function(fatal) {
-        assertThat(fatal).isLessThanOrEqualTo([levels.OFF]);
+        assertThat(fatal).isLessThanOrEqualTo([levels.MARK, levels.OFF]);
         assertThat(fatal).isNotLessThanOrEqualTo([
           levels.ALL, 
           levels.TRACE, 
@@ -295,8 +309,8 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN, 
           levels.ERROR
-        ]);
-        assertThat(fatal).isNotGreaterThanOrEqualTo([levels.OFF]);
+       ]);
+        assertThat(fatal).isNotGreaterThanOrEqualTo([levels.MARK, levels.OFF]);
       },
       'should only be equal to FATAL': function(fatal) {
         assertThat(fatal).isEqualTo([levels.toLevel("FATAL")]);
@@ -306,7 +320,48 @@ vows.describe('levels').addBatch({
           levels.DEBUG, 
           levels.INFO, 
           levels.WARN, 
-          levels.ERROR, 
+          levels.ERROR,
+          levels.MARK, 
+          levels.OFF
+        ]);
+      }
+    },
+    'MARK': {
+      topic: levels.MARK,
+      'should be less than OFF': function(mark) {
+        assertThat(mark).isLessThanOrEqualTo([levels.OFF]);
+        assertThat(mark).isNotLessThanOrEqualTo([
+          levels.ALL, 
+          levels.TRACE, 
+          levels.DEBUG, 
+          levels.INFO, 
+          levels.WARN, 
+          levels.FATAL, 
+          levels.ERROR
+        ]);
+      },
+      'should be greater than FATAL': function(mark) {
+        assertThat(mark).isGreaterThanOrEqualTo([
+          levels.ALL, 
+          levels.TRACE, 
+          levels.DEBUG, 
+          levels.INFO, 
+          levels.WARN, 
+          levels.ERROR,
+          levels.FATAL
+       ]);
+        assertThat(mark).isNotGreaterThanOrEqualTo([levels.OFF]);
+      },
+      'should only be equal to MARK': function(mark) {
+        assertThat(mark).isEqualTo([levels.toLevel("MARK")]);
+        assertThat(mark).isNotEqualTo([
+          levels.ALL, 
+          levels.TRACE, 
+          levels.DEBUG, 
+          levels.INFO, 
+          levels.WARN, 
+          levels.ERROR,
+          levels.FATAL, 
           levels.OFF
         ]);
       }
@@ -321,7 +376,8 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN, 
           levels.ERROR, 
-          levels.FATAL
+          levels.FATAL,
+          levels.MARK
         ]);
       },
       'should be greater than everything': function(off) {
@@ -332,7 +388,8 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN, 
           levels.ERROR, 
-          levels.FATAL
+          levels.FATAL,
+          levels.MARK
         ]);
       },
       'should only be equal to OFF': function(off) {
@@ -344,7 +401,8 @@ vows.describe('levels').addBatch({
           levels.INFO, 
           levels.WARN, 
           levels.ERROR, 
-          levels.FATAL
+          levels.FATAL,
+          levels.MARK
         ]);
       }
     }
@@ -353,14 +411,14 @@ vows.describe('levels').addBatch({
     topic: levels.INFO,
     'should handle string arguments': function(info) {
       assertThat(info).isGreaterThanOrEqualTo(["all", "trace", "debug"]);
-      assertThat(info).isNotGreaterThanOrEqualTo(['warn', 'ERROR', 'Fatal', 'off']);
+      assertThat(info).isNotGreaterThanOrEqualTo(['warn', 'ERROR', 'Fatal', 'MARK', 'off']);
     }
   },
   'isLessThanOrEqualTo': {
     topic: levels.INFO,
     'should handle string arguments': function(info) {
       assertThat(info).isNotLessThanOrEqualTo(["all", "trace", "debug"]);
-      assertThat(info).isLessThanOrEqualTo(['warn', 'ERROR', 'Fatal', 'off']);
+      assertThat(info).isLessThanOrEqualTo(['warn', 'ERROR', 'Fatal', 'MARK', 'off']);
     }
   },
   'isEqualTo': {
