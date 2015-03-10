@@ -246,7 +246,50 @@ vows.describe('log4js connect logger').addBatch({
       'should output the response header': function(messages) {
         assert.equal(messages[0].message, 'application/cheese');
       }
-    }
+    },
 
+    'log events with custom token' : {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        var cb = this.callback;
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :custom_string', tokens: [{
+          token: ':custom_string', replacement: 'fooBAR'
+        }] } );
+        request(cl, 'GET', 'http://url', 200);
+        setTimeout(function() {
+          cb(null, ml.messages);
+        },10);
+      },
+
+      'check message': function(messages) {
+        assert.isArray(messages);
+        assert.equal(messages.length, 1);
+        assert.ok(levels.INFO.isEqualTo(messages[0].level));
+        assert.equal(messages[0].message, 'GET http://url fooBAR');
+      }
+    },
+
+    'log events with custom override token' : {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        var cb = this.callback;
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :date', tokens: [{
+          token: ':date', replacement: "20150310"
+        }] } );
+        request(cl, 'GET', 'http://url', 200);
+        setTimeout(function() {
+          cb(null, ml.messages);
+        },10);
+      },
+
+      'check message': function(messages) {
+        assert.isArray(messages);
+        assert.equal(messages.length, 1);
+        assert.ok(levels.INFO.isEqualTo(messages[0].level));
+        assert.equal(messages[0].message, 'GET http://url 20150310');
+      }
+    }
   }
 }).export(module);
