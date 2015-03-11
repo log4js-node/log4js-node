@@ -10,7 +10,7 @@ function MockLogger() {
 
   var that = this;
   this.messages = [];
-  
+
   this.log = function(level, message, exception) {
     that.messages.push({ level: level, message: message });
   };
@@ -18,7 +18,7 @@ function MockLogger() {
   this.isLevelEnabled = function(level) {
     return level.isGreaterThanOrEqualTo(that.level);
   };
-  
+
   this.level = levels.TRACE;
 
 }
@@ -40,7 +40,7 @@ function MockRequest(remoteAddr, method, originalUrl, headers) {
 
 function MockResponse() {
   var r = this;
-  this.end = function(chunk, encoding) {  
+  this.end = function(chunk, encoding) {
       r.emit('finish');
   };
 
@@ -66,7 +66,7 @@ vows.describe('log4js connect logger').addBatch({
       var clm = require('../lib/connect-logger');
       return clm;
     },
-    
+
     'should return a "connect logger" factory' : function(clm) {
       assert.isObject(clm);
     },
@@ -77,12 +77,12 @@ vows.describe('log4js connect logger').addBatch({
         var cl = clm.connectLogger(ml);
         return cl;
       },
-      
+
       'should return a "connect logger"': function(cl) {
         assert.isFunction(cl);
       }
     },
-    
+
     'log events' : {
       topic: function(clm) {
         var ml = new MockLogger();
@@ -113,7 +113,7 @@ vows.describe('log4js connect logger').addBatch({
         request(cl, 'GET', 'http://url', 200);
         return ml.messages;
       },
-      
+
       'check message': function(messages) {
         assert.isArray(messages);
         assert.isEmpty(messages);
@@ -130,7 +130,7 @@ vows.describe('log4js connect logger').addBatch({
         setTimeout(function() {
           cb(null, ml.messages);
         },10);      },
-      
+
       'check message': function(messages) {
         assert.isArray(messages);
         assert.equal(messages.length, 1);
@@ -168,7 +168,7 @@ vows.describe('log4js connect logger').addBatch({
         request(cl, 'GET', 'http://meh', 500);
         setTimeout(function() {
           cb(null, ml.messages);
-        },10); 
+        },10);
       },
 
       'should use INFO for 2xx': function(messages) {
@@ -198,7 +198,7 @@ vows.describe('log4js connect logger').addBatch({
         request(cl, 'GET', 'http://blah', 200);
         setTimeout(function() {
           cb(null, ml.messages);
-        },10); 
+        },10);
       },
 
       'should call the format function': function(messages) {
@@ -213,8 +213,8 @@ vows.describe('log4js connect logger').addBatch({
         ml.level = levels.INFO;
         var cl = clm.connectLogger(ml, ':req[Content-Type]');
         request(
-          cl, 
-          'GET', 'http://blah', 200, 
+          cl,
+          'GET', 'http://blah', 200,
           { 'Content-Type': 'application/json' }
         );
         setTimeout(function() {
@@ -246,7 +246,50 @@ vows.describe('log4js connect logger').addBatch({
       'should output the response header': function(messages) {
         assert.equal(messages[0].message, 'application/cheese');
       }
-    }                                          
-    
+    },
+
+    'log events with custom token' : {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        var cb = this.callback;
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :custom_string', tokens: [{
+          token: ':custom_string', replacement: 'fooBAR'
+        }] } );
+        request(cl, 'GET', 'http://url', 200);
+        setTimeout(function() {
+          cb(null, ml.messages);
+        },10);
+      },
+
+      'check message': function(messages) {
+        assert.isArray(messages);
+        assert.equal(messages.length, 1);
+        assert.ok(levels.INFO.isEqualTo(messages[0].level));
+        assert.equal(messages[0].message, 'GET http://url fooBAR');
+      }
+    },
+
+    'log events with custom override token' : {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        var cb = this.callback;
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :date', tokens: [{
+          token: ':date', replacement: "20150310"
+        }] } );
+        request(cl, 'GET', 'http://url', 200);
+        setTimeout(function() {
+          cb(null, ml.messages);
+        },10);
+      },
+
+      'check message': function(messages) {
+        assert.isArray(messages);
+        assert.equal(messages.length, 1);
+        assert.ok(levels.INFO.isEqualTo(messages[0].level));
+        assert.equal(messages[0].message, 'GET http://url 20150310');
+      }
+    }
   }
 }).export(module);
