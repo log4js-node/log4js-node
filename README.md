@@ -10,6 +10,7 @@ Out of the box it supports the following features:
 * replacement of node's console.log functions (optional)
 * file appender, with log rolling based on file size
 * SMTP appender
+* Amazon SES appender (using node-ses)
 * GELF appender
 * hook.io appender
 * Loggly appender
