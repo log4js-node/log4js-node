@@ -74,7 +74,6 @@ vows.describe('log4js smtpAppender').addBatch({
 		topic: function() {
       var setup = setupLogging('minimal config', {
         recipients: 'recipient@domain.com',
-        transport: "SMTP",
         SMTP: {
           port: 25,
           auth: {
@@ -98,7 +97,6 @@ vows.describe('log4js smtpAppender').addBatch({
         recipients: 'recipient@domain.com',
         sender: 'sender@domain.com',
         subject: 'This is subject',
-        transport: "SMTP",
         SMTP: {
           port: 25,
           auth: {
@@ -134,7 +132,6 @@ vows.describe('log4js smtpAppender').addBatch({
       var self = this;
       var setup = setupLogging('separate email for each event', {
         recipients: 'recipient@domain.com',
-        transport: "SMTP",
         SMTP: {
           port: 25,
           auth: {
@@ -168,7 +165,6 @@ vows.describe('log4js smtpAppender').addBatch({
       var setup = setupLogging('multiple events in one email', {
         recipients: 'recipient@domain.com',
         sendInterval: 1,
-        transport: "SMTP",
         SMTP: {
           port: 25,
           auth: {
@@ -206,7 +202,6 @@ vows.describe('log4js smtpAppender').addBatch({
       var setup = setupLogging('error when sending email', {
         recipients: 'recipient@domain.com',
         sendInterval: 0,
-        transport: 'SMTP',
         SMTP: { port: 25, auth: { user: 'user@domain.com' } }
       });
 
