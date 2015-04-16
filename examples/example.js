@@ -35,11 +35,13 @@ logger.setLevel('ERROR');
 //console logging methods have been replaced with log4js ones.
 //so this will get coloured output on console, and appear in cheese.log
 console.error("AAArgh! Something went wrong", { some: "otherObject", useful_for: "debug purposes" });
+console.log("This should appear as info output");
 
 //these will not appear (logging level beneath error)
 logger.trace('Entering cheese testing');
 logger.debug('Got cheese.');
 logger.info('Cheese is Gouda.');
+logger.log('Something funny about cheese.');
 logger.warn('Cheese is quite smelly.');
 //these end up on the console and in cheese.log
 logger.error('Cheese %s is too ripe!', "gouda");
