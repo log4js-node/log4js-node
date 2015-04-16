@@ -179,7 +179,7 @@ vows.describe('log4js layouts').addBatch({
     topic: function() {
       var event = {
         data: ['this is a test'],
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        startTime: new Date('2010-12-05T14:18:30.045Z'), //new Date(2010, 11, 5, 14, 18, 30, 45),
         categoryName: "multiple.levels.of.tests",
         level: {
           toString: function() { return "DEBUG"; }
