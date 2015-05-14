@@ -122,6 +122,32 @@ vows.describe('log4js gelfAppender').addBatch({
       }
     }
   },
+  'with a null message': {
+    topic: function() {
+      var setup = setupLogging();
+      var message;
+      setup.logger.info(message);
+      return setup;
+    },
+    'the dgram packet': {
+      topic: function(setup) {
+        return setup.dgram;
+      },
+      'should be sent': function(dgram) {
+        assert.equal(dgram.sent, true);
+      }
+    },
+    'the uncompressed packet': {
+      topic: function(setup) {
+        var message = JSON.parse(setup.compress.uncompressed);
+        return message;
+      },
+      'should be an empty message': function(message) {
+        assert.equal(message.level, 6); //INFO
+        assert.equal(message.short_message, '');
+      }
+    }
+  },
   'with a message longer than 8k': {
     topic: function() {
       var setup = setupLogging(undefined, undefined, 10240);
