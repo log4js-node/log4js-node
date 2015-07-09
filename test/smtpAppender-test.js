@@ -222,5 +222,61 @@ vows.describe('log4js smtpAppender').addBatch({
       assert.equal(cons.errors[0].msg, "log4js.smtpAppender - Error happened");
       assert.equal(cons.errors[0].value.message, 'oh noes');
     }
+  },
+  'transport full config': {
+    topic: function() {
+      var setup = setupLogging('transport full config', {
+          recipients: 'recipient@domain.com',
+          transport: {
+              plugin: 'sendmail',
+              options: {
+                  path: '/usr/sbin/sendmail'
+              }
+          }
+      });
+      setup.logger.info('Log event #1');
+      return setup;
+    },
+    'there should be one message only': function (result) {
+      assert.equal(result.results.length, 1);
+    },
+    'message should contain proper data': function (result) {
+      checkMessages(result);
+    }
+  },
+  'transport no-options config': {
+    topic: function() {
+      var setup = setupLogging('transport no-options config', {
+          recipients: 'recipient@domain.com',
+          transport: {
+              plugin: 'sendmail'
+          }
+      });
+      setup.logger.info('Log event #1');
+      return setup;
+    },
+    'there should be one message only': function (result) {
+      assert.equal(result.results.length, 1);
+    },
+    'message should contain proper data': function (result) {
+      checkMessages(result);
+    }
+  },
+  'transport no-plugin config': {
+    topic: function() {
+      var setup = setupLogging('transport no-plugin config', {
+          recipients: 'recipient@domain.com',
+          transport: {
+          }
+      });
+      setup.logger.info('Log event #1');
+      return setup;
+    },
+    'there should be one message only': function (result) {
+      assert.equal(result.results.length, 1);
+    },
+    'message should contain proper data': function (result) {
+      checkMessages(result);
+    }
   }
 }).export(module);
