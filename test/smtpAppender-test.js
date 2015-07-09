@@ -38,9 +38,14 @@ function setupLogging(category, options) {
     }
   };
 
+  var fakeTransportPlugin = function () {
+  };
+    
   var smtpModule = sandbox.require('../lib/appenders/smtp', {
 		requires: {
       'nodemailer': fakeMailer,
+      'nodemailer-sendmail-transport': fakeTransportPlugin,
+      'nodemailer-smtp-transport': fakeTransportPlugin,
       '../layouts': fakeLayouts
 		},
     globals: {
