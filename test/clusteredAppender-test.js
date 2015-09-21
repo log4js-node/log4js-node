@@ -12,17 +12,29 @@ vows.describe('log4js cluster appender').addBatch({
 
 			var registeredClusterEvents = [];
 			var loggingEvents = [];
+			var onChildProcessForked;
+			var onMasterReceiveChildMessage;
 			
-			// Fake cluster module, so no cluster listeners be really added 
+			// Fake cluster module, so no real cluster listeners be really added 
 			var fakeCluster = {
 			
 				on: function(event, callback) {
 					registeredClusterEvents.push(event);
+					onChildProcessForked = callback;
 				},
 				
 				isMaster: true,
 				isWorker: false,
 				
+			};
+			var fakeWorker = {
+				on: function(event, callback) {
+					onMasterReceiveChildMessage = callback;
+				},
+				process: {
+					pid: 123
+				},
+				id: 'workerid'
 			};
 		
 			var fakeActualAppender = function(loggingEvent) {
@@ -38,12 +50,21 @@ vows.describe('log4js cluster appender').addBatch({
 		
 			var masterAppender = appenderModule.appender({
 				actualAppenders: [fakeActualAppender, fakeActualAppender, fakeActualAppender],
-                                appenders: [{}, {category: "test"}, {category: "wovs"}]
+				appenders: [{}, {category: "test"}, {category: "wovs"}]
 			});
 
 			// Actual test - log message using masterAppender
 			masterAppender(new LoggingEvent('wovs', 'Info', ['masterAppender test']));
-			
+
+			// Simulate a 'fork' event to register the master's message handler on our fake worker.
+			onChildProcessForked(fakeWorker);
+			// Simulate a cluster message received by the masterAppender.
+			var simulatedLoggingEvent = new LoggingEvent('wovs', 'Error', ['message deserialization test', {stack: 'my wrapped stack'}]);
+			onMasterReceiveChildMessage({
+				type : '::log-message',
+				event : JSON.stringify(simulatedLoggingEvent)
+			});
+
 			var returnValue = {
 				registeredClusterEvents: registeredClusterEvents,
 				loggingEvents: loggingEvents,
@@ -57,9 +78,13 @@ vows.describe('log4js cluster appender').addBatch({
 		},
 		
 		"should log using actual appender": function(topic) {
-                        assert.equal(topic.loggingEvents.length, 2)
+			assert.equal(topic.loggingEvents.length, 4);
 			assert.equal(topic.loggingEvents[0].data[0], 'masterAppender test');
-                        assert.equal(topic.loggingEvents[1].data[0], 'masterAppender test');
+			assert.equal(topic.loggingEvents[1].data[0], 'masterAppender test');
+			assert.equal(topic.loggingEvents[2].data[0], 'message deserialization test');
+			assert.equal(topic.loggingEvents[2].data[1], 'my wrapped stack');
+			assert.equal(topic.loggingEvents[3].data[0], 'message deserialization test');
+			assert.equal(topic.loggingEvents[3].data[1], 'my wrapped stack');
 		},
 		
 	},
