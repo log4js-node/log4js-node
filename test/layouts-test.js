@@ -300,5 +300,19 @@ vows.describe('log4js layouts').addBatch({
       assert.ok(layouts.layout("coloured"));
       assert.ok(layouts.layout("pattern"));
     }
+  },
+  'add layout': {
+    topic: require('../lib/layouts'),
+    'should be able to add a layout': function(layouts) {
+      layouts.addLayout('test_layout', function(config){
+        assert.equal(config, 'test_config');
+        return function(logEvent) {
+          return "TEST LAYOUT >"+logEvent.data;
+        };
+      });
+      var serializer = layouts.layout('test_layout', 'test_config');
+      assert.ok(serializer);
+      assert.equal(serializer({data: "INPUT"}), "TEST LAYOUT >INPUT");
+    }
   }
 }).export(module);
