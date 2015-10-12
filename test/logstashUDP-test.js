@@ -42,7 +42,7 @@ function setupLogging(category, options) {
 vows.describe('logstashUDP appender').addBatch({
   'when logging with logstash via UDP': {
     topic: function() {
-      var setup = setupLogging('logstashUDP', {
+      var setup = setupLogging('myCategory', {
         "host": "127.0.0.1",
         "port": 10001,
         "type": "logstashUDP",
@@ -73,6 +73,7 @@ vows.describe('logstashUDP appender').addBatch({
       };
       assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
       assert.equal(json.message, 'Log event #1');
+      assert.equal(json.category, 'myCategory');
       // Assert timestamp, up to hours resolution.
       var date = new Date(json['@timestamp']);
       assert.equal(
