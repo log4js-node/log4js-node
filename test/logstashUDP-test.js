@@ -57,7 +57,11 @@ vows.describe('logstashUDP appender').addBatch({
           "pattern": "%m"
         }
       });
-      setup.logger.log('trace', 'Log event #1');
+      var extra = {
+          "extra-field1": "extra1",
+          "extra-field2": "extra2"
+      };
+      setup.logger.log('trace', 'Log event #1',extra);
       return setup;
     },
     'an UDP packet should be sent': function (topic) {
@@ -69,6 +73,8 @@ vows.describe('logstashUDP appender').addBatch({
       var fields = {
         field1: 'value1',
         field2: 'value2',
+        'extra-field1': 'extra1',
+        'extra-field2': 'extra2',
         level: 'TRACE'
       };
       assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
