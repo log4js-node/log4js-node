@@ -57,11 +57,7 @@ vows.describe('logstashUDP appender').addBatch({
           "pattern": "%m"
         }
       });
-      var extra = {
-          "extra-field1": "extra1",
-          "extra-field2": "extra2"
-      };
-      setup.logger.log('trace', 'Log event #1',extra);
+      setup.logger.log('trace', 'Log event #1');
       return setup;
     },
     'an UDP packet should be sent': function (topic) {
@@ -73,8 +69,6 @@ vows.describe('logstashUDP appender').addBatch({
       var fields = {
         field1: 'value1',
         field2: 'value2',
-        'extra-field1': 'extra1',
-        'extra-field2': 'extra2',
         level: 'TRACE'
       };
       assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
@@ -108,5 +102,26 @@ vows.describe('logstashUDP appender').addBatch({
       assert.equal(json.type, 'myLogger');
       assert.equal(JSON.stringify(json.fields), JSON.stringify({'level': 'TRACE'}));
     }
+  },
+
+  'when extra fields provided': {
+    topic: function() {
+      var setup = setupLogging('myLogger', {
+        "host": "127.0.0.1",
+        "port": 10001,
+        "type": "logstashUDP",
+        "category": "myLogger",
+        "layout": {
+          "type": "dummy"
+        }
+      });
+      setup.logger.log('trace', 'Log event #1', {'extra1': 'value1', 'extra2': 'value2'});
+      return setup;
+    },'they should be added to fields structure': function (topic) {
+      var json = JSON.parse(topic.results.buffer.toString());
+      var fields = {'extra1': 'value1', 'extra2': 'value2', 'level': 'TRACE'};
+      assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
+    }
   }
+
 }).export(module);
