@@ -290,13 +290,18 @@ vows.describe('log4js layouts').addBatch({
     '%x should output the string stored in tokens': function(args) {
       test(args, '%x', 'null');
     },
-    // Lee
-    '%C should output the fully-qualified class name': function(args) {
-      test(args, '%C', 'xxx');
-    }
-    '%l should output the line number': function(args) {
-      test(args, '%l', 'xxx');
-    }
+    // Lee: cannot test logger.callStack like this
+    // and mocking makes no sense, as it changes the
+    // size of the stack/call depth.
+    // '%C should output the fully-qualified class name': function(args) {
+    //   test(args, '%C', 'xxx');
+    // },
+    // '%l should output the line number': function(args) {
+    //   test(args, '%l', 'xxx');
+    // },
+    // '%f should output the file name': function(args) {
+    //   test(args, '%f', 'xxx');
+    // }
   },
   'layout makers': {
     topic: require('../lib/layouts'),
