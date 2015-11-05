@@ -289,6 +289,13 @@ vows.describe('log4js layouts').addBatch({
     },
     '%x should output the string stored in tokens': function(args) {
       test(args, '%x', 'null');
+    },
+    // Lee
+    '%C should output the fully-qualified class name': function(args) {
+      test(args, '%C', 'xxx');
+    }
+    '%l should output the line number': function(args) {
+      test(args, '%l', 'xxx');
     }
   },
   'layout makers': {
