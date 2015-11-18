@@ -2,6 +2,5 @@
 build
 node_modules
 .bob/
-test/streams/test-rolling-file-stream*
-test/streams/test-rolling-stream-with-existing-files*
+test/streams/test-rolling*
 .idea
