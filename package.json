@@ -22,7 +22,8 @@
     "node": ">=0.8"
   },
   "scripts": {
-    "test": "vows --spec"
+    "test": "vows --spec",
+    "lint": "jshint lib test"
   },
   "directories": {
     "test": "test",
@@ -35,9 +36,10 @@
     "underscore": "1.8.2"
   },
   "devDependencies": {
-    "vows": "0.7.0",
+    "jshint": "2.9.0",
     "sandboxed-module": "0.1.3",
-    "underscore": "1.2.1"
+    "underscore": "1.2.1",
+    "vows": "0.7.0"
   },
   "browser": {
     "os": false
