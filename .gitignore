@@ -2,5 +2,5 @@
 build
 node_modules
 .bob/
-test/streams/test-rolling*
+test/streams/test-*
 .idea
