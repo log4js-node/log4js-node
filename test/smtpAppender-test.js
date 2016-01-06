@@ -284,5 +284,32 @@ vows.describe('log4js smtpAppender').addBatch({
         'message should contain proper data': function (result) {
             checkMessages(result);
         }
+    },
+    'attachment config': {
+        topic: function () {
+            var setup = setupLogging('attachment config', {
+                recipients: 'recipient@domain.com',
+                attachment: {
+                    enable: true
+                },
+                SMTP: {
+                    port: 25,
+                    auth: {
+                        user: 'user@domain.com'
+                    }
+                }
+            });
+            setup.logger.info('Log event #1');
+            return setup;
+        },
+        'message should contain proper data': function (result) {
+            assert.equal(result.results.length, 1);
+            assert.equal(result.results[0].attachments.length, 1);
+            var attachment = result.results[0].attachments[0];
+            assert.equal(result.results[0].text, "See logs as attachment");
+            assert.equal(attachment.filename, "default.log");
+            assert.equal(attachment.contentType, "text/x-log");
+            assert.ok(new RegExp('.+Log event #' + 1 + '\n$').test(attachment.content));
+        }
     }
 }).export(module);
