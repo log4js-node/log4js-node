@@ -29,7 +29,6 @@
     "lib": "lib"
   },
   "dependencies": {
-    "async": "~0.2.0",
     "readable-stream": "~1.0.2",
     "semver": "~4.3.3"
   },

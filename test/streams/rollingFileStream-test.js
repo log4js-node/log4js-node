@@ -1,6 +1,5 @@
 "use strict";
 var vows = require('vows')
-, async = require('async')
 , assert = require('assert')
 , events = require('events')
 , fs = require('fs')
@@ -119,19 +118,11 @@ vows.describe('RollingFileStream').addBatch({
       remove(__dirname + "/test-rolling-file-stream-write-more.1");
       var that = this
       , stream = new RollingFileStream(
-        __dirname + "/test-rolling-file-stream-write-more", 
+        __dirname + "/test-rolling-file-stream-write-more",
         45
       );
-      async.each(
-        [0, 1, 2, 3, 4, 5, 6], 
-        function(i, cb) {
-          stream.write(i +".cheese\n", "utf8", cb);
-        }, 
-        function() {
-          stream.end();
-          that.callback();
-        }
-      );
+
+      write7Cheese(that, stream);
     },
     'the number of files': {
       topic: function() {
@@ -183,16 +174,8 @@ vows.describe('RollingFileStream').addBatch({
         45,
         5
       );
-      async.each(
-        [0, 1, 2, 3, 4, 5, 6], 
-        function(i, cb) {
-          stream.write(i +".cheese\n", "utf8", cb);
-        }, 
-        function() {
-          stream.end();
-          that.callback();
-        }
-      );
+
+      write7Cheese(that, stream);
     },
     'the files': {
       topic: function() {
@@ -206,5 +189,19 @@ vows.describe('RollingFileStream').addBatch({
         assert.include(files, 'test-rolling-stream-with-existing-files.20');
       }
     }
-  }  
+  }
 }).exportTo(module);
+
+function write7Cheese(that, stream) {
+  var streamed = 0;
+  [0, 1, 2, 3, 4, 5, 6].forEach(function(i) {
+    stream.write(i +".cheese\n", "utf8", function(e) {
+      streamed++;
+      if (e) { return that.callback(e); }
+      if (streamed === 7) {
+        stream.end();
+        that.callback();
+      }
+    });
+  });
+}
