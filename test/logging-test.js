@@ -150,6 +150,7 @@ vows.describe('log4js').addBatch({
 
   'when shutdown is called': {
     topic: function() {
+      var callback = this.callback;
       var events = {
        appenderShutdownCalled: false,
        shutdownCallbackCalled: false
@@ -173,9 +174,6 @@ vows.describe('log4js').addBatch({
           }
         }
       ),
-      shutdownCallback = function() {
-        events.shutdownCallbackCalled = true;
-      },
       config = { appenders:
                  [ { "type" : "file",
                      "filename" : "cheesy-wotsits.log",
@@ -186,11 +184,13 @@ vows.describe('log4js').addBatch({
                };
 
       log4js.configure(config);
-      log4js.shutdown(shutdownCallback);
-      // Re-enable log writing so other tests that use logger are not
-      // affected.
-      require('../lib/logger').enableAllLogWrites();
-      return events;
+      log4js.shutdown(function shutdownCallback() {
+         events.shutdownCallbackCalled = true;
+         // Re-enable log writing so other tests that use logger are not
+         // affected.
+         require('../lib/logger').enableAllLogWrites();
+         callback(null, events);
+      });
     },
 
     'should invoke appender shutdowns': function(events) {
