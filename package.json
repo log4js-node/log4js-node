@@ -29,6 +29,7 @@
     "lib": "lib"
   },
   "dependencies": {
+    "mailgun-js": "^0.7.7",
     "readable-stream": "~1.0.2",
     "semver": "~4.3.3"
   },
