@@ -29,8 +29,8 @@
     "lib": "lib"
   },
   "dependencies": {
-    "readable-stream": "~1.0.2",
-    "semver": "~4.3.3"
+    "readable-stream": "~2.0.5",
+    "semver": "~5.1.0"
   },
   "devDependencies": {
     "sandboxed-module": "0.1.3",
