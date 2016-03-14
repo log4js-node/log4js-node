@@ -90,15 +90,9 @@ configuration file (`log4js.configure('path/to/file.json')`), or a configuration
 configuration file location may also be specified via the environment variable 
 LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`). 
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
-By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels to occur without restarting the application.
+You can configure log4js to check for configuration file changes every 60 seconds, and if changed, reload. This allows changes to logging levels to occur without restarting the application.
 
-To turn off configuration file change checking, configure with:
-
-```javascript
-var log4js = require('log4js');
-log4js.configure('my_log4js_configuration.json', {});
-```
-To specify a different period:
+To turn it on and specify a period:
 
 ```javascript
 log4js.configure('file.json', { reloadSecs: 300 });
