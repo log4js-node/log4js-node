@@ -31,7 +31,6 @@
   "dependencies": {
     "readable-stream": "~1.0.2",
     "semver": "~4.3.3",
-    "slack-node": "^0.2.0"
   },
   "devDependencies": {
     "sandboxed-module": "0.1.3",
