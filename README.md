@@ -7,7 +7,7 @@ framework to work with [node](http://nodejs.org). I've mainly stripped out the b
 
 Out of the box it supports the following features:
 
-* coloured console logging
+* coloured console logging to stdout or stderr
 * replacement of node's console.log functions (optional)
 * file appender, with log rolling based on file size
 * SMTP appender
