@@ -1,6 +1,4 @@
-//Note that hipchat appender needs hipchat-client to work.
-//If you haven't got hipchat-client installed, you'll get cryptic
-//"cannot find module" errors when using the hipchat appender
+//Note that slack appender needs slack-node package to work.
 var log4js = require('../lib/log4js');
 
 log4js.configure({
