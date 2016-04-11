@@ -27,13 +27,13 @@ function now() {
 vows.describe('DateRollingFileStreamSync').addBatch({
   'arguments': {
     topic: new DateRollingFileStreamSync(
-      __dirname + '/test-date-rolling-file-stream-1', 
+      __dirname + '/test-date-rolling-file-sync-stream-1', 
       'yyyy-mm-dd.hh'
     ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-1'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-1'),
     
     'should take a filename and a pattern and return a WritableStream': function(stream) {
-      assert.equal(stream.filename, __dirname + '/test-date-rolling-file-stream-1');
+      assert.equal(stream.filename, __dirname + '/test-date-rolling-file-sync-stream-1');
       assert.equal(stream.pattern, 'yyyy-mm-dd.hh');
       assert.instanceOf(stream, streams.Writable);
     },
@@ -46,8 +46,8 @@ vows.describe('DateRollingFileStreamSync').addBatch({
   },
   
   'default arguments': {
-    topic: new DateRollingFileStreamSync(__dirname + '/test-date-rolling-file-stream-2'),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-2'),
+    topic: new DateRollingFileStreamSync(__dirname + '/test-date-rolling-file-sync-stream-2'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-2'),
     
     'pattern should be .yyyy-MM-dd': function(stream) {
       assert.equal(stream.pattern, '.yyyy-MM-dd');
@@ -56,11 +56,11 @@ vows.describe('DateRollingFileStreamSync').addBatch({
 
   'with stream arguments': {
     topic: new DateRollingFileStreamSync(
-      __dirname + '/test-date-rolling-file-stream-3', 
+      __dirname + '/test-date-rolling-file-sync-stream-3', 
       'yyyy-MM-dd', 
       { mode: parseInt('0666', 8) }
     ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-3'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-3'),
     
     'should pass them to the underlying stream': function(stream) {
       assert.equal(stream.theStream.mode, parseInt('0666', 8));
@@ -69,10 +69,10 @@ vows.describe('DateRollingFileStreamSync').addBatch({
 
   'with stream arguments but no pattern': {
     topic: new DateRollingFileStreamSync(
-      __dirname + '/test-date-rolling-file-stream-4', 
+      __dirname + '/test-date-rolling-file-sync-stream-4', 
       { mode: parseInt('0666', 8) }
     ),
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-4'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-4'),
     
     'should pass them to the underlying stream': function(stream) {
       assert.equal(stream.theStream.mode, parseInt('0666', 8));
@@ -86,7 +86,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
     topic: function() {
       var that = this,
       stream = new DateRollingFileStreamSync(
-        __dirname + '/test-date-rolling-file-stream-5', '.yyyy-MM-dd', 
+        __dirname + '/test-date-rolling-file-sync-stream-5', '.yyyy-MM-dd', 
         null, 
         now
       );
@@ -94,11 +94,11 @@ vows.describe('DateRollingFileStreamSync').addBatch({
         that.callback(null, stream);
       });
     },
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-5'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-5'),
     
     'should create a file with the base name': {
       topic: function(stream) {
-        fs.readFile(__dirname + '/test-date-rolling-file-stream-5', this.callback);
+        fs.readFile(__dirname + '/test-date-rolling-file-sync-stream-5', this.callback);
       },
       'file should contain first message': function(result) {
         assert.equal(result.toString(), "First message\n");
@@ -110,7 +110,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
         testTime = new Date(2012, 8, 13, 0, 10, 12);
         stream.write("Second message\n", 'utf8', this.callback);
       },
-      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-5.2012-09-12'),
+      teardown: cleanUp(__dirname + '/test-date-rolling-file-sync-stream-5.2012-09-12'),
 
       
       'the number of files': {
@@ -121,7 +121,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
           assert.equal(
             files.filter(
               function(file) { 
-                return file.indexOf('test-date-rolling-file-stream-5') > -1; 
+                return file.indexOf('test-date-rolling-file-sync-stream-5') > -1; 
               }
             ).length, 
             2
@@ -131,7 +131,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
       
       'the file without a date': {
         topic: function() {
-          fs.readFile(__dirname + '/test-date-rolling-file-stream-5', this.callback);
+          fs.readFile(__dirname + '/test-date-rolling-file-sync-stream-5', this.callback);
         },
         'should contain the second message': function(contents) {
           assert.equal(contents.toString(), "Second message\n");
@@ -140,7 +140,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
       
       'the file with the date': {
         topic: function() {
-          fs.readFile(__dirname + '/test-date-rolling-file-stream-5.2012-09-12', this.callback);
+          fs.readFile(__dirname + '/test-date-rolling-file-sync-stream-5.2012-09-12', this.callback);
         },
         'should contain the first message': function(contents) {
           assert.equal(contents.toString(), "First message\n");
@@ -154,7 +154,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
       var that = this,
       testTime = new Date(2012, 8, 12, 0, 10, 12),
       stream = new DateRollingFileStreamSync(
-        __dirname + '/test-date-rolling-file-stream-pattern', 
+        __dirname + '/test-date-rolling-file-stream-sync-pattern', 
         '.yyyy-MM-dd', 
         {alwaysIncludePattern: true}, 
         now
@@ -163,11 +163,11 @@ vows.describe('DateRollingFileStreamSync').addBatch({
         that.callback(null, stream);
       });
     },
-    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12'),
+    teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-sync-pattern.2012-09-12'),
     
     'should create a file with the pattern set': {
       topic: function(stream) {
-        fs.readFile(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', this.callback);
+        fs.readFile(__dirname + '/test-date-rolling-file-stream-sync-pattern.2012-09-12', this.callback);
       },
       'file should contain first message': function(result) {
         assert.equal(result.toString(), "First message\n");
@@ -179,7 +179,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
         testTime = new Date(2012, 8, 13, 0, 10, 12);
         stream.write("Second message\n", 'utf8', this.callback);
       },
-      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-pattern.2012-09-13'),
+      teardown: cleanUp(__dirname + '/test-date-rolling-file-stream-sync-pattern.2012-09-13'),
       
       
       'the number of files': {
@@ -190,7 +190,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
           assert.equal(
             files.filter(
               function(file) { 
-                return file.indexOf('test-date-rolling-file-stream-pattern') > -1; 
+                return file.indexOf('test-date-rolling-file-stream-sync-pattern') > -1; 
               }
             ).length, 
             2
@@ -201,7 +201,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
       'the file with the later date': {
         topic: function() {
           fs.readFile(
-            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-13', 
+            __dirname + '/test-date-rolling-file-stream-sync-pattern.2012-09-13', 
             this.callback
           );
         },
@@ -213,7 +213,7 @@ vows.describe('DateRollingFileStreamSync').addBatch({
       'the file with the date': {
         topic: function() {
           fs.readFile(
-            __dirname + '/test-date-rolling-file-stream-pattern.2012-09-12', 
+            __dirname + '/test-date-rolling-file-stream-sync-pattern.2012-09-12', 
             this.callback
           );
         },
