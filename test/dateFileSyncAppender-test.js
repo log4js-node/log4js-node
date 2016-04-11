@@ -153,7 +153,7 @@ vows.describe('../lib/appenders/dateFileSync').addBatch({
             {
               "category": "tests", 
               "type": "dateFileSync", 
-              "filename": "test/date-file-sync-test",
+              "filename": "test/date-file-test-sync",
               "pattern": "-from-MM-dd.log",
               "alwaysIncludePattern": true,
               "layout": { 
