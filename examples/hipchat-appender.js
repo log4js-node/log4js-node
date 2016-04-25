@@ -1,18 +1,20 @@
-//Note that hipchat appender needs hipchat-client to work.
-//If you haven't got hipchat-client installed, you'll get cryptic
-//"cannot find module" errors when using the hipchat appender
+
+/**
+ * !!! The hipchat-appender requires `hipchat-notifier` from npm
+ *   - e.g. list as a dependency in your application's package.json
+ */
+
 var log4js = require('../lib/log4js');
 
 log4js.configure({
   "appenders": [
     {
       "type" : "hipchat",
-      "api_key": 'Hipchat_API_V1_Key',
-      "room_id": "Room_ID",
-      "from": "Tester",
-      "format": "text",
-      "notify": "NOTIFY",
-      "category" : "hipchat"
+      "hipchat_token": "< User token with Notification Privileges >",
+      "hipchat_room": "< Room ID or Name >",
+      // optionl
+      "hipchat_from": "[ additional from label ]",
+      "hipchat_notify": "[ notify boolean to bug people ]"
     }
   ]
 });
