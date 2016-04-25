@@ -1,4 +1,3 @@
-
 /**
  * !!! The hipchat-appender requires `hipchat-notifier` from npm
  *   - e.g. list as a dependency in your application's package.json
@@ -12,9 +11,12 @@ log4js.configure({
       "type" : "hipchat",
       "hipchat_token": "< User token with Notification Privileges >",
       "hipchat_room": "< Room ID or Name >",
-      // optionl
+      // optional
       "hipchat_from": "[ additional from label ]",
-      "hipchat_notify": "[ notify boolean to bug people ]"
+      "hipchat_notify": "[ notify boolean to bug people ]",
+      "hipchat_response_callback": function(err, response, body){
+        console.log("overridden log4js hipchat-appender response callback");
+      }
     }
   ]
 });
