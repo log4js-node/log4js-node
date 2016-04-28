@@ -10,18 +10,20 @@ function setupLogging(category, options) {
     var mailgunCredentials = {
         apiKey: options.apikey,
         domain: options.domain
-    }
+    };
 
-    var fakeMailgun = {
-        messages: function () {
-            return {
-                config: options,
-                send: function (data, callback) {
-                    msgs.push(data);
-                    callback(false, {status:"OK"});
-                }
-            };
-        }
+    var fakeMailgun = function (conf) {
+        return {
+            messages: function () {
+                return {
+                    config: options,
+                    send: function (data, callback) {
+                        msgs.push(data);
+                        callback(false, {status:"OK"});
+                    }
+                };
+            }
+        };
     };
 
     var fakeLayouts = {
@@ -129,31 +131,30 @@ vows.describe('log4js mailgunAppender').addBatch({
         }
     },
     'error when sending email': {
-       topic: function () {
-           var setup = setupLogging('separate email for each event', {
-               apikey: 'APIKEY',
-               domain: 'DOMAIN',
-               from: 'sender@domain.com',
-               to: 'recepient@domain.com',
-               subject: 'This is subject'
-           });
+        topic: function () {
+            var setup = setupLogging('separate email for each event', {
+                apikey: 'APIKEY',
+                domain: 'DOMAIN',
+                from: 'sender@domain.com',
+                to: 'recepient@domain.com',
+                subject: 'This is subject'
+            });
 
-           setup.mailer.messages = function () {
-                   return {
-                       send: function (msg, cb) {
-                           cb({message: "oh noes"});
-                       }
-                   };
-           }
+            setup.mailer.messages = function () {
+                    return {
+                        send: function (msg, cb) {
+                            cb({msg: "log4js.mailgunAppender - Error happened"}, null);
+                        }
+                    };
+            };
 
-           setup.logger.info("This will break");
-           return setup.console;
-       },
-       'should be logged to console': function (cons) {
-           assert.equal(cons.errors.length, 1);
-           assert.equal(cons.errors[0].msg, 'log4js.mailgunAppender - Error happened');
-           assert.equal(cons.errors[0].value.message, 'oh noes');
-       }
+            setup.logger.info("This will break");
+            return setup.console;
+        },
+        'should be logged to console': function (cons) {
+            assert.equal(cons.errors.length, 1);
+            assert.equal(cons.errors[0].msg, 'log4js.mailgunAppender - Error happened');
+        }
     },
     'separate email for each event': {
         topic: function () {
