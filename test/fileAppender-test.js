@@ -24,15 +24,15 @@ vows.describe('log4js fileAppender').addBatch({
       var listenersCount = process.listeners('exit').length
       , logger = log4js.getLogger('default-settings')
       , count = 5, logfile;
-      
+
       while (count--) {
         logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
         log4js.addAppender(require('../lib/appenders/file').appender(logfile), 'default-settings');
       }
-      
+
       return listenersCount;
     },
-    
+
     'does not add more than one `exit` listeners': function (initialCount) {
       assert.ok(process.listeners('exit').length <= initialCount + 1);
     }
@@ -56,7 +56,7 @@ vows.describe('log4js fileAppender').addBatch({
             '../streams': {
               RollingFileStream: function(filename) {
                 openedFiles.push(filename);
-                
+
                 this.end = function() {
                   openedFiles.shift();
                 };
@@ -64,7 +64,7 @@ vows.describe('log4js fileAppender').addBatch({
                 this.on = function() {};
               }
             }
-          }   
+          }
         }
       );
       for (var i=0; i < 5; i += 1) {
@@ -78,7 +78,7 @@ vows.describe('log4js fileAppender').addBatch({
       assert.isEmpty(openedFiles);
     }
   },
-  
+
   'with default fileAppender settings': {
     topic: function() {
       var that = this
@@ -88,9 +88,9 @@ vows.describe('log4js fileAppender').addBatch({
 
       log4js.clearAppenders();
       log4js.addAppender(require('../lib/appenders/file').appender(testFile), 'default-settings');
-      
+
       logger.info("This should be in the file.");
-      
+
       setTimeout(function() {
         fs.readFile(testFile, "utf8", that.callback);
       }, 100);
@@ -100,7 +100,7 @@ vows.describe('log4js fileAppender').addBatch({
     },
     'log messages should be in the basic layout format': function(err, fileContents) {
       assert.match(
-        fileContents, 
+        fileContents,
           /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] default-settings - /
       );
     }
@@ -112,59 +112,78 @@ vows.describe('log4js fileAppender').addBatch({
       log4js.clearAppenders();
 
       function addAppender(cat) {
-        var testFile = path.join(__dirname, '/fa-subcategories-test-'+cat.join('-').replace(/\./g, "_")+'.log');
+        var testFile = path.join(
+          __dirname,
+          '/fa-subcategories-test-'+cat.join('-').replace(/\./g, "_")+'.log'
+        );
         remove(testFile);
         log4js.addAppender(require('../lib/appenders/file').appender(testFile), cat);
         return testFile;
       }
 
       var file_sub1 = addAppender([ 'sub1']);
-      
+
       var file_sub1_sub12$sub1_sub13 = addAppender([ 'sub1.sub12', 'sub1.sub13' ]);
-      
+
       var file_sub1_sub12 = addAppender([ 'sub1.sub12' ]);
 
-      
+
       var logger_sub1_sub12_sub123 = log4js.getLogger('sub1.sub12.sub123');
-      
+
       var logger_sub1_sub13_sub133 = log4js.getLogger('sub1.sub13.sub133');
 
       var logger_sub1_sub14 = log4js.getLogger('sub1.sub14');
 
       var logger_sub2 = log4js.getLogger('sub2');
-      
+
 
       logger_sub1_sub12_sub123.info('sub1_sub12_sub123');
-      
+
       logger_sub1_sub13_sub133.info('sub1_sub13_sub133');
 
       logger_sub1_sub14.info('sub1_sub14');
 
       logger_sub2.info('sub2');
-           
-      
+
+
       setTimeout(function() {
         that.callback(null, {
           file_sub1: fs.readFileSync(file_sub1).toString(),
           file_sub1_sub12$sub1_sub13: fs.readFileSync(file_sub1_sub12$sub1_sub13).toString(),
           file_sub1_sub12: fs.readFileSync(file_sub1_sub12).toString()
-        });        
+        });
       }, 3000);
     },
     'check file contents': function (err, fileContents) {
 
       // everything but category 'sub2'
-      assert.match(fileContents.file_sub1, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/);
-      assert.ok(fileContents.file_sub1.match(/sub123/) && fileContents.file_sub1.match(/sub133/) && fileContents.file_sub1.match(/sub14/));
+      assert.match(
+        fileContents.file_sub1,
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/
+      );
+      assert.ok(
+        fileContents.file_sub1.match(/sub123/) &&
+        fileContents.file_sub1.match(/sub133/) &&
+        fileContents.file_sub1.match(/sub14/)
+      );
       assert.ok(!fileContents.file_sub1.match(/sub2/));
 
       // only catgories starting with 'sub1.sub12' and 'sub1.sub13'
-      assert.match(fileContents.file_sub1_sub12$sub1_sub13, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/);
-      assert.ok(fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) && fileContents.file_sub1_sub12$sub1_sub13.match(/sub133/));
+      assert.match(
+        fileContents.file_sub1_sub12$sub1_sub13,
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/
+      );
+      assert.ok(
+        fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) &&
+        fileContents.file_sub1_sub12$sub1_sub13.match(/sub133/)
+      );
       assert.ok(!fileContents.file_sub1_sub12$sub1_sub13.match(/sub14|sub2/));
 
       // only catgories starting with 'sub1.sub12'
-      assert.match(fileContents.file_sub1_sub12, /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/);
+      assert.match(
+        fileContents.file_sub1_sub12,
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/
+      );
       assert.ok(!fileContents.file_sub1_sub12.match(/sub14|sub2|sub13/));
 
     }
@@ -179,7 +198,7 @@ vows.describe('log4js fileAppender').addBatch({
       //log file of 100 bytes maximum, no backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 100, 0), 
+        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 100, 0),
         'max-file-size'
       );
       logger.info("This is the first log message.");
@@ -214,11 +233,11 @@ vows.describe('log4js fileAppender').addBatch({
       remove(testFile);
       remove(testFile+'.1');
       remove(testFile+'.2');
-      
+
       //log file of 50 bytes maximum, 2 backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2), 
+        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2),
         'max-file-size-backups'
       );
       logger.info("This is the first log message.");
@@ -228,11 +247,11 @@ vows.describe('log4js fileAppender').addBatch({
       var that = this;
       //give the system a chance to open the stream
       setTimeout(function() {
-        fs.readdir(__dirname, function(err, files) { 
-          if (files) { 
-            that.callback(null, files.sort()); 
-          } else { 
-            that.callback(err, files); 
+        fs.readdir(__dirname, function(err, files) {
+          if (files) {
+            that.callback(null, files.sort());
+          } else {
+            that.callback(err, files);
           }
         });
       }, 200);
@@ -249,8 +268,8 @@ vows.describe('log4js fileAppender').addBatch({
       },
       'should be named in sequence': function (files) {
         assert.deepEqual(files, [
-          'fa-maxFileSize-with-backups-test.log', 
-          'fa-maxFileSize-with-backups-test.log.1', 
+          'fa-maxFileSize-with-backups-test.log',
+          'fa-maxFileSize-with-backups-test.log.1',
           'fa-maxFileSize-with-backups-test.log.2'
         ]);
       },
@@ -287,11 +306,13 @@ vows.describe('log4js fileAppender').addBatch({
       remove(testFile);
       remove(testFile+'.1.gz');
       remove(testFile+'.2.gz');
-      
+
       //log file of 50 bytes maximum, 2 backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2, true), 
+        require('../lib/appenders/file').appender(
+          testFile, log4js.layouts.basicLayout, 50, 2, true
+        ),
         'max-file-size-backups'
       );
       logger.info("This is the first log message.");
@@ -301,11 +322,11 @@ vows.describe('log4js fileAppender').addBatch({
       var that = this;
       //give the system a chance to open the stream
       setTimeout(function() {
-        fs.readdir(__dirname, function(err, files) { 
-          if (files) { 
-            that.callback(null, files.sort()); 
-          } else { 
-            that.callback(err, files); 
+        fs.readdir(__dirname, function(err, files) {
+          if (files) {
+            that.callback(null, files.sort());
+          } else {
+            that.callback(err, files);
           }
         });
       }, 1000);
@@ -313,7 +334,9 @@ vows.describe('log4js fileAppender').addBatch({
     'the log files': {
       topic: function(files) {
         var logFiles = files.filter(
-          function(file) { return file.indexOf('fa-maxFileSize-with-backups-compressed-test.log') > -1; }
+          function(file) {
+            return file.indexOf('fa-maxFileSize-with-backups-compressed-test.log') > -1;
+          }
         );
         return logFiles;
       },
@@ -322,8 +345,8 @@ vows.describe('log4js fileAppender').addBatch({
       },
       'should be named in sequence': function (files) {
         assert.deepEqual(files, [
-          'fa-maxFileSize-with-backups-compressed-test.log', 
-          'fa-maxFileSize-with-backups-compressed-test.log.1.gz', 
+          'fa-maxFileSize-with-backups-compressed-test.log',
+          'fa-maxFileSize-with-backups-compressed-test.log.1.gz',
           'fa-maxFileSize-with-backups-compressed-test.log.2.gz'
         ]);
       },
@@ -365,7 +388,7 @@ vows.describe('log4js fileAppender').addBatch({
         logger = log4js.getLogger('tests');
         logger.info('this should not be written to the file');
         logger.warn('this should be written to the file');
-        
+
         fs.readFile('tmp-tests.log', 'utf8', this.callback);
       },
       'should load appender configuration from a json file': function (err, contents) {
@@ -392,7 +415,7 @@ vows.describe('log4js fileAppender').addBatch({
           requires: {
             '../streams': {
               RollingFileStream: function(filename) {
-                
+
                 this.end = function() {};
                 this.on = function(evt, cb) {
                   if (evt === 'error') {
@@ -401,7 +424,7 @@ vows.describe('log4js fileAppender').addBatch({
                 };
               }
             }
-          }   
+          }
         }
       );
       fileAppender.appender('test1.log', null, 100);

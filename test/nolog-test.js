@@ -23,7 +23,7 @@ function MockLogger() {
 }
 
 function MockRequest(remoteAddr, method, originalUrl) {
-  
+
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.method = method;
@@ -70,7 +70,7 @@ vows.describe('log4js connect logger').addBatch({
           setTimeout(function() {
               cb(null, d.ml.messages);
           },10);
-        }, 
+        },
         'check message': function(messages){
           assert.isArray(messages);
           assert.equal(messages.length, 1);
@@ -93,7 +93,7 @@ vows.describe('log4js connect logger').addBatch({
           setTimeout(function() {
               cb(null, d.ml.messages);
           },10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -107,7 +107,7 @@ vows.describe('log4js connect logger').addBatch({
         var cl = clm.connectLogger(ml, {nolog: "\\.gif|\\.jpe?g"});
         return {cl: cl, ml: ml};
       },
-      
+
       'check unmatch url request (png)': {
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
@@ -115,10 +115,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages){
           assert.isArray(messages);
           assert.equal(messages.length, 1);
@@ -138,10 +138,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -154,10 +154,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -170,7 +170,7 @@ vows.describe('log4js connect logger').addBatch({
         var cl = clm.connectLogger(ml, {nolog: ["\\.gif", "\\.jpe?g"]});
         return {cl: cl, ml: ml};
       },
-      
+
       'check unmatch url request (png)': {
         topic: function(d){
           var req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
@@ -178,10 +178,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages){
           assert.isArray(messages);
           assert.equal(messages.length, 1);
@@ -201,10 +201,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -218,10 +218,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -242,10 +242,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages){
           assert.isArray(messages);
           assert.equal(messages.length, 1);
@@ -265,10 +265,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages);
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);
@@ -282,10 +282,10 @@ vows.describe('log4js connect logger').addBatch({
           var cb  = this.callback;
           d.cl(req, res, function() { });
           res.end('chunk', 'encoding');
-          setTimeout(function() { 
-            cb(null, d.ml.messages) 
+          setTimeout(function() {
+            cb(null, d.ml.messages); 
           }, 10);
-        }, 
+        },
         'check message': function(messages) {
           assert.isArray(messages);
           assert.equal(messages.length, 0);

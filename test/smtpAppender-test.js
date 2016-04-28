@@ -196,7 +196,10 @@ vows.describe('log4js smtpAppender').addBatch({
         'messages should contain proper data': function (result) {
             assert.equal(result.results[0].to, 'recipient@domain.com');
             assert.equal(result.results[0].subject, 'Log event #1');
-            assert.equal(result.results[0].text.match(new RegExp('.+Log event #[1-2]$', 'gm')).length, 2);
+            assert.equal(
+              result.results[0].text.match(new RegExp('.+Log event #[1-2]$', 'gm')).length,
+              2
+            );
             assert.equal(result.results[1].to, 'recipient@domain.com');
             assert.equal(result.results[1].subject, 'Log event #3');
             assert.ok(new RegExp('.+Log event #3\n$').test(result.results[1].text));

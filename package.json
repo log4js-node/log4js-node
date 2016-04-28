@@ -22,7 +22,7 @@
     "node": ">=0.8"
   },
   "scripts": {
-    "test": "vows --spec"
+    "test": "vows"
   },
   "directories": {
     "test": "test",

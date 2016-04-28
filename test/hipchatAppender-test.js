@@ -28,7 +28,7 @@ function setupLogging(category, options) {
                         }
                     }
                 }
-            }
+            };
         }
 
         return constructor(key);
@@ -179,4 +179,3 @@ vows.describe('log4js hipchatAppender').addBatch({
         }
     }
 }).export(module);
-

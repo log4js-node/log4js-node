@@ -253,9 +253,13 @@ vows.describe('log4js connect logger').addBatch({
         var ml = new MockLogger();
         var cb = this.callback;
         ml.level = levels.INFO;
-        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :custom_string', tokens: [{
-          token: ':custom_string', replacement: 'fooBAR'
-        }] } );
+        var cl = clm.connectLogger(ml, {
+          level: levels.INFO,
+          format: ':method :url :custom_string',
+          tokens: [{
+            token: ':custom_string', replacement: 'fooBAR'
+          }]
+        });
         request(cl, 'GET', 'http://url', 200);
         setTimeout(function() {
           cb(null, ml.messages);
@@ -275,9 +279,13 @@ vows.describe('log4js connect logger').addBatch({
         var ml = new MockLogger();
         var cb = this.callback;
         ml.level = levels.INFO;
-        var cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url :date', tokens: [{
-          token: ':date', replacement: "20150310"
-        }] } );
+        var cl = clm.connectLogger(ml, {
+          level: levels.INFO,
+          format: ':method :url :date',
+          tokens: [{
+            token: ':date', replacement: "20150310"
+          }]
+        });
         request(cl, 'GET', 'http://url', 200);
         setTimeout(function() {
           cb(null, ml.messages);

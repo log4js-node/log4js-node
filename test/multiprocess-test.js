@@ -66,7 +66,7 @@ vows.describe('Multiprocess Appender').addBatch({
           }
         }
       ).appender({ mode: 'worker', loggerPort: 1234, loggerHost: 'pants' });
-      
+
       //don't need a proper log event for the worker tests
       appender('before connect');
       fakeNet.cbs.connect();
@@ -76,7 +76,7 @@ vows.describe('Multiprocess Appender').addBatch({
       fakeNet.cbs.connect();
       appender('after error, after connect');
 	  appender(new Error('Error test'));
-      
+
       return fakeNet;
     },
     'should open a socket to the loggerPort and loggerHost': function(net) {
@@ -101,10 +101,16 @@ vows.describe('Multiprocess Appender').addBatch({
       assert.equal(net.createConnectionCalled, 2);
     },
     'should serialize an Error correctly': function(net) {
-      assert(JSON.parse(net.data[8]).stack, "Expected:\n\n" + net.data[8] + "\n\n to have a 'stack' property");
+      assert(
+        JSON.parse(net.data[8]).stack,
+        "Expected:\n\n" + net.data[8] + "\n\n to have a 'stack' property"
+      );
       var actual = JSON.parse(net.data[8]).stack;
       var expectedRegex = /^Error: Error test/;
-      assert(actual.match(expectedRegex), "Expected: \n\n " + actual + "\n\n to match " + expectedRegex);
+      assert(
+        actual.match(expectedRegex),
+        "Expected: \n\n " + actual + "\n\n to match " + expectedRegex
+      );
 
     }
   },
@@ -119,7 +125,7 @@ vows.describe('Multiprocess Appender').addBatch({
           }
         }
       ).appender({ mode: 'worker' });
-      
+
       //don't need a proper log event for the worker tests
       appender('before connect');
       fakeNet.cbs.connect();
@@ -130,7 +136,7 @@ vows.describe('Multiprocess Appender').addBatch({
       appender('after close, before connect');
       fakeNet.cbs.connect();
       appender('after close, after connect');
-      
+
       return fakeNet;
     },
     'should attempt to re-open the socket': function(net) {
@@ -154,7 +160,7 @@ vows.describe('Multiprocess Appender').addBatch({
           }
         }
       ).appender({ mode: 'worker' });
-      
+
       return fakeNet;
     },
     'should open a socket to localhost:5000': function(net) {
@@ -177,9 +183,9 @@ vows.describe('Multiprocess Appender').addBatch({
                    loggerPort: 1234,
                    actualAppender: fakeNet.fakeAppender.bind(fakeNet)
                  });
-      
+
       appender('this should be sent to the actual appender directly');
-      
+
       return fakeNet;
     },
     'should listen for log messages on loggerPort and loggerHost': function(net) {
@@ -195,7 +201,7 @@ vows.describe('Multiprocess Appender').addBatch({
           { level: { level: 10000, levelStr: 'DEBUG' }
             , data: ['some debug']}
         ) + '__LOG4JS__';
-        
+
         net.cbs.data(
           JSON.stringify(
             { level: { level: 40000, levelStr: 'ERROR' }
@@ -253,7 +259,7 @@ vows.describe('Multiprocess Appender').addBatch({
           }
         }
       ).appender({ mode: 'master' });
-      
+
       return fakeNet;
     },
     'should listen for log messages on localhost:5000': function(net) {
@@ -296,7 +302,7 @@ vows.describe('Multiprocess Appender').addBatch({
       );
 
       return results;
-        
+
     },
     'should load underlying appender for master': function(results) {
       assert.equal(results.appenderLoaded, 'madeupappender');

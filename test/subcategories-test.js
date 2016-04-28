@@ -14,9 +14,9 @@ vows.describe('subcategories').addBatch({
             "sub1": "WARN",
             "sub1.sub11": "TRACE",
             "sub1.sub11.sub111": "WARN",
-            "sub1.sub12": "INFO"            
+            "sub1.sub12": "INFO"
           }
-        }, { reloadSecs: 30 })
+        }, { reloadSecs: 30 });
 
         return {
           "sub1":  log4js.getLogger('sub1'), // WARN
@@ -39,7 +39,7 @@ vows.describe('subcategories').addBatch({
         assert.equal(loggers.sub13.level, levels.WARN);
         assert.equal(loggers.sub112.level, levels.TRACE);
         assert.equal(loggers.sub121.level, levels.INFO);
-        assert.equal(loggers.sub0.level, levels.TRACE);         
+        assert.equal(loggers.sub0.level, levels.TRACE);
       }
     },
     'loggers created before levels configuration is loaded': {
@@ -63,9 +63,9 @@ vows.describe('subcategories').addBatch({
             "sub1": "WARN",
             "sub1.sub11": "TRACE",
             "sub1.sub11.sub111": "WARN",
-            "sub1.sub12": "INFO"            
+            "sub1.sub12": "INFO"
           }
-        }, { reloadSecs: 30 })
+        }, { reloadSecs: 30 });
 
         return loggers;
 
@@ -80,7 +80,7 @@ vows.describe('subcategories').addBatch({
         assert.equal(loggers.sub13.level, levels.WARN);
         assert.equal(loggers.sub112.level, levels.TRACE);
         assert.equal(loggers.sub121.level, levels.INFO);
-        assert.equal(loggers.sub0.level, levels.TRACE);         
+        assert.equal(loggers.sub0.level, levels.TRACE);
       }
     }
 }).exportTo(module);

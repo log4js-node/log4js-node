@@ -22,7 +22,7 @@ function setupLogging(category, options) {
                     msgs.push(data);
                     callback(false, {status: "sent"});
                 }
-            }
+            };
         }
 
         return constructor(key);
@@ -166,4 +166,3 @@ vows.describe('log4js slackAppender').addBatch({
         }
     }
 }).export(module);
-
