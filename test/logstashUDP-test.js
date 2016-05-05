@@ -1,5 +1,4 @@
 "use strict";
-var sys = require("sys");
 var vows = require('vows')
 , assert = require('assert')
 , log4js = require('../lib/log4js')
@@ -8,7 +7,7 @@ var vows = require('vows')
 
 function setupLogging(category, options) {
   var udpSent = {};
-  
+
   var fakeDgram = {
     createSocket: function (type) {
       return {
@@ -32,7 +31,7 @@ function setupLogging(category, options) {
   });
   log4js.clearAppenders();
   log4js.addAppender(logstashModule.configure(options), category);
-  
+
   return {
     logger: log4js.getLogger(category),
     results: udpSent
