@@ -1,12 +1,12 @@
 "use strict";
-var vows = require('vows'), 
-    assert = require('assert'), 
-    log4js = require('../lib/log4js'), 
+var vows = require('vows'),
+    assert = require('assert'),
+    log4js = require('../lib/log4js'),
     sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
   var udpSent = {};
-  
+
   var fakeDgram = {
     createSocket: function (type) {
       return {
@@ -30,7 +30,7 @@ function setupLogging(category, options) {
   });
   log4js.clearAppenders();
   log4js.addAppender(lfsModule.configure(options), category);
-  
+
   return {
     logger: log4js.getLogger(category),
     results: udpSent
@@ -42,16 +42,16 @@ vows.describe('logFaces UDP appender').addBatch({
     topic: function() {
       var setup = setupLogging('myCategory', {
          "type": "logFacesAppender",
-         "application": "LFS-TEST",        
-         "remoteHost": "127.0.0.1",        
-         "port": 55201,                    
+         "application": "LFS-TEST",
+         "remoteHost": "127.0.0.1",
+         "port": 55201,
          "layout": {
            "type": "pattern",
            "pattern": "%m"
-         }       
+         }
       });
-      
-      setup.logger.trace('Log event #1');
+
+      setup.logger.warn('Log event #1');
       return setup;
     },
     'an UDP packet should be sent': function (topic) {
@@ -62,8 +62,8 @@ vows.describe('logFaces UDP appender').addBatch({
       assert.equal(json.a, 'LFS-TEST');
       assert.equal(json.m, 'Log event #1');
       assert.equal(json.g, 'myCategory');
-      assert.equal(json.p, 'TRACE');
-       
+      assert.equal(json.p, 'WARN');
+
       // Assert timestamp, up to hours resolution.
       var date = new Date(json.t);
       assert.equal(
@@ -84,7 +84,7 @@ vows.describe('logFaces UDP appender').addBatch({
     'it sets some defaults': function (topic) {
       assert.equal(topic.results.host, "127.0.0.1");
       assert.equal(topic.results.port, 55201);
-       
+
       var json = JSON.parse(topic.results.buffer.toString());
       assert.equal(json.a, "");
       assert.equal(json.m, 'Log event #2');
@@ -92,5 +92,5 @@ vows.describe('logFaces UDP appender').addBatch({
       assert.equal(json.p, 'ERROR');
     }
   }
-   
+
 }).export(module);
