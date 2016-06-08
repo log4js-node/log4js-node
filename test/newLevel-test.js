@@ -44,7 +44,8 @@ vows.describe('../lib/logger').addBatch({
       assert.isFunction(logger.newLevelOther);
     },
 
-    'should create named isLevelEnabled function on logger prototype in camel case': function(logger) {
+    'should create named isLevelEnabled function on logger prototype in camel case':
+    function(logger) {
       assert.isFunction(logger.isNewLevelOtherEnabled);
     }
   },
