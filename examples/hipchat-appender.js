@@ -24,9 +24,11 @@ logger.trace("Test Trace Message");
 logger.fatal("Test Fatal Message");
 logger.error("Test Error Message");
 
-// alternative configuration
 
-// use a custom layout function
+// alternative configuration demonstrating callback + custom layout
+///////////////////////////////////////////////////////////////////
+
+// use a custom layout function (in this case, the provided basicLayout)
 //   format: [TIMESTAMP][LEVEL][category] - [message]
 var customLayout = require('../lib/layouts').basicLayout;
 
@@ -49,7 +51,4 @@ log4js.configure({
   ]
 });
 
-logger.info("Test from processed by customLayout");
-
-// @TODO: implement configuration of send message to allow HipChat cards &c
-//        for now, can try to implement by returning object from custom layout
+logger.info("Test customLayout from Mr. Semantics");
