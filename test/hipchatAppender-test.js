@@ -1,181 +1,112 @@
 "use strict";
-var vows = require('vows');
-var assert = require('assert');
-var log4js = require('../lib/log4js');
-var sandbox = require('sandboxed-module');
+var vows = require('vows'),
+    assert = require('assert'),
+    log4js = require('../lib/log4js'),
+    sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
-    var msgs = [];
+  var lastRequest = {};
 
-    var hipchatCredentials = {
-        api_key: options.api_key,
-        room_id: options.room_id,
-        from: options.from,
-        message: options.message,
-        format: options.format,
-        color: options.color,
-        notify: options.notify
-    };
-    var fakeHipchat = (function (key) {
-        function constructor() {
-            return {
-                options: key,
-                api: {
-                    rooms: {
-                        message: function (data, callback) {
-                            msgs.push(data);
-                            callback(false, {status: "sent"});
-                        }
-                    }
-                }
-            };
-        }
+  var fakeRequest = function(args, level){
+    lastRequest.notifier = this;
+    lastRequest.body = args[0];
+    lastRequest.callback = args[1];
+    lastRequest.level = level;
+  };
 
-        return constructor(key);
-    });
+  var fakeHipchatNotifier = {
+    'make': function(room, token, from, host, notify){
+      return {
+        'room': room,
+        'token': token,
+        'from': from || '',
+        'host': host || 'api.hipchat.com',
+        'notify': notify || false,
+        'setRoom': function(val){ this.room = val; },
+        'setFrom': function(val){ this.from = val; },
+        'setHost': function(val){ this.host = val; },
+        'setNotify': function(val){ this.notify = val; },
+        'info': function(){ fakeRequest.call(this, arguments, 'info'); },
+        'warning': function(){ fakeRequest.call(this, arguments, 'warning'); },
+        'failure': function(){ fakeRequest.call(this, arguments, 'failure'); },
+        'success': function(){ fakeRequest.call(this, arguments, 'success'); }
+      };
+    }
+  };
 
-    var fakeLayouts = {
-        layout: function (type, config) {
-            this.type = type;
-            this.config = config;
-            return log4js.layouts.messagePassThroughLayout;
-        },
-        basicLayout: log4js.layouts.basicLayout,
-        coloredLayout: log4js.layouts.coloredLayout,
-        messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
-    };
+  var hipchatModule = sandbox.require('../lib/appenders/hipchat', {
+    requires: {
+      'hipchat-notifier': fakeHipchatNotifier
+    }
+  });
+  log4js.clearAppenders();
+  log4js.addAppender(hipchatModule.configure(options), category);
 
-    var fakeConsole = {
-        errors: [],
-        logs: [],
-        error: function (msg, value) {
-            this.errors.push({msg: msg, value: value});
-        },
-        log: function (msg, value) {
-            this.logs.push({msg: msg, value: value});
-        }
-    };
-
-
-    var hipchatModule = sandbox.require('../lib/appenders/hipchat', {
-        requires: {
-            'hipchat-client': fakeHipchat,
-            '../layouts': fakeLayouts
-        },
-        globals: {
-            console: fakeConsole
-        }
-    });
-
-
-    log4js.addAppender(hipchatModule.configure(options), category);
-
-    return {
-        logger: log4js.getLogger(category),
-        mailer: fakeHipchat,
-        layouts: fakeLayouts,
-        console: fakeConsole,
-        messages: msgs,
-        credentials: hipchatCredentials
-    };
+  return {
+    logger: log4js.getLogger(category),
+    lastRequest: lastRequest
+  };
 }
 
-function checkMessages(result) {
-    for (var i = 0; i < result.messages.length; ++i) {
-        assert.equal(result.messages[i].from, 'FROM');
-        assert.equal(result.messages[i].room_id, 'ROOMID');
-        assert.ok(new RegExp('.+Log event #' + (i + 1)).test(result.messages[i].message));
+vows.describe('HipChat appender').addBatch({
+  'when logging to HipChat v2 API': {
+    topic: function() {
+      var customCallback = function(err, res, body){ return 'works'; };
+
+      var setup = setupLogging('myCategory', {
+         "type": "hipchat",
+         "hipchat_token": "User_Token_With_Notification_Privs",
+         "hipchat_room": "Room_ID_Or_Name",
+         "hipchat_from": "Log4js_Test",
+         "hipchat_notify": true,
+         "hipchat_host": "hipchat.your-company.tld",
+         "hipchat_response_callback": customCallback
+      });
+      setup.logger.warn('Log event #1');
+      return setup;
+    },
+    'a request to hipchat_host should be sent': function (topic) {
+      assert.equal(topic.lastRequest.notifier.host, "hipchat.your-company.tld");
+      assert.equal(topic.lastRequest.notifier.notify, true);
+      assert.equal(topic.lastRequest.body, 'Log event #1');
+      assert.equal(topic.lastRequest.level, 'warning');
+    },
+    'a custom callback to the HipChat response is supported': function(topic) {
+      assert.equal(topic.lastRequest.callback(), 'works');
     }
-}
-
-log4js.clearAppenders();
-
-vows.describe('log4js hipchatAppender').addBatch({
-    'hipchat setup': {
-        topic: setupLogging('hipchat setup', {
-            api_key: 'APIKEY',
-            room_id: "ROOMID",
-            from: "FROM",
-            message: "This is the message",
-            format: "FORMAT",
-            color: "This is the color",
-            notify: "NOTIFY"
-        }),
-        'hipchat credentials should match': function (result) {
-            assert.equal(result.credentials.api_key, 'APIKEY');
-            assert.equal(result.credentials.room_id, 'ROOMID');
-            assert.equal(result.credentials.from, 'FROM');
-            assert.equal(result.credentials.format, 'FORMAT');
-            assert.equal(result.credentials.notify, 'NOTIFY');
-
-        }
+  },
+  'when missing options': {
+    topic: function() {
+      var setup = setupLogging('myLogger', {
+          "type": "hipchat",
+      });
+      setup.logger.error('Log event #2');
+      return setup;
     },
-
-    'basic usage': {
-        topic: function () {
-            var setup = setupLogging('basic usage', {
-                api_key: 'APIKEY',
-                room_id: "ROOMID",
-                from: "FROM",
-                message: "This is the message",
-                format: "FORMAT",
-                color: "This is the color",
-                notify: "NOTIFY"
-            });
-
-            setup.logger.info("Log event #1");
-            return setup;
-        },
-        'there should be one message only': function (result) {
-            assert.equal(result.messages.length, 1);
-        },
-        'message should contain proper data': function (result) {
-            checkMessages(result);
-        }
-    },
-    'config with layout': {
-        topic: function () {
-            var setup = setupLogging('config with layout', {
-                layout: {
-                    type: "tester"
-                }
-            });
-            return setup;
-        },
-        'should configure layout': function (result) {
-            assert.equal(result.layouts.type, 'tester');
-        }
-    },
-    'separate notification for each event': {
-        topic: function () {
-            var self = this;
-            var setup = setupLogging('separate notification for each event', {
-                api_key: 'APIKEY',
-                room_id: "ROOMID",
-                from: "FROM",
-                message: "This is the message",
-                format: "FORMAT",
-                color: "This is the color",
-                notify: "NOTIFY"
-            });
-            setTimeout(function () {
-                setup.logger.info('Log event #1');
-            }, 0);
-            setTimeout(function () {
-                setup.logger.info('Log event #2');
-            }, 500);
-            setTimeout(function () {
-                setup.logger.info('Log event #3');
-            }, 1100);
-            setTimeout(function () {
-                self.callback(null, setup);
-            }, 3000);
-        },
-        'there should be three messages': function (result) {
-            assert.equal(result.messages.length, 3);
-        },
-        'messages should contain proper data': function (result) {
-            checkMessages(result);
-        }
+    'it sets some defaults': function (topic) {
+      assert.equal(topic.lastRequest.notifier.host, "api.hipchat.com");
+      assert.equal(topic.lastRequest.notifier.notify, false);
+      assert.equal(topic.lastRequest.body, 'Log event #2');
+      assert.equal(topic.lastRequest.level, 'failure');
     }
+  },
+  'when basicLayout is provided': {
+    topic: function() {
+      var setup = setupLogging('myLogger', {
+          "type": "hipchat",
+          "layout": log4js.layouts.basicLayout
+      });
+      setup.logger.debug('Log event #3');
+      return setup;
+    },
+    'it should include the timestamp': function (topic) {
+
+      // basicLayout adds [TIMESTAMP] [LEVEL] category - message
+      // e.g. [2016-06-10 11:50:53.819] [DEBUG] myLogger - Log event #23
+
+      assert.match(topic.lastRequest.body, /^\[[^\]]+\] \[[^\]]+\].*Log event \#3$/);
+      assert.equal(topic.lastRequest.level, 'info');
+    }
+  }
+
 }).export(module);

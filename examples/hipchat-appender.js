@@ -1,28 +1,54 @@
-//Note that hipchat appender needs hipchat-client to work.
-//If you haven't got hipchat-client installed, you'll get cryptic
-//"cannot find module" errors when using the hipchat appender
+/**
+ * !!! The hipchat-appender requires `hipchat-notifier` from npm, e.g.
+ *   - list as a dependency in your application's package.json ||
+ *   - npm install hipchat-notifier
+ */
+
 var log4js = require('../lib/log4js');
 
 log4js.configure({
   "appenders": [
     {
       "type" : "hipchat",
-      "api_key": 'Hipchat_API_V1_Key',
-      "room_id": "Room_ID",
-      "from": "Tester",
-      "format": "text",
-      "notify": "NOTIFY",
-      "category" : "hipchat"
+      "hipchat_token": process.env.HIPCHAT_TOKEN || '< User token with Notification Privileges >',
+      "hipchat_room": process.env.HIPCHAT_ROOM || '< Room ID or Name >'
     }
   ]
 });
 
 var logger = log4js.getLogger("hipchat");
-logger.warn("Test Warn message");//yello
-logger.info("Test Info message");//green
-logger.debug("Test Debug Message");//hipchat client has limited color scheme
-logger.trace("Test Trace Message");//so debug and trace are the same color: purple
-logger.fatal("Test Fatal Message");//hipchat client has limited color scheme
-logger.error("Test Error Message");// fatal and error are same color: red
-logger.all("Test All message");//grey
-//logger.debug("Test log message");
+logger.warn("Test Warn message");
+logger.info("Test Info message");
+logger.debug("Test Debug Message");
+logger.trace("Test Trace Message");
+logger.fatal("Test Fatal Message");
+logger.error("Test Error Message");
+
+
+// alternative configuration demonstrating callback + custom layout
+///////////////////////////////////////////////////////////////////
+
+// use a custom layout function (in this case, the provided basicLayout)
+//   format: [TIMESTAMP][LEVEL][category] - [message]
+var customLayout = require('../lib/layouts').basicLayout;
+
+log4js.configure({
+  "appenders": [
+    {
+      "type" : "hipchat",
+      "hipchat_token": process.env.HIPCHAT_TOKEN || '< User token with Notification Privileges >',
+      "hipchat_room": process.env.HIPCHAT_ROOM || '< Room ID or Name >',
+      "hipchat_from": "Mr. Semantics",
+      "hipchat_notify": false,
+      "hipchat_response_callback": function(err, response, body){
+        if(err || response.statusCode > 300){
+          throw new Error('hipchat-notifier failed');
+        }
+        console.log('mr semantics callback success');
+      },
+      "layout": customLayout
+    }
+  ]
+});
+
+logger.info("Test customLayout from Mr. Semantics");
