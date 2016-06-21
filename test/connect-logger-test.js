@@ -206,6 +206,23 @@ vows.describe('log4js connect logger').addBatch({
       }
     },
 
+    'format using a function with included response body': {
+      topic: function(clm) {
+        var ml = new MockLogger();
+        var cb = this.callback;
+        ml.level = levels.INFO;
+        var cl = clm.connectLogger(ml, function(req, res, formatFn) { return res.body; });
+        request(cl, 'GET', 'http://blah', 200);
+        setTimeout(function() {
+          cb(null, ml.messages);
+        },10);
+      },
+
+      'should return response body': function(messages) {
+        assert.equal(messages[0].message, 'chunk');
+      }
+    },
+
     'format that includes request headers': {
       topic: function(clm) {
         var ml = new MockLogger();
