@@ -1,0 +1,12 @@
+{
+	"extends": "airbnb-base",
+	"rules": {
+		"comma-dangle": 1,
+		"indent": 2,
+		"object-shorthand": 0,
+		"func-names": 0,
+		"max-len": [1, 120, 2],
+		"no-use-before-define": 1,
+		"no-param-reassign": [2, { "props": false }]
+	}
+}

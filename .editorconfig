@@ -1,0 +1,29 @@
+# http://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.js]
+quote_type = single
+curly_bracket_next_line = true
+indent_brace_style = Allman
+spaces_around_operators = true
+spaces_around_brackets = inside
+continuation_indent_size = 2
+
+[*.html]
+# indent_size = 4
+
+[*{.yml,.yaml,.json}]
+indent_style = space
+indent_size = 2
+
+[.eslintrc]
+indent_style = space
+indent_size = 2
