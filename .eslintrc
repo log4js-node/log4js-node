@@ -7,6 +7,10 @@
 		"func-names": 0,
 		"max-len": [1, 120, 2],
 		"no-use-before-define": 1,
-		"no-param-reassign": [2, { "props": false }]
-	}
+		"no-param-reassign": 0,
+    "strict": 0
+	},
+  "parser-options": {
+    "ecmaVersion": 6
+  }
 }
