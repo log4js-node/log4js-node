@@ -19,11 +19,12 @@
     "url": "http://github.com/nomiddlename/log4js-node/issues"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=6.0"
   },
   "scripts": {
     "pretest": "echo 'no lint yet'",
-    "test": "vows"
+    "test": "vows",
+    "clean": "find test -type f ! -name '*.json' ! -name '*.js' -delete"
   },
   "directories": {
     "test": "test",
