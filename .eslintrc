@@ -8,7 +8,8 @@
 		"max-len": [1, 120, 2],
 		"no-use-before-define": 1,
 		"no-param-reassign": 0,
-    "strict": 0
+    "strict": 0,
+    "import/no-extraneous-dependencies": 1
 	},
   "parser-options": {
     "ecmaVersion": 6
