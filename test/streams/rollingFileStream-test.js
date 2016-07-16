@@ -3,15 +3,9 @@ var vows = require('vows')
 , assert = require('assert')
 , events = require('events')
 , fs = require('fs')
-, semver = require('semver')
-, streams
+, streams = require('stream')
 , RollingFileStream;
 
-if (semver.satisfies(process.version, '>=0.10.0')) {
-  streams = require('stream');
-} else {
-  streams = require('readable-stream');
-}
 RollingFileStream = require('../../lib/streams').RollingFileStream;
 
 function remove(filename) {
@@ -49,9 +43,9 @@ vows.describe('RollingFileStream').addBatch({
     topic: function() {
       remove(__dirname + '/test-rolling-file-stream');
       return new RollingFileStream(
-        'test-rolling-file-stream', 
-        1024, 
-        5, 
+        'test-rolling-file-stream',
+        1024,
+        5,
         { mode: parseInt('0666', 8) }
       );
     },
@@ -85,7 +79,7 @@ vows.describe('RollingFileStream').addBatch({
       remove(__dirname + "/test-rolling-file-stream-write-less");
       var that = this
       , stream = new RollingFileStream(
-        __dirname + "/test-rolling-file-stream-write-less", 
+        __dirname + "/test-rolling-file-stream-write-less",
         100
       );
       stream.write("cheese", "utf8", function() {
@@ -103,10 +97,10 @@ vows.describe('RollingFileStream').addBatch({
       'should be one': function(files) {
         assert.equal(
           files.filter(
-            function(file) { 
-              return file.indexOf('test-rolling-file-stream-write-less') > -1; 
+            function(file) {
+              return file.indexOf('test-rolling-file-stream-write-less') > -1;
             }
-          ).length, 
+          ).length,
           1
         );
       }
@@ -130,8 +124,8 @@ vows.describe('RollingFileStream').addBatch({
       },
       'should be two': function(files) {
         assert.equal(files.filter(
-          function(file) { 
-            return file.indexOf('test-rolling-file-stream-write-more') > -1; 
+          function(file) {
+            return file.indexOf('test-rolling-file-stream-write-more') > -1;
           }
         ).length, 2);
       }
@@ -160,7 +154,7 @@ vows.describe('RollingFileStream').addBatch({
       remove(__dirname + '/test-rolling-stream-with-existing-files.-1');
       remove(__dirname + '/test-rolling-stream-with-existing-files.1.1');
       remove(__dirname + '/test-rolling-stream-with-existing-files.1');
-      
+
 
       create(__dirname + '/test-rolling-stream-with-existing-files.11');
       create(__dirname + '/test-rolling-stream-with-existing-files.20');
@@ -170,7 +164,7 @@ vows.describe('RollingFileStream').addBatch({
 
       var that = this
       , stream = new RollingFileStream(
-        __dirname + "/test-rolling-stream-with-existing-files", 
+        __dirname + "/test-rolling-stream-with-existing-files",
         45,
         5
       );

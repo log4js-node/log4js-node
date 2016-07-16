@@ -5,31 +5,6 @@ var vows = require('vows')
 , sandbox = require('sandboxed-module');
 
 vows.describe('../../lib/streams/BaseRollingFileStream').addBatch({
-  'when node version < 0.10.0': {
-    topic: function() {
-      var streamLib = sandbox.load(
-        '../../lib/streams/BaseRollingFileStream',
-        {
-          globals: {
-            process: {
-              version: '0.8.11'
-            }
-          },
-          requires: {
-            'readable-stream': {
-              Writable: function() {}
-            }
-          }
-        }
-      );
-      return streamLib.required;
-    },
-    'it should use readable-stream to maintain compatibility': function(required) {
-      assert.ok(required['readable-stream']);
-      assert.ok(!required.stream);
-    }
-  },
-
   'when node version > 0.10.0': {
     topic: function() {
       var streamLib = sandbox.load(
