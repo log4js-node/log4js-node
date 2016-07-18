@@ -2,6 +2,7 @@
 var vows = require('vows')
 , assert = require('assert')
 , os =  require('os')
+, semver = require('semver')
 , EOL = os.EOL || '\n';
 
 //used for patternLayout tests.
@@ -150,13 +151,24 @@ vows.describe('log4js layouts').addBatch({
       output = layout(event);
       lines = output.split(/\n/);
 
-      assert.equal(lines.length, stack.length);
-      assert.equal(
-        lines[0],
-        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error"
-      );
-      for (i = 1; i < stack.length; i++) {
-        assert.equal(lines[i], stack[i]);
+      if (semver.satisfies(process.version, '>=6')) {
+        assert.equal(lines.length, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i], stack[i]);
+        }
+      } else {
+        assert.equal(lines.length - 1, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i+2], stack[i+1]);
+        }
       }
     },
     'should output any extra data in the log event as util.inspect strings': function(args) {
