@@ -159,7 +159,7 @@ vows.describe('log4js fileAppender').addBatch({
       // everything but category 'sub2'
       assert.match(
         fileContents.file_sub1,
-        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/ // jshint ignore:line
       );
       assert.ok(
         fileContents.file_sub1.match(/sub123/) &&
@@ -171,7 +171,7 @@ vows.describe('log4js fileAppender').addBatch({
       // only catgories starting with 'sub1.sub12' and 'sub1.sub13'
       assert.match(
         fileContents.file_sub1_sub12$sub1_sub13,
-        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/ //jshint ignore:line
       );
       assert.ok(
         fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) &&
@@ -182,7 +182,7 @@ vows.describe('log4js fileAppender').addBatch({
       // only catgories starting with 'sub1.sub12'
       assert.match(
         fileContents.file_sub1_sub12,
-        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/
+        /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/ //jshint ignore:line
       );
       assert.ok(!fileContents.file_sub1_sub12.match(/sub14|sub2|sub13/));
 
