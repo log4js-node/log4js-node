@@ -1,5 +1,4 @@
 "use strict";
-var sys = require("sys");
 var vows = require('vows')
 , assert = require('assert')
 , log4js = require('../lib/log4js')
@@ -8,7 +7,7 @@ var vows = require('vows')
 
 function setupLogging(category, options) {
   var udpSent = {};
-  
+
   var fakeDgram = {
     createSocket: function (type) {
       return {
@@ -32,7 +31,7 @@ function setupLogging(category, options) {
   });
   log4js.clearAppenders();
   log4js.addAppender(logstashModule.configure(options), category);
-  
+
   return {
     logger: log4js.getLogger(category),
     results: udpSent
@@ -42,7 +41,7 @@ function setupLogging(category, options) {
 vows.describe('logstashUDP appender').addBatch({
   'when logging with logstash via UDP': {
     topic: function() {
-      var setup = setupLogging('logstashUDP', {
+      var setup = setupLogging('myCategory', {
         "host": "127.0.0.1",
         "port": 10001,
         "type": "logstashUDP",
@@ -102,5 +101,26 @@ vows.describe('logstashUDP appender').addBatch({
       assert.equal(json.type, 'myLogger');
       assert.equal(JSON.stringify(json.fields), JSON.stringify({'level': 'TRACE'}));
     }
+  },
+
+  'when extra fields provided': {
+    topic: function() {
+      var setup = setupLogging('myLogger', {
+        "host": "127.0.0.1",
+        "port": 10001,
+        "type": "logstashUDP",
+        "category": "myLogger",
+        "layout": {
+          "type": "dummy"
+        }
+      });
+      setup.logger.log('trace', 'Log event #1', {'extra1': 'value1', 'extra2': 'value2'});
+      return setup;
+    },'they should be added to fields structure': function (topic) {
+      var json = JSON.parse(topic.results.buffer.toString());
+      var fields = {'extra1': 'value1', 'extra2': 'value2', 'level': 'TRACE'};
+      assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
+    }
   }
+
 }).export(module);

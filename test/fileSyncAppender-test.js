@@ -26,10 +26,13 @@ vows.describe('log4js fileSyncAppender').addBatch({
       remove(testFile);
 
       log4js.clearAppenders();
-      log4js.addAppender(require('../lib/appenders/fileSync').appender(testFile), 'default-settings');
-      
+      log4js.addAppender(
+        require('../lib/appenders/fileSync').appender(testFile),
+        'default-settings'
+      );
+
       logger.info("This should be in the file.");
-      
+
       fs.readFile(testFile, "utf8", that.callback);
     },
     'should write log messages to the file': function (err, fileContents) {
@@ -37,7 +40,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
     },
     'log messages should be in the basic layout format': function(err, fileContents) {
       assert.match(
-        fileContents, 
+        fileContents,
           /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] default-settings - /
       );
     }
@@ -52,7 +55,7 @@ vows.describe('log4js fileSyncAppender').addBatch({
       //log file of 100 bytes maximum, no backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 100, 0), 
+        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 100, 0),
         'max-file-size'
       );
       logger.info("This is the first log message.");
@@ -85,11 +88,11 @@ vows.describe('log4js fileSyncAppender').addBatch({
       remove(testFile);
       remove(testFile+'.1');
       remove(testFile+'.2');
-      
+
       //log file of 50 bytes maximum, 2 backups
       log4js.clearAppenders();
       log4js.addAppender(
-        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 50, 2), 
+        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 50, 2),
         'max-file-size-backups'
       );
       logger.info("This is the first log message.");
@@ -97,12 +100,12 @@ vows.describe('log4js fileSyncAppender').addBatch({
       logger.info("This is the third log message.");
       logger.info("This is the fourth log message.");
       var that = this;
-      
-      fs.readdir(__dirname, function(err, files) { 
-        if (files) { 
-          that.callback(null, files.sort()); 
-        } else { 
-          that.callback(err, files); 
+
+      fs.readdir(__dirname, function(err, files) {
+        if (files) {
+          that.callback(null, files.sort());
+        } else {
+          that.callback(err, files);
         }
       });
     },
@@ -118,8 +121,8 @@ vows.describe('log4js fileSyncAppender').addBatch({
       },
       'should be named in sequence': function (files) {
         assert.deepEqual(files, [
-          'fa-maxFileSize-with-backups-sync-test.log', 
-          'fa-maxFileSize-with-backups-sync-test.log.1', 
+          'fa-maxFileSize-with-backups-sync-test.log',
+          'fa-maxFileSize-with-backups-sync-test.log.1',
           'fa-maxFileSize-with-backups-sync-test.log.2'
         ]);
       },
@@ -158,19 +161,19 @@ vows.describe('log4js fileSyncAppender').addBatch({
         //this config defines one file appender (to ./tmp-sync-tests.log)
         //and sets the log level for "tests" to WARN
         log4js.configure({
-            appenders: [{ 
-                category: "tests", 
-                type: "file", 
-                filename: "tmp-sync-tests.log", 
-                layout: { type: "messagePassThrough" } 
+            appenders: [{
+                category: "tests",
+                type: "file",
+                filename: "tmp-sync-tests.log",
+                layout: { type: "messagePassThrough" }
             }],
-  
+
             levels: { tests:  "WARN" }
         });
         logger = log4js.getLogger('tests');
         logger.info('this should not be written to the file');
         logger.warn('this should be written to the file');
-        
+
         fs.readFile('tmp-sync-tests.log', 'utf8', this.callback);
       },
       'should load appender configuration from a json file': function(err, contents) {

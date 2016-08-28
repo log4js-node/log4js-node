@@ -2,6 +2,7 @@
 var vows = require('vows')
 , assert = require('assert')
 , os =  require('os')
+, semver = require('semver')
 , EOL = os.EOL || '\n';
 
 //used for patternLayout tests.
@@ -108,7 +109,7 @@ vows.describe('log4js layouts').addBatch({
         });
       },
       'should print error the contained error message': function(layoutOutput) {
-        var m = layoutOutput.match(/\{ \[Error: My Unique Error Message\]/);
+        var m = layoutOutput.match(/Error: My Unique Error Message/);
         assert.isArray(m);
       },
       'should print error augmented string attributes': function(layoutOutput) {
@@ -142,7 +143,7 @@ vows.describe('log4js layouts').addBatch({
       assert.equal(layout(event), "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
     },
     'should output a stacktrace, message if the event has an error attached': function(args) {
-      var layout = args[0], event = args[1], output, lines,
+      var i, layout = args[0], event = args[1], output, lines,
       error = new Error("Some made-up error"),
       stack = error.stack.split(/\n/);
 
@@ -150,15 +151,26 @@ vows.describe('log4js layouts').addBatch({
       output = layout(event);
       lines = output.split(/\n/);
 
-      assert.equal(lines.length - 1, stack.length);
-      assert.equal(
-        lines[0],
-        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
-      );
-
-      for (var i = 1; i < stack.length; i++) {
-        assert.equal(lines[i+2], stack[i+1]);
+      if (semver.satisfies(process.version, '>=6')) {
+        assert.equal(lines.length, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i], stack[i]);
+        }
+      } else {
+        assert.equal(lines.length - 1, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i+2], stack[i+1]);
+        }
       }
+
     },
     'should output any extra data in the log event as util.inspect strings': function(args) {
       var layout = args[0], event = args[1], output, lines;
@@ -179,7 +191,7 @@ vows.describe('log4js layouts').addBatch({
     topic: function() {
       var event = {
         data: ['this is a test'],
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        startTime: new Date('2010-12-05T14:18:30.045Z'), //new Date(2010, 11, 5, 14, 18, 30, 45),
         categoryName: "multiple.levels.of.tests",
         level: {
           toString: function() { return "DEBUG"; }
@@ -282,14 +294,14 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%x{testFunction}', 'testFunctionToken');
     },
     '%x{doesNotExist} should output the string stored in tokens': function(args) {
-      test(args, '%x{doesNotExist}', '%x{doesNotExist}');
+      test(args, '%x{doesNotExist}', 'null');
     },
     '%x{fnThatUsesLogEvent} should be able to use the logEvent': function(args) {
       test(args, '%x{fnThatUsesLogEvent}', 'DEBUG');
     },
     '%x should output the string stored in tokens': function(args) {
-      test(args, '%x', '%x');
-    },
+      test(args, '%x', 'null');
+    }
   },
   'layout makers': {
     topic: require('../lib/layouts'),
@@ -299,6 +311,20 @@ vows.describe('log4js layouts').addBatch({
       assert.ok(layouts.layout("colored"));
       assert.ok(layouts.layout("coloured"));
       assert.ok(layouts.layout("pattern"));
+    }
+  },
+  'add layout': {
+    topic: require('../lib/layouts'),
+    'should be able to add a layout': function(layouts) {
+      layouts.addLayout('test_layout', function(config){
+        assert.equal(config, 'test_config');
+        return function(logEvent) {
+          return "TEST LAYOUT >"+logEvent.data;
+        };
+      });
+      var serializer = layouts.layout('test_layout', 'test_config');
+      assert.ok(serializer);
+      assert.equal(serializer({data: "INPUT"}), "TEST LAYOUT >INPUT");
     }
   }
 }).export(module);

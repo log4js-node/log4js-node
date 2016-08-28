@@ -1,12 +1,13 @@
 # log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
 
-
+[![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
+ 
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript. 
 
 Out of the box it supports the following features:
 
-* coloured console logging
+* coloured console logging to stdout or stderr
 * replacement of node's console.log functions (optional)
 * file appender, with log rolling based on file size
 * SMTP appender
@@ -14,6 +15,7 @@ Out of the box it supports the following features:
 * hook.io appender
 * Loggly appender
 * Logstash UDP appender
+* logFaces appender
 * multiprocess appender (useful when you've got worker processes)
 * a logger for connect/express servers
 * configurable log message layout/patterns
@@ -89,15 +91,9 @@ configuration file (`log4js.configure('path/to/file.json')`), or a configuration
 configuration file location may also be specified via the environment variable 
 LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`). 
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
-By default, the configuration file is checked for changes every 60 seconds, and if changed, reloaded. This allows changes to logging levels to occur without restarting the application.
+You can configure log4js to check for configuration file changes at regular intervals, and if changed, reload. This allows changes to logging levels to occur without restarting the application.
 
-To turn off configuration file change checking, configure with:
-
-```javascript
-var log4js = require('log4js');
-log4js.configure('my_log4js_configuration.json', {});
-```
-To specify a different period:
+To turn it on and specify a period:
 
 ```javascript
 log4js.configure('file.json', { reloadSecs: 300 });
@@ -108,8 +104,9 @@ For FileAppender you can also pass the path to the log directory as an option wh
 log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
 ```
 If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
-```json
+
 #### my_log4js_configuration.json ####
+```json
 {
   "appenders": [
     {

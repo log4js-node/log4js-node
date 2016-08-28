@@ -244,6 +244,7 @@ vows.describe('log4js gelfAppender').addBatch({
       },
       'should pick up the options': function(message) {
         assert.equal(message.host, 'cheese');
+        assert.isUndefined(message.GELF); // make sure flag was removed
         assert.equal(message._facility, 'nonsense');
         assert.equal(message._every1, 'Hello every one'); // the default value
         assert.equal(message._every2, 'Overwritten!'); // the overwritten value
