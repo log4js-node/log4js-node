@@ -1,4 +1,4 @@
-var log4js = require('./lib/log4js')
+var log4js = require('../lib/log4js')
 , logger
 , usage
 , i;
