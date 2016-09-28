@@ -1,0 +1,17 @@
+{
+  "appenders": [
+    { 
+      "category": "tests", 
+      "type": "dateFileSync", 
+      "filename": "test/date-file-sync-test.log",
+      "pattern": "-from-MM-dd", 
+      "layout": { 
+        "type": "messagePassThrough" 
+      } 
+    }
+  ],
+  
+  "levels": {
+    "tests":  "WARN"
+  }
+}
