@@ -13,7 +13,7 @@ function test(layout, event, tokens, pattern, value) {
 describe('log4js layouts', function() {
   describe('colouredLayout', function() {
     var layout = require('../lib/layouts').colouredLayout;
-    
+
     it('should apply level colour codes to output', function() {
       var output = layout({
         data: ["nonsense"],
@@ -39,10 +39,10 @@ describe('log4js layouts', function() {
     });
 
   });
-  
+
   describe('messagePassThroughLayout', function() {
     var layout = require('../lib/layouts').messagePassThroughLayout;
-    
+
     it('should take a logevent and output only the message', function() {
       assert.equal(layout({
         data: ["nonsense"],
@@ -57,9 +57,9 @@ describe('log4js layouts', function() {
 
     it('should support the console.log format for the message', function() {
       assert.equal(layout({
-        data: ["thing %d", 1, "cheese"], 
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        category: "cheese", 
+        data: ["thing %d", 1, "cheese"],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        category: "cheese",
         level : {
           colour: "green",
           toString: function() { return "ERROR"; }
@@ -69,9 +69,9 @@ describe('log4js layouts', function() {
 
     it('should output the first item even if it is not a string', function() {
       assert.equal(layout({
-        data: [ { thing: 1} ], 
-        startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-        category: "cheese", 
+        data: [ { thing: 1} ],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        category: "cheese",
         level: {
           colour: "green",
           toString: function() { return "ERROR"; }
@@ -82,11 +82,11 @@ describe('log4js layouts', function() {
     it('should print the stacks of a passed error objects', function() {
       assert.ok(Array.isArray(
         layout({
-          data: [ new Error() ], 
-          startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-          category: "cheese", 
+          data: [ new Error() ],
+          startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+          category: "cheese",
           level: {
-            colour: "green", 
+            colour: "green",
             toString: function() { return "ERROR"; }
           }
         }).match(
@@ -95,18 +95,18 @@ describe('log4js layouts', function() {
       ), 'regexp did not return a match');
     });
 
-    describe('with passed augmented errors', function() { 
+    describe('with passed augmented errors', function() {
       var layoutOutput;
 
       before(function() {
         var e = new Error("My Unique Error Message");
         e.augmented = "My Unique attribute value";
         e.augObj = { at1: "at2" };
-        
+
         layoutOutput = layout({
-          data: [ e ], 
-          startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
-          category: "cheese", 
+          data: [ e ],
+          startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+          category: "cheese",
           level: {
             colour: "green",
             toString: function() { return "ERROR"; }
@@ -129,9 +129,9 @@ describe('log4js layouts', function() {
         assert.ok(Array.isArray(m));
       });
     });
-    
+
   });
-  
+
   describe('basicLayout', function() {
     var layout = require('../lib/layouts').basicLayout
     , event = {
@@ -142,7 +142,7 @@ describe('log4js layouts', function() {
         toString: function() { return "DEBUG"; }
       }
     };
-    
+
     it('should take a logevent and output a formatted string', function() {
       assert.equal(layout(event), "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test");
     });
@@ -150,9 +150,10 @@ describe('log4js layouts', function() {
     it('should output a stacktrace, message if the event has an error attached', function() {
       var output
       , lines
+      , i
       , error = new Error("Some made-up error")
       , stack = error.stack.split(/\n/);
-      
+
       event.data = ['this is a test', error];
       output = layout(event);
       lines = output.split(/\n/);
@@ -194,7 +195,7 @@ describe('log4js layouts', function() {
       );
     });
   });
-  
+
   describe('patternLayout', function() {
     var event = {
       data: ['this is a test'],
@@ -212,13 +213,13 @@ describe('log4js layouts', function() {
     };
 
     event.startTime.getTimezoneOffset = function() { return 0; };
-    
+
     it('should default to "time logLevel loggerName - message"', function() {
       test(
-        layout, 
-        event, 
-        tokens, 
-        null, 
+        layout,
+        event,
+        tokens,
+        null,
         "14:18:30 DEBUG multiple.levels.of.tests - this is a test\n"
       );
     });
@@ -316,19 +317,19 @@ describe('log4js layouts', function() {
       it('%x{testString} should output the string stored in tokens', function() {
         test(layout, event, tokens, '%x{testString}', 'testStringToken');
       });
-      
+
       it('%x{testFunction} should output the result of the function stored in tokens', function() {
         test(layout, event, tokens, '%x{testFunction}', 'testFunctionToken');
       });
-      
+
       it('%x{doesNotExist} should output the string stored in tokens', function() {
         test(layout, event, tokens, '%x{doesNotExist}', '%x{doesNotExist}');
       });
-      
+
       it('%x{fnThatUsesLogEvent} should be able to use the logEvent', function() {
         test(layout, event, tokens, '%x{fnThatUsesLogEvent}', 'DEBUG');
       });
-      
+
       it('%x should output the string stored in tokens', function() {
         test(layout, event, tokens, '%x', '%x');
       });
@@ -352,7 +353,7 @@ describe('log4js layouts', function() {
 
     it('should pass config to layouts that need it', function() {
       var layout = layouts.layout(
-        "pattern", 
+        "pattern",
         {
           pattern: "%m"
         }

@@ -1,13 +1,10 @@
 "use strict";
-var vows = require('vows')
-, fs = require('fs')
+var fs = require('fs')
 , path = require('path')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
 , assert = require('assert')
 , EOL = require('os').EOL || '\n';
-
-log4js.clearAppenders();
 
 function remove(filename) {
   try {
@@ -17,169 +14,183 @@ function remove(filename) {
   }
 }
 
-vows.describe('log4js fileSyncAppender').addBatch({
-  'with default fileSyncAppender settings': {
-    topic: function() {
-      var that = this
-      , testFile = path.join(__dirname, '/fa-default-sync-test.log')
-      , logger = log4js.getLogger('default-settings');
-      remove(testFile);
+describe('log4js fileSyncAppender', function() {
+  describe('with default fileSyncAppender settings', function() {
+    var that = this
+    , testFile = path.join(__dirname, '/fa-default-sync-test.log')
+    , logger = log4js.getLogger('default-settings');
 
-      log4js.clearAppenders();
-      log4js.addAppender(
-        require('../lib/appenders/fileSync').appender(testFile),
-        'default-settings'
-      );
+    before(function() {
 
+      log4js.configure({
+        appenders: {
+          "testFile": { type: "fileSync", filename: testFile }
+        },
+        categories: {
+          "default-settings": { appender: "testFile" }
+        }
+      });
       logger.info("This should be in the file.");
+    });
 
-      fs.readFile(testFile, "utf8", that.callback);
-    },
-    'should write log messages to the file': function (err, fileContents) {
-      assert.include(fileContents, "This should be in the file." + EOL);
-    },
-    'log messages should be in the basic layout format': function(err, fileContents) {
-      assert.match(
-        fileContents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] default-settings - /
-      );
-    }
-  },
-  'with a max file size and no backups': {
-    topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-sync-test.log')
-      , logger = log4js.getLogger('max-file-size')
-      , that = this;
+    after(function() {
       remove(testFile);
-      remove(testFile + '.1');
+    });
+
+    it('should write messages to the file', function(done) {
+      fs.readFile(testFile, "utf8", function(err, contents) {
+        assert.include(contents, "This should be in the file." + EOL);
+        done(err);
+      });
+    });
+
+    it('log messages should be in the basic layout format', function(done) {
+      fs.readFile(testFile, "utf8", function(err, fileContents) {
+        assert.match(
+          fileContents,
+            /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}\] \[INFO\] default-settings - /
+        );
+        done(err);
+      });
+    });
+  });
+
+  describe('with a max file size and no backups', function() {
+    var testFile = path.join(__dirname, '/fa-maxFileSize-sync-test.log')
+    , logger = log4js.getLogger('max-file-size');
+
+    before(function() {
+
       //log file of 100 bytes maximum, no backups
-      log4js.clearAppenders();
-      log4js.addAppender(
-        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 100, 0),
-        'max-file-size'
-      );
+      log4js.configure({
+        appenders: {
+          "testFile": { type: "fileSync", filename: testFile, maxLogSize: 100, backups: 0 }
+        },
+        categories: {
+          "max-file-size": { appender: "testFile" }
+        }
+      });
       logger.info("This is the first log message.");
       logger.info("This is an intermediate log message.");
       logger.info("This is the second log message.");
+    });
 
-      fs.readFile(testFile, "utf8", that.callback);
-    },
-    'log file should only contain the second message': function (err, fileContents) {
-      assert.include(fileContents, "This is the second log message." + EOL);
-      assert.equal(fileContents.indexOf("This is the first log message."), -1);
-    },
-    'the number of files': {
-      topic: function() {
-        fs.readdir(__dirname, this.callback);
-      },
-      'starting with the test file name should be two': function(err, files) {
-        //there will always be one backup if you've specified a max log size
-        var logFiles = files.filter(
-          function(file) { return file.indexOf('fa-maxFileSize-sync-test.log') > -1; }
-        );
-        assert.equal(logFiles.length, 2);
-      }
-    }
-  },
-  'with a max file size and 2 backups': {
-    topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-sync-test.log')
-      , logger = log4js.getLogger('max-file-size-backups');
+    after(function() {
       remove(testFile);
-      remove(testFile+'.1');
-      remove(testFile+'.2');
+      remove(testFile + '.1');
+    });
 
+    it('log file should only contain the second message', function(done) {
+      fs.readFile(testFile, "utf8", function (err, fileContents) {
+        assert.include(fileContents, "This is the second log message." + EOL);
+        assert.equal(fileContents.indexOf("This is the first log message."), -1);
+        done(err);
+      });
+    });
+
+    describe('the number of files', function() {
+      it('starting with the test file name should be two', function(done) {
+        fs.readdir(__dirname, function(err, files) {
+          //there will always be one backup if you've specified a max log size
+          var logFiles = files.filter(
+            function(file) { return file.indexOf('fa-maxFileSize-sync-test.log') > -1; }
+          );
+          assert.equal(logFiles.length, 2);
+          done(err);
+        });
+      });
+    });
+  });
+
+  describe('with a max file size and 2 backups', function() {
+    var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-sync-test.log')
+    , logger = log4js.getLogger('max-file-size-backups');
+
+    before(function() {
       //log file of 50 bytes maximum, 2 backups
-      log4js.clearAppenders();
-      log4js.addAppender(
-        require('../lib/appenders/fileSync').appender(testFile, log4js.layouts.basicLayout, 50, 2),
-        'max-file-size-backups'
-      );
+      log4js.configure({
+        appenders: {
+          "testFile": { type: "fileSync", filename: testFile, maxLogSize: 50, backups: 2 }
+        },
+        categories: {
+          'max-file-size-backups': { appender: "testFile" }
+        }
+      });
       logger.info("This is the first log message.");
       logger.info("This is the second log message.");
       logger.info("This is the third log message.");
       logger.info("This is the fourth log message.");
-      var that = this;
+    });
 
+    after(function() {
+      remove(testFile);
+      remove(testFile+'.1');
+      remove(testFile+'.2');
+    });
+
+    it('should produce 3 files, named in sequence', function(done) {
       fs.readdir(__dirname, function(err, files) {
         if (files) {
-          that.callback(null, files.sort());
+          var testFiles = files
+                            .sort()
+                            .filter(function(f) {
+                              return f.contains('fa-maxFileSize-with-backups-sync-test.log'); }
+                            );
+          testFiles.length.should.equal(3);
+          assert.deepEqual(testFiles, [
+            'fa-maxFileSize-with-backups-sync-test.log',
+            'fa-maxFileSize-with-backups-sync-test.log.1',
+            'fa-maxFileSize-with-backups-sync-test.log.2'
+          ]);
+          assert.include(
+            fs.readFileSync(path.join(__dirname, testFiles[0]), "utf8"),
+            "This is the fourth log message"
+          );
+          assert.include(
+            fs.readFileSync(path.join(__dirname, testFiles[1]), "utf8"),
+            "This is the third log message"
+          );
+          assert.include(
+            fs.readFileSync(path.join(__dirname, testFiles[2]), "utf8"),
+            "This is the second log message"
+          );
+          done();
         } else {
-          that.callback(err, files);
+          done(err, files);
         }
       });
-    },
-    'the log files': {
-      topic: function(files) {
-        var logFiles = files.filter(
-          function(file) { return file.indexOf('fa-maxFileSize-with-backups-sync-test.log') > -1; }
-        );
-        return logFiles;
-      },
-      'should be 3': function (files) {
-        assert.equal(files.length, 3);
-      },
-      'should be named in sequence': function (files) {
-        assert.deepEqual(files, [
-          'fa-maxFileSize-with-backups-sync-test.log',
-          'fa-maxFileSize-with-backups-sync-test.log.1',
-          'fa-maxFileSize-with-backups-sync-test.log.2'
-        ]);
-      },
-      'and the contents of the first file': {
-        topic: function(logFiles) {
-          fs.readFile(path.join(__dirname, logFiles[0]), "utf8", this.callback);
-        },
-        'should be the last log message': function(contents) {
-          assert.include(contents, 'This is the fourth log message.');
-        }
-      },
-      'and the contents of the second file': {
-        topic: function(logFiles) {
-          fs.readFile(path.join(__dirname, logFiles[1]), "utf8", this.callback);
-        },
-        'should be the third log message': function(contents) {
-          assert.include(contents, 'This is the third log message.');
-        }
-      },
-      'and the contents of the third file': {
-        topic: function(logFiles) {
-          fs.readFile(path.join(__dirname, logFiles[2]), "utf8", this.callback);
-        },
-        'should be the second log message': function(contents) {
-          assert.include(contents, 'This is the second log message.');
-        }
-      }
-    }
-  }
-}).addBatch({
-  'configure' : {
-    'with fileSyncAppender': {
-      topic: function() {
-        var log4js = require('../lib/log4js')
-        , logger;
-        //this config defines one file appender (to ./tmp-sync-tests.log)
-        //and sets the log level for "tests" to WARN
-        log4js.configure({
-            appenders: [{
-                category: "tests",
-                type: "file",
-                filename: "tmp-sync-tests.log",
-                layout: { type: "messagePassThrough" }
-            }],
 
-            levels: { tests:  "WARN" }
-        });
-        logger = log4js.getLogger('tests');
-        logger.info('this should not be written to the file');
-        logger.warn('this should be written to the file');
+    });
+  });
 
-        fs.readFile('tmp-sync-tests.log', 'utf8', this.callback);
-      },
-      'should load appender configuration from a json file': function(err, contents) {
+  describe('configuration', function() {
+    before(function() {
+      var log4js = require('../lib/log4js')
+      , logger;
+      //this config defines one file appender (to ./tmp-sync-tests.log)
+      //and sets the log level for "tests" to WARN
+      log4js.configure({
+          appenders: [{
+              category: "tests",
+              type: "file",
+              filename: "tmp-sync-tests.log",
+              layout: { type: "messagePassThrough" }
+          }],
+
+          levels: { tests:  "WARN" }
+      });
+      logger = log4js.getLogger('tests');
+      logger.info('this should not be written to the file');
+      logger.warn('this should be written to the file');
+    });
+
+    it('should load appender configuration from a json file', function(done) {
+      fs.readFile('tmp-sync-tests.log', 'utf8', function(err, contents) {
         assert.include(contents, 'this should be written to the file' + EOL);
         assert.equal(contents.indexOf('this should not be written to the file'), -1);
-      }
-    }
-  }
-}).export(module);
+        done(err);
+      });
+    });
+
+  });
+});

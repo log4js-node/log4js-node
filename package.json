@@ -23,7 +23,6 @@
   },
   "scripts": {
     "pretest": "jshint lib/ test/",
-    "test": "vows"
     "test": "mocha --recursive"
   },
   "directories": {

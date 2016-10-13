@@ -3,9 +3,9 @@
   "laxcomma": true,
   "indent": 2,
   "globalstrict": true,
-  "maxparams": 5,
+  "maxparams": 6,
   "maxdepth": 3,
-  "maxstatements": 20,
+  "maxstatements": 25,
   "maxcomplexity": 5,
   "maxlen": 100,
   "globals": {
@@ -14,5 +14,5 @@
     "before": true,
     "beforeEach": true,
     "after": true
-  } 
+  }
 }

@@ -1,5 +1,5 @@
 "use strict";
-var vows = require('vows')
+var should = require('should')
   , assert = require('assert')
   , log4js = require('../lib/log4js')
   , sandbox = require('sandboxed-module')
@@ -60,7 +60,7 @@ function setupLogging(category, options) {
   };
 }
 
-log4js.clearAppenders();
+zlog4js.clearAppenders();
 
 function setupTaggedLogging() {
   return setupLogging('loggly', {
