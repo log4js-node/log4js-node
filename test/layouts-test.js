@@ -1,5 +1,9 @@
 "use strict";
-var assert = require('assert');
+var vows = require('vows')
+, assert = require('assert')
+, os =  require('os')
+, semver = require('semver')
+, EOL = os.EOL || '\n';
 
 //used for patternLayout tests.
 function test(layout, event, tokens, pattern, value) {
@@ -57,7 +61,7 @@ describe('log4js layouts', function() {
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
         category: "cheese", 
         level : {
-          colour: "green", 
+          colour: "green",
           toString: function() { return "ERROR"; }
         }
       }), "thing 1 cheese");
@@ -69,7 +73,7 @@ describe('log4js layouts', function() {
         startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
         category: "cheese", 
         level: {
-          colour: "green", 
+          colour: "green",
           toString: function() { return "ERROR"; }
         }
       }), "{ thing: 1 }");
@@ -104,7 +108,7 @@ describe('log4js layouts', function() {
           startTime: new Date(2010, 11, 5, 14, 18, 30, 45), 
           category: "cheese", 
           level: {
-            colour: "green", 
+            colour: "green",
             toString: function() { return "ERROR"; }
           }
         });
@@ -152,15 +156,25 @@ describe('log4js layouts', function() {
       event.data = ['this is a test', error];
       output = layout(event);
       lines = output.split(/\n/);
-      
-      assert.equal(lines.length - 1, stack.length);
-      assert.equal(
-        lines[0], 
-        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
-      );
-      
-      for (var i = 1; i < stack.length; i++) {
-        assert.equal(lines[i+2], stack[i+1]);
+
+      if (semver.satisfies(process.version, '>=6')) {
+        assert.equal(lines.length, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i], stack[i]);
+        }
+      } else {
+        assert.equal(lines.length - 1, stack.length);
+        assert.equal(
+          lines[0],
+          "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]"
+        );
+        for (i = 1; i < stack.length; i++) {
+          assert.equal(lines[i+2], stack[i+1]);
+        }
       }
     });
 
@@ -174,8 +188,8 @@ describe('log4js layouts', function() {
       output = layout(event);
 
       assert.equal(
-        output, 
-        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test " + 
+        output,
+        "[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test " +
           "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
       );
     });
@@ -271,7 +285,7 @@ describe('log4js layouts', function() {
     it('should handle complicated patterns', function() {
       test(layout, event, tokens,
            '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
-           'this is a test\n of.tests at 14:18:30.045 cheese DEBUG\n'
+           'this is a test'+ EOL +' of.tests at 14:18:30.045 cheese DEBUG' + EOL
           );
     });
 

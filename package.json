@@ -8,8 +8,9 @@
     "log4j",
     "node"
   ],
+  "license": "Apache-2.0",
   "main": "./lib/log4js",
-  "author": "Gareth Jones <gareth.jones@sensis.com.au>",
+  "author": "Gareth Jones <gareth.nomiddlename@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/nomiddlename/log4js-node.git"
@@ -21,6 +22,8 @@
     "node": ">=0.8"
   },
   "scripts": {
+    "pretest": "jshint lib/ test/",
+    "test": "vows"
     "test": "mocha --recursive"
   },
   "directories": {
@@ -34,6 +37,7 @@
   },
   "devDependencies": {
     "async": "0.1.15",
+    "jshint": "^2.9.2",
     "sandboxed-module": "0.1.3",
     "mocha": "~1.12.0",
     "should": "~1.2.2"

@@ -5,7 +5,9 @@ var fs = require('fs')
 , path = require('path')
 , sandbox = require('sandboxed-module')
 , log4js = require('../lib/log4js')
-, should = require('should');
+, assert = require('assert')
+, zlib = require('zlib')
+, EOL = require('os').EOL || '\n';
 
 function remove(filename, cb) {
   fs.unlink(filename, function(err) { cb(); });
@@ -65,7 +67,7 @@ describe('log4js fileAppender', function() {
             'streamroller': {
               RollingFileStream: function(filename) {
                 openedFiles.push(filename);
-                
+
                 this.end = function() {
                   openedFiles.shift();
                 };
@@ -73,7 +75,7 @@ describe('log4js fileAppender', function() {
                 this.on = function() {};
               }
             }
-          }   
+          }
         }
       )(require('../lib/layouts'));
       for (var i=0; i < 5; i += 1) {
@@ -306,7 +308,7 @@ describe('log4js fileAppender', function() {
           requires: {
             'streamroller': {
               RollingFileStream: function(filename) {
-                
+
                 this.end = function() {};
                 this.on = function(evt, cb) {
                   if (evt === 'error') {
@@ -315,7 +317,7 @@ describe('log4js fileAppender', function() {
                 };
               }
             }
-          }   
+          }
         }
       )(require('../lib/layouts'));
       fileAppender({
