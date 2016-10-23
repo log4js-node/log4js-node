@@ -1,18 +1,17 @@
 # log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
 
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
- 
+
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
-framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript. 
+framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript.
 
 Out of the box it supports the following features:
 
 * coloured console logging to stdout or stderr
 * replacement of node's console.log functions (optional)
-* file appender, with log rolling based on file size
+* file appender, with configurable log rolling based on file size or date
 * SMTP appender
 * GELF appender
-* hook.io appender
 * Loggly appender
 * Logstash UDP appender
 * logFaces appender
@@ -20,6 +19,12 @@ Out of the box it supports the following features:
 * a logger for connect/express servers
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
+
+## Important changes in 1.0
+
+The default appender has been changed from `console` to `stdout` - this alleviates a memory problem that happens when logging using console. If you're using log4js in a browser (via browserify), then you'll probably need to explicitly configure log4js to use the console appender now (unless browserify handles process.stdout).
+
+I'm also trying to move away from `vows` for the tests, and use `tape` instead. New tests should be added to `test/tape`, not the vows ones.
 
 NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of node's console.log functions. Do this either by calling `log4js.replaceConsole()` or configuring with an object or json file like this:
 
@@ -51,7 +56,7 @@ By default, log4js outputs to stdout with the coloured layout (thanks to [masylu
 ```
 See example.js for a full example, but here's a snippet (also in fromreadme.js):
 ```javascript
-var log4js = require('log4js'); 
+var log4js = require('log4js');
 //console log is loaded by default, so you won't normally need to do this
 //log4js.loadAppender('console');
 log4js.loadAppender('file');
@@ -87,9 +92,9 @@ log4js.configure({
 ## configuration
 
 You can configure the appenders and log levels manually (as above), or provide a
-configuration file (`log4js.configure('path/to/file.json')`), or a configuration object. The 
-configuration file location may also be specified via the environment variable 
-LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`). 
+configuration file (`log4js.configure('path/to/file.json')`), or a configuration object. The
+configuration file location may also be specified via the environment variable
+LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`).
 An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
 You can configure log4js to check for configuration file changes at regular intervals, and if changed, reload. This allows changes to logging levels to occur without restarting the application.
 
