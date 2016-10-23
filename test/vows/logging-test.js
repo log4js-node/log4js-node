@@ -473,7 +473,7 @@ vows.describe('log4js').addBatch({
     topic: function() {
       var appenderEvents = [],
       fakeConsole = {
-        'name': 'console',
+        'name': 'stdout',
         'appender': function () {
           return function(evt) {
             appenderEvents.push(evt);
