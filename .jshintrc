@@ -5,7 +5,7 @@
   "globalstrict": true,
   "maxparams": 6,
   "maxdepth": 3,
-  "maxstatements": 20,
+  "maxstatements": 30,
   "maxcomplexity": 10,
   "maxlen": 100,
   "globals": {
