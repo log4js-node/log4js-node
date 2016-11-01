@@ -19,7 +19,7 @@
     "url": "http://github.com/nomiddlename/log4js-node/issues"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.12"
   },
   "scripts": {
     "pretest": "jshint lib/ test/",
@@ -32,7 +32,7 @@
   "dependencies": {
     "debug": "^2.2.0",
     "semver": "^5.3.0",
-    "streamroller": "^0.1.1"
+    "streamroller": "^0.2.1"
   },
   "devDependencies": {
     "jshint": "^2.9.2",
