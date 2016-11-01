@@ -26,7 +26,7 @@ vows.describe('log4js fileAppender').addBatch({
       , count = 5, logfile;
 
       while (count--) {
-        logfile = path.join(__dirname, '/fa-default-test' + count + '.log');
+        logfile = path.join(__dirname, 'fa-default-test' + count + '.log');
         log4js.addAppender(
           require('../../lib/appenders/file').appender(logfile),
           'default-settings'
@@ -36,8 +36,8 @@ vows.describe('log4js fileAppender').addBatch({
       return listenersCount;
     },
 
-    'does not add more than one `exit` listeners': function (initialCount) {
-      assert.ok(process.listeners('exit').length <= initialCount + 1);
+    'does not add more than one `exit` listener': function (initialCount) {
+      assert.equal(initialCount + 1, process.listeners('exit').length);
     }
   },
 
@@ -51,7 +51,9 @@ vows.describe('log4js fileAppender').addBatch({
           globals: {
             process: {
               on: function(evt, listener) {
-                exitListener = listener;
+                if (evt == 'exit') {
+                  exitListener = listener;
+                }
               }
             }
           },
@@ -196,7 +198,7 @@ vows.describe('log4js fileAppender').addBatch({
   },
   'with a max file size and no backups': {
     topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-test.log')
+      var testFile = path.join(__dirname, 'fa-maxFileSize-test.log')
       , logger = log4js.getLogger('max-file-size')
       , that = this;
       remove(testFile);
@@ -234,7 +236,7 @@ vows.describe('log4js fileAppender').addBatch({
   },
   'with a max file size and 2 backups': {
     topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-test.log')
+      var testFile = path.join(__dirname, 'fa-maxFileSize-with-backups-test.log')
       , logger = log4js.getLogger('max-file-size-backups');
       remove(testFile);
       remove(testFile+'.1');
@@ -307,7 +309,7 @@ vows.describe('log4js fileAppender').addBatch({
   },
   'with a max file size and 2 compressed backups': {
     topic: function() {
-      var testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-compressed-test.log')
+      var testFile = path.join(__dirname, 'fa-maxFileSize-with-backups-compressed-test.log')
       , logger = log4js.getLogger('max-file-size-backups');
       remove(testFile);
       remove(testFile+'.1.gz');
@@ -317,7 +319,7 @@ vows.describe('log4js fileAppender').addBatch({
       log4js.clearAppenders();
       log4js.addAppender(
         require('../../lib/appenders/file').appender(
-          testFile, log4js.layouts.basicLayout, 50, 2, true
+          testFile, log4js.layouts.basicLayout, 50, 2, { compress: true }
         ),
         'max-file-size-backups'
       );
