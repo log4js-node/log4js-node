@@ -68,7 +68,8 @@ vows.describe('logstashUDP appender').addBatch({
       var fields = {
         field1: 'value1',
         field2: 'value2',
-        level: 'TRACE'
+        level: 'TRACE',
+        category: 'myCategory'
       };
       assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
       assert.equal(json.message, 'Log event #1');
@@ -99,7 +100,10 @@ vows.describe('logstashUDP appender').addBatch({
     'it sets some defaults': function (topic) {
       var json = JSON.parse(topic.results.buffer.toString());
       assert.equal(json.type, 'myLogger');
-      assert.equal(JSON.stringify(json.fields), JSON.stringify({'level': 'TRACE'}));
+      assert.equal(
+        JSON.stringify(json.fields),
+        JSON.stringify({'level': 'TRACE', 'category': 'myLogger'})
+      );
     }
   },
 
@@ -118,7 +122,12 @@ vows.describe('logstashUDP appender').addBatch({
       return setup;
     },'they should be added to fields structure': function (topic) {
       var json = JSON.parse(topic.results.buffer.toString());
-      var fields = {'extra1': 'value1', 'extra2': 'value2', 'level': 'TRACE'};
+      var fields = {
+        'extra1': 'value1',
+        'extra2': 'value2',
+        'level': 'TRACE',
+        'category': 'myLogger'
+      };
       assert.equal(JSON.stringify(json.fields), JSON.stringify(fields));
     }
   }
