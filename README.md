@@ -26,6 +26,8 @@ The default appender has been changed from `console` to `stdout` - this alleviat
 
 I'm also trying to move away from `vows` for the tests, and use `tape` instead. New tests should be added to `test/tape`, not the vows ones.
 
+log4js also no longer supports node versions below 0.12.x.
+
 NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of node's console.log functions. Do this either by calling `log4js.replaceConsole()` or configuring with an object or json file like this:
 
 ```javascript
@@ -95,7 +97,7 @@ You can configure the appenders and log levels manually (as above), or provide a
 configuration file (`log4js.configure('path/to/file.json')`), or a configuration object. The
 configuration file location may also be specified via the environment variable
 LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`).
-An example file can be found in `test/log4js.json`. An example config file with log rolling is in `test/with-log-rolling.json`.
+An example file can be found in `test/vows/log4js.json`. An example config file with log rolling is in `test/vows/with-log-rolling.json`.
 You can configure log4js to check for configuration file changes at regular intervals, and if changed, reload. This allows changes to logging levels to occur without restarting the application.
 
 To turn it on and specify a period:
