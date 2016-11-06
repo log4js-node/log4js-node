@@ -1,5 +1,5 @@
 //remember to change the require to just 'log4js' if you've npm install'ed it
-var log4js = require('./lib/log4js');
+var log4js = require('../lib/log4js');
 //by default the console appender is loaded
 //log4js.loadAppender('console');
 //you'd only need to add the console appender if you

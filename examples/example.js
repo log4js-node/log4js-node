@@ -1,3 +1,4 @@
+"use strict";
 var log4js = require('../lib/log4js');
 //log the cheese logger messages to a file, and the console ones as well.
 log4js.configure({
@@ -55,6 +56,3 @@ anotherLogger.debug("Just checking");
 //will also go to console, since that's configured for all categories
 var pantsLog = log4js.getLogger('pants');
 pantsLog.debug("Something for pants");
-
-
-
