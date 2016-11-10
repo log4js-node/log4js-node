@@ -28,14 +28,14 @@ vows.describe('date_format').addBatch({
       date.getTimezoneOffset = function() { return -660; };
       assert.equal(
         dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date),
-        "2010-01-11T14:31:30+1100"
+        "2010-01-11T14:31:30.005+1100"
       );
       date = createFixedDate();
       date.setMinutes(date.getMinutes() - date.getTimezoneOffset() + 120);
       date.getTimezoneOffset = function() { return 120; };
       assert.equal(
         dateFormat.asString(dateFormat.ISO8601_WITH_TZ_OFFSET_FORMAT, date),
-        "2010-01-11T14:31:30-0200"
+        "2010-01-11T14:31:30.005-0200"
       );
 
     },

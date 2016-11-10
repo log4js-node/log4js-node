@@ -252,7 +252,7 @@ vows.describe('log4js layouts').addBatch({
       test(args, '%d', '2010-12-05 14:18:30.045');
     },
     '%d should allow for format specification': function(args) {
-      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30-0000');
+      test(args, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30.045-0000');
       test(args, '%d{ISO8601}', '2010-12-05 14:18:30.045');
       test(args, '%d{ABSOLUTE}', '14:18:30.045');
       test(args, '%d{DATE}', '05 12 2010 14:18:30.045');
