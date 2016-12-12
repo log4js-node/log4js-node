@@ -115,6 +115,7 @@ vows.describe('log4js cluster appender').addBatch({
 				send: function(data) {
 					registeredProcessEvents.push(data);
 				},
+        env: process.env
 
 			};
 

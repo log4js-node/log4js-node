@@ -25,6 +25,7 @@ function setupLogging(category, options) {
   };
 
   var logstashModule = sandbox.require('../../lib/appenders/logstashUDP', {
+    singleOnly: true,
     requires: {
       'dgram': fakeDgram
     }

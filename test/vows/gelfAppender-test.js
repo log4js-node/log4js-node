@@ -57,6 +57,7 @@ var vows = require('vows')
     messagePassThroughLayout: realLayouts.messagePassThroughLayout
   }
   , appender = sandbox.require('../../lib/appenders/gelf', {
+    singleOnly: true,
     requires: {
       dgram: fakeDgram,
       zlib: fakeZlib,

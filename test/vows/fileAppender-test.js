@@ -57,6 +57,7 @@ vows.describe('log4js fileAppender').addBatch({
               }
             }
           },
+          singleOnly: true,
           requires: {
             'streamroller': {
               RollingFileStream: function(filename) {

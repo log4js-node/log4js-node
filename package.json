@@ -42,10 +42,10 @@
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.0.0",
     "ghooks": "^1.2.1",
-    "sandboxed-module": "0.3.0",
+    "sandboxed-module": "^2.0.3",
     "tape": "^4.6.2",
     "validate-commit-msg": "^2.6.1",
-    "vows": "0.7.0"
+    "vows": "0.8.0"
   },
   "optionalDependencies": {
     "hipchat-notifier": "^1.1.0",
@@ -83,5 +83,8 @@
       },
       "commit-msg": "validate-commit-msg"
     }
+  },
+  "peerDependencies": {
+    "axios": "^0.15.3"
   }
 }

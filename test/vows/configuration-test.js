@@ -26,6 +26,7 @@ vows.describe('log4js configure').addBatch({
         log4js = sandbox.require(
           '../../lib/log4js',
           {
+            singleOnly: true,
             requires: {
               './appenders/cheese': testAppender
             }
@@ -56,9 +57,12 @@ vows.describe('log4js configure').addBatch({
         var testAppender = makeTestAppender(),
         log4js = sandbox.require(
           '../../lib/log4js',
-          { requires: { './appenders/cheese': testAppender } }
+          {
+            singleOnly: true,
+            requires: { './appenders/cheese': testAppender }
+          }
         );
-        
+
         log4js.loadAppender('cheese');
         return log4js;
       },
@@ -74,7 +78,10 @@ vows.describe('log4js configure').addBatch({
         var testAppender = makeTestAppender(),
         log4js = sandbox.require(
           '../../lib/log4js',
-          { requires: { 'some/other/external': testAppender } }
+          {
+            singleOnly: true,
+            requires: { 'some/other/external': testAppender }
+          }
         );
         log4js.loadAppender('some/other/external');
         return log4js;

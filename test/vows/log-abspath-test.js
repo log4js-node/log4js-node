@@ -10,7 +10,9 @@ vows.describe('log4js-abspath').addBatch({
       var appenderOptions,
       log4js = sandbox.require(
         '../../lib/log4js',
-        { requires:
+        {
+          singleOnly: true,
+          requires:
           { './appenders/fake':
             { name: "fake",
               appender: function() {},
