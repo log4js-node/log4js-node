@@ -1,19 +1,21 @@
-"use strict";
-var test = require('tape')
-, path = require('path')
-, sandbox = require('sandboxed-module');
+'use strict';
 
-test('Reload configuration shutdown hook', function(t) {
-  var timerId
-  , log4js = sandbox.require(
+const test = require('tape');
+const path = require('path');
+const sandbox = require('sandboxed-module');
+
+test('Reload configuration shutdown hook', (t) => {
+  let timerId;
+
+  const log4js = sandbox.require(
     '../../lib/log4js',
     {
       globals: {
-        clearInterval: function(id) {
+        clearInterval: function (id) {
           timerId = id;
         },
-        setInterval: function(fn, time) {
-          return "1234";
+        setInterval: function () {
+          return '1234';
         }
       }
     }
@@ -25,9 +27,8 @@ test('Reload configuration shutdown hook', function(t) {
   );
 
   t.plan(1);
-  log4js.shutdown(function() {
-    t.equal(timerId, "1234", "Shutdown should clear the reload timer");
+  log4js.shutdown(() => {
+    t.equal(timerId, '1234', 'Shutdown should clear the reload timer');
     t.end();
   });
-
 });

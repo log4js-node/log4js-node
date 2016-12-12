@@ -1,18 +1,18 @@
-"use strict";
-var vows = require('vows')
-  , assert = require('assert')
-  , log4js = require('../../lib/log4js')
-  , sandbox = require('sandboxed-module')
-  ;
+'use strict';
+
+const vows = require('vows');
+const assert = require('assert');
+const log4js = require('../../lib/log4js');
+const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
-  var msgs = [];
+  const msgs = [];
 
-  var fakeLoggly = {
-    createClient: function(options) {
+  const fakeLoggly = {
+    createClient: function (opts) {
       return {
-        config: options,
-        log: function(msg, tags) {
+        config: opts,
+        log: function (msg, tags) {
           msgs.push({
             msg: msg,
             tags: tags
@@ -22,8 +22,8 @@ function setupLogging(category, options) {
     }
   };
 
-  var fakeLayouts = {
-    layout: function(type, config) {
+  const fakeLayouts = {
+    layout: function (type, config) {
       this.type = type;
       this.config = config;
       return log4js.layouts.messagePassThroughLayout;
@@ -32,16 +32,16 @@ function setupLogging(category, options) {
     messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
   };
 
-  var fakeConsole = {
+  const fakeConsole = {
     errors: [],
-    error: function(msg, value) {
+    error: function (msg, value) {
       this.errors.push({ msg: msg, value: value });
     }
   };
 
-  var logglyModule = sandbox.require('../../lib/appenders/loggly', {
+  const logglyModule = sandbox.require('../../lib/appenders/loggly', {
     requires: {
-      'loggly': fakeLoggly,
+      loggly: fakeLoggly,
       '../layouts': fakeLayouts
     },
     globals: {
@@ -72,38 +72,38 @@ function setupTaggedLogging() {
 
 vows.describe('log4js logglyAppender').addBatch({
   'with minimal config': {
-    topic: function() {
-      var setup = setupTaggedLogging();
+    topic: function () {
+      const setup = setupTaggedLogging();
       setup.logger.log('trace', 'Log event #1', 'Log 2', { tags: ['tag1', 'tag2'] });
       return setup;
     },
-    'has a results.length of 1': function(topic) {
+    'has a results.length of 1': function (topic) {
       assert.equal(topic.results.length, 1);
     },
-    'has a result msg with both args concatenated': function(topic) {
+    'has a result msg with both args concatenated': function (topic) {
       assert.equal(topic.results[0].msg.msg, 'Log event #1 Log 2');
     },
-    'has a result tags with the arg that contains tags': function(topic) {
+    'has a result tags with the arg that contains tags': function (topic) {
       assert.deepEqual(topic.results[0].tags, ['tag1', 'tag2']);
     }
   }
 }).addBatch({
   'config with object with tags and other keys': {
-    topic: function() {
-      var setup = setupTaggedLogging();
+    topic: function () {
+      const setup = setupTaggedLogging();
 
       // ignore this tags object b/c there are 2 keys
       setup.logger.log('trace', 'Log event #1', { other: 'other', tags: ['tag1', 'tag2'] });
       return setup;
     },
-    'has a results.length of 1': function(topic) {
+    'has a results.length of 1': function (topic) {
       assert.equal(topic.results.length, 1);
     },
-    'has a result msg with the args concatenated': function(topic) {
+    'has a result msg with the args concatenated': function (topic) {
       assert.equal(topic.results[0].msg.msg,
         'Log event #1 { other: \'other\', tags: [ \'tag1\', \'tag2\' ] }');
     },
-    'has a result tags with the arg that contains no tags': function(topic) {
+    'has a result tags with the arg that contains no tags': function (topic) {
       assert.deepEqual(topic.results[0].tags, []);
     }
   }

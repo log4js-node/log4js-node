@@ -22,7 +22,8 @@
     "node": ">=4.0"
   },
   "scripts": {
-    "clean": "find test -type f ! -name '*.json' ! -name '*.js' -delete && rm *.log",
+    "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
+    "lint": "eslint lib/ test/",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
     "test": "tape 'test/tape/**/*.js' && vows test/vows/*.js"

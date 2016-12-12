@@ -1,0 +1,11 @@
+{
+  "extends": "../.eslintrc",
+	"rules": {
+		"no-plusplus": 0,
+    "global-require": 0,
+    "no-mixed-operators": 0,
+    "no-underscore-dangle": 0,
+    "guard-for-in": 0,
+    "no-restricted-syntax": ["error", "WithStatement"]
+	}
+}

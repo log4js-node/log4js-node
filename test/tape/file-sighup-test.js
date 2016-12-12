@@ -1,26 +1,29 @@
-"use strict";
-var test = require('tape')
-, sandbox = require('sandboxed-module');
+'use strict';
 
-test('file appender SIGHUP', function(t) {
-  var closeCalled = 0
-  , openCalled = 0
-  , appender = sandbox.require(
+const test = require('tape');
+const sandbox = require('sandboxed-module');
+
+test('file appender SIGHUP', (t) => {
+  let closeCalled = 0;
+  let openCalled = 0;
+
+  sandbox.require(
     '../../lib/appenders/file',
     {
-      'requires': {
-        'streamroller': {
-          'RollingFileStream': function() {
-            this.openTheStream = function() {
+      requires: {
+        streamroller: {
+          RollingFileStream: function () {
+            this.openTheStream = function () {
               openCalled++;
             };
 
-            this.closeTheStream = function(cb) {
+            this.closeTheStream = function (cb) {
               closeCalled++;
               cb();
             };
 
-            this.on = function() {};
+            this.on = function () {
+            };
           }
         }
       }
@@ -29,7 +32,7 @@ test('file appender SIGHUP', function(t) {
 
   process.kill(process.pid, 'SIGHUP');
   t.plan(2);
-  setTimeout(function() {
+  setTimeout(() => {
     t.equal(openCalled, 1, 'open should be called once');
     t.equal(closeCalled, 1, 'close should be called once');
     t.end();

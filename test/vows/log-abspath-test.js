@@ -1,34 +1,39 @@
-"use strict";
-var vows = require('vows')
-, assert = require('assert')
-, path = require('path')
-, sandbox = require('sandboxed-module');
+'use strict';
+
+const vows = require('vows');
+const assert = require('assert');
+const path = require('path');
+const sandbox = require('sandboxed-module');
 
 vows.describe('log4js-abspath').addBatch({
-  'options': {
-    topic: function() {
-      var appenderOptions,
-      log4js = sandbox.require(
+  options: {
+    topic: function () {
+      let appenderOptions;
+
+      const log4js = sandbox.require(
         '../../lib/log4js',
         {
           singleOnly: true,
-          requires:
-          { './appenders/fake':
-            { name: "fake",
-              appender: function() {},
-              configure: function(configuration, options) {
+          requires: {
+            './appenders/fake': {
+              name: 'fake',
+              appender: function () {
+              },
+              configure: function (configuration, options) {
                 appenderOptions = options;
-                return function() {};
+                return function () {
+                };
               }
             }
           }
         }
-      ),
-      config = {
-        "appenders": [
+      );
+
+      const config = {
+        appenders: [
           {
-            "type" : "fake",
-            "filename" : "cheesy-wotsits.log"
+            type: 'fake',
+            filename: 'cheesy-wotsits.log'
           }
         ]
       };
@@ -38,41 +43,45 @@ vows.describe('log4js-abspath').addBatch({
       });
       return appenderOptions;
     },
-    'should be passed to appenders during configuration': function(options) {
+    'should be passed to appenders during configuration': function (options) {
       assert.equal(options.cwd, '/absolute/path/to');
     }
   },
 
   'file appender': {
-    topic: function() {
-      var fileOpened,
-      fileAppender = sandbox.require(
+    topic: function () {
+      let fileOpened;
+
+      const fileAppender = sandbox.require(
         '../../lib/appenders/file',
-        { requires:
-          { 'streamroller':
-            { RollingFileStream:
-              function(file) {
+        {
+          requires: {
+            streamroller: {
+              RollingFileStream: function (file) {
                 fileOpened = file;
                 return {
-                  on: function() {},
-                  end: function() {}
+                  on: function () {
+                  },
+                  end: function () {
+                  }
                 };
               }
             }
           }
         }
       );
+
       fileAppender.configure(
         {
-          filename: "whatever.log",
+          filename: 'whatever.log',
           maxLogSize: 10
         },
         { cwd: '/absolute/path/to' }
       );
       return fileOpened;
     },
-    'should prepend options.cwd to config.filename': function(fileOpened) {
-      var expected = path.sep + path.join("absolute", "path", "to", "whatever.log");
+    'should prepend options.cwd to config.filename': function (fileOpened) {
+      const expected = path.sep + path.join('absolute', 'path', 'to', 'whatever.log');
       assert.equal(fileOpened, expected);
     }
   },
