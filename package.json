@@ -1,6 +1,6 @@
 {
   "name": "log4js",
-  "version": "0.6.38",
+  "version": "1.0.1",
   "description": "Port of Log4js to work with node.",
   "keywords": [
     "logging",
@@ -22,17 +22,19 @@
     "node": ">=4.0"
   },
   "scripts": {
-    "pretest": "eslint lib/**/*",
-    "test": "vows",
+    "clean": "find test -type f ! -name '*.json' ! -name '*.js' -delete && rm *.log",
     "posttest": "npm run clean",
-    "clean": "find test -type f ! -name '*.json' ! -name '*.js' -delete && rm *.log"
+    "pretest": "eslint lib/**/*",
+    "test": "tape 'test/tape/**/*.js' && vows test/vows/*.js"
   },
   "directories": {
     "test": "test",
     "lib": "lib"
   },
   "dependencies": {
-    "semver": "^5.3.0"
+    "debug": "^2.2.0",
+    "semver": "^5.3.0",
+    "streamroller": "^0.2.1"
   },
   "devDependencies": {
     "conventional-changelog": "^1.1.0",
@@ -41,6 +43,7 @@
     "eslint-plugin-import": "^1.5.0",
     "ghooks": "^1.2.1",
     "sandboxed-module": "0.3.0",
+    "tape": "^4.6.2",
     "validate-commit-msg": "^2.6.1",
     "vows": "0.7.0"
   },
