@@ -12,10 +12,11 @@ function setupLogging(category, options) {
     createClient: function(options) {
       return {
         config: options,
-        log: function(msg, tags) {
+        log: function(msg, tags, cb) {
           msgs.push({
             msg: msg,
-            tags: tags
+            tags: tags,
+            cb: cb
           });
         }
       };
@@ -49,7 +50,10 @@ function setupLogging(category, options) {
     }
   });
 
-  log4js.addAppender(logglyModule.configure(options), category);
+  log4js.addAppender(
+    logglyModule.configure(options),
+    logglyModule.shutdown,
+    category);
 
   return {
     logger: log4js.getLogger(category),
@@ -105,6 +109,33 @@ vows.describe('log4js logglyAppender').addBatch({
     },
     'has a result tags with the arg that contains no tags': function(topic) {
       assert.deepEqual(topic.results[0].tags, []);
+    }
+  }
+}).addBatch({
+  'with shutdown callback': {
+    topic: function() {
+      var setup = setupTaggedLogging();
+
+      setup.logger.log('trace', 'Log event #1', 'Log 2', {
+        tags: ['tag1', 'tag2']
+      });
+
+      return setup;
+    },
+    'after the last message has been sent': {
+      topic: function (topic) {
+        var that = this;
+
+        log4js.shutdown(this.callback);
+        topic.results[0].cb();
+
+        // setTimeout(function() {
+        //   that.callback(new Error('Shutdown callback has not been called'));
+        // }, 0);
+      },
+      'calls `log4js.shutdown`s callback function.': function(error, result) {
+        assert.equal(error, undefined);
+      }
     }
   }
 }).export(module);
