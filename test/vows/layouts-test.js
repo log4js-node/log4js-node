@@ -59,6 +59,17 @@ vows.describe('log4js layouts').addBatch({
         }
       }), "nonsense");
     },
+    'should take a logevent and output only the evaluated message function' : function(layout) {
+      assert.equal(layout({
+                            data: [function() { return "nonsense"; }],
+                            startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+                            categoryName: "cheese",
+                            level: {
+                              colour: "green",
+                              toString: function() { return "ERROR"; }
+                            }
+                          }), "nonsense");
+    },
     'should support the console.log format for the message' : function(layout) {
       assert.equal(layout({
         data: ["thing %d", 1, "cheese"],
