@@ -24,6 +24,7 @@
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
     "lint": "eslint lib/ test/",
+    "precommit": "npm test",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
     "test": "tape 'test/tape/**/*.js' && vows test/vows/*.js"
@@ -42,7 +43,7 @@
     "eslint": "^3.12.0",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.0.0",
-    "ghooks": "^1.2.1",
+    "husky": "^0.12.0",
     "sandboxed-module": "^2.0.3",
     "tape": "^4.6.2",
     "validate-commit-msg": "^2.6.1",
@@ -78,12 +79,6 @@
       "subjectPattern": ".+",
       "subjectPatternErrorMsg": "subject does not match subject pattern!",
       "helpMessage": "\n# allowed type: feat, fix, docs, style, refactor, example, perf, test, chore, revert\n# subject no more than 50 chars\n# a body line no more than 72 chars"
-    },
-    "ghooks": {
-      "//": {
-        "pre-commit": "check code style"
-      },
-      "commit-msg": "validate-commit-msg"
     }
   },
   "peerDependencies": {
