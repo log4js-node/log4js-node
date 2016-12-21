@@ -25,6 +25,7 @@
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
     "lint": "eslint lib/ test/",
     "prepush": "npm test",
+    "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
     "test": "tape 'test/tape/**/*.js' && vows test/vows/*.js"
