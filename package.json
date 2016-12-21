@@ -24,7 +24,7 @@
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
     "lint": "eslint lib/ test/",
-    "precommit": "npm test",
+    "prepush": "npm test",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
     "test": "tape 'test/tape/**/*.js' && vows test/vows/*.js"
