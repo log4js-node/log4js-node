@@ -4,7 +4,7 @@ const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const net = require('net');
 
-test('multiprocess appender shutdown (master)', { timeout: 1000 }, (t) => {
+test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
   log4js.configure({
     appenders: [
       {
