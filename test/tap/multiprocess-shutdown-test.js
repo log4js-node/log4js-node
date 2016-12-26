@@ -1,10 +1,10 @@
 'use strict';
 
-const test = require('tape');
+const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const net = require('net');
 
-test('multiprocess appender shutdown (master)', (t) => {
+test('multiprocess appender shutdown (master)', { timeout: 1000 }, (t) => {
   log4js.configure({
     appenders: [
       {
@@ -16,7 +16,6 @@ test('multiprocess appender shutdown (master)', (t) => {
     ]
   });
 
-  t.timeoutAfter(1000, 'shutdown did not happen within 1000ms');
   setTimeout(() => {
     log4js.shutdown(() => {
       net.connect({ port: 12345 }, () => {

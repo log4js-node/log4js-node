@@ -17,3 +17,5 @@ test/streams/test-*
 .DS_Store
 
 yarn.lock
+coverage/
+.nyc_output/

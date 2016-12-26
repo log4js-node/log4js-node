@@ -1,18 +1,18 @@
 'use strict';
 
-const test = require('tape');
+const test = require('tap').test;
 const layouts = require('../../lib/layouts');
 const sandbox = require('sandboxed-module');
 
-test('stderr appender', (t) => {
+test('stdout appender', (t) => {
   const output = [];
 
   const appender = sandbox.require(
-    '../../lib/appenders/stderr',
+    '../../lib/appenders/stdout',
     {
       globals: {
         process: {
-          stderr: {
+          stdout: {
             write: function (data) {
               output.push(data);
             }
@@ -22,9 +22,9 @@ test('stderr appender', (t) => {
     }
   ).appender(layouts.messagePassThroughLayout);
 
-  appender({ data: ['biscuits'] });
+  appender({ data: ['cheese'] });
   t.plan(2);
   t.equal(output.length, 1, 'There should be one message.');
-  t.equal(output[0], 'biscuits\n', 'The message should be biscuits.');
+  t.equal(output[0], 'cheese\n', 'The message should be cheese.');
   t.end();
 });

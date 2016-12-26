@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tape');
+const test = require('tap').test;
 const path = require('path');
 const sandbox = require('sandboxed-module');
 

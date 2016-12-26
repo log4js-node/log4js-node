@@ -1,6 +1,6 @@
 'use strict';
 
-const test = require('tape');
+const test = require('tap').test;
 const sandbox = require('sandboxed-module');
 
 test('file appender SIGHUP', (t) => {
@@ -19,10 +19,15 @@ test('file appender SIGHUP', (t) => {
 
             this.closeTheStream = function (cb) {
               closeCalled++;
-              cb();
+              if (cb) {
+                cb();
+              }
             };
 
             this.on = function () {
+            };
+
+            this.end = function () {
             };
           }
         }
