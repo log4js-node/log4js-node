@@ -28,7 +28,7 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
-    "test": "tap 'test/tap/**/*.js' && vows test/vows/*.js",
+    "test": "tap 'test/tap/**/*.js' --coverage && vows test/vows/*.js",
     "cover": "tap test/tap/**/*.js --cov --coverage-report=lcov"
   },
   "directories": {
@@ -41,6 +41,7 @@
     "streamroller": "^0.3.0"
   },
   "devDependencies": {
+    "codecov": "^1.0.1",
     "conventional-changelog": "^1.1.0",
     "eslint": "^3.12.0",
     "eslint-config-airbnb-base": "^11.0.0",
