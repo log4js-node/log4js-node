@@ -29,7 +29,7 @@
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
     "test": "tap 'test/tap/**/*.js' --coverage && vows test/vows/*.js",
-    "cover": "tap test/tap/**/*.js --cov --coverage-report=lcov"
+    "cover": "tap test/tap/**/*.js --coverage-report=lcov && codecov"
   },
   "directories": {
     "test": "test",
