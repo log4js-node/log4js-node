@@ -5,7 +5,7 @@
       "exclude": "web",
       "appender": {
         "type": "file",
-        "filename": "test/vows/categoryFilter-noweb.log",
+        "filename": "test/tap/categoryFilter-noweb.log",
         "layout": {
           "type": "messagePassThrough"
         }
@@ -14,7 +14,7 @@
     {
       "category": "web",
       "type": "file",
-      "filename": "test/vows/categoryFilter-web.log", 
+      "filename": "test/tap/categoryFilter-web.log", 
       "layout": {
         "type": "messagePassThrough"
       }
