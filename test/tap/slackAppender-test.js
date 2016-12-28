@@ -1,7 +1,6 @@
 'use strict';
 
-const vows = require('vows');
-const assert = require('assert');
+const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const sandbox = require('sandboxed-module');
 
@@ -51,7 +50,6 @@ function setupLogging(category, options) {
     }
   };
 
-
   const slackModule = sandbox.require('../../lib/appenders/slack', {
     requires: {
       'slack-node': fakeSlack,
@@ -61,7 +59,6 @@ function setupLogging(category, options) {
       console: fakeConsole
     }
   });
-
 
   log4js.addAppender(slackModule.configure(options), category);
 
@@ -75,7 +72,7 @@ function setupLogging(category, options) {
   };
 }
 
-function checkMessages(result) {
+function checkMessages(assert, result) {
   for (let i = 0; i < result.messages.length; ++i) {
     assert.equal(result.messages[i].channel, '#CHANNEL');
     assert.equal(result.messages[i].username, 'USERNAME');
@@ -85,85 +82,76 @@ function checkMessages(result) {
 
 log4js.clearAppenders();
 
-vows.describe('log4js slackAppender').addBatch({
-  'slack setup': {
-    topic: setupLogging('slack setup', {
+test('log4js slackAppender', (batch) => {
+  batch.test('slack setup', (t) => {
+    const result = setupLogging('slack setup', {
       token: 'TOKEN',
       channel_id: '#CHANNEL',
       username: 'USERNAME',
       format: 'FORMAT',
       icon_url: 'ICON_URL'
-    }),
-    'slack credentials should match': function (result) {
+    });
+
+    t.test('slack credentials should match', (assert) => {
       assert.equal(result.credentials.token, 'TOKEN');
       assert.equal(result.credentials.channel_id, '#CHANNEL');
       assert.equal(result.credentials.username, 'USERNAME');
       assert.equal(result.credentials.format, 'FORMAT');
       assert.equal(result.credentials.icon_url, 'ICON_URL');
-    }
-  },
+      assert.end();
+    });
+    t.end();
+  });
 
-  'basic usage': {
-    topic: function () {
-      const setup = setupLogging('basic usage', {
-        token: 'TOKEN',
-        channel_id: '#CHANNEL',
-        username: 'USERNAME',
-        format: 'FORMAT',
-        icon_url: 'ICON_URL',
-      });
+  batch.test('basic usage', (t) => {
+    const setup = setupLogging('basic usage', {
+      token: 'TOKEN',
+      channel_id: '#CHANNEL',
+      username: 'USERNAME',
+      format: 'FORMAT',
+      icon_url: 'ICON_URL',
+    });
 
+    setup.logger.info('Log event #1');
+
+    t.equal(setup.messages.length, 1, 'should be one message only');
+    checkMessages(t, setup);
+    t.end();
+  });
+
+  batch.test('config with layout', (t) => {
+    const result = setupLogging('config with layout', {
+      layout: {
+        type: 'tester'
+      }
+    });
+    t.equal(result.layouts.type, 'tester', 'should configure layout');
+    t.end();
+  });
+
+  batch.test('separate notification for each event', (t) => {
+    const setup = setupLogging('separate notification for each event', {
+      token: 'TOKEN',
+      channel_id: '#CHANNEL',
+      username: 'USERNAME',
+      format: 'FORMAT',
+      icon_url: 'ICON_URL',
+    });
+    setTimeout(() => {
       setup.logger.info('Log event #1');
-      return setup;
-    },
-    'there should be one message only': function (result) {
-      assert.equal(result.messages.length, 1);
-    },
-    'message should contain proper data': function (result) {
-      checkMessages(result);
-    }
-  },
-  'config with layout': {
-    topic: function () {
-      const setup = setupLogging('config with layout', {
-        layout: {
-          type: 'tester'
-        }
-      });
-      return setup;
-    },
-    'should configure layout': function (result) {
-      assert.equal(result.layouts.type, 'tester');
-    }
-  },
-  'separate notification for each event': {
-    topic: function () {
-      const self = this;
-      const setup = setupLogging('separate notification for each event', {
-        token: 'TOKEN',
-        channel_id: '#CHANNEL',
-        username: 'USERNAME',
-        format: 'FORMAT',
-        icon_url: 'ICON_URL',
-      });
-      setTimeout(() => {
-        setup.logger.info('Log event #1');
-      }, 0);
-      setTimeout(() => {
-        setup.logger.info('Log event #2');
-      }, 500);
-      setTimeout(() => {
-        setup.logger.info('Log event #3');
-      }, 1100);
-      setTimeout(() => {
-        self.callback(null, setup);
-      }, 3000);
-    },
-    'there should be three messages': function (result) {
-      assert.equal(result.messages.length, 3);
-    },
-    'messages should contain proper data': function (result) {
-      checkMessages(result);
-    }
-  }
-}).export(module);
+    }, 0);
+    setTimeout(() => {
+      setup.logger.info('Log event #2');
+    }, 500);
+    setTimeout(() => {
+      setup.logger.info('Log event #3');
+    }, 1100);
+    setTimeout(() => {
+      t.equal(setup.messages.length, 3, 'should be three messages');
+      checkMessages(t, setup);
+      t.end();
+    }, 3000);
+  });
+
+  batch.end();
+});
