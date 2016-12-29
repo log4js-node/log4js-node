@@ -28,8 +28,9 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
-    "test": "tap 'test/tap/**/*.js' --cov && vows test/vows/*.js",
-    "cover": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
+    "test": "tap 'test/tap/**/*.js' && vows test/vows/*.js",
+    "coverage": "tap 'test/tap/**/*.js' --cov",
+    "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
   },
   "directories": {
     "test": "test",
