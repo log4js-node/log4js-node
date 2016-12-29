@@ -28,8 +28,8 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
-    "test": "tap 'test/tap/**/*.js' --coverage && vows test/vows/*.js",
-    "cover": "tap test/tap/**/*.js --coverage-report=lcov && codecov"
+    "test": "tap 'test/tap/**/*.js' --cov && vows test/vows/*.js",
+    "cover": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
   },
   "directories": {
     "test": "test",
@@ -47,6 +47,8 @@
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.0.0",
     "husky": "^0.12.0",
+    "istanbul-lib-instrument": "^1.3.0",
+    "nyc": "^10.0.0",
     "sandboxed-module": "^2.0.3",
     "tap": "^8.0.1",
     "validate-commit-msg": "^2.6.1",
@@ -83,6 +85,15 @@
       "subjectPatternErrorMsg": "subject does not match subject pattern!",
       "helpMessage": "\n# allowed type: feat, fix, docs, style, refactor, example, perf, test, chore, revert\n# subject no more than 50 chars\n# a body line no more than 72 chars"
     }
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "lib/**/*.js"
+    ],
+    "require": [
+      "./test/sandbox-coverage"
+    ]
   },
   "peerDependencies": {
     "axios": "^0.15.3"
