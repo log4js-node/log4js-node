@@ -1,7 +1,6 @@
 'use strict';
 
-const vows = require('vows');
-const assert = require('assert');
+const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 
 function setupLogging(category, options) {
@@ -26,20 +25,18 @@ function setupLogging(category, options) {
   };
 }
 
-vows.describe('logFaces appender').addBatch({
-  'when using HTTP receivers': {
-    topic: function () {
-      const setup = setupLogging('myCategory', {
-        type: 'logFacesAppender',
-        application: 'LFS-HTTP',
-        url: 'http://localhost/receivers/rx1'
-      });
+test('logFaces appender', (batch) => {
+  batch.test('when using HTTP receivers', (t) => {
+    const setup = setupLogging('myCategory', {
+      type: 'logFacesAppender',
+      application: 'LFS-HTTP',
+      url: 'http://localhost/receivers/rx1'
+    });
 
-      setup.logger.warn('Log event #1');
-      return setup;
-    },
-    'an event should be sent': function (topic) {
-      const event = topic.results;
+    setup.logger.warn('Log event #1');
+
+    t.test('an event should be sent', (assert) => {
+      const event = setup.results;
       assert.equal(event.a, 'LFS-HTTP');
       assert.equal(event.m, 'Log event #1');
       assert.equal(event.g, 'myCategory');
@@ -53,23 +50,23 @@ vows.describe('logFaces appender').addBatch({
         date.toISOString().substring(0, 14),
         new Date().toISOString().substring(0, 14)
       );
-    }
-  },
+      assert.end();
+    });
+    t.end();
+  });
 
-  'when using UDP receivers': {
-    topic: function () {
-      const setup = setupLogging('udpCategory', {
-        type: 'logFacesAppender',
-        application: 'LFS-UDP',
-        remoteHost: '127.0.0.1',
-        port: 55201
-      });
+  batch.test('when using UDP receivers', (t) => {
+    const setup = setupLogging('udpCategory', {
+      type: 'logFacesAppender',
+      application: 'LFS-UDP',
+      remoteHost: '127.0.0.1',
+      port: 55201
+    });
 
-      setup.logger.error('Log event #2');
-      return setup;
-    },
-    'an event should be sent': function (topic) {
-      const event = topic.results;
+    setup.logger.error('Log event #2');
+
+    t.test('an event should be sent', (assert) => {
+      const event = setup.results;
       assert.equal(event.a, 'LFS-UDP');
       assert.equal(event.m, 'Log event #2');
       assert.equal(event.g, 'udpCategory');
@@ -83,8 +80,10 @@ vows.describe('logFaces appender').addBatch({
         date.toISOString().substring(0, 14),
         new Date().toISOString().substring(0, 14)
       );
-    }
-  }
+      assert.end();
+    });
+    t.end();
+  });
 
-
-}).export(module);
+  batch.end();
+});
