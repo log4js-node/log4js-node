@@ -3,7 +3,7 @@
     {
       "category": "tests",
       "type": "dateFile",
-      "filename": "test/vows/date-file-test.log",
+      "filename": "test/tap/date-file-test.log",
       "pattern": "-from-MM-dd",
       "layout": {
         "type": "messagePassThrough"
