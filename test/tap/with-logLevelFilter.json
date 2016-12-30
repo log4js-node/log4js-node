@@ -6,7 +6,7 @@
       "level": "WARN",
       "appender": {
         "type": "file",
-        "filename": "test/vows/logLevelFilter-warnings.log",
+        "filename": "test/tap/logLevelFilter-warnings.log",
         "layout": {
           "type": "messagePassThrough"
         }
@@ -19,7 +19,7 @@
       "maxLevel": "DEBUG",
       "appender": {
         "type": "file",
-        "filename": "test/vows/logLevelFilter-debugs.log",
+        "filename": "test/tap/logLevelFilter-debugs.log",
         "layout": {
           "type": "messagePassThrough"
           }
@@ -28,7 +28,7 @@
     {
       "category": "tests",
       "type": "file",
-      "filename": "test/vows/logLevelFilter.log",
+      "filename": "test/tap/logLevelFilter.log",
       "layout": {
         "type": "messagePassThrough"
       }
