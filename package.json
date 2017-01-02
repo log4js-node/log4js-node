@@ -28,7 +28,7 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
-    "test": "tap 'test/tap/**/*.js' && vows test/vows/*.js",
+    "test": "tap 'test/tap/**/*.js'",
     "coverage": "tap 'test/tap/**/*.js' --cov",
     "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
   },
@@ -49,12 +49,10 @@
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.0.0",
     "husky": "^0.12.0",
-    "istanbul-lib-instrument": "^1.3.0",
     "nyc": "^10.0.0",
     "sandboxed-module": "^2.0.3",
     "tap": "^8.0.1",
-    "validate-commit-msg": "^2.6.1",
-    "vows": "0.8.0"
+    "validate-commit-msg": "^2.6.1"
   },
   "optionalDependencies": {
     "hipchat-notifier": "^1.1.0",
@@ -62,7 +60,7 @@
     "mailgun-js": "^0.7.0",
     "nodemailer": "^2.5.0",
     "slack-node": "~0.2.0",
-    "axios": "^0.15.0"
+    "axios": "^0.15.3"
   },
   "browser": {
     "os": false
@@ -96,8 +94,5 @@
     "require": [
       "./test/sandbox-coverage"
     ]
-  },
-  "peerDependencies": {
-    "axios": "^0.15.3"
   }
 }
