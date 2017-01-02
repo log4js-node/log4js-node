@@ -1,16 +1,12 @@
 'use strict';
 
-const vows = require('vows');
-const assert = require('assert');
+const test = require('tap').test;
 
-vows.describe('log4js global loglevel').addBatch({
-  'global loglevel': {
-    topic: function () {
-      const log4js = require('../../lib/log4js');
-      return log4js;
-    },
+test('log4js global loglevel', (batch) => {
+  batch.test('global loglevel', (t) => {
+    const log4js = require('../../lib/log4js');
 
-    'set global loglevel on creation': function (log4js) {
+    t.test('set global loglevel on creation', (assert) => {
       const log1 = log4js.getLogger('log1');
       let level = 'OFF';
       if (log1.level.toString() === level) {
@@ -23,9 +19,10 @@ vows.describe('log4js global loglevel').addBatch({
 
       const log2 = log4js.getLogger('log2');
       assert.equal(log2.level.toString(), level);
-    },
+      assert.end();
+    });
 
-    'global change loglevel': function (log4js) {
+    t.test('global change loglevel', (assert) => {
       const log1 = log4js.getLogger('log1');
       const log2 = log4js.getLogger('log2');
       let level = 'OFF';
@@ -37,9 +34,10 @@ vows.describe('log4js global loglevel').addBatch({
       log4js.setGlobalLogLevel(level);
       assert.equal(log1.level.toString(), level);
       assert.equal(log2.level.toString(), level);
-    },
+      assert.end();
+    });
 
-    'override loglevel': function (log4js) {
+    t.test('override loglevel', (assert) => {
       const log1 = log4js.getLogger('log1');
       const log2 = log4js.getLogger('log2');
       let level = 'OFF';
@@ -59,9 +57,10 @@ vows.describe('log4js global loglevel').addBatch({
       log2.removeLevel();
       assert.equal(log1.level.toString(), oldLevel);
       assert.equal(log2.level.toString(), oldLevel);
-    },
+      assert.end();
+    });
 
-    'preload loglevel': function (log4js) {
+    t.test('preload loglevel', (assert) => {
       const log1 = log4js.getLogger('log1');
       let level = 'OFF';
       if (log1.level.toString() === level) {
@@ -82,9 +81,10 @@ vows.describe('log4js global loglevel').addBatch({
       log2.removeLevel();
       assert.equal(log1.level.toString(), oldLevel);
       assert.equal(log2.level.toString(), oldLevel);
-    },
+      assert.end();
+    });
 
-    'set level on all categories': function (log4js) {
+    t.test('set level on all categories', (assert) => {
       // Get 2 loggers
       const log1 = log4js.getLogger('log1');
       const log2 = log4js.getLogger('log2');
@@ -117,6 +117,10 @@ vows.describe('log4js global loglevel').addBatch({
       // Check if the loggers got the DEBUG level
       assert.equal('DEBUG', log1.level.toString());
       assert.equal('DEBUG', log2.level.toString());
-    }
-  }
-}).export(module);
+      assert.end();
+    });
+    t.end();
+  });
+
+  batch.end();
+});
