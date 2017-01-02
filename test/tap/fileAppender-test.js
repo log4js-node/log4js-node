@@ -317,11 +317,14 @@ test('log4js fileAppender', (batch) => {
     logger.info('this should not be written to the file');
     logger.warn('this should be written to the file');
 
-    fs.readFile('tmp-tests.log', 'utf8', (err, contents) => {
-      t.include(contents, `this should be written to the file${EOL}`);
-      t.equal(contents.indexOf('this should not be written to the file'), -1);
-      t.end();
-    });
+    // wait for the file system to catch up
+    setTimeout(() => {
+      fs.readFile('tmp-tests.log', 'utf8', (err, contents) => {
+        t.include(contents, `this should be written to the file${EOL}`);
+        t.equal(contents.indexOf('this should not be written to the file'), -1);
+        t.end();
+      });
+    }, 100);
   });
 
   batch.test('when underlying stream errors', (t) => {
