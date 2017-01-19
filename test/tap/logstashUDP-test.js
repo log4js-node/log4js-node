@@ -69,6 +69,12 @@ test('logstashUDP appender', (batch) => {
       level: 'TRACE',
       category: 'myCategory'
     };
+
+    const keys = Object.keys(fields);
+    for (let i = 0, length = keys.length; i < length; i += 1) {
+        t.equal(json[keys[i]], fields[keys[i]]);
+    }
+
     t.equal(JSON.stringify(json.fields), JSON.stringify(fields));
     t.equal(json.message, 'Log event #1');
     // Assert timestamp, up to hours resolution.
