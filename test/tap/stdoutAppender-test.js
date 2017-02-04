@@ -20,7 +20,7 @@ test('stdout appender', (t) => {
         }
       }
     }
-  ).appender(layouts.messagePassThroughLayout);
+  ).configure({ type: 'stdout', layout: { type: 'messagePassThrough' } }, layouts);
 
   appender({ data: ['cheese'] });
   t.plan(2);
