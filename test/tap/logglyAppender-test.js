@@ -1,8 +1,8 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
 const sandbox = require('sandboxed-module');
+const layouts = require('../../lib/layouts');
 
 function setupLogging(category, options) {
   const msgs = [];
@@ -26,10 +26,10 @@ function setupLogging(category, options) {
     layout: function (type, config) {
       this.type = type;
       this.config = config;
-      return log4js.layouts.messagePassThroughLayout;
+      return layouts.messagePassThroughLayout;
     },
-    basicLayout: log4js.layouts.basicLayout,
-    messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
+    basicLayout: layouts.basicLayout,
+    messagePassThroughLayout: layouts.messagePassThroughLayout
   };
 
   const fakeConsole = {
@@ -39,22 +39,26 @@ function setupLogging(category, options) {
     }
   };
 
-  const logglyModule = sandbox.require('../../lib/appenders/loggly', {
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       loggly: fakeLoggly,
-      '../layouts': fakeLayouts
+      './layouts': fakeLayouts
     },
     globals: {
       console: fakeConsole
     }
   });
 
-  log4js.addAppender(
-    logglyModule.configure(options),
-    logglyModule.shutdown,
-    category);
+  options = options || {};
+  options.type = 'loggly';
+
+  log4js.configure({
+    appenders: { loggly: options },
+    categories: { default: { appenders: ['loggly'], level: 'trace' } }
+  });
 
   return {
+    log4js: log4js,
     logger: log4js.getLogger(category),
     loggly: fakeLoggly,
     layouts: fakeLayouts,
@@ -62,8 +66,6 @@ function setupLogging(category, options) {
     results: msgs
   };
 }
-
-log4js.clearAppenders();
 
 function setupTaggedLogging() {
   return setupLogging('loggly', {
@@ -105,9 +107,9 @@ test('log4js logglyAppender', (batch) => {
       tags: ['tag1', 'tag2']
     });
 
-    log4js.shutdown(() => { t.end(); });
+    setup.log4js.shutdown(() => { t.end(); });
 
-    // shutdown will until after the last message has been sent to loggly
+    // shutdown will wait until after the last message has been sent to loggly
     setup.results[0].cb();
   });
 

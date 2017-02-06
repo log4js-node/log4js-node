@@ -5,31 +5,46 @@ const levels = require('../../lib/levels');
 const loggerModule = require('../../lib/logger');
 
 const Logger = loggerModule.Logger;
+const testDispatcher = {
+  events: [],
+  dispatch: function (evt) {
+    this.events.push(evt);
+  }
+};
+const dispatch = testDispatcher.dispatch.bind(testDispatcher);
 
 test('../../lib/logger', (batch) => {
   batch.test('constructor with no parameters', (t) => {
-    const logger = new Logger();
+    t.throws(
+      () => new Logger(),
+      new Error('No dispatch function provided.')
+    );
+    t.end();
+  });
+
+  batch.test('constructor with only dispatch', (t) => {
+    const logger = new Logger(dispatch);
     t.equal(logger.category, Logger.DEFAULT_CATEGORY, 'should use default category');
     t.equal(logger.level, levels.TRACE, 'should use TRACE log level');
     t.end();
   });
 
   batch.test('constructor with category', (t) => {
-    const logger = new Logger('cheese');
+    const logger = new Logger(dispatch, 'cheese');
     t.equal(logger.category, 'cheese', 'should use category');
     t.equal(logger.level, levels.TRACE, 'should use TRACE log level');
     t.end();
   });
 
   batch.test('constructor with category and level', (t) => {
-    const logger = new Logger('cheese', 'debug');
+    const logger = new Logger(dispatch, 'cheese', 'debug');
     t.equal(logger.category, 'cheese', 'should use category');
     t.equal(logger.level, levels.DEBUG, 'should use level');
     t.end();
   });
 
   batch.test('isLevelEnabled', (t) => {
-    const logger = new Logger('cheese', 'info');
+    const logger = new Logger(dispatch, 'cheese', 'info');
     const functions = [
       'isTraceEnabled', 'isDebugEnabled', 'isInfoEnabled',
       'isWarnEnabled', 'isErrorEnabled', 'isFatalEnabled'
@@ -52,28 +67,17 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
-  batch.test('should emit log events', (t) => {
-    const events = [];
-    const logger = new Logger();
-    logger.addListener('log', (logEvent) => {
-      events.push(logEvent);
-    });
+  batch.test('should send log events to dispatch function', (t) => {
+    const logger = new Logger(dispatch);
     logger.debug('Event 1');
-    loggerModule.disableAllLogWrites();
     logger.debug('Event 2');
-    loggerModule.enableAllLogWrites();
     logger.debug('Event 3');
+    const events = testDispatcher.events;
 
-    t.test('when log writes are enabled', (assert) => {
-      assert.equal(events[0].data[0], 'Event 1');
-      assert.end();
-    });
-
-    t.test('but not when log writes are disabled', (assert) => {
-      assert.equal(events.length, 2);
-      assert.equal(events[1].data[0], 'Event 3');
-      assert.end();
-    });
+    t.equal(events.length, 3);
+    t.equal(events[0].data[0], 'Event 1');
+    t.equal(events[1].data[0], 'Event 2');
+    t.equal(events[2].data[0], 'Event 3');
     t.end();
   });
 

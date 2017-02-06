@@ -8,9 +8,7 @@ const log4js = require('../../lib/log4js');
 const zlib = require('zlib');
 const EOL = require('os').EOL || '\n';
 
-log4js.clearAppenders();
-
-function remove(filename) {
+function removeFile(filename) {
   try {
     fs.unlinkSync(filename);
   } catch (e) {
@@ -21,16 +19,24 @@ function remove(filename) {
 test('log4js fileAppender', (batch) => {
   batch.test('adding multiple fileAppenders', (t) => {
     const initialCount = process.listeners('exit').length;
-    let count = 5;
-    let logfile;
+    log4js.configure({
+      appenders: {
+        file0: { type: 'file', filename: 'fa-default-test0.log' },
+        file1: { type: 'file', filename: 'fa-default-test1.log' },
+        file2: { type: 'file', filename: 'fa-default-test2.log' },
+        file3: { type: 'file', filename: 'fa-default-test3.log' },
+        file4: { type: 'file', filename: 'fa-default-test4.log' },
+      },
+      categories: { default: { appenders: ['file0', 'file1', 'file2', 'file3', 'file4'], level: 'debug' } }
+    });
 
-    while (count--) {
-      logfile = path.join(__dirname, `fa-default-test${count}.log`);
-      log4js.addAppender(
-        require('../../lib/appenders/file').appender(logfile),
-        'default-settings'
-      );
-    }
+    t.tearDown(() => {
+      removeFile('fa-default-test0.log');
+      removeFile('fa-default-test1.log');
+      removeFile('fa-default-test2.log');
+      removeFile('fa-default-test3.log');
+      removeFile('fa-default-test4.log');
+    });
 
     t.equal(initialCount + 1, process.listeners('exit').length, 'should not add more than one exit listener');
     t.end();
@@ -62,6 +68,10 @@ test('log4js fileAppender', (batch) => {
                 openedFiles.shift();
               };
 
+              this.write = function () {
+                return true;
+              };
+
               this.on = function () {
               };
             }
@@ -71,9 +81,9 @@ test('log4js fileAppender', (batch) => {
     );
 
     for (let i = 0; i < 5; i += 1) {
-      fileAppender.appender(`test${i}`, null, 100);
+      fileAppender.configure({ filename: `test${i}` }, { basicLayout: function () {} });
     }
-    t.ok(openedFiles);
+    t.equal(openedFiles.length, 5);
     exitListener();
     t.equal(openedFiles.length, 0, 'should close all open files');
     t.end();
@@ -82,13 +92,14 @@ test('log4js fileAppender', (batch) => {
   batch.test('with default fileAppender settings', (t) => {
     const testFile = path.join(__dirname, 'fa-default-test.log');
     const logger = log4js.getLogger('default-settings');
-    remove(testFile);
+    removeFile(testFile);
 
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/file').appender(testFile),
-      'default-settings'
-    );
+    t.tearDown(() => { removeFile(testFile); });
+
+    log4js.configure({
+      appenders: { file: { type: 'file', filename: testFile } },
+      categories: { default: { appenders: ['file'], level: 'debug' } }
+    });
 
     logger.info('This should be in the file.');
 
@@ -104,86 +115,25 @@ test('log4js fileAppender', (batch) => {
     }, 100);
   });
 
-  batch.test('fileAppender subcategories', (t) => {
-    log4js.clearAppenders();
-
-    function addAppender(cat) {
-      const testFile = path.join(
-        __dirname,
-        `fa-subcategories-test-${cat.join('-').replace(/\./g, '_')}.log`
-      );
-      remove(testFile);
-      log4js.addAppender(require('../../lib/appenders/file').appender(testFile), cat);
-      return testFile;
-    }
-
-    /* eslint-disable camelcase */
-    const file_sub1 = addAppender(['sub1']);
-    const file_sub1_sub12$sub1_sub13 = addAppender(['sub1.sub12', 'sub1.sub13']);
-    const file_sub1_sub12 = addAppender(['sub1.sub12']);
-    const logger_sub1_sub12_sub123 = log4js.getLogger('sub1.sub12.sub123');
-    const logger_sub1_sub13_sub133 = log4js.getLogger('sub1.sub13.sub133');
-    const logger_sub1_sub14 = log4js.getLogger('sub1.sub14');
-    const logger_sub2 = log4js.getLogger('sub2');
-
-    logger_sub1_sub12_sub123.info('sub1_sub12_sub123');
-    logger_sub1_sub13_sub133.info('sub1_sub13_sub133');
-    logger_sub1_sub14.info('sub1_sub14');
-    logger_sub2.info('sub2');
-
-    setTimeout(() => {
-      t.test('file contents', (assert) => {
-        const fileContents = {
-          file_sub1: fs.readFileSync(file_sub1).toString(),
-          file_sub1_sub12$sub1_sub13: fs.readFileSync(file_sub1_sub12$sub1_sub13).toString(),
-          file_sub1_sub12: fs.readFileSync(file_sub1_sub12).toString()
-        };
-        // everything but category 'sub2'
-        assert.match(
-          fileContents.file_sub1,
-          /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133|sub1.sub14 - sub1_sub14)[\s\S]){3}$/ // eslint-disable-line
-        );
-        assert.ok(
-          fileContents.file_sub1.match(/sub123/) &&
-          fileContents.file_sub1.match(/sub133/) &&
-          fileContents.file_sub1.match(/sub14/)
-        );
-        assert.ok(!fileContents.file_sub1.match(/sub2/));
-
-        // only catgories starting with 'sub1.sub12' and 'sub1.sub13'
-        assert.match(
-          fileContents.file_sub1_sub12$sub1_sub13,
-          /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] (sub1.sub12.sub123 - sub1_sub12_sub123|sub1.sub13.sub133 - sub1_sub13_sub133)[\s\S]){2}$/ // eslint-disable-line
-        );
-        assert.ok(
-          fileContents.file_sub1_sub12$sub1_sub13.match(/sub123/) &&
-          fileContents.file_sub1_sub12$sub1_sub13.match(/sub133/)
-        );
-        assert.ok(!fileContents.file_sub1_sub12$sub1_sub13.match(/sub14|sub2/));
-
-        // only catgories starting with 'sub1.sub12'
-        assert.match(
-          fileContents.file_sub1_sub12,
-          /^(\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] (sub1.sub12.sub123 - sub1_sub12_sub123)[\s\S]){1}$/ // eslint-disable-line
-        );
-        assert.ok(!fileContents.file_sub1_sub12.match(/sub14|sub2|sub13/));
-        assert.end();
-      });
-      t.end();
-    }, 3000);
-  });
-
   batch.test('with a max file size and no backups', (t) => {
     const testFile = path.join(__dirname, 'fa-maxFileSize-test.log');
     const logger = log4js.getLogger('max-file-size');
-    remove(testFile);
-    remove(`${testFile}.1`);
+
+    t.tearDown(() => {
+      removeFile(testFile);
+      removeFile(`${testFile}.1`);
+    });
+    removeFile(testFile);
+    removeFile(`${testFile}.1`);
+
     // log file of 100 bytes maximum, no backups
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 100, 0),
-      'max-file-size'
-    );
+    log4js.configure({
+      appenders: {
+        file: { type: 'file', filename: testFile, maxLogSize: 100, backups: 0 }
+      },
+      categories: { default: { appenders: ['file'], level: 'debug' } }
+    });
+
     logger.info('This is the first log message.');
     logger.info('This is an intermediate log message.');
     logger.info('This is the second log message.');
@@ -206,16 +156,24 @@ test('log4js fileAppender', (batch) => {
   batch.test('with a max file size and 2 backups', (t) => {
     const testFile = path.join(__dirname, 'fa-maxFileSize-with-backups-test.log');
     const logger = log4js.getLogger('max-file-size-backups');
-    remove(testFile);
-    remove(`${testFile}.1`);
-    remove(`${testFile}.2`);
+    removeFile(testFile);
+    removeFile(`${testFile}.1`);
+    removeFile(`${testFile}.2`);
+
+    t.tearDown(() => {
+      removeFile(testFile);
+      removeFile(`${testFile}.1`);
+      removeFile(`${testFile}.2`);
+    });
 
     // log file of 50 bytes maximum, 2 backups
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/file').appender(testFile, log4js.layouts.basicLayout, 50, 2),
-      'max-file-size-backups'
-    );
+    log4js.configure({
+      appenders: {
+        file: { type: 'file', filename: testFile, maxLogSize: 50, backups: 2 }
+      },
+      categories: { default: { appenders: ['file'], level: 'debug' } }
+    });
+
     logger.info('This is the first log message.');
     logger.info('This is the second log message.');
     logger.info('This is the third log message.');
@@ -258,18 +216,23 @@ test('log4js fileAppender', (batch) => {
   batch.test('with a max file size and 2 compressed backups', (t) => {
     const testFile = path.join(__dirname, 'fa-maxFileSize-with-backups-compressed-test.log');
     const logger = log4js.getLogger('max-file-size-backups');
-    remove(testFile);
-    remove(`${testFile}.1.gz`);
-    remove(`${testFile}.2.gz`);
+    removeFile(testFile);
+    removeFile(`${testFile}.1.gz`);
+    removeFile(`${testFile}.2.gz`);
+
+    t.tearDown(() => {
+      removeFile(testFile);
+      removeFile(`${testFile}.1.gz`);
+      removeFile(`${testFile}.2.gz`);
+    });
 
     // log file of 50 bytes maximum, 2 backups
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/file').appender(
-        testFile, log4js.layouts.basicLayout, 50, 2, { compress: true }
-      ),
-      'max-file-size-backups'
-    );
+    log4js.configure({
+      appenders: {
+        file: { type: 'file', filename: testFile, maxLogSize: 50, backups: 2, compress: true }
+      },
+      categories: { default: { appenders: ['file'], level: 'debug' } }
+    });
     logger.info('This is the first log message.');
     logger.info('This is the second log message.');
     logger.info('This is the third log message.');
@@ -309,24 +272,6 @@ test('log4js fileAppender', (batch) => {
     }, 1000);
   });
 
-  batch.test('configure with fileAppender', (t) => {
-    // this config file defines one file appender (to ./tmp-tests.log)
-    // and sets the log level for "tests" to WARN
-    log4js.configure('./test/tap/log4js.json');
-    const logger = log4js.getLogger('tests');
-    logger.info('this should not be written to the file');
-    logger.warn('this should be written to the file');
-
-    // wait for the file system to catch up
-    setTimeout(() => {
-      fs.readFile('tmp-tests.log', 'utf8', (err, contents) => {
-        t.include(contents, `this should be written to the file${EOL}`);
-        t.equal(contents.indexOf('this should not be written to the file'), -1);
-        t.end();
-      });
-    }, 100);
-  });
-
   batch.test('when underlying stream errors', (t) => {
     let consoleArgs;
     let errorHandler;
@@ -351,13 +296,16 @@ test('log4js fileAppender', (batch) => {
                   errorHandler = cb;
                 }
               };
+              this.write = function () {
+                return true;
+              };
             }
           }
         }
       }
     );
 
-    fileAppender.appender('test1.log', null, 100);
+    fileAppender.configure({ filename: 'test1.log', maxLogSize: 100 }, { basicLayout: function () {} });
     errorHandler({ error: 'aargh' });
 
     t.test('should log the error to console.error', (assert) => {

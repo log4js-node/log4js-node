@@ -2,7 +2,6 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
-const log4js = require('../../lib/log4js');
 const realLayouts = require('../../lib/layouts');
 
 const setupLogging = function (options, category, compressedLength) {
@@ -11,8 +10,9 @@ const setupLogging = function (options, category, compressedLength) {
     socket: {
       packetLength: 0,
       closed: false,
-      close: function () {
+      close: function (cb) {
         this.closed = true;
+        if (cb) cb();
       },
       send: function (pkt, offset, pktLength, port, host) {
         fakeDgram.sent = true;
@@ -62,12 +62,12 @@ const setupLogging = function (options, category, compressedLength) {
     messagePassThroughLayout: realLayouts.messagePassThroughLayout
   };
 
-  const appender = sandbox.require('../../lib/appenders/gelf', {
-    singleOnly: true,
+  const log4js = sandbox.require('../../lib/log4js', {
+    // singleOnly: true,
     requires: {
       dgram: fakeDgram,
       zlib: fakeZlib,
-      '../layouts': fakeLayouts
+      './layouts': fakeLayouts
     },
     globals: {
       process: {
@@ -75,21 +75,29 @@ const setupLogging = function (options, category, compressedLength) {
           if (evt === 'exit') {
             exitHandler = handler;
           }
-        }
+        },
+        env: {}
       },
       console: fakeConsole
     }
   });
 
-  log4js.clearAppenders();
-  log4js.addAppender(appender.configure(options || {}), category || 'gelf-test');
+  options = options || {};
+  options.type = 'gelf';
+
+  log4js.configure({
+    appenders: { gelf: options },
+    categories: { default: { appenders: ['gelf'], level: 'debug' } }
+  });
+
   return {
     dgram: fakeDgram,
     compress: fakeZlib,
     exitHandler: exitHandler,
     console: fakeConsole,
     layouts: fakeLayouts,
-    logger: log4js.getLogger(category || 'gelf-test')
+    logger: log4js.getLogger(category || 'gelf-test'),
+    log4js: log4js
   };
 };
 
@@ -161,6 +169,14 @@ test('log4js gelfAppender', (batch) => {
 
     t.ok(setup.dgram.socket.closed);
     t.end();
+  });
+
+  batch.test('on shutdown should close open sockets', (t) => {
+    const setup = setupLogging();
+    setup.log4js.shutdown(() => {
+      t.ok(setup.dgram.socket.closed);
+      t.end();
+    });
   });
 
   batch.test('on zlib error should output to console.error', (t) => {

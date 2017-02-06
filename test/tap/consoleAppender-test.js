@@ -1,7 +1,6 @@
 'use strict';
 
 const test = require('tap').test;
-const layouts = require('../../lib/layouts');
 const sandbox = require('sandboxed-module');
 
 test('log4js console appender', (batch) => {
@@ -12,17 +11,20 @@ test('log4js console appender', (batch) => {
         messages.push(msg);
       }
     };
-    const appenderModule = sandbox.require(
-      '../../lib/appenders/console',
+    const log4js = sandbox.require(
+      '../../lib/log4js',
       {
         globals: {
           console: fakeConsole
         }
       }
     );
+    log4js.configure({
+      appenders: { console: { type: 'console', layout: { type: 'messagePassThrough' } } },
+      categories: { default: { appenders: ['console'], level: 'DEBUG' } }
+    });
 
-    const appender = appenderModule.appender(layouts.messagePassThroughLayout);
-    appender({ data: ['blah'] });
+    log4js.getLogger().info('blah');
 
     t.equal(messages[0], 'blah');
     t.end();

@@ -10,20 +10,25 @@ const EOL = require('os').EOL || '\n';
 function removeFile(filename) {
   try {
     fs.unlinkSync(path.join(__dirname, filename));
-  } catch (e) {}
+  } catch (e) {
+    // doesn't matter
+  }
 }
 
 test('../../lib/appenders/dateFile', (batch) => {
   batch.test('adding multiple dateFileAppenders', (t) => {
     const listenersCount = process.listeners('exit').length;
-    const dateFileAppender = require('../../lib/appenders/dateFile');
-    let count = 5;
-    let logfile;
 
-    while (count--) {
-      logfile = path.join(__dirname, `datefa-default-test${count}.log`);
-      log4js.addAppender(dateFileAppender.appender(logfile));
-    }
+    log4js.configure({
+      appenders: {
+        date0: { type: 'dateFile', filename: 'datefa-default-test0.log' },
+        date1: { type: 'dateFile', filename: 'datefa-default-test1.log' },
+        date2: { type: 'dateFile', filename: 'datefa-default-test2.log' },
+        date3: { type: 'dateFile', filename: 'datefa-default-test3.log' },
+        date4: { type: 'dateFile', filename: 'datefa-default-test4.log' }
+      },
+      categories: { default: { appenders: ['date0', 'date1', 'date2', 'date3', 'date4'], level: 'debug' } }
+    });
 
     t.teardown(() => {
       removeFile('datefa-default-test0.log');
@@ -59,6 +64,10 @@ test('../../lib/appenders/dateFile', (batch) => {
               this.end = function () {
                 openedFiles.shift();
               };
+
+              this.write = function () {
+                return true;
+              };
             }
           }
         }
@@ -66,7 +75,7 @@ test('../../lib/appenders/dateFile', (batch) => {
     );
 
     for (let i = 0; i < 5; i += 1) {
-      dateFileAppender.appender(`test${i}`);
+      dateFileAppender.configure({ filename: `test${i}` }, { basicLayout: function () {} });
     }
     t.equal(openedFiles.length, 5);
     exitListener();
@@ -76,10 +85,12 @@ test('../../lib/appenders/dateFile', (batch) => {
 
   batch.test('with default settings', (t) => {
     const testFile = path.join(__dirname, 'date-appender-default.log');
-    const appender = require('../../lib/appenders/dateFile').appender(testFile);
+    log4js.configure({
+      appenders: { date: { type: 'dateFile', filename: testFile } },
+      categories: { default: { appenders: ['date'], level: 'DEBUG' } }
+    });
+
     const logger = log4js.getLogger('default-settings');
-    log4js.clearAppenders();
-    log4js.addAppender(appender, 'default-settings');
 
     logger.info('This should be in the file.');
     t.teardown(() => { removeFile('date-appender-default.log'); });
@@ -97,9 +108,17 @@ test('../../lib/appenders/dateFile', (batch) => {
   });
 
   batch.test('configure with dateFileAppender', (t) => {
-    // this config file defines one file appender (to ./date-file-test.log)
-    // and sets the log level for "tests" to WARN
-    log4js.configure('test/tap/with-dateFile.json');
+    log4js.configure({
+      appenders: {
+        date: {
+          type: 'dateFile',
+          filename: 'test/tap/date-file-test.log',
+          pattern: '-from-MM-dd',
+          layout: { type: 'messagePassThrough' }
+        }
+      },
+      categories: { default: { appenders: ['date'], level: 'WARN' } }
+    });
     const logger = log4js.getLogger('tests');
     logger.info('this should not be written to the file');
     logger.warn('this should be written to the file');
@@ -117,8 +136,8 @@ test('../../lib/appenders/dateFile', (batch) => {
     const format = require('date-format');
 
     const options = {
-      appenders: [
-        {
+      appenders: {
+        date: {
           category: 'tests',
           type: 'dateFile',
           filename: 'test/tap/date-file-test',
@@ -128,16 +147,16 @@ test('../../lib/appenders/dateFile', (batch) => {
             type: 'messagePassThrough'
           }
         }
-      ]
+      },
+      categories: { default: { appenders: ['date'], level: 'debug' } }
     };
 
-    const thisTime = format.asString(options.appenders[0].pattern, new Date());
+    const thisTime = format.asString(options.appenders.date.pattern, new Date());
     fs.writeFileSync(
       path.join(__dirname, `date-file-test${thisTime}`),
       `this is existing data${EOL}`,
       'utf8'
     );
-    log4js.clearAppenders();
     log4js.configure(options);
     const logger = log4js.getLogger('tests');
     logger.warn('this should be written to the file with the appended date');
@@ -152,41 +171,6 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.end();
       });
     }, 100);
-  });
-
-  batch.test('configure with cwd option', (t) => {
-    let fileOpened;
-
-    const appender = sandbox.require(
-      '../../lib/appenders/dateFile',
-      {
-        requires: {
-          streamroller: {
-            DateRollingFileStream: function (file) {
-              fileOpened = file;
-              return {
-                on: function () {
-                },
-                end: function () {
-                }
-              };
-            }
-          }
-        }
-      }
-    );
-
-    appender.configure(
-      {
-        filename: 'whatever.log',
-        maxLogSize: 10
-      },
-      { cwd: '/absolute/path/to' }
-    );
-
-    const expected = path.sep + path.join('absolute', 'path', 'to', 'whatever.log');
-    t.equal(fileOpened, expected, 'should prepend options.cwd to config.filename');
-    t.end();
   });
 
   batch.end();
