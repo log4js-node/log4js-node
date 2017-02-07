@@ -6,14 +6,16 @@ const net = require('net');
 
 test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
   log4js.configure({
-    appenders: [
-      {
+    appenders: {
+      stdout: { type: 'stdout' },
+      multi: {
         type: 'multiprocess',
         mode: 'master',
         loggerPort: 12345,
-        appender: { type: 'stdout' }
+        appender: 'stdout'
       }
-    ]
+    },
+    categories: { default: { appenders: ['multi'], level: 'debug' } }
   });
 
   setTimeout(() => {

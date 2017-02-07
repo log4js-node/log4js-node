@@ -17,26 +17,25 @@ function remove(filename) {
 test('log4js logLevelFilter', (batch) => {
   batch.test('appender', (t) => {
     const log4js = require('../../lib/log4js');
-    const logEvents = [];
+    const recording = require('../../lib/appenders/recording');
 
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/logLevelFilter')
-        .appender(
-          'ERROR',
-          undefined,
-          (evt) => {
-            logEvents.push(evt);
-          }
-        ),
-      'logLevelTest'
-    );
+    log4js.configure({
+      appenders: {
+        recorder: { type: 'recording' },
+        filtered: { type: 'logLevelFilter', appender: 'recorder', level: 'ERROR' }
+      },
+      categories: {
+        default: { appenders: ['filtered'], level: 'debug' }
+      }
+    });
 
     const logger = log4js.getLogger('logLevelTest');
     logger.debug('this should not trigger an event');
     logger.warn('neither should this');
     logger.error('this should, though');
     logger.fatal('so should this');
+
+    const logEvents = recording.replay();
 
     t.test('should only pass log events greater than or equal to its own level', (assert) => {
       assert.equal(logEvents.length, 2);
@@ -54,7 +53,47 @@ test('log4js logLevelFilter', (batch) => {
     remove(`${__dirname}/logLevelFilter-warnings.log`);
     remove(`${__dirname}/logLevelFilter-debugs.log`);
 
-    log4js.configure('test/tap/with-logLevelFilter.json');
+    t.tearDown(() => {
+      remove(`${__dirname}/logLevelFilter.log`);
+      remove(`${__dirname}/logLevelFilter-warnings.log`);
+      remove(`${__dirname}/logLevelFilter-debugs.log`);
+    });
+
+    log4js.configure({
+      appenders: {
+        'warning-file': {
+          type: 'file',
+          filename: 'test/tap/logLevelFilter-warnings.log',
+          layout: { type: 'messagePassThrough' }
+        },
+        warnings: {
+          type: 'logLevelFilter',
+          level: 'WARN',
+          appender: 'warning-file'
+        },
+        'debug-file': {
+          type: 'file',
+          filename: 'test/tap/logLevelFilter-debugs.log',
+          layout: { type: 'messagePassThrough' }
+        },
+        debugs: {
+          type: 'logLevelFilter',
+          level: 'TRACE',
+          maxLevel: 'DEBUG',
+          appender: 'debug-file'
+        },
+        tests: {
+          type: 'file',
+          filename: 'test/tap/logLevelFilter.log',
+          layout: {
+            type: 'messagePassThrough'
+          }
+        }
+      },
+      categories: {
+        default: { appenders: ['tests', 'warnings', 'debugs'], level: 'trace' }
+      }
+    });
     const logger = log4js.getLogger('tests');
     logger.debug('debug');
     logger.info('info');
