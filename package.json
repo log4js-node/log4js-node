@@ -39,9 +39,9 @@
   "dependencies": {
     "date-format": "^1.0.0",
     "debug": "^2.2.0",
+    "redis": "^2.6.5",
     "semver": "^5.3.0",
-    "streamroller": "^0.3.0",
-    "redis": "^2.6.5"
+    "streamroller": "^0.3.0"
   },
   "devDependencies": {
     "codecov": "^1.0.1",
