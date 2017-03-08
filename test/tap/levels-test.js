@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const levels = require('../../lib/levels');
+const levels = require('../../lib/levels')();
 
 function assertThat(assert, level) {
   function assertForEach(assertion, testFn, otherLevels) {
@@ -74,7 +74,7 @@ test('levels', (batch) => {
           levels.OFF
         ]
       );
-      assertThat(assert, all).isEqualTo([levels.toLevel('ALL')]);
+      assertThat(assert, all).isEqualTo([levels.getLevel('ALL')]);
       assertThat(assert, all).isNotEqualTo(
         [
           levels.TRACE,
@@ -116,7 +116,7 @@ test('levels', (batch) => {
           levels.OFF
         ]
       );
-      assertThat(assert, trace).isEqualTo([levels.toLevel('TRACE')]);
+      assertThat(assert, trace).isEqualTo([levels.getLevel('TRACE')]);
       assertThat(assert, trace).isNotEqualTo(
         [
           levels.ALL,
@@ -156,7 +156,7 @@ test('levels', (batch) => {
           levels.OFF
         ]
       );
-      assertThat(assert, debug).isEqualTo([levels.toLevel('DEBUG')]);
+      assertThat(assert, debug).isEqualTo([levels.getLevel('DEBUG')]);
       assertThat(assert, debug).isNotEqualTo(
         [
           levels.ALL,
@@ -190,7 +190,7 @@ test('levels', (batch) => {
         levels.MARK,
         levels.OFF
       ]);
-      assertThat(assert, info).isEqualTo([levels.toLevel('INFO')]);
+      assertThat(assert, info).isEqualTo([levels.getLevel('INFO')]);
       assertThat(assert, info).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -222,7 +222,7 @@ test('levels', (batch) => {
       assertThat(assert, warn).isNotGreaterThanOrEqualTo([
         levels.ERROR, levels.FATAL, levels.MARK, levels.OFF
       ]);
-      assertThat(assert, warn).isEqualTo([levels.toLevel('WARN')]);
+      assertThat(assert, warn).isEqualTo([levels.getLevel('WARN')]);
       assertThat(assert, warn).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -253,7 +253,7 @@ test('levels', (batch) => {
         levels.WARN
       ]);
       assertThat(assert, error).isNotGreaterThanOrEqualTo([levels.FATAL, levels.MARK, levels.OFF]);
-      assertThat(assert, error).isEqualTo([levels.toLevel('ERROR')]);
+      assertThat(assert, error).isEqualTo([levels.getLevel('ERROR')]);
       assertThat(assert, error).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -287,7 +287,7 @@ test('levels', (batch) => {
         levels.ERROR
       ]);
       assertThat(assert, fatal).isNotGreaterThanOrEqualTo([levels.MARK, levels.OFF]);
-      assertThat(assert, fatal).isEqualTo([levels.toLevel('FATAL')]);
+      assertThat(assert, fatal).isEqualTo([levels.getLevel('FATAL')]);
       assertThat(assert, fatal).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -323,7 +323,7 @@ test('levels', (batch) => {
         levels.FATAL
       ]);
       assertThat(assert, mark).isNotGreaterThanOrEqualTo([levels.OFF]);
-      assertThat(assert, mark).isEqualTo([levels.toLevel('MARK')]);
+      assertThat(assert, mark).isEqualTo([levels.getLevel('MARK')]);
       assertThat(assert, mark).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -359,7 +359,7 @@ test('levels', (batch) => {
         levels.FATAL,
         levels.MARK
       ]);
-      assertThat(assert, off).isEqualTo([levels.toLevel('OFF')]);
+      assertThat(assert, off).isEqualTo([levels.getLevel('OFF')]);
       assertThat(assert, off).isNotEqualTo([
         levels.ALL,
         levels.TRACE,
@@ -396,11 +396,11 @@ test('levels', (batch) => {
   });
 
   batch.test('toLevel', (t) => {
-    t.equal(levels.toLevel('debug'), levels.DEBUG);
-    t.equal(levels.toLevel('DEBUG'), levels.DEBUG);
-    t.equal(levels.toLevel('DeBuG'), levels.DEBUG);
-    t.notOk(levels.toLevel('cheese'));
-    t.equal(levels.toLevel('cheese', levels.DEBUG), levels.DEBUG);
+    t.equal(levels.getLevel('debug'), levels.DEBUG);
+    t.equal(levels.getLevel('DEBUG'), levels.DEBUG);
+    t.equal(levels.getLevel('DeBuG'), levels.DEBUG);
+    t.notOk(levels.getLevel('cheese'));
+    t.equal(levels.getLevel('cheese', levels.DEBUG), levels.DEBUG);
     t.end();
   });
 

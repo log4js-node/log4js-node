@@ -15,12 +15,12 @@ const logger = log4js.getLogger('test-setLevel-asymmetry');
 
 // Define the array of levels as string to iterate over.
 const strLevels = ['Trace', 'Debug', 'Info', 'Warn', 'Error', 'Fatal'];
-const log4jsLevels = strLevels.map(log4js.levels.toLevel);
+const log4jsLevels = strLevels.map(log4js.levels.getLevel);
 
 test('log4js setLevel', (batch) => {
   strLevels.forEach((strLevel) => {
     batch.test(`is called with a ${strLevel} as string`, (t) => {
-      const log4jsLevel = log4js.levels.toLevel(strLevel);
+      const log4jsLevel = log4js.levels.getLevel(strLevel);
 
       t.test('should convert string to level correctly', (assert) => {
         logger.setLevel(strLevel);

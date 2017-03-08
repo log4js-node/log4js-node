@@ -1,8 +1,8 @@
 'use strict';
 
 const test = require('tap').test;
-const levels = require('../../lib/levels');
-const loggerModule = require('../../lib/logger');
+const levels = require('../../lib/levels')();
+const loggerModule = require('../../lib/logger')(levels);
 
 const Logger = loggerModule.Logger;
 const testDispatcher = {
