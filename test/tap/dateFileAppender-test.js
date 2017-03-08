@@ -189,5 +189,31 @@ test('../../lib/appenders/dateFile', (batch) => {
     t.end();
   });
 
+  batch.test('should flush logs on shutdown', (t) => {
+    const testFile = path.join(__dirname, 'date-appender-default.log');
+    const appender = require('../../lib/appenders/dateFile').appender(testFile);
+    const logger = log4js.getLogger('default-settings');
+
+    log4js.clearAppenders();
+    log4js.addAppender(appender, 'default-settings');
+
+    logger.info('1');
+    logger.info('2');
+    logger.info('3');
+    t.teardown(() => { removeFile('date-appender-default.log'); });
+
+    log4js.shutdown(() => {
+      fs.readFile(testFile, 'utf8', (err, fileContents) => {
+        // 3 lines of output, plus the trailing newline.
+        t.equal(fileContents.split(EOL).length, 4);
+        t.match(
+          fileContents,
+          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+        );
+        t.end();
+      });
+    });
+  });
+
   batch.end();
 });
