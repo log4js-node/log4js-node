@@ -2,16 +2,17 @@
 
 const test = require('tap').test;
 const log4js = require('../../lib/log4js');
-const levels = require('../../lib/levels');
 
 test('subcategories', (batch) => {
   batch.test('loggers created after levels configuration is loaded', (t) => {
     log4js.configure({
-      levels: {
-        sub1: 'WARN',
-        'sub1.sub11': 'TRACE',
-        'sub1.sub11.sub111': 'WARN',
-        'sub1.sub12': 'INFO'
+      appenders: { stdout: { type: 'stdout' } },
+      categories: {
+        default: { appenders: ['stdout'], level: 'TRACE' },
+        sub1: { appenders: ['stdout'], level: 'WARN' },
+        'sub1.sub11': { appenders: ['stdout'], level: 'TRACE' },
+        'sub1.sub11.sub111': { appenders: ['stdout'], level: 'WARN' },
+        'sub1.sub12': { appenders: ['stdout'], level: 'INFO' }
       }
     });
 
@@ -28,15 +29,15 @@ test('subcategories', (batch) => {
     };
 
     t.test('check logger levels', (assert) => {
-      assert.equal(loggers.sub1.level, levels.WARN);
-      assert.equal(loggers.sub11.level, levels.TRACE);
-      assert.equal(loggers.sub111.level, levels.WARN);
-      assert.equal(loggers.sub12.level, levels.INFO);
+      assert.equal(loggers.sub1.level, log4js.levels.WARN);
+      assert.equal(loggers.sub11.level, log4js.levels.TRACE);
+      assert.equal(loggers.sub111.level, log4js.levels.WARN);
+      assert.equal(loggers.sub12.level, log4js.levels.INFO);
 
-      assert.equal(loggers.sub13.level, levels.WARN);
-      assert.equal(loggers.sub112.level, levels.TRACE);
-      assert.equal(loggers.sub121.level, levels.INFO);
-      assert.equal(loggers.sub0.level, levels.TRACE);
+      assert.equal(loggers.sub13.level, log4js.levels.WARN);
+      assert.equal(loggers.sub112.level, log4js.levels.TRACE);
+      assert.equal(loggers.sub121.level, log4js.levels.INFO);
+      assert.equal(loggers.sub0.level, log4js.levels.TRACE);
       assert.end();
     });
 
@@ -44,6 +45,13 @@ test('subcategories', (batch) => {
   });
 
   batch.test('loggers created before levels configuration is loaded', (t) => {
+    // reset to defaults
+    log4js.configure({
+      appenders: { stdout: { type: 'stdout' } },
+      categories: { default: { appenders: ['stdout'], level: 'info' } }
+    });
+
+    // these should all get the default log level of INFO
     const loggers = {
       sub1: log4js.getLogger('sub1'), // WARN
       sub11: log4js.getLogger('sub1.sub11'), // TRACE
@@ -57,24 +65,27 @@ test('subcategories', (batch) => {
     };
 
     log4js.configure({
-      levels: {
-        sub1: 'WARN',
-        'sub1.sub11': 'TRACE',
-        'sub1.sub11.sub111': 'WARN',
-        'sub1.sub12': 'INFO'
+      appenders: { stdout: { type: 'stdout' } },
+      categories: {
+        default: { appenders: ['stdout'], level: 'TRACE' },
+        sub1: { appenders: ['stdout'], level: 'WARN' },
+        'sub1.sub11': { appenders: ['stdout'], level: 'TRACE' },
+        'sub1.sub11.sub111': { appenders: ['stdout'], level: 'WARN' },
+        'sub1.sub12': { appenders: ['stdout'], level: 'INFO' }
       }
     });
 
-    t.test('check logger levels', (assert) => {
-      assert.equal(loggers.sub1.level, levels.WARN);
-      assert.equal(loggers.sub11.level, levels.TRACE);
-      assert.equal(loggers.sub111.level, levels.WARN);
-      assert.equal(loggers.sub12.level, levels.INFO);
+    t.test('will not get new levels', (assert) => {
+      // can't use .equal because by calling log4js.configure we create new instances
+      assert.same(loggers.sub1.level, log4js.levels.INFO);
+      assert.same(loggers.sub11.level, log4js.levels.INFO);
+      assert.same(loggers.sub111.level, log4js.levels.INFO);
+      assert.same(loggers.sub12.level, log4js.levels.INFO);
 
-      assert.equal(loggers.sub13.level, levels.WARN);
-      assert.equal(loggers.sub112.level, levels.TRACE);
-      assert.equal(loggers.sub121.level, levels.INFO);
-      assert.equal(loggers.sub0.level, levels.TRACE);
+      assert.same(loggers.sub13.level, log4js.levels.INFO);
+      assert.same(loggers.sub112.level, log4js.levels.INFO);
+      assert.same(loggers.sub121.level, log4js.levels.INFO);
+      assert.same(loggers.sub0.level, log4js.levels.INFO);
       assert.end();
     });
     t.end();
