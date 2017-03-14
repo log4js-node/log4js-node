@@ -1,27 +1,51 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
+const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
-  const sent = {};
+  const fakeAxios = {
+    args: [],
+    create: function (config) {
+      this.config = config;
+      return {
+        post: function (emptyString, event) {
+          fakeAxios.args.push([emptyString, event]);
+          return {
+            catch: function (cb) {
+              fakeAxios.errorCb = cb;
+            }
+          };
+        }
+      };
+    }
+  };
 
-  function fake(event) {
-    Object.keys(event).forEach((key) => {
-      sent[key] = event[key];
-    });
-  }
+  const fakeConsole = {
+    error: function (msg) {
+      this.msg = msg;
+    }
+  };
 
-  const lfsModule = require('../../lib/appenders/logFacesAppender');
-  options.send = fake;
-  log4js.clearAppenders();
-  log4js.addAppender(lfsModule.configure(options), category);
-  lfsModule.setContext('foo', 'bar');
-  lfsModule.setContext('bar', 'foo');
+  const log4js = sandbox.require('../../lib/log4js', {
+    requires: {
+      axios: fakeAxios
+    },
+    globals: {
+      console: fakeConsole
+    }
+  });
+
+  options.type = 'logFaces-HTTP';
+  log4js.configure({
+    appenders: { http: options },
+    categories: { default: { appenders: ['http'], level: 'trace' } }
+  });
 
   return {
     logger: log4js.getLogger(category),
-    results: sent
+    fakeAxios: fakeAxios,
+    fakeConsole: fakeConsole
   };
 }
 

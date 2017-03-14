@@ -14,6 +14,11 @@ const testDispatcher = {
 const dispatch = testDispatcher.dispatch.bind(testDispatcher);
 
 test('../../lib/logger', (batch) => {
+  batch.beforeEach((done) => {
+    testDispatcher.events = [];
+    done();
+  });
+
   batch.test('constructor with no parameters', (t) => {
     t.throws(
       () => new Logger(),
@@ -78,6 +83,30 @@ test('../../lib/logger', (batch) => {
     t.equal(events[0].data[0], 'Event 1');
     t.equal(events[1].data[0], 'Event 2');
     t.equal(events[2].data[0], 'Event 3');
+    t.end();
+  });
+
+  batch.test('should add context values to every event', (t) => {
+    const logger = new Logger(dispatch);
+    logger.debug('Event 1');
+    logger.addContext('cheese', 'edam');
+    logger.debug('Event 2');
+    logger.debug('Event 3');
+    logger.addContext('biscuits', 'timtam');
+    logger.debug('Event 4');
+    logger.removeContext('cheese');
+    logger.debug('Event 5');
+    logger.clearContext();
+    logger.debug('Event 6');
+    const events = testDispatcher.events;
+
+    t.equal(events.length, 6);
+    t.same(events[0].context, {});
+    t.same(events[1].context, { cheese: 'edam' });
+    t.same(events[2].context, { cheese: 'edam' });
+    t.same(events[3].context, { cheese: 'edam', biscuits: 'timtam' });
+    t.same(events[4].context, { biscuits: 'timtam' });
+    t.same(events[5].context, {});
     t.end();
   });
 
