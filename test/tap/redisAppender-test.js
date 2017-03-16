@@ -103,7 +103,7 @@ test('log4js redisAppender', (batch) => {
       }
     });
 
-    t.test('redis credentials should match', (assert) => {
+    t.test('redis redishost should match', (assert) => {
       assert.equal(result.redishost.host, '127.0.0.1');
       assert.equal(result.redishost.port, 6739);
       assert.equal(result.redishost.pass, '');
