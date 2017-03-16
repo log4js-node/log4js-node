@@ -18,7 +18,7 @@ function setupLogging(category, options) {
     createClient: function (port, post, optionR) {
       return {
         on: function (event, callback) {
-          callback('thow one redis error');
+          callback('throw redis error #1');
         },
         publish: function (channel, message, callback) {
           msgs.push({channel: channel, message: message});
@@ -39,6 +39,12 @@ function setupLogging(category, options) {
     messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
   };
 
+  const fakeUtil = {
+    inspect: function (item) {
+      return JSON.stringify(item);
+    }
+  };
+
   const fakeConsole = {
     errors: [],
     logs: [],
@@ -53,7 +59,8 @@ function setupLogging(category, options) {
   const redisModule = sandbox.require('../../lib/appenders/redis', {
     requires: {
       'redis': fakeRedis,
-      '../layouts': fakeLayouts
+      '../layouts': fakeLayouts,
+      util: fakeUtil
     },
     globals: {
       console: fakeConsole
@@ -116,12 +123,12 @@ test('log4js redisAppender', (batch) => {
   });
 
   batch.test('config with layout', (t) => {
-    const setup = setupLogging('config with layout', {
+    const result = setupLogging('config with layout', {
       layout: {
         type: 'tester'
       }
     });
-    t.equal(setup.layouts.type, 'tester', 'should configure layout');
+    t.equal(result.layouts.type, 'tester', 'should configure layout');
     t.end();
   });
 
