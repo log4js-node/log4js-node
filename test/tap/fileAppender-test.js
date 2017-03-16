@@ -104,6 +104,36 @@ test('log4js fileAppender', (batch) => {
     }, 100);
   });
 
+  batch.test('should flush logs on shutdown', (t) => {
+    const testFile = path.join(__dirname, 'fa-default-test.log');
+    const logger = log4js.getLogger('default-settings');
+    remove(testFile);
+
+    log4js.clearAppenders();
+    const fileAppender = require('../../lib/appenders/file');
+    log4js.addAppender(
+      fileAppender.appender(testFile),
+      fileAppender.shutdown,
+      'default-settings'
+    );
+
+    logger.info('1');
+    logger.info('2');
+    logger.info('3');
+
+    log4js.shutdown(() => {
+      fs.readFile(testFile, 'utf8', (err, fileContents) => {
+        // 3 lines of output, plus the trailing newline.
+        t.equal(fileContents.split(EOL).length, 4);
+        t.match(
+          fileContents,
+          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+        );
+        t.end();
+      });
+    });
+  });
+
   batch.test('fileAppender subcategories', (t) => {
     log4js.clearAppenders();
 
