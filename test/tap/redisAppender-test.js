@@ -24,7 +24,7 @@ function setupLogging(category, options) {
           callback('throw redis error #1');
         },
         publish: function (channel, message, callback) {
-          msgs.push({channel: channel, message: message});
+          msgs.push(message);
           callback(null, {status: 'sent'});
         }
       };
@@ -101,8 +101,7 @@ test('log4js redisAppender', (batch) => {
       type: 'redis',
       category: 'redis',
       layout: {
-        type: 'pattern',
-        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+        type: 'tester'
       }
     });
 
@@ -125,8 +124,7 @@ test('log4js redisAppender', (batch) => {
       type: 'redis',
       category: 'redis',
       layout: {
-        type: 'pattern',
-        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+        type: 'tester'
       }
     });
 
@@ -156,8 +154,7 @@ test('log4js redisAppender', (batch) => {
       type: 'redis',
       category: 'redis',
       layout: {
-        type: 'pattern',
-        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+        type: 'tester'
       }
     });
     setTimeout(() => {
