@@ -60,7 +60,7 @@ function setupLogging(category, options) {
     requires: {
       'redis': fakeRedis,
       '../layouts': fakeLayouts,
-      util: fakeUtil
+      'util': fakeUtil
     },
     globals: {
       console: fakeConsole
