@@ -13,20 +13,20 @@ function setupLogging(category, options) {
     pass: options.pass,
     channel: options.channel
   };
-  
-  const fakeRedis = (function (port, post, optionR) {
-    return { 
-	  createClient: function(port, post, optionR) {
-	    return {
-	      on: function(event, callback) {},
-	      publish: function(channel, message, callback) {
-            msgs.push({ channel: channel, message: message });
-            callback(false, { status: 'sent' });
-		  }),
-	    };
-      }
-    };
-  });
+
+  const fakeRedis = {
+    createClient: function (port, post, optionR) {
+      return {
+        on: function (event, callback) {
+          callback('thow one redis error');
+        },
+        publish: function (channel, message, callback) {
+          msgs.push({channel: channel, message: message});
+          callback(null, {status: 'sent'});
+        }
+      };
+    }
+  };
 
   const fakeLayouts = {
     layout: function (type, config) {
@@ -105,7 +105,7 @@ test('log4js redisAppender', (batch) => {
       host: '127.0.0.1',
       port: 6739,
       pass: '',
-      channel: 'log',
+      channel: 'log'
     });
 
     setup.logger.info('Log event #1');
@@ -130,7 +130,7 @@ test('log4js redisAppender', (batch) => {
       host: '127.0.0.1',
       port: 6739,
       pass: '',
-      channel: 'log',
+      channel: 'log'
     });
     setTimeout(() => {
       setup.logger.info('Log event #1');
