@@ -8,10 +8,13 @@ function setupLogging(category, options) {
   const msgs = [];
 
   const redisHost = {
+    type: options.type,
     host: options.host,
     port: options.port,
     pass: options.pass,
-    channel: options.channel
+    channel: options.channel,
+    category: options.category,
+    layout: options.layout
   };
 
   const fakeRedis = {
@@ -94,7 +97,13 @@ test('log4js redisAppender', (batch) => {
       host: '127.0.0.1',
       port: 6739,
       pass: '',
-      channel: 'log'
+      channel: 'log',
+      type: 'redis',
+      category: 'redis',
+      layout: {
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+      }
     });
 
     t.test('redis credentials should match', (assert) => {
@@ -112,7 +121,13 @@ test('log4js redisAppender', (batch) => {
       host: '127.0.0.1',
       port: 6739,
       pass: '',
-      channel: 'log'
+      channel: 'log',
+      type: 'redis',
+      category: 'redis',
+      layout: {
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+      }
     });
 
     setup.logger.info('Log event #1');
@@ -125,10 +140,10 @@ test('log4js redisAppender', (batch) => {
   batch.test('config with layout', (t) => {
     const result = setupLogging('config with layout', {
       layout: {
-        type: 'tester'
+        type: 'redis'
       }
     });
-    t.equal(result.layouts.type, 'tester', 'should configure layout');
+    t.equal(result.layouts.type, 'redis', 'should configure layout');
     t.end();
   });
 
@@ -137,7 +152,13 @@ test('log4js redisAppender', (batch) => {
       host: '127.0.0.1',
       port: 6739,
       pass: '',
-      channel: 'log'
+      channel: 'log',
+      type: 'redis',
+      category: 'redis',
+      layout: {
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
+      }
     });
     setTimeout(() => {
       setup.logger.info('Log event #1');
