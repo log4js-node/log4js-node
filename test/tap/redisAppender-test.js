@@ -115,16 +115,6 @@ test('log4js redisAppender', (batch) => {
     t.end();
   });
 
-  batch.test('config with layout', (t) => {
-    const result = setupLogging('config with layout', {
-      layout: {
-        type: 'redis'
-      }
-    });
-    t.equal(result.layouts.type, 'redis', 'should configure layout');
-    t.end();
-  });
-
   batch.test('separate notification for each event', (t) => {
     const setup = setupLogging('separate notification for each event', {
       host: '127.0.0.1',
