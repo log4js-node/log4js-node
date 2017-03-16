@@ -90,7 +90,7 @@ test('log4js redisAppender', (batch) => {
       channel: 'log'
     });
 
-    t.test('redis redishost should match', (assert) => {
+    t.test('redis credentials should match', (assert) => {
       assert.equal(result.redishost.host, '127.0.0.1');
       assert.equal(result.redishost.port, 6739);
       assert.equal(result.redishost.pass, '');
@@ -112,6 +112,16 @@ test('log4js redisAppender', (batch) => {
 
     t.equal(setup.messages.length, 1, 'should be one message only');
     checkMessages(t, setup);
+    t.end();
+  });
+
+  batch.test('config with layout', (t) => {
+    const result = setupLogging('config with layout', {
+      layout: {
+        type: 'tester'
+      }
+    });
+    t.equal(result.layout.type, 'tester', 'should configure layout');
     t.end();
   });
 
