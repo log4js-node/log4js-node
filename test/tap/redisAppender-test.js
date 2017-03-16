@@ -7,7 +7,7 @@ const sandbox = require('sandboxed-module');
 function setupLogging(category, options) {
   const msgs = [];
 
-  const redisHost = {
+  const redisCredentials = {
     type: options.type,
     host: options.host,
     port: options.port,
@@ -17,7 +17,12 @@ function setupLogging(category, options) {
   };
 
   const fakeRedis = {
-    createClient: function (port, post, optionR) {
+    createClient: function (port, host, optionR) {
+      this.port = port;
+      this.host = host;
+      this.optionR = {};
+      this.optionR.auth_pass = optionR.pass;
+
       return {
         on: function (event, callback) {
           callback('throw redis error #1');
@@ -77,14 +82,13 @@ function setupLogging(category, options) {
     layouts: fakeLayouts,
     console: fakeConsole,
     messages: msgs,
-    redishost: redisHost
+    credentials: redisCredentials
   };
 }
 
 function checkMessages(assert, result) {
-  for (let i = 0; i < result.messages.length; ++i) {
-    assert.equal(result.messages[i].channel, 'log');
-    assert.ok(new RegExp(`.+Log event #${i + 1}`).test(result.messages[i].text));
+  for (let i = 0; i < result.messages.length; i++) {
+    assert.ok(new RegExp(`Log event #${i + 1}`).test(result.messages[i]));
   }
 }
 
@@ -95,23 +99,25 @@ test('log4js redisAppender', (batch) => {
     const result = setupLogging('redis setup', {
       host: '127.0.0.1',
       port: 6739,
-      pass: '',
+      pass: '123456',
       channel: 'log',
       type: 'redis',
       layout: {
-        type: 'tester'
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
       }
     });
-
-    t.test('redis redishost should match', (assert) => {
-      assert.equal(result.redishost.host, '127.0.0.1');
-      assert.equal(result.redishost.port, 6739);
-      assert.equal(result.redishost.pass, '');
-      assert.equal(result.redishost.channel, 'log');
-      assert.equal(result.redishost.type, 'redis');
-      assert.equal(result.redishost.layout.type, 'tester');
+    t.test('redis credentials should match', (assert) => {
+      assert.equal(result.credentials.host, '127.0.0.1');
+      assert.equal(result.credentials.port, 6739);
+      assert.equal(result.credentials.pass, '123456');
+      assert.equal(result.credentials.channel, 'log');
+      assert.equal(result.credentials.type, 'redis');
+      assert.equal(result.credentials.layout.type, 'pattern');
+      assert.equal(result.credentials.layout.pattern, '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m');
       assert.end();
     });
+
     t.end();
   });
 
@@ -123,7 +129,8 @@ test('log4js redisAppender', (batch) => {
       channel: 'log',
       type: 'redis',
       layout: {
-        type: 'tester'
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
       }
     });
 
@@ -133,6 +140,7 @@ test('log4js redisAppender', (batch) => {
     checkMessages(t, setup);
     t.end();
   });
+
 
   batch.test('config with layout', (t) => {
     const result = setupLogging('config with layout', {
@@ -152,7 +160,8 @@ test('log4js redisAppender', (batch) => {
       channel: 'log',
       type: 'redis',
       layout: {
-        type: 'tester'
+        type: 'pattern',
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
       }
     });
     setTimeout(() => {
