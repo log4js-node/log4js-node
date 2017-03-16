@@ -109,7 +109,7 @@ test('log4js redisAppender', (batch) => {
       assert.equal(result.redishost.pass, '');
       assert.equal(result.redishost.channel, 'log');
       assert.equal(result.redishost.type, 'redis');
-      assert.equal(result.redishost.layout, { type: 'tester' });
+      assert.equal(result.redishost.layout.type, 'tester');
       assert.end();
     });
     t.end();
