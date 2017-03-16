@@ -13,7 +13,6 @@ function setupLogging(category, options) {
     port: options.port,
     pass: options.pass,
     channel: options.channel,
-    category: options.category,
     layout: options.layout
   };
 
@@ -99,7 +98,6 @@ test('log4js redisAppender', (batch) => {
       pass: '',
       channel: 'log',
       type: 'redis',
-      category: 'redis',
       layout: {
         type: 'tester'
       }
@@ -111,7 +109,6 @@ test('log4js redisAppender', (batch) => {
       assert.equal(result.redishost.pass, '');
       assert.equal(result.redishost.channel, 'log');
       assert.equal(result.redishost.type, 'redis');
-      assert.equal(result.redishost.category, 'redis');
       assert.equal(result.redishost.layout, { type: 'tester' });
       assert.end();
     });
@@ -125,7 +122,6 @@ test('log4js redisAppender', (batch) => {
       pass: '',
       channel: 'log',
       type: 'redis',
-      category: 'redis',
       layout: {
         type: 'tester'
       }
@@ -155,7 +151,6 @@ test('log4js redisAppender', (batch) => {
       pass: '',
       channel: 'log',
       type: 'redis',
-      category: 'redis',
       layout: {
         type: 'tester'
       }
