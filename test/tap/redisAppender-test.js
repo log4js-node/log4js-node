@@ -116,12 +116,12 @@ test('log4js redisAppender', (batch) => {
   });
 
   batch.test('config with layout', (t) => {
-    const result = setupLogging('config with layout', {
+    const setup = setupLogging('config with layout', {
       layout: {
         type: 'tester'
       }
     });
-    t.equal(result.layout.type, 'tester', 'should configure layout');
+    t.equal(setup.layouts.type, 'tester', 'should configure layout');
     t.end();
   });
 
