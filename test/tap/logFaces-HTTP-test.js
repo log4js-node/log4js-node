@@ -5,12 +5,11 @@ const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
   const fakeAxios = {
-    args: [],
     create: function (config) {
       this.config = config;
       return {
         post: function (emptyString, event) {
-          fakeAxios.args.push([emptyString, event]);
+          fakeAxios.args = [emptyString, event];
           return {
             catch: function (cb) {
               fakeAxios.errorCb = cb;
@@ -52,15 +51,24 @@ function setupLogging(category, options) {
 test('logFaces appender', (batch) => {
   batch.test('when using HTTP receivers', (t) => {
     const setup = setupLogging('myCategory', {
-      type: 'logFacesAppender',
       application: 'LFS-HTTP',
       url: 'http://localhost/receivers/rx1'
     });
 
+    t.test('axios should be configured', (assert) => {
+      assert.equal(setup.fakeAxios.config.baseURL, 'http://localhost/receivers/rx1');
+      assert.equal(setup.fakeAxios.config.timeout, 5000);
+      assert.equal(setup.fakeAxios.config.withCredentials, true);
+      assert.same(setup.fakeAxios.config.headers, { 'Content-Type': 'application/json' });
+      assert.end();
+    });
+
+    setup.logger.addContext('foo', 'bar');
+    setup.logger.addContext('bar', 'foo');
     setup.logger.warn('Log event #1');
 
     t.test('an event should be sent', (assert) => {
-      const event = setup.results;
+      const event = setup.fakeAxios.args[1];
       assert.equal(event.a, 'LFS-HTTP');
       assert.equal(event.m, 'Log event #1');
       assert.equal(event.g, 'myCategory');
@@ -76,34 +84,15 @@ test('logFaces appender', (batch) => {
       );
       assert.end();
     });
-    t.end();
-  });
 
-  batch.test('when using UDP receivers', (t) => {
-    const setup = setupLogging('udpCategory', {
-      type: 'logFacesAppender',
-      application: 'LFS-UDP',
-      remoteHost: '127.0.0.1',
-      port: 55201
-    });
-
-    setup.logger.error('Log event #2');
-
-    t.test('an event should be sent', (assert) => {
-      const event = setup.results;
-      assert.equal(event.a, 'LFS-UDP');
-      assert.equal(event.m, 'Log event #2');
-      assert.equal(event.g, 'udpCategory');
-      assert.equal(event.p, 'ERROR');
-      assert.equal(event.p_foo, 'bar');
-      assert.equal(event.p_bar, 'foo');
-
-      // Assert timestamp, up to hours resolution.
-      const date = new Date(event.t);
+    t.test('errors should be sent to console.error', (assert) => {
+      setup.fakeAxios.errorCb({ response: { status: 500, data: 'oh no' } });
       assert.equal(
-        date.toISOString().substring(0, 14),
-        new Date().toISOString().substring(0, 14)
+        setup.fakeConsole.msg,
+        'log4js.logFaces-HTTP Appender error posting to http://localhost/receivers/rx1: 500 - oh no'
       );
+      setup.fakeAxios.errorCb(new Error('oh dear'));
+      assert.equal(setup.fakeConsole.msg, 'log4js.logFaces-HTTP Appender error: oh dear');
       assert.end();
     });
     t.end();

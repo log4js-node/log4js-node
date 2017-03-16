@@ -60,7 +60,7 @@ test('logFaces appender', (batch) => {
     });
 
     setup.logger.addContext('foo', 'bar');
-    setup.logger.addCcontext('bar', 'foo');
+    setup.logger.addContext('bar', 'foo');
     setup.logger.error('Log event #2');
 
     t.test('an event should be sent', (assert) => {
