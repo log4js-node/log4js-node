@@ -68,8 +68,8 @@ test('log4js fileAppender', (batch) => {
                 openedFiles.shift();
               };
 
-              this.write = function () {
-                return true;
+              this.write = function (data, encoding, cb) {
+                return cb();
               };
 
               this.on = function () {

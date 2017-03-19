@@ -65,8 +65,8 @@ test('../../lib/appenders/dateFile', (batch) => {
                 openedFiles.shift();
               };
 
-              this.write = function () {
-                return true;
+              this.write = function (data, encoding, cb) {
+                return cb();
               };
             }
           }
