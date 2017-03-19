@@ -3,7 +3,6 @@
 const test = require('tap').test;
 const path = require('path');
 const fs = require('fs');
-const sandbox = require('sandboxed-module');
 const log4js = require('../../lib/log4js');
 const EOL = require('os').EOL || '\n';
 
@@ -16,73 +15,6 @@ function removeFile(filename) {
 }
 
 test('../../lib/appenders/dateFile', (batch) => {
-  batch.test('adding multiple dateFileAppenders', (t) => {
-    const listenersCount = process.listeners('exit').length;
-
-    log4js.configure({
-      appenders: {
-        date0: { type: 'dateFile', filename: 'datefa-default-test0.log' },
-        date1: { type: 'dateFile', filename: 'datefa-default-test1.log' },
-        date2: { type: 'dateFile', filename: 'datefa-default-test2.log' },
-        date3: { type: 'dateFile', filename: 'datefa-default-test3.log' },
-        date4: { type: 'dateFile', filename: 'datefa-default-test4.log' }
-      },
-      categories: { default: { appenders: ['date0', 'date1', 'date2', 'date3', 'date4'], level: 'debug' } }
-    });
-
-    t.teardown(() => {
-      removeFile('datefa-default-test0.log');
-      removeFile('datefa-default-test1.log');
-      removeFile('datefa-default-test2.log');
-      removeFile('datefa-default-test3.log');
-      removeFile('datefa-default-test4.log');
-    });
-
-    t.equal(process.listeners('exit').length, listenersCount + 1, 'should only add one exit listener');
-    t.end();
-  });
-
-  batch.test('exit listener', (t) => {
-    let exitListener;
-    const openedFiles = [];
-
-    const dateFileAppender = sandbox.require(
-      '../../lib/appenders/dateFile',
-      {
-        globals: {
-          process: {
-            on: function (evt, listener) {
-              exitListener = listener;
-            }
-          }
-        },
-        requires: {
-          streamroller: {
-            DateRollingFileStream: function (filename) {
-              openedFiles.push(filename);
-
-              this.end = function () {
-                openedFiles.shift();
-              };
-
-              this.write = function (data, encoding, cb) {
-                return cb();
-              };
-            }
-          }
-        }
-      }
-    );
-
-    for (let i = 0; i < 5; i += 1) {
-      dateFileAppender.configure({ filename: `test${i}` }, { basicLayout: function () {} });
-    }
-    t.equal(openedFiles.length, 5);
-    exitListener();
-    t.equal(openedFiles.length, 0, 'should close all opened files');
-    t.end();
-  });
-
   batch.test('with default settings', (t) => {
     const testFile = path.join(__dirname, 'date-appender-default.log');
     log4js.configure({
