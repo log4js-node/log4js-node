@@ -20,7 +20,7 @@ test('stderr appender', (t) => {
         }
       }
     }
-  ).appender(layouts.messagePassThroughLayout);
+  ).configure({ type: 'stderr', layout: { type: 'messagePassThrough' } }, layouts);
 
   appender({ data: ['biscuits'] });
   t.plan(2);
