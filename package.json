@@ -59,6 +59,7 @@
     "loggly": "^1.1.0",
     "mailgun-js": "^0.7.0",
     "nodemailer": "^2.5.0",
+    "redis": "^2.7.1",
     "slack-node": "~0.2.0",
     "axios": "^0.15.3"
   },
