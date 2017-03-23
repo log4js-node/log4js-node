@@ -22,15 +22,15 @@
     "node": ">=4.0"
   },
   "scripts": {
-    "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
+    "clean": "find test -type f ! -name \"*.json\" ! -name \"*.js\" ! -name \".eslintrc\" -delete && rm *.log",
     "lint": "eslint lib/ test/",
     "prepush": "npm test",
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint lib/**/*",
-    "test": "tap 'test/tap/**/*.js'",
-    "coverage": "tap 'test/tap/**/*.js' --cov",
-    "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
+    "test": "tap \"test/tap/**/*.js\"",
+    "coverage": "tap \"test/tap/**/*.js\" --cov",
+    "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
   },
   "directories": {
     "test": "test",
@@ -51,7 +51,7 @@
     "husky": "^0.12.0",
     "nyc": "^10.0.0",
     "sandboxed-module": "^2.0.3",
-    "tap": "^8.0.1",
+    "tap": "^10.1.1",
     "validate-commit-msg": "^2.6.1"
   },
   "optionalDependencies": {
