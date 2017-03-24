@@ -41,7 +41,7 @@ NOTE: from log4js 0.5 onwards you'll need to explicitly enable replacement of no
 
 ## installation
 
-```shell
+```bash
 npm install log4js
 ```
 
