@@ -116,8 +116,14 @@ test('log4js redisAppender', (batch) => {
 
     t.test('should go to the console', (assert) => {
       assert.equal(setup.fakeConsole.errors.length, 2);
-      assert.equal(setup.fakeConsole.errors[0], 'log4js.redisAppender - 127.0.0.1:6379 Error: \'oh no, error on connect\'');
-      assert.equal(setup.fakeConsole.errors[1], 'log4js.redisAppender - 127.0.0.1:6379 Error: \'oh no, error on publish\'');
+      assert.equal(
+        setup.fakeConsole.errors[0],
+        'log4js.redisAppender - 127.0.0.1:6379 Error: \'oh no, error on connect\''
+      );
+      assert.equal(
+        setup.fakeConsole.errors[1],
+        'log4js.redisAppender - 127.0.0.1:6379 Error: \'oh no, error on publish\''
+      );
       assert.end();
     });
     t.end();
