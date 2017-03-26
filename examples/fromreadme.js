@@ -1,14 +1,12 @@
-//remember to change the require to just 'log4js' if you've npm install'ed it
-var log4js = require('../lib/log4js');
-//by default the console appender is loaded
-//log4js.loadAppender('console');
-//you'd only need to add the console appender if you
-//had previously called log4js.clearAppenders();
-//log4js.addAppender(log4js.appenders.console());
-log4js.loadAppender('file');
-log4js.addAppender(log4js.appenders.file('cheese.log'), 'cheese');
+// remember to change the require to just 'log4js' if you've npm install'ed it
+const log4js = require('../lib/log4js');
 
-var logger = log4js.getLogger('cheese');
+log4js.configure({
+  appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+  categories: { default: { appenders: ['cheese'], level: 'error' } }
+});
+
+const logger = log4js.getLogger('cheese');
 logger.setLevel('ERROR');
 
 logger.trace('Entering cheese testing');
