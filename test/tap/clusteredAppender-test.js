@@ -2,7 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
-const LoggingEvent = require('../../lib/logger').LoggingEvent;
+const LoggingEvent = require('../../lib/logger')(require('../../lib/levels')()).LoggingEvent;
 
 test('log4js cluster appender', (batch) => {
   batch.test('when in master mode', (t) => {

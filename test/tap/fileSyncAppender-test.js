@@ -6,8 +6,6 @@ const path = require('path');
 const log4js = require('../../lib/log4js');
 const EOL = require('os').EOL || '\n';
 
-log4js.clearAppenders();
-
 function remove(filename) {
   try {
     fs.unlinkSync(filename);
@@ -22,11 +20,14 @@ test('log4js fileSyncAppender', (batch) => {
     const logger = log4js.getLogger('default-settings');
     remove(testFile);
 
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/fileSync').appender(testFile),
-      'default-settings'
-    );
+    t.tearDown(() => {
+      remove(testFile);
+    });
+
+    log4js.configure({
+      appenders: { sync: { type: 'fileSync', filename: testFile } },
+      categories: { default: { appenders: ['sync'], level: 'debug' } }
+    });
 
     logger.info('This should be in the file.');
 
@@ -43,21 +44,20 @@ test('log4js fileSyncAppender', (batch) => {
   batch.test('with a max file size and no backups', (t) => {
     const testFile = path.join(__dirname, '/fa-maxFileSize-sync-test.log');
     const logger = log4js.getLogger('max-file-size');
+
     remove(testFile);
     remove(`${testFile}.1`);
+
+    t.tearDown(() => {
+      remove(testFile);
+      remove(`${testFile}.1`);
+    });
+
     // log file of 100 bytes maximum, no backups
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require(
-        '../../lib/appenders/fileSync'
-      ).appender(
-        testFile,
-        log4js.layouts.basicLayout,
-        100,
-        0
-      ),
-      'max-file-size'
-    );
+    log4js.configure({
+      appenders: { sync: { type: 'fileSync', filename: testFile, maxLogSize: 100, backups: 0 } },
+      categories: { default: { appenders: ['sync'], level: 'debug' } }
+    });
     logger.info('This is the first log message.');
     logger.info('This is an intermediate log message.');
     logger.info('This is the second log message.');
@@ -89,17 +89,17 @@ test('log4js fileSyncAppender', (batch) => {
     remove(`${testFile}.1`);
     remove(`${testFile}.2`);
 
+    t.tearDown(() => {
+      remove(testFile);
+      remove(`${testFile}.1`);
+      remove(`${testFile}.2`);
+    });
+
     // log file of 50 bytes maximum, 2 backups
-    log4js.clearAppenders();
-    log4js.addAppender(
-      require('../../lib/appenders/fileSync').appender(
-        testFile,
-        log4js.layouts.basicLayout,
-        50,
-        2
-      ),
-      'max-file-size-backups'
-    );
+    log4js.configure({
+      appenders: { sync: { type: 'fileSync', filename: testFile, maxLogSize: 50, backups: 2 } },
+      categories: { default: { appenders: ['sync'], level: 'debug' } }
+    });
     logger.info('This is the first log message.');
     logger.info('This is the second log message.');
     logger.info('This is the third log message.');
@@ -136,16 +136,16 @@ test('log4js fileSyncAppender', (batch) => {
     // this config defines one file appender (to ./tmp-sync-tests.log)
     // and sets the log level for "tests" to WARN
     log4js.configure({
-      appenders: [
-        {
-          category: 'tests',
-          type: 'file',
-          filename: 'tmp-sync-tests.log',
-          layout: { type: 'messagePassThrough' }
-        }
-      ],
-
-      levels: { tests: 'WARN' }
+      appenders: { sync: {
+        type: 'fileSync',
+        filename: 'tmp-sync-tests.log',
+        layout: { type: 'messagePassThrough' }
+      }
+      },
+      categories: {
+        default: { appenders: ['sync'], level: 'debug' },
+        tests: { appenders: ['sync'], level: 'warn' }
+      }
     });
     const logger = log4js.getLogger('tests');
     logger.info('this should not be written to the file');

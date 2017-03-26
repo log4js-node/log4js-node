@@ -1,11 +1,11 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
 const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
   const udpSent = {};
+  const socket = { closed: false };
 
   const fakeDgram = {
     createSocket: function () {
@@ -18,23 +18,33 @@ function setupLogging(category, options) {
           udpSent.offset = 0;
           udpSent.buffer = buffer;
           callback(undefined, length);
+        },
+        close: function (cb) {
+          socket.closed = true;
+          cb();
         }
       };
     }
   };
 
-  const logstashModule = sandbox.require('../../lib/appenders/logstashUDP', {
-    singleOnly: true,
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       dgram: fakeDgram
     }
   });
-  log4js.clearAppenders();
-  log4js.addAppender(logstashModule.configure(options), category);
+
+  options = options || {};
+  options.type = 'logstashUDP';
+  log4js.configure({
+    appenders: { logstash: options },
+    categories: { default: { appenders: ['logstash'], level: 'trace' } }
+  });
 
   return {
     logger: log4js.getLogger(category),
-    results: udpSent
+    log4js: log4js,
+    results: udpSent,
+    socket: socket
   };
 }
 
@@ -72,7 +82,7 @@ test('logstashUDP appender', (batch) => {
 
     const keys = Object.keys(fields);
     for (let i = 0, length = keys.length; i < length; i += 1) {
-        t.equal(json[keys[i]], fields[keys[i]]);
+      t.equal(json[keys[i]], fields[keys[i]]);
     }
 
     t.equal(JSON.stringify(json.fields), JSON.stringify(fields));
@@ -131,6 +141,22 @@ test('logstashUDP appender', (batch) => {
     };
     t.equal(JSON.stringify(json.fields), JSON.stringify(fields));
     t.end();
+  });
+
+  batch.test('shutdown should close sockets', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+    setup.log4js.shutdown(() => {
+      t.ok(setup.socket.closed);
+      t.end();
+    });
   });
 
   batch.end();

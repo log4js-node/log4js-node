@@ -29,11 +29,15 @@ test('file appender SIGHUP', (t) => {
 
             this.end = function () {
             };
+
+            this.write = function () {
+              return true;
+            };
           }
         }
       }
     }
-  ).appender('sighup-test-file');
+  ).configure({ type: 'file', filename: 'sighup-test-file' }, { basicLayout: function () {} });
 
   process.kill(process.pid, 'SIGHUP');
   t.plan(2);

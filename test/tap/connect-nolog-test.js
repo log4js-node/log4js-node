@@ -2,7 +2,7 @@
 
 const test = require('tap').test;
 const EE = require('events').EventEmitter;
-const levels = require('../../lib/levels');
+const levels = require('../../lib/levels')();
 
 class MockLogger {
   constructor() {
@@ -41,7 +41,7 @@ class MockResponse extends EE {
 }
 
 test('log4js connect logger', (batch) => {
-  const clm = require('../../lib/connect-logger');
+  const clm = require('../../lib/connect-logger')(levels);
 
   batch.test('with nolog config', (t) => {
     const ml = new MockLogger();

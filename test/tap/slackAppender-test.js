@@ -1,8 +1,8 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
 const sandbox = require('sandboxed-module');
+const realLayouts = require('../../lib/layouts');
 
 function setupLogging(category, options) {
   const msgs = [];
@@ -32,11 +32,11 @@ function setupLogging(category, options) {
     layout: function (type, config) {
       this.type = type;
       this.config = config;
-      return log4js.layouts.messagePassThroughLayout;
+      return realLayouts.messagePassThroughLayout;
     },
-    basicLayout: log4js.layouts.basicLayout,
-    coloredLayout: log4js.layouts.coloredLayout,
-    messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
+    basicLayout: realLayouts.basicLayout,
+    coloredLayout: realLayouts.coloredLayout,
+    messagePassThroughLayout: realLayouts.messagePassThroughLayout
   };
 
   const fakeConsole = {
@@ -50,17 +50,25 @@ function setupLogging(category, options) {
     }
   };
 
-  const slackModule = sandbox.require('../../lib/appenders/slack', {
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       'slack-node': fakeSlack,
-      '../layouts': fakeLayouts
+      './layouts': fakeLayouts
     },
     globals: {
       console: fakeConsole
     }
   });
 
-  log4js.addAppender(slackModule.configure(options), category);
+  options.type = 'slack';
+  log4js.configure({
+    appenders: {
+      slack: options
+    },
+    categories: {
+      default: { appenders: ['slack'], level: 'trace' }
+    }
+  });
 
   return {
     logger: log4js.getLogger(category),
@@ -79,8 +87,6 @@ function checkMessages(assert, result) {
     assert.ok(new RegExp(`.+Log event #${i + 1}`).test(result.messages[i].text));
   }
 }
-
-log4js.clearAppenders();
 
 test('log4js slackAppender', (batch) => {
   batch.test('slack setup', (t) => {

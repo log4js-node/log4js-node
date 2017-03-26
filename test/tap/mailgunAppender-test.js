@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
+const layouts = require('../../lib/layouts');
 const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
@@ -30,10 +30,10 @@ function setupLogging(category, options) {
     layout: function (type, config) {
       this.type = type;
       this.config = config;
-      return log4js.layouts.messagePassThroughLayout;
+      return layouts.messagePassThroughLayout;
     },
-    basicLayout: log4js.layouts.basicLayout,
-    messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
+    basicLayout: layouts.basicLayout,
+    messagePassThroughLayout: layouts.messagePassThroughLayout
   };
 
   const fakeConsole = {
@@ -47,19 +47,21 @@ function setupLogging(category, options) {
     }
   };
 
-
-  const mailgunModule = sandbox.require('../../lib/appenders/mailgun', {
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       'mailgun-js': fakeMailgun,
-      '../layouts': fakeLayouts
+      './layouts': fakeLayouts
     },
     globals: {
       console: fakeConsole
     }
   });
-
-
-  log4js.addAppender(mailgunModule.configure(options), category);
+  options = options || {};
+  options.type = 'mailgun';
+  log4js.configure({
+    appenders: { mailgun: options },
+    categories: { default: { appenders: ['mailgun'], level: 'trace' } }
+  });
 
   return {
     logger: log4js.getLogger(category),
@@ -79,8 +81,6 @@ function checkMessages(assert, result) {
     assert.ok(new RegExp(`.+Log event #${i + 1}`).test(result.mails[i].text));
   }
 }
-
-log4js.clearAppenders();
 
 test('log4js mailgunAppender', (batch) => {
   batch.test('mailgun setup', (t) => {

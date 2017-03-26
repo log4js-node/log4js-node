@@ -1,7 +1,6 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
 const sandbox = require('sandboxed-module');
 
 function setupLogging(category, options) {
@@ -50,13 +49,19 @@ function setupLogging(category, options) {
     }
   };
 
-  const hipchatModule = sandbox.require('../../lib/appenders/hipchat', {
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       'hipchat-notifier': fakeHipchatNotifier
     }
   });
-  log4js.clearAppenders();
-  log4js.addAppender(hipchatModule.configure(options), category);
+
+  options = options || {};
+  options.type = 'hipchat';
+
+  log4js.configure({
+    appenders: { hipchat: options },
+    categories: { default: { appenders: ['hipchat'], level: 'debug' } }
+  });
 
   return {
     logger: log4js.getLogger(category),
@@ -112,7 +117,7 @@ test('HipChat appender', (batch) => {
   batch.test('when basicLayout is provided', (t) => {
     const topic = setupLogging('myLogger', {
       type: 'hipchat',
-      layout: log4js.layouts.basicLayout
+      layout: { type: 'basic' }
     });
     topic.logger.debug('Log event #3');
 

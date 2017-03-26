@@ -1,10 +1,10 @@
 'use strict';
 
 const test = require('tap').test;
-const log4js = require('../../lib/log4js');
+const realLayouts = require('../../lib/layouts');
 const sandbox = require('sandboxed-module');
 
-function setupLogging(category, options) {
+function setupLogging(category, options, errorOnSend) {
   const msgs = [];
 
   const fakeMailer = {
@@ -12,6 +12,10 @@ function setupLogging(category, options) {
       return {
         config: opts,
         sendMail: function (msg, callback) {
+          if (errorOnSend) {
+            callback({ message: errorOnSend });
+            return;
+          }
           msgs.push(msg);
           callback(null, true);
         },
@@ -25,10 +29,10 @@ function setupLogging(category, options) {
     layout: function (type, config) {
       this.type = type;
       this.config = config;
-      return log4js.layouts.messagePassThroughLayout;
+      return realLayouts.messagePassThroughLayout;
     },
-    basicLayout: log4js.layouts.basicLayout,
-    messagePassThroughLayout: log4js.layouts.messagePassThroughLayout
+    basicLayout: realLayouts.basicLayout,
+    messagePassThroughLayout: realLayouts.messagePassThroughLayout
   };
 
   const fakeConsole = {
@@ -38,23 +42,23 @@ function setupLogging(category, options) {
     }
   };
 
-  const fakeTransportPlugin = function () {
-  };
-
-  const smtpModule = sandbox.require('../../lib/appenders/smtp', {
-    singleOnly: true,
+  const log4js = sandbox.require('../../lib/log4js', {
     requires: {
       nodemailer: fakeMailer,
-      'nodemailer-sendmail-transport': fakeTransportPlugin,
-      'nodemailer-smtp-transport': fakeTransportPlugin,
-      '../layouts': fakeLayouts
+      './layouts': fakeLayouts
     },
     globals: {
       console: fakeConsole
     }
   });
 
-  log4js.addAppender(smtpModule.configure(options), category);
+  options.type = 'smtp';
+  log4js.configure({
+    appenders: {
+      smtp: options
+    },
+    categories: { default: { appenders: ['smtp'], level: 'trace' } }
+  });
 
   return {
     logger: log4js.getLogger(category),
@@ -73,8 +77,6 @@ function checkMessages(assert, result, sender, subject) {
     assert.ok(new RegExp(`.+Log event #${i + 1}\n$`).test(result.results[i].text));
   }
 }
-
-log4js.clearAppenders();
 
 test('log4js smtpAppender', (batch) => {
   batch.test('minimal config', (t) => {
@@ -189,17 +191,7 @@ test('log4js smtpAppender', (batch) => {
       recipients: 'recipient@domain.com',
       sendInterval: 0,
       SMTP: { port: 25, auth: { user: 'user@domain.com' } }
-    });
-
-    setup.mailer.createTransport = function () {
-      return {
-        sendMail: function (msg, cb) {
-          cb({ message: 'oh noes' });
-        },
-        close: function () {
-        }
-      };
-    };
+    }, 'oh noes');
 
     setup.logger.info('This will break');
 
