@@ -39,7 +39,7 @@ By default, log4js outputs to stdout with the coloured layout (thanks to [masylu
 ```bash
 [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 ```
-See example.js for a full example, but here's a snippet (also in fromreadme.js):
+See example.js for a full example, but here's a snippet (also in `examples/fromreadme.js`):
 ```javascript
 const log4js = require('log4js');
 log4js.configure({
@@ -57,55 +57,14 @@ logger.warn('Cheese is quite smelly.');
 logger.error('Cheese is too ripe!');
 logger.fatal('Cheese was breeding ground for listeria.');
 ```
-Output:
+Output (in `cheese.log`):
 ```bash
 [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
 [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
 ```    
 
-## configuration
+You can also see a full Express application example in [log4js-example](https://github.com/nomiddlename/log4js-example).
 
-You can configure the appenders and log levels manually (as above), or provide a
-configuration file (`log4js.configure('path/to/file.json')`), or a configuration object. The
-configuration file location may also be specified via the environment variable
-LOG4JS_CONFIG (`export LOG4JS_CONFIG=path/to/file.json`).
-An example file can be found in `test/vows/log4js.json`. An example config file with log rolling is in `test/vows/with-log-rolling.json`.
-You can configure log4js to check for configuration file changes at regular intervals, and if changed, reload. This allows changes to logging levels to occur without restarting the application.
-
-To turn it on and specify a period:
-
-```javascript
-log4js.configure('file.json', { reloadSecs: 300 });
-```
-For FileAppender you can also pass the path to the log directory as an option where all your log files would be stored.
-
-```javascript
-log4js.configure('my_log4js_configuration.json', { cwd: '/absolute/path/to/log/dir' });
-```
-If you have already defined an absolute path for one of the FileAppenders in the configuration file, you could add a "absolute": true to the particular FileAppender to override the cwd option passed. Here is an example configuration file:
-
-#### my_log4js_configuration.json ####
-```json
-{
-  "appenders": [
-    {
-      "type": "file",
-      "filename": "relative/path/to/log_file.log",
-      "maxLogSize": 20480,
-      "backups": 3,
-      "category": "relative-logger"
-    },
-    {
-      "type": "file",
-      "absolute": true,
-      "filename": "/absolute/path/to/log_file.log",
-      "maxLogSize": 20480,
-      "backups": 10,
-      "category": "absolute-logger"          
-    }
-  ]
-}
-```    
 Documentation for most of the core appenders can be found on the [wiki](https://github.com/nomiddlename/log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
 
 ## Documentation
