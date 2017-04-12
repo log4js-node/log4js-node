@@ -1,8 +1,8 @@
 ## API
 
-## configuration - `log4js.configure([object || string])`
+## configuration - `log4js.configure(object || string)`
 
-There is one entry point for configuring log4js. With no argument, or a falsy argument, log4js will load configuration from the file path given by the environment variable `LOG4JS_CONFIG` or it will use the default config if that environment variable is not present. A string argument is treated as a filename to load configuration from. Config files should be JSON, and contain a configuration object (see format below). You can also pass a configuration object directly to `configure`.
+There is one entry point for configuring log4js. A string argument is treated as a filename to load configuration from. Config files should be JSON, and contain a configuration object (see format below). You can also pass a configuration object directly to `configure`.
 
 Configuration should take place immediately after requiring log4js for the first time in your application. If you do not call `configure`, log4js will use `LOG4JS_CONFIG` (if defined) or the default config. The default config logs everything to stdout using the coloured layout.
 

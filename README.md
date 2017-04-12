@@ -6,7 +6,9 @@
 NOTE: this documentation is for version 2.x, which is a work-in-progress. You probably want to look at [version 1.1.1 docs](https://github.com/nomiddlename/log4js-node/tree/v1.1.1) instead.
 
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
-framework to work with [node](http://nodejs.org). I've mainly stripped out the browser-specific code and tidied up some of the javascript. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
+framework to work with [node](http://nodejs.org). I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
+
+The full documentation is available [here](https://nomiddlename.github.io/log4js-node/).
 
 Out of the box it supports the following features:
 
@@ -64,12 +66,8 @@ Output (in `cheese.log`):
 [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
 ```    
 
-You can also see a full Express application example in [log4js-example](https://github.com/nomiddlename/log4js-example).
-
-Documentation for most of the core appenders can be found on the [wiki](https://github.com/nomiddlename/log4js-node/wiki/Appenders), otherwise take a look at the tests and the examples.
-
 ## Documentation
-See the [wiki](https://github.com/nomiddlename/log4js-node/wiki). Improve the [wiki](https://github.com/nomiddlename/log4js-node/wiki), please.
+Available [here](https://nomiddlename.github.io/log4js-node/).
 
 There's also [an example application](https://github.com/nomiddlename/log4js-example).
 
