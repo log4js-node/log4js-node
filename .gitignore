@@ -19,3 +19,5 @@ test/streams/test-*
 yarn.lock
 coverage/
 .nyc_output/
+_site
+Gemfile.lock

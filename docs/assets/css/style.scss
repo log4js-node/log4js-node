@@ -1,0 +1,32 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+header ul {
+  display: block;
+  background-color: white;
+  border: none;
+  width: auto;
+  height: auto;
+  padding: 0;
+  list-style: disc;
+  clear:both;
+  margin-left: 20px;
+}
+
+header li {
+  display: list-item;
+  width: auto;
+  border: none;
+  float: none;
+  height: auto;
+}
+
+header ul a {
+  display: inline;
+  width: auto;
+  text-align: left;
+  color: #39c;
+  font-size: 14px;
+}
