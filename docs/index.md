@@ -32,14 +32,6 @@ var logger = log4js.getLogger();
 logger.debug("Some debug messages");
 ```
 
-## Documentation
-
-* [Terminology](terms.md)
-* [Log4js API](api.md)
-* [Appenders](appenders.md)
-* [Layouts](layouts.md)
-* [Frequently Asked Questions](faq.md)
-
 ## License
 
 The original log4js was distributed under the Apache 2.0 License, and so is this. I've tried to
