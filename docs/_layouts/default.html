@@ -21,14 +21,14 @@
           <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ github_name }}</small></a></p>
         {% endif %}
 
-        <nav id="menu"><ul>
-          <li><a href="{% link index.md %}">Home</a></li>
-          <li><a href="{% link api.md %}">API</a></li>
-          <li><a href="{% link appenders.md %}">Appenders</a></li>
-          <li><a href="{% link layouts.md %}">Layouts</a></li>
-          <li><a href="{% link terms.md %}">Terminology</a></li>
-          <li><a href="{% link faq.md %}">FAQ</a></li>
-        </ul></nav>
+        <ul>
+          <li><a href="{% link index.md | relative_url %}">Home</a></li>
+          <li><a href="{% link api.md | relative_url %}">API</a></li>
+          <li><a href="{% link appenders.md | relative_url %}">Appenders</a></li>
+          <li><a href="{% link layouts.md | relative_url %}">Layouts</a></li>
+          <li><a href="{% link terms.md | relative_url %}">Terminology</a></li>
+          <li><a href="{% link faq.md | relative_url %}">FAQ</a></li>
+        </ul>
 
         {% if site.github.is_user_page %}
           <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
