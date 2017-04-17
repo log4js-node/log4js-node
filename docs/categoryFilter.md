@@ -1,0 +1,28 @@
+# Category Filter
+
+This is not strictly an appender - it wraps around another appender and stops log events from specific categories from being written to that appender. This could be useful when debugging your application, but you have one component that logs noisily, or is irrelevant to your investigation.
+
+## Example
+
+```javascript
+log4js.configure({
+  appenders: {
+    everything: { type: 'file', filename: 'all-the-logs.log' },
+    'no-noise': { type: 'categoryFilter', exclude: 'noisy.component', appender: 'everything' }
+  },
+  categories: {
+    default: { appenders: [ 'no-noise' ], level: 'debug' }
+  }
+});
+
+const logger = log4js.getLogger();
+const noisyLogger = log4js.getLogger('noisy.component');
+logger.debug('I will be logged in all-the-logs.log');
+noisyLogger.debug('I will not be logged.');
+```
+
+## Configuration
+
+* `type` - `categoryFilter`
+* `exclude` - `string | Array<string>` - the category (or categories if you provide an array of values) that will be excluded from the appender.
+* `appender` - `string` - the name of the appender to filter.
