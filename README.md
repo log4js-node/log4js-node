@@ -36,9 +36,10 @@ Minimalist version:
 ```javascript
 var log4js = require('log4js');
 var logger = log4js.getLogger();
+logger.level = 'debug';
 logger.debug("Some debug messages");
 ```
-By default, log4js outputs to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
+By default, log4js will not output any logs (so that it can safely be used in libraries). The `level` for the `default` category is set to `OFF`. To enable logs, set the level (as in the example). This will then output to stdout with the coloured layout (thanks to [masylum](http://github.com/masylum)), so for the above you would see:
 ```bash
 [2010-01-17 11:43:37.987] [DEBUG] [default] - Some debug messages
 ```
@@ -51,8 +52,6 @@ log4js.configure({
 });
 
 const logger = log4js.getLogger('cheese');
-logger.setLevel('ERROR');
-
 logger.trace('Entering cheese testing');
 logger.debug('Got cheese.');
 logger.info('Cheese is Gouda.');
