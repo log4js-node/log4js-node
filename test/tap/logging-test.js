@@ -142,12 +142,11 @@ test('log4js', (batch) => {
     t.end();
   });
 
-  batch.test('with no appenders defined', (t) => {
+  batch.test('with configure not called', (t) => {
     const fakeStdoutAppender = {
       configure: function () {
         return function (evt) {
-          t.equal(evt.data[0], 'This is a test', 'should default to the stdout appender');
-          t.end();
+          fakeStdoutAppender.evt = evt;
         };
       }
     };
@@ -163,7 +162,8 @@ test('log4js', (batch) => {
 
     const logger = log4js.getLogger('some-logger');
     logger.debug('This is a test');
-    // assert is back at the top, in the fake stdout appender
+    t.notOk(fakeStdoutAppender.evt, 'should not log anything');
+    t.end();
   });
 
   batch.test('configuration persistence', (t) => {

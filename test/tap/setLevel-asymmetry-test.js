@@ -23,7 +23,7 @@ test('log4js setLevel', (batch) => {
       const log4jsLevel = log4js.levels.getLevel(strLevel);
 
       t.test('should convert string to level correctly', (assert) => {
-        logger.setLevel(strLevel);
+        logger.level = strLevel;
         log4jsLevels.forEach((level) => {
           assert.equal(
             logger.isLevelEnabled(level),
@@ -34,7 +34,7 @@ test('log4js setLevel', (batch) => {
       });
 
       t.test('should also accept a Level', (assert) => {
-        logger.setLevel(log4jsLevel);
+        logger.level = log4jsLevel;
         log4jsLevels.forEach((level) => {
           assert.equal(
             logger.isLevelEnabled(level),

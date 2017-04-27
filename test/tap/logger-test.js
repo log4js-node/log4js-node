@@ -2,7 +2,16 @@
 
 const test = require('tap').test;
 const levels = require('../../lib/levels')();
-const loggerModule = require('../../lib/logger')(levels);
+
+const testConfig = {
+  level: levels.TRACE
+};
+
+const loggerModule = require('../../lib/logger')(
+  levels,
+  () => testConfig.level,
+  (category, level) => { testConfig.level = level; }
+);
 
 const Logger = loggerModule.Logger;
 const testDispatcher = {
@@ -16,6 +25,7 @@ const dispatch = testDispatcher.dispatch.bind(testDispatcher);
 test('../../lib/logger', (batch) => {
   batch.beforeEach((done) => {
     testDispatcher.events = [];
+    testConfig.level = levels.TRACE;
     done();
   });
 
@@ -28,9 +38,10 @@ test('../../lib/logger', (batch) => {
   });
 
   batch.test('constructor with only dispatch', (t) => {
-    const logger = new Logger(dispatch);
-    t.equal(logger.category, Logger.DEFAULT_CATEGORY, 'should use default category');
-    t.equal(logger.level, levels.TRACE, 'should use TRACE log level');
+    t.throws(
+      () => new Logger(dispatch),
+      new Error('No category provided.')
+    );
     t.end();
   });
 
@@ -41,15 +52,16 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
-  batch.test('constructor with category and level', (t) => {
-    const logger = new Logger(dispatch, 'cheese', 'debug');
+  batch.test('set level should delegate', (t) => {
+    const logger = new Logger(dispatch, 'cheese');
+    logger.level = 'debug';
     t.equal(logger.category, 'cheese', 'should use category');
     t.equal(logger.level, levels.DEBUG, 'should use level');
     t.end();
   });
 
   batch.test('isLevelEnabled', (t) => {
-    const logger = new Logger(dispatch, 'cheese', 'info');
+    const logger = new Logger(dispatch, 'cheese');
     const functions = [
       'isTraceEnabled', 'isDebugEnabled', 'isInfoEnabled',
       'isWarnEnabled', 'isErrorEnabled', 'isFatalEnabled'
@@ -60,20 +72,18 @@ test('../../lib/logger', (batch) => {
         subtest.type(logger[fn], 'function');
       });
     });
-    t.test('should return the right values', (subtest) => {
-      subtest.notOk(logger.isTraceEnabled());
-      subtest.notOk(logger.isDebugEnabled());
-      subtest.ok(logger.isInfoEnabled());
-      subtest.ok(logger.isWarnEnabled());
-      subtest.ok(logger.isErrorEnabled());
-      subtest.ok(logger.isFatalEnabled());
-      subtest.end();
-    });
+    logger.level = 'INFO';
+    t.notOk(logger.isTraceEnabled());
+    t.notOk(logger.isDebugEnabled());
+    t.ok(logger.isInfoEnabled());
+    t.ok(logger.isWarnEnabled());
+    t.ok(logger.isErrorEnabled());
+    t.ok(logger.isFatalEnabled());
     t.end();
   });
 
   batch.test('should send log events to dispatch function', (t) => {
-    const logger = new Logger(dispatch);
+    const logger = new Logger(dispatch, 'cheese');
     logger.debug('Event 1');
     logger.debug('Event 2');
     logger.debug('Event 3');
@@ -87,7 +97,7 @@ test('../../lib/logger', (batch) => {
   });
 
   batch.test('should add context values to every event', (t) => {
-    const logger = new Logger(dispatch);
+    const logger = new Logger(dispatch, 'fromage');
     logger.debug('Event 1');
     logger.addContext('cheese', 'edam');
     logger.debug('Event 2');

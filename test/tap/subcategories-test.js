@@ -75,17 +75,17 @@ test('subcategories', (batch) => {
       }
     });
 
-    t.test('will not get new levels', (assert) => {
+    t.test('should still get new levels', (assert) => {
       // can't use .equal because by calling log4js.configure we create new instances
-      assert.same(loggers.sub1.level, log4js.levels.INFO);
-      assert.same(loggers.sub11.level, log4js.levels.INFO);
-      assert.same(loggers.sub111.level, log4js.levels.INFO);
+      assert.same(loggers.sub1.level, log4js.levels.WARN);
+      assert.same(loggers.sub11.level, log4js.levels.TRACE);
+      assert.same(loggers.sub111.level, log4js.levels.WARN);
       assert.same(loggers.sub12.level, log4js.levels.INFO);
 
-      assert.same(loggers.sub13.level, log4js.levels.INFO);
-      assert.same(loggers.sub112.level, log4js.levels.INFO);
+      assert.same(loggers.sub13.level, log4js.levels.WARN);
+      assert.same(loggers.sub112.level, log4js.levels.TRACE);
       assert.same(loggers.sub121.level, log4js.levels.INFO);
-      assert.same(loggers.sub0.level, log4js.levels.INFO);
+      assert.same(loggers.sub0.level, log4js.levels.TRACE);
       assert.end();
     });
     t.end();
