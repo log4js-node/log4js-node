@@ -4,7 +4,7 @@ This is not strictly an appender - it wraps around another appender and stops lo
 
 ## Configuration
 
-* `type` - `categoryFilter`
+* `type` - `"categoryFilter"`
 * `exclude` - `string | Array<string>` - the category (or categories if you provide an array of values) that will be excluded from the appender.
 * `appender` - `string` - the name of the appender to filter.
 
