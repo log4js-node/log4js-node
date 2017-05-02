@@ -1,6 +1,6 @@
 # Hipchat Appender
 
-The hipchat appender will send every log message it receives to a [hipchat](http://www.hipchat.com) server, over HTTP. It uses the [hipchat-notifier](https://www.npmjs.com/packages/hipchat-notifier) library, and you will need to include that in your dependencies if you want to use this appender. If you're not sure what some of the configuration options below mean, then check the documentation for hipchat-notifier, and the hipchat docs themselves.
+The hipchat appender will send every log message it receives to a [hipchat](http://www.hipchat.com) server, over HTTP. It uses the [hipchat-notifier](https://www.npmjs.com/package/hipchat-notifier) library, and you will need to include that in your dependencies if you want to use this appender. If you're not sure what some of the configuration options below mean, then check the documentation for hipchat-notifier, and the hipchat docs themselves.
 
 ## Configuration
 
