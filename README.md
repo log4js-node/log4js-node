@@ -15,6 +15,7 @@ Out of the box it supports the following features:
 * coloured console logging to stdout or stderr
 * file appender, with configurable log rolling based on file size or date
 * SMTP appender
+* Amazon SES appender (using node-ses)
 * GELF appender
 * Loggly appender
 * Logstash UDP appender
