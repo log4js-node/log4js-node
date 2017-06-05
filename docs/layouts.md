@@ -6,7 +6,7 @@ For most use cases you will not need to configure layouts - there are some appen
 
 ## Configuration
 
-Most appender configuration will take a field called `layout`, which is an object - typically with a single field `type` which is the name of an appender defined below. Some appenders require extra configuration options, which should be included in the same object.
+Most appender configuration will take a field called `layout`, which is an object - typically with a single field `type` which is the name of a layout defined below. Some layouts require extra configuration options, which should be included in the same object.
 
 ## Example
 ```javascript
@@ -146,7 +146,8 @@ This would output:
 
 You can add your own layouts by calling `log4js.addLayout(type, fn)` before calling `log4js.configure`. `type` is the label you want to use to refer to your layout in appender configuration. `fn` is a function that takes a single object argument, which will contain the configuration for the layout instance, and returns a layout function. A layout function takes a log event argument and returns a string (usually, although you could return anything as long as the appender knows what to do with it).
 
-## Custom Layout Example (see examples/custom-layout.js)
+## Custom Layout Example
+This example can also be found in examples/custom-layout.js.
 ```javascript
 const log4js = require('log4js');
 
