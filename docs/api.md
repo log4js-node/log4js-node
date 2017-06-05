@@ -31,3 +31,6 @@ The `Logger` object has the following property:
 ## Shutdown - `log4js.shutdown(cb)`
 
 `shutdown` accepts a callback that will be called when log4js has closed all appenders and finished writing log events. Use this when your programme exits to make sure all your logs are written to files, sockets are closed, etc.
+
+## Custom Layouts - `log4js.addLayout(type, fn)`
+This function is used to add user-defined layout functions. See [layouts](layouts.md) for more details and an example.
