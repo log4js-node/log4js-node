@@ -5,16 +5,16 @@ framework to work with [node](http://nodejs.org). I started out just stripping o
 
 ## Features
 
-* coloured console logging to stdout or stderr
-* file appender, with configurable log rolling based on file size or date
-* SMTP appender
-* GELF appender
-* Loggly appender
-* Logstash UDP appender
-* logFaces (UDP and HTTP) appender
-* multiprocess appender (useful when you've got worker processes)
-* a logger for connect/express servers
-* configurable log message layout/patterns
+* coloured console logging to [stdout](stdout.md) or [stderr](stderr.md)
+* [file appender](file.md), with configurable log rolling based on file size or [date](dateFile.md)
+* [SMTP appender](smtp.md)
+* [GELF appender](gelf.md)
+* [Loggly appender](loggly.md)
+* [Logstash UDP appender](logstashUDP.md)
+* logFaces ([UDP](logFaces-UDP.md) and [HTTP](logFaces-HTTP.md)) appender
+* [multiprocess appender](multiprocess.md) (useful when you've got worker processes)
+* a [logger for connect/express](connect-logger.md) servers
+* configurable log message [layout/patterns](layouts.md)
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
 
 ## Installation
