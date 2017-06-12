@@ -1,44 +1,48 @@
-//The connect/express logger was added to log4js by danbell. This allows connect/express servers to log using log4js.
-//https://github.com/nomiddlename/log4js-node/wiki/Connect-Logger
+// The connect/express logger was added to log4js by danbell. This allows connect/express servers to log using log4js.
+// https://github.com/nomiddlename/log4js-node/wiki/Connect-Logger
 
 // load modules
-var log4js = require('log4js');
-var express = require("express");
-var app = express();
+const log4js = require('log4js');
+const express = require('express');
+const app = express();
 
-//config
+// config
 log4js.configure({
-	appenders: [
-		{ type: 'console' },
-		{ type: 'file', filename: 'logs/log4jsconnect.log', category: 'log4jslog' }
-	]
+  appenders: {
+    console: { type: 'console' },
+    file: { type: 'file', filename: 'logs/log4jsconnect.log' }
+  },
+  categories: {
+    default: { appenders: ['console'], level: 'debug' },
+    log4jslog: { appenders: ['file'], level: 'debug' }
+  }
 });
 
-//define logger
-var logger = log4js.getLogger('log4jslog');
+// define logger
+const logger = log4js.getLogger('log4jslog');
 
 // set at which time msg is logged print like: only on error & above
 // logger.setLevel('ERROR');
 
-//express app
-app.configure(function() {
-	app.use(express.favicon(''));
+// express app
+app.configure(() => {
+  app.use(express.favicon(''));
 	// app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO }));
 	// app.use(log4js.connectLogger(logger, { level: 'auto', format: ':method :url :status' }));
 
-	//### AUTO LEVEL DETECTION
-	//http responses 3xx, level = WARN
-	//http responses 4xx & 5xx, level = ERROR
-	//else.level = INFO
-	app.use(log4js.connectLogger(logger, { level: 'auto' }));
+	// ### AUTO LEVEL DETECTION
+	// http responses 3xx, level = WARN
+	// http responses 4xx & 5xx, level = ERROR
+	// else.level = INFO
+  app.use(log4js.connectLogger(logger, { level: 'auto' }));
 });
 
-//route
-app.get('/', function(req,res) {
-	res.send('hello world');
+// route
+app.get('/', (req, res) => {
+  res.send('hello world');
 });
 
-//start app
+// start app
 app.listen(5000);
 
 console.log('server runing at localhost:5000');
