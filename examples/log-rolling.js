@@ -1,27 +1,27 @@
-var log4js = require('../lib/log4js')
-, log
-, i = 0;
+const log4js = require('../lib/log4js');
+
 log4js.configure({
-  "appenders": [
-      {
-          type: "console"
-        , category: "console"
-      },
-      {
-          "type": "file",
-          "filename": "tmp-test.log",
-          "maxLogSize": 1024,
-          "backups": 3,
-          "category": "test"
-      }
-  ]
+  appenders: {
+    console: {
+      type: 'console'
+    },
+    file: {
+      type: 'file',
+      filename: 'tmp-test.log',
+      maxLogSize: 1024,
+      backups: 3
+    }
+  },
+  categories: {
+    default: { appenders: ['console', 'file'], level: 'info' }
+  }
 });
-log = log4js.getLogger("test");
+const log = log4js.getLogger('test');
 
 function doTheLogging(x) {
-    log.info("Logging something %d", x);
+  log.info('Logging something %d', x);
 }
-
-for ( ; i < 5000; i++) {
-    doTheLogging(i);
+let i = 0;
+for (; i < 5000; i += 1) {
+  doTheLogging(i);
 }
