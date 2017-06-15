@@ -38,7 +38,7 @@ This example will result in a single log file (`all-the-logs.log`) containing th
 ```javascript
 log4js.configure({
   appenders: {
-    everything: { type: 'file', filename: 'all-the-logs.log', maxLogSize: 10458760, backups: 3, compress: true }
+    everything: { type: 'file', filename: 'all-the-logs.log', maxLogSize: 10485760, backups: 3, compress: true }
   },
   categories: {
     default: { appenders: [ 'everything' ], level: 'debug'}
