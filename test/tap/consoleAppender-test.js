@@ -6,16 +6,18 @@ const sandbox = require('sandboxed-module');
 test('log4js console appender', (batch) => {
   batch.test('should output to console', (t) => {
     const messages = [];
-    const fakeConsole = {
-      log: function (msg) {
-        messages.push(msg);
+    const fakeStream = {
+      stdout: {
+        write: function (msg) {
+          messages.push(msg);
+        }
       }
     };
     const log4js = sandbox.require(
       '../../lib/log4js',
       {
         globals: {
-          console: fakeConsole
+          process: Object.assign({}, process, fakeStream)
         }
       }
     );
