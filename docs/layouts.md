@@ -113,6 +113,7 @@ Fields can be any of:
 *  `%n` newline
 *  `%z` process id (from `process.pid`)
 *  `%x{<tokenname>}` add dynamic tokens to your log. Tokens are specified in the tokens parameter.
+*  `%X{<tokenname>}` add values from the Logger context. Tokens are keys into the context values.
 *  `%[` start a coloured block (colour will be taken from the log level, similar to `colouredLayout`)
 *  `%]` end a coloured block
 
@@ -126,9 +127,28 @@ log4js.configure({
       pattern: '%d %p %c %x{user} %m%n',
       tokens: {
         user: function(logEvent) {
-          return logEvent.context.user;
+          return AuthLibrary.currentUser();
         }
       }
+    }}
+  },
+  categories: { default: { appenders: ['out'], level: 'info' } }
+});
+const logger = log4js.getLogger();
+logger.info('doing something.');
+```
+This would output:
+```
+2017-06-01 08:32:56.283 INFO default charlie doing something.
+```
+
+You can also use the Logger context to store tokens (sometimes called Nested Diagnostic Context, or Mapped Diagnostic Context) and use them in your layouts.
+```javascript
+log4js.configure({
+  appenders: {
+    out: { type: 'stdout', layout: {
+      type: 'pattern',
+      pattern: '%d %p %c %X{user} %m%n'
     }}
   },
   categories: { default: { appenders: ['out'], level: 'info' } }
@@ -141,6 +161,7 @@ This would output:
 ```
 2017-06-01 08:32:56.283 INFO default charlie doing something.
 ```
+Note that you can also add functions to the Logger Context, and they will be passed the logEvent as well.
 
 # Adding your own layouts
 
