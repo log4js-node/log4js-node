@@ -201,19 +201,6 @@ test('log4js layouts', (batch) => {
   });
 
   batch.test('patternLayout', (t) => {
-    const event = {
-      data: ['this is a test'],
-      startTime: new Date('2010-12-05T14:18:30.045Z'), // new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: 'multiple.levels.of.tests',
-      level: {
-        toString: function () {
-          return 'DEBUG';
-        }
-      }
-    };
-
-    const layout = require('../../lib/layouts').patternLayout;
-
     const tokens = {
       testString: 'testStringToken',
       testFunction: function () {
@@ -223,6 +210,20 @@ test('log4js layouts', (batch) => {
         return logEvent.level.toString();
       }
     };
+
+    const event = {
+      data: ['this is a test'],
+      startTime: new Date('2010-12-05T14:18:30.045Z'), // new Date(2010, 11, 5, 14, 18, 30, 45),
+      categoryName: 'multiple.levels.of.tests',
+      level: {
+        toString: function () {
+          return 'DEBUG';
+        }
+      },
+      context: tokens
+    };
+
+    const layout = require('../../lib/layouts').patternLayout;
 
     // override getTimezoneOffset
     event.startTime.getTimezoneOffset = function () {
@@ -366,6 +367,31 @@ test('log4js layouts', (batch) => {
 
     t.test('%x should output the string stored in tokens', (assert) => {
       testPattern(assert, layout, event, tokens, '%x', 'null');
+      assert.end();
+    });
+
+    t.test('%X{testString} should output the string stored in tokens', (assert) => {
+      testPattern(assert, layout, event, {}, '%X{testString}', 'testStringToken');
+      assert.end();
+    });
+
+    t.test('%X{testFunction} should output the result of the function stored in tokens', (assert) => {
+      testPattern(assert, layout, event, {}, '%X{testFunction}', 'testFunctionToken');
+      assert.end();
+    });
+
+    t.test('%X{doesNotExist} should output the string stored in tokens', (assert) => {
+      testPattern(assert, layout, event, {}, '%X{doesNotExist}', 'null');
+      assert.end();
+    });
+
+    t.test('%X{fnThatUsesLogEvent} should be able to use the logEvent', (assert) => {
+      testPattern(assert, layout, event, {}, '%X{fnThatUsesLogEvent}', 'DEBUG');
+      assert.end();
+    });
+
+    t.test('%X should output the string stored in tokens', (assert) => {
+      testPattern(assert, layout, event, {}, '%X', 'null');
       assert.end();
     });
 
