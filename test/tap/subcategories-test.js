@@ -90,5 +90,33 @@ test('subcategories', (batch) => {
     });
     t.end();
   });
+
+  batch.test('setting level on subcategories should not set parent level', (t) => {
+    log4js.configure({
+      appenders: { stdout: { type: 'stdout' } },
+      categories: {
+        default: { appenders: ['stdout'], level: 'trace' },
+        parent: { appenders: ['stdout'], level: 'error' }
+      }
+    });
+
+    const logger = log4js.getLogger('parent');
+    const subLogger = log4js.getLogger('parent.child');
+
+    t.test('should inherit parent level', (assert) => {
+      assert.same(subLogger.level, log4js.levels.ERROR);
+      assert.end();
+    });
+
+    t.test('changing child level should not change parent level', (assert) => {
+      subLogger.level = 'info';
+      assert.same(subLogger.level, log4js.levels.INFO);
+      assert.same(logger.level, log4js.levels.ERROR);
+      assert.end();
+    });
+
+    t.end();
+  });
+
   batch.end();
 });
