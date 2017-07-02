@@ -13,7 +13,7 @@ test('../../lib/logger', (batch) => {
   batch.test('creating a new log level', (t) => {
     log4js.configure({
       levels: {
-        DIAG: 6000
+        DIAG: { value: 6000, colour: 'green' }
       },
       appenders: {
         stdout: { type: 'stdout' }
@@ -29,6 +29,7 @@ test('../../lib/logger', (batch) => {
       assert.ok(log4js.levels.DIAG);
       assert.equal(log4js.levels.DIAG.levelStr, 'DIAG');
       assert.equal(log4js.levels.DIAG.level, 6000);
+      assert.equal(log4js.levels.DIAG.colour, 'green');
       assert.end();
     });
 
@@ -41,7 +42,7 @@ test('../../lib/logger', (batch) => {
   batch.test('creating a new log level with underscores', (t) => {
     log4js.configure({
       levels: {
-        NEW_LEVEL_OTHER: 6000
+        NEW_LEVEL_OTHER: { value: 6000, colour: 'blue' }
       },
       appenders: { stdout: { type: 'stdout' } },
       categories: { default: { appenders: ['stdout'], level: 'trace' } }
@@ -52,6 +53,7 @@ test('../../lib/logger', (batch) => {
       assert.ok(log4js.levels.NEW_LEVEL_OTHER);
       assert.equal(log4js.levels.NEW_LEVEL_OTHER.levelStr, 'NEW_LEVEL_OTHER');
       assert.equal(log4js.levels.NEW_LEVEL_OTHER.level, 6000);
+      assert.equal(log4js.levels.NEW_LEVEL_OTHER.colour, 'blue');
       assert.end();
     });
 
@@ -69,8 +71,8 @@ test('../../lib/logger', (batch) => {
   batch.test('creating log events containing newly created log level', (t) => {
     log4js.configure({
       levels: {
-        LVL1: 6000,
-        LVL2: 5000
+        LVL1: { value: 6000, colour: 'grey' },
+        LVL2: { value: 5000, colour: 'magenta' }
       },
       appenders: { recorder: { type: 'recording' } },
       categories: {
@@ -111,6 +113,21 @@ test('../../lib/logger', (batch) => {
     t.throws(() => {
       log4js.configure({
         levels: {
+          cheese: { value: 'biscuits' }
+        },
+        appenders: { stdout: { type: 'stdout' } },
+        categories: { default: { appenders: ['stdout'], level: 'trace' } }
+      });
+    }, new Error(
+      'Problem with log4js configuration: ' +
+      "({ levels: { cheese: { value: 'biscuits' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
+      "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
+      'level "cheese".value must have an integer value'
+    ));
+
+    t.throws(() => {
+      log4js.configure({
+        levels: {
           cheese: 'biscuits'
         },
         appenders: { stdout: { type: 'stdout' } },
@@ -120,7 +137,52 @@ test('../../lib/logger', (batch) => {
       'Problem with log4js configuration: ' +
       "({ levels: { cheese: 'biscuits' },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese" must have an integer value'
+      'level "cheese" must be an object'
+    ));
+
+    t.throws(() => {
+      log4js.configure({
+        levels: {
+          cheese: { thing: 'biscuits' }
+        },
+        appenders: { stdout: { type: 'stdout' } },
+        categories: { default: { appenders: ['stdout'], level: 'trace' } }
+      });
+    }, new Error(
+      'Problem with log4js configuration: ' +
+      "({ levels: { cheese: { thing: 'biscuits' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
+      "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
+      'level "cheese" must have a \'value\' property'
+    ));
+
+    t.throws(() => {
+      log4js.configure({
+        levels: {
+          cheese: { value: 3 }
+        },
+        appenders: { stdout: { type: 'stdout' } },
+        categories: { default: { appenders: ['stdout'], level: 'trace' } }
+      });
+    }, new Error(
+      'Problem with log4js configuration: ' +
+      "({ levels: { cheese: { value: 3 } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
+      "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
+      'level "cheese" must have a \'colour\' property'
+    ));
+
+    t.throws(() => {
+      log4js.configure({
+        levels: {
+          cheese: { value: 3, colour: 'pants' }
+        },
+        appenders: { stdout: { type: 'stdout' } },
+        categories: { default: { appenders: ['stdout'], level: 'trace' } }
+      });
+    }, new Error(
+      'Problem with log4js configuration: ' +
+      "({ levels: { cheese: { value: 3, colour: 'pants' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
+      "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
+      'level "cheese".colour must be one of white, grey, black, blue, cyan, green, magenta, red, yellow'
     ));
 
     t.throws(() => {
@@ -221,13 +283,14 @@ test('../../lib/logger', (batch) => {
   batch.test('creating a new level with an existing level name', (t) => {
     log4js.configure({
       levels: {
-        info: 1234
+        info: { value: 1234, colour: 'blue' }
       },
       appenders: { stdout: { type: 'stdout' } },
       categories: { default: { appenders: ['stdout'], level: 'trace' } }
     });
 
     t.equal(log4js.levels.INFO.level, 1234, 'should override the existing log level');
+    t.equal(log4js.levels.INFO.colour, 'blue', 'should override the existing log level');
     t.end();
   });
   batch.end();

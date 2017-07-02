@@ -23,7 +23,8 @@ test('log4js layouts', (batch) => {
         level: {
           toString: function () {
             return 'ERROR';
-          }
+          },
+          colour: 'red'
         }
       });
 
@@ -42,7 +43,8 @@ test('log4js layouts', (batch) => {
         level: {
           toString: function () {
             return 'ERROR';
-          }
+          },
+          colour: 'red'
         }
       });
       assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mthing 2');
@@ -218,7 +220,8 @@ test('log4js layouts', (batch) => {
       level: {
         toString: function () {
           return 'DEBUG';
-        }
+        },
+        colour: 'cyan'
       },
       context: tokens
     };
@@ -231,7 +234,10 @@ test('log4js layouts', (batch) => {
     };
 
     t.test('should default to "time logLevel loggerName - message"', (assert) => {
-      testPattern(assert, layout, event, tokens, null, `14:18:30 DEBUG multiple.levels.of.tests - this is a test${EOL}`);
+      testPattern(
+        assert, layout, event, tokens, null,
+        `14:18:30 DEBUG multiple.levels.of.tests - this is a test${EOL}`
+      );
       assert.end();
     });
 
