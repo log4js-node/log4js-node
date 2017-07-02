@@ -65,6 +65,10 @@ Output (in `cheese.log`):
 [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
 ```    
 
+## Note for library makers
+
+If you're writing a library and would like to include support for log4js, without introducing a dependency headache for your users, take a look at [log4js-api](https://github.com/log4js-node/log4js-api).
+
 ## Documentation
 Available [here](https://nomiddlename.github.io/log4js-node/).
 
