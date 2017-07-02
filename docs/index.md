@@ -33,6 +33,10 @@ logger.level = 'debug'; // default level is OFF - which means no logs at all.
 logger.debug("Some debug messages");
 ```
 
+## Note for library makers
+
+If you're writing a library and would like to include support for log4js, without introducing a dependency headache for your users, take a look at [log4js-api](https://github.com/log4js-node/log4js-api).
+
 ## License
 
 The original log4js was distributed under the Apache 2.0 License, and so is this. I've tried to
