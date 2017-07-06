@@ -42,9 +42,6 @@ if (cluster.isMaster) {
         t.equal(logEvents[0].pid, masterPid);
         t.equal(logEvents[1].categoryName, 'worker');
         t.equal(logEvents[1].pid, workerPid);
-        t.equal(logEvents[1].cluster.master, masterPid);
-        t.equal(logEvents[1].cluster.worker, workerPid);
-        t.equal(logEvents[1].cluster.workerId, workerId);
         t.type(logEvents[1].data[1], 'Error');
         t.contains(logEvents[1].data[1].stack, 'Error: oh dear');
         t.equal(logEvents[2].categoryName, 'log4js');
