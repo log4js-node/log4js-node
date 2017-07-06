@@ -22,7 +22,7 @@ function testAppender(label) {
 
 test('log4js configuration validation', (batch) => {
   batch.test('should give error if config is just plain silly', (t) => {
-    [null, undefined, '', []].forEach((config) => {
+    [null, undefined, '', ' ', []].forEach((config) => {
       const expectedError = new Error(
         `Problem with log4js configuration: (${util.inspect(config)}) - must be an object.`
       );
