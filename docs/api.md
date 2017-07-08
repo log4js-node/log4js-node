@@ -6,6 +6,8 @@ There is one entry point for configuring log4js. A string argument is treated as
 
 Configuration should take place immediately after requiring log4js for the first time in your application. If you do not call `configure`, log4js will use `LOG4JS_CONFIG` (if defined) or the default config. The default config defines one appender, which would log to stdout with the coloured layout, but also defines the default log level to be `OFF` - which means no logs will be output.
 
+If you are using `cluster`, then include the call to `configure` in the worker processes as well as the master. That way the worker processes will pick up the right levels for your categories, and any custom levels you may have defined. Appenders will only be defined on the master process, so there is no danger of multiple processes attempting to write to the same appender. No special configuration is needed to use log4js with clusters, unlike previous versions.
+
 Configuration objects must define at least one appender, and a default category. Log4js will throw an exception if the configuration is invalid.
 
 ### Configuration Object

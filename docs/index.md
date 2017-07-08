@@ -12,10 +12,11 @@ framework to work with [node](http://nodejs.org). I started out just stripping o
 * [Loggly appender](loggly.md)
 * [Logstash UDP appender](logstashUDP.md)
 * logFaces ([UDP](logFaces-UDP.md) and [HTTP](logFaces-HTTP.md)) appender
-* [multiprocess appender](multiprocess.md) (useful when you've got worker processes)
+* [multiprocess appender](multiprocess.md) (useful when you've got multiple servers but want to centralise logging)
 * a [logger for connect/express](connect-logger.md) servers
 * configurable log message [layout/patterns](layouts.md)
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
+* built-in support for logging with node core's `cluster` module
 
 ## Installation
 

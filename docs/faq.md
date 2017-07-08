@@ -21,3 +21,7 @@ logger.info('As does this.');
 logger.error('This goes to all-the-logs.log and oh-no-not-again.log');
 
 ```
+
+## I want to reload the configuration when I change my config file - how do I do that?
+
+Previous versions of log4js used to watch for changes in the configuration file and reload when it changed. It didn't always work well, sometimes leaving file handles or sockets open. This feature was removed in version 2.x. As a replacement, I'd suggest using a library like [watchr](https://www.npmjs.com/package/watchr) to notify you of file changes. Then you can call `log4js.shutdown` followed by `log4js.configure` again.
