@@ -120,5 +120,14 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
+  batch.test('should not break when log data has no toString', (t) => {
+    const logger = new Logger(dispatch, 'thing');
+    logger.info('Just testing ', Object.create(null));
+
+    const events = testDispatcher.events;
+    t.equal(events.length, 1);
+    t.end();
+  });
+
   batch.end();
 });
