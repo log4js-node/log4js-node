@@ -18,7 +18,7 @@ log4js.configure({
   appenders: {
     everything: { type: 'file', filename: 'all-the-logs.log' },
     emergencies: { type: 'file', filename: 'panic-now.log' },
-    just-errors: { type: 'logLevelFilter', appender: ['emergencies'], level: 'error' }
+    just-errors: { type: 'logLevelFilter', appender: 'emergencies', level: 'error' }
   },
   categories: {
     default: { appenders: ['just-errors', 'everything' ], level: 'debug' }
