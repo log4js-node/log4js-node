@@ -32,6 +32,7 @@ The following appenders are included with log4js. Some require extra dependencie
 * [logLevelFilter](logLevelFilter.md)
 * [logstashUDP](logstashUDP.md)
 * [mailgun](mailgun.md)
+* [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
 * [recording](recording.md)
 * [redis](redis.md)
