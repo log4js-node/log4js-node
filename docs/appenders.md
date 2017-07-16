@@ -50,4 +50,10 @@ log4js.configure({
   categories: { default: { appenders: ['gouda'], level: 'debug' }}
 });
 ```
+Log4js checks the following places (in this order) for appenders based on the type value:
+1. The core appenders: `require('./appenders/' + type)`
+2. node_modules: `require(type)`
+3. relative to the main file of your application: `require(path.dirname(require.main.filename) + '/' + type)`
+4. relative to the process' current working directory: `require(process.cwd() + '/' + type)`
+
 If you want to write your own appender, read the [documentation](writing-appenders.md) first.

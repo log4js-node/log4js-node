@@ -3,6 +3,7 @@
 const test = require('tap').test;
 const Configuration = require('../../lib/configuration');
 const util = require('util');
+const path = require('path');
 const sandbox = require('sandboxed-module');
 
 function testAppender(label) {
@@ -253,6 +254,52 @@ test('log4js configuration validation', (batch) => {
         requires: {
           './appenders/cheese': testAppender('correct'),
           cheese: testAppender('wrong')
+        }
+      }
+    );
+
+    const config = new SandboxedConfiguration({
+      appenders: { thing: { type: 'cheese' } },
+      categories: { default: { appenders: ['thing'], level: 'ERROR' } }
+    });
+
+    const thing = config.appenders.get('thing');
+    t.ok(thing.configureCalled);
+    t.equal(thing.type, 'cheese');
+    t.equal(thing.label, 'correct');
+    t.end();
+  });
+
+  batch.test('should load appenders relative to main file if not in core, or node_modules', (t) => {
+    const mainPath = path.dirname(require.main.filename);
+    const sandboxConfig = { singleOnly: true, requires: {} };
+    sandboxConfig.requires[`${mainPath}/cheese`] = testAppender('correct');
+    const SandboxedConfiguration = sandbox.require(
+      '../../lib/configuration', sandboxConfig
+    );
+
+    const config = new SandboxedConfiguration({
+      appenders: { thing: { type: 'cheese' } },
+      categories: { default: { appenders: ['thing'], level: 'ERROR' } }
+    });
+
+    const thing = config.appenders.get('thing');
+    t.ok(thing.configureCalled);
+    t.equal(thing.type, 'cheese');
+    t.equal(thing.label, 'correct');
+    t.end();
+  });
+
+  batch.test('should load appenders relative to process.cwd if not found in core, node_modules', (t) => {
+    const SandboxedConfiguration = sandbox.require(
+      '../../lib/configuration',
+      {
+        singleOnly: true,
+        requires: {
+          '/var/lib/cheese/cheese': testAppender('correct'),
+        },
+        globals: {
+          process: { cwd: () => '/var/lib/cheese' }
         }
       }
     );
