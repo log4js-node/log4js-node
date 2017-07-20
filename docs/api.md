@@ -17,6 +17,8 @@ Properties:
 * `categories` (object) - a map of named categories (string) to category definitions (object). You must define the `default` category which is used for all log events that do not match a specific category. Category definitions have two properties:
   * `appenders` (array of strings) - the list of appender names to be used for this category. A category must have at least one appender.
   * `level` (string, case insensitive) - the minimum log level that this category will send to the appenders. For example, if set to 'error' then the appenders will only receive log events of level 'error', 'fatal', 'mark' - log events of 'info', 'warn', 'debug', or 'trace' will be ignored.
+* `pm2` (boolean) (optional) - set this to true if you're running your app using [pm2](http://pm2.keymetrics.io), otherwise logs will not work (you'll also need to install pm2-intercom)
+* `pm2InstanceVar` (string) (optional, defaults to 'NODE_APP_INSTANCE') - set this if you're using pm2 and have changed the default name of the NODE_APP_INSTANCE variable.
 
 ## Loggers - `log4js.getLogger([category])`
 
