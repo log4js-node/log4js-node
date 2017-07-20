@@ -20,14 +20,12 @@ if (cluster.isMaster) {
   masterLogger.info('this is master');
 
   let workerLevel;
-  let workerId;
   cluster.on('message', (worker, message) => {
-    if (worker.type) {
+    if (worker.type || worker.topic) {
       message = worker;
     }
-    if (message.type === '::testing') {
+    if (message.type && message.type === '::testing') {
       workerLevel = message.level;
-      workerId = message.id;
     }
   });
 
@@ -67,10 +65,9 @@ if (cluster.isMaster) {
   // can't run the test in the worker, things get weird
   process.send({
     type: '::testing',
-    level: workerLogger.level.toString(),
-    id: cluster.worker.id
+    level: workerLogger.level.toString()
   });
   // test sending a badly-formed log message
-  process.send({ type: '::log4js-message', event: { cheese: 'gouda' } });
+  process.send({ topic: 'log4js:message', data: { cheese: 'gouda' } });
   cluster.worker.disconnect();
 }
