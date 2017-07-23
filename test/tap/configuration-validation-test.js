@@ -274,6 +274,10 @@ test('log4js configuration validation', (batch) => {
     const mainPath = path.dirname(require.main.filename);
     const sandboxConfig = { singleOnly: true, requires: {} };
     sandboxConfig.requires[`${mainPath}/cheese`] = testAppender('correct');
+    // add this one, because when we're running coverage the main path is a bit different
+    sandboxConfig.requires[
+      `${path.join(mainPath, '../../node_modules/tap/node_modules/nyc/bin/cheese')}`
+    ] = testAppender('correct');
     const SandboxedConfiguration = sandbox.require(
       '../../lib/configuration', sandboxConfig
     );
