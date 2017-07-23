@@ -3,6 +3,10 @@
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
 
+## Migrating from log4js < v2.x?
+
+There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this [migration guide](migration-guide.md) if things aren't working.
+
 ## Features
 
 * coloured console logging to [stdout](stdout.md) or [stderr](stderr.md)

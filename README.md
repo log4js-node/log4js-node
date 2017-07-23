@@ -3,12 +3,12 @@
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
 [![codecov](https://codecov.io/gh/nomiddlename/log4js-node/branch/master/graph/badge.svg)](https://codecov.io/gh/nomiddlename/log4js-node)
 
-NOTE: this documentation is for version 2.x. You probably want to look at [version 1.1.1 docs](https://github.com/nomiddlename/log4js-node/tree/v1.1.1) instead.
-
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
 
 The full documentation is available [here](https://nomiddlename.github.io/log4js-node/).
+
+There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this [migration guide](https://nomiddlename.github.io/log4js-node/migration-guide.html) if things aren't working.
 
 Out of the box it supports the following features:
 
