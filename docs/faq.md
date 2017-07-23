@@ -34,3 +34,18 @@ log4js.configure(...); // set up your categories and appenders
 const logger = log4js.getLogger('console');
 console.log = logger.info.bind(logger); // do the same for others - console.debug, etc.
 ```
+
+## I'm using PM2, but I'm not getting any logs!
+To get log4js working with PM2, you'll need to install the [pm2-intercom](https://www.npmjs.com/package/pm2-intercom) module.
+```bash
+pm2 install pm2-intercom
+```
+Then add the value `pm2: true` to your log4js configuration. If you're also using `node-config`, then you'll probably have renamed your `NODE_APP_INSTANCE` environment variable. If so, you'll also need to add `pm2InstanceVar: '<NEW_APP_INSTANCE_ID>'` where `<NEW_APP_INSTANCE_ID>` should be replaced with the new name you gave the instance environment variable.
+```javascript
+log4js.configure({
+  appenders: { out: { type: 'stdout'}},
+  categories: { default: { appenders: ['out'], level: 'info'}},
+  pm2: true,
+  pm2InstanceVar: 'INSTANCE_ID'
+});
+```
