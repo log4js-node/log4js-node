@@ -137,6 +137,18 @@ test('log4js gelfAppender', (batch) => {
     t.end();
   });
 
+  batch.test('with a null log message', (t) => {
+    const setup = setupLogging();
+    setup.logger.info(null);
+
+    t.ok(setup.dgram.sent);
+
+    const msg = JSON.parse(setup.compress.uncompressed);
+    t.equal(msg.level, 6);
+    t.equal(msg.short_message, 'null');
+    t.end();
+  });
+
   batch.test('with non-default options', (t) => {
     const setup = setupLogging({
       host: 'somewhere',
