@@ -26,3 +26,22 @@ const noisyLogger = log4js.getLogger('noisy.component');
 logger.debug('I will be logged in all-the-logs.log');
 noisyLogger.debug('I will not be logged.');
 ```
+
+Note that you can achieve the same outcome without using the category filter, like this:
+```javascript
+log4js.configure({
+  appenders: {
+    everything: { type: 'file', filename: 'all-the-logs.log' }
+  },
+  categories: {
+    default: { appenders: [ 'everything' ], level: 'debug' },
+    'noisy.component': { appenders: ['everything'], level: 'off' }
+  }
+});
+
+const logger = log4js.getLogger();
+const noisyLogger = log4js.getLogger('noisy.component');
+logger.debug('I will be logged in all-the-logs.log');
+noisyLogger.debug('I will not be logged.');
+```
+Category filter becomes useful when you have many categories you want to exclude, passing them as an array.
