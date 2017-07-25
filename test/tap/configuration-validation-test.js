@@ -303,7 +303,7 @@ test('log4js configuration validation', (batch) => {
           '/var/lib/cheese/cheese': testAppender('correct'),
         },
         globals: {
-          process: { cwd: () => '/var/lib/cheese' }
+          process: { cwd: () => '/var/lib/cheese', env: {} }
         }
       }
     );

@@ -1,0 +1,9 @@
+{ "apps": [
+  { "name": "testing",
+    "script": "pm2.js",
+    "instances": 0,
+    "instance_var": "INSTANCE_ID",
+    "exec_mode": "cluster"
+    }
+    ]
+  }
