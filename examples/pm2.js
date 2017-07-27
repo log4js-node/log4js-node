@@ -12,8 +12,15 @@ log4js.configure({
   pm2: true,
   pm2InstanceVar: 'INSTANCE_ID'
 });
-
 const logger = log4js.getLogger('app');
-setInterval(() => {
-  logger.info("I'm forever blowing bubbles");
-}, 1000);
+logger.info("I'm forever blowing bubbles ", process.env.INSTANCE_ID);
+logger.info("I'm forever blowing bubbles ", process.env.INSTANCE_ID);
+logger.info("I'm forever blowing bubbles ", process.env.INSTANCE_ID);
+logger.info("I'm forever blowing bubbles ", process.env.INSTANCE_ID);
+logger.info('last bubbles', process.env.INSTANCE_ID);
+// give pm2 time to set everything up, before we tear it down
+setTimeout(() => {
+  log4js.shutdown(() => {
+    console.error('All done, shutdown cb returned.');
+  });
+}, 5000);
