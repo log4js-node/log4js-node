@@ -49,3 +49,7 @@ log4js.configure({
   pm2InstanceVar: 'INSTANCE_ID'
 });
 ```
+
+## NPM complains about nodemailer being deprecated, what should I do?
+
+Nodemailer version 4.0.1 (the not-deprecated version) requires a node version >= 6, but log4js supports node versions >= 4. So until I stop supporting node versions less than 6 I can't update the dependency. It's only an optional dependency anyway, so you're free to install nodemailer@4.0.1 if you want - as far as I know it should work, the API looks the same to me. If you know that the smtp appender definitely doesn't work with nodemailer v4, then please create an issue with some details about the problem.
