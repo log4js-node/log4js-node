@@ -11,6 +11,7 @@ This appender sends log events to a [logstash](https://www.elastic.co/products/l
 * `category` - `string` (optional) - used for the `type` field of the logstash data if `logType` is not defined
 * `fields` - `object` (optional) - extra fields to log with each event
 * `layout` - (optional, defaults to dummyLayout) - used for the `message` field of the logstash data (see [layouts](layouts.md))
+* `args` - (optional, defaults to both) - determines how to log arguments and configuration fields: `direct` logs them as direct properties of the log object, `fields` logs them as child properties of the `fields` property, and `both` logs both.
 
 ## Example
 ```javascript
