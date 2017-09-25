@@ -50,6 +50,9 @@ log4js.configure({
 });
 ```
 
+## FFS, why did you mess with the PM2 stuff? It was working fine for me!
+You can turn off the clustering support, with the `disableClustering: true` option in your config. This will make log4js behave more like it did before version 2.x. Each worker process will log its own output, instead of sending it all to the master process. Be careful if you're logging to files though, this could result in weird behaviour.
+
 ## NPM complains about nodemailer being deprecated, what should I do?
 
 Nodemailer version 4.0.1 (the not-deprecated version) requires a node version >= 6, but log4js supports node versions >= 4. So until I stop supporting node versions less than 6 I can't update the dependency. It's only an optional dependency anyway, so you're free to install nodemailer@4.0.1 if you want - as far as I know it should work, the API looks the same to me. If you know that the smtp appender definitely doesn't work with nodemailer v4, then please create an issue with some details about the problem.
