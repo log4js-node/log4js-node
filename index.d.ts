@@ -10,7 +10,7 @@ export declare function getLogger(category?: string): Logger;
 export declare function configure(configuration: Configuration): void;
 
 export declare interface Configuration {
-  appenders: { [index: string]: { type: string } };
+  appenders: { [index: string]: any };
   categories: { [index: string]: { appenders: string[], level: string } };
 }
 
