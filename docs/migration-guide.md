@@ -19,7 +19,7 @@ Then your v2 config should be something like this:
 {
   appenders: {
     out: { type: 'console' },
-    tasks: {
+    task: {
       type: 'dateFile',
       filename: 'logs/task',
       pattern: '-dd.log',
