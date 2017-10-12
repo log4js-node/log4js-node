@@ -11,6 +11,7 @@
   ],
   "license": "Apache-2.0",
   "main": "./lib/log4js",
+  "types": "./types/log4js.d.ts",
   "author": "Gareth Jones <gareth.nomiddlename@gmail.com>",
   "repository": {
     "type": "git",
