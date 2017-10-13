@@ -9,9 +9,22 @@ export declare function getLogger(category?: string): Logger;
 
 export declare function configure(configuration: Configuration): void;
 
+export declare function levels(): Levels;
+
 export declare interface Configuration {
+  levels?: Levels;
   appenders: { [index: string]: any };
   categories: { [index: string]: { appenders: string[], level: string } };
+  pm2?: boolean;
+  pm2InstanceVar?: string;
+  disableClustering?: boolean;
+}
+
+export declare interface Levels {
+  [index: string]: {
+    value: number;
+    colour: string;
+  }
 }
 
 export declare interface Logger {
