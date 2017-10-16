@@ -63,7 +63,7 @@ Output (in `cheese.log`):
 ```bash
 [2010-01-17 11:43:37.987] [ERROR] cheese - Cheese is too ripe!
 [2010-01-17 11:43:37.990] [FATAL] cheese - Cheese was breeding ground for listeria.
-```    
+```
 
 ## Note for library makers
 
@@ -73,6 +73,20 @@ If you're writing a library and would like to include support for log4js, withou
 Available [here](https://nomiddlename.github.io/log4js-node/).
 
 There's also [an example application](https://github.com/nomiddlename/log4js-example).
+
+## TypeScript
+```ts
+import { configure, getLogger } from './log4js';
+configure('./filename');
+const logger = getLogger();
+logger.level = 'debug';
+logger.debug("Some debug messages");
+
+configure({
+	appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
+	categories: { default: { appenders: ['cheese'], level: 'error' } }
+});
+```
 
 ## Contributing
 Contributions welcome, but take a look at the [rules](https://github.com/nomiddlename/log4js-node/wiki/Contributing) first.

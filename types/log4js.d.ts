@@ -5,6 +5,12 @@ export function getLogger(category?: string): Logger;
 export function configure(filename: string): void;
 export function configure(config: Configuration): void;
 
+export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string);
+
+export function connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
+
+export function shutdown(cb?: (error: Error) => void);
+
 export interface BaseLayout {
 	type: 'basic';
 }
@@ -21,9 +27,18 @@ export interface DummyLayout {
 	type: 'dummy';
 }
 
+export interface Level {
+	isEqualTo(other: string): boolean;
+	isEqualTo(otherLevel: Level): boolean;
+	isLessThanOrEqualTo(other: string): boolean;
+	isLessThanOrEqualTo(otherLevel: Level): boolean;
+	isGreaterThanOrEqualTo(other: string): boolean;
+	isGreaterThanOrEqualTo(otherLevel: Level): boolean;
+}
+
 export interface LoggingEvent {
 	categoryName: string;	// name of category
-	level: string;	// level of message
+	level: Level;	// level of message
 	data: any[];	// objects to log
 	startTime: Date;
 	pid: number;
@@ -44,7 +59,12 @@ export interface PatternLayout {
 	tokens?: { [name: string]: Token };
 }
 
-export type Layout = BaseLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout;
+export interface CustomLayout {
+	[key: string]: any;
+	type: string;
+}
+
+export type Layout = BaseLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout | CustomLayout;
 
 /**
  * Category Filter
@@ -80,6 +100,11 @@ export interface FileAppender {
 	backups?: number;
 	// defaults to basic layout
 	layout?: Layout;
+	numBackups?: number;
+	compress?: boolean; // compress the backups
+	encoding?: string;
+	mode?: number;
+	flags?: string;
 }
 
 export interface SyncfileAppender {
@@ -99,7 +124,7 @@ export interface DateFileAppender {
 	// the path of the file where you want your logs written.
 	filename: string;
 	// defaults to basic layout
-	layout: Layout;
+	layout?: Layout;
 	// defaults to .yyyy-MM-dd - the pattern to use to determine when to roll the logs.
 	/**
 	 * The following strings are recognised in the pattern:
@@ -301,7 +326,7 @@ export interface SmtpAppender {
 		plugin?: string;
 		// configuration for the transport plugin
 		options?: any;
-	};
+	} | string;
 	// send logs as email attachment
 	attachment?: {
 		// (defaults to false)
@@ -324,7 +349,7 @@ export interface SmtpAppender {
 	// (defaults to false) - send the email as HTML instead of plain text
 	html?: boolean;
 	// (defaults to basicLayout)
-	layout: Layout;
+	layout?: Layout;
 }
 
 export interface StandardErrorAppender {
@@ -359,22 +384,32 @@ export type Appender = CategoryFilterAppender
 	| RecordingAppender
 	| SmtpAppender
 	| StandardErrorAppender
-	| StandardOutputAppender
+	| StandardOutputAppender;
 
 
 export interface Configuration {
 	appenders: { [name: string]: Appender; };
 	categories: { [name: string]: { appenders: string[]; level: string; } };
+	pm2?: boolean;
+	pm2InstanceVar?: string;
 }
 
 export interface Logger {
+	setLevel(level: string): void;
+	setLevel(level: Level): void;
 	new(dispatch: Function, name: string): Logger;
 
 	level: string;
 
 	log(...args: any[]): void;
 
-	isLevelEnabled(level: string): boolean;
+	isLevelEnabled(level?: string): boolean;
+
+	isDebugEnabled(): boolean;
+	isInfoEnabled(): boolean;
+	isWarnEnabled(): boolean;
+	isErrorEnabled(): boolean;
+	isFatalEnabled(): boolean;
 
 	_log(level: string, data: any): void;
 
@@ -384,15 +419,15 @@ export interface Logger {
 
 	clearContext(): void;
 
-	trace(...args: any[]): void;
+	trace(message: string, ...args: any[]): void;
 
-	debug(...args: any[]): void;
+	debug(message: string, ...args: any[]): void;
 
-	info(...args: any[]): void;
+	info(message: string, ...args: any[]): void;
 
-	warn(...args: any[]): void;
+	warn(message: string, ...args: any[]): void;
 
-	error(...args: any[]): void;
+	error(message: string, ...args: any[]): void;
 
-	fatal(...args: any[]): void;
+	fatal(message: string, ...args: any[]): void;
 }
