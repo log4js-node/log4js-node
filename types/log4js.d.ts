@@ -9,6 +9,8 @@ export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEv
 
 export function connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
 
+export function levels(): Levels;
+
 export function shutdown(cb?: (error: Error) => void);
 
 export interface BaseLayout {
@@ -386,12 +388,20 @@ export type Appender = CategoryFilterAppender
 	| StandardErrorAppender
 	| StandardOutputAppender;
 
+export interface Levels {
+	[index: string]: {
+		value: number;
+		colour: string;
+	};
+}
 
 export interface Configuration {
 	appenders: { [name: string]: Appender; };
 	categories: { [name: string]: { appenders: string[]; level: string; } };
 	pm2?: boolean;
 	pm2InstanceVar?: string;
+	levels?: Levels;
+	disableClustering?: boolean;
 }
 
 export interface Logger {
