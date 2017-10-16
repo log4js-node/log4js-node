@@ -366,6 +366,11 @@ export interface StandardOutputAppender {
 	layout?: Layout;
 }
 
+export interface CustomAppender {
+	type: string;
+	[key: string]: any;
+}
+
 export type Appender = CategoryFilterAppender
 	| ConsoleAppender
 	| FileAppender
@@ -386,7 +391,8 @@ export type Appender = CategoryFilterAppender
 	| RecordingAppender
 	| SmtpAppender
 	| StandardErrorAppender
-	| StandardOutputAppender;
+	| StandardOutputAppender
+	| CustomAppender;
 
 export interface Levels {
 	[index: string]: {
