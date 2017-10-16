@@ -5,13 +5,13 @@ export function getLogger(category?: string): Logger;
 export function configure(filename: string): void;
 export function configure(config: Configuration): void;
 
-export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string);
+export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
 
 export function connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
 
 export function levels(): Levels;
 
-export function shutdown(cb?: (error: Error) => void);
+export function shutdown(cb?: (error: Error) => void): void | null;
 
 export interface BaseLayout {
 	type: 'basic';
