@@ -104,6 +104,8 @@ export interface FileAppender {
 	layout?: Layout;
 	numBackups?: number;
 	compress?: boolean; // compress the backups
+  // keep the file extension when rotating logs
+  keepFileExt?: boolean;
 	encoding?: string;
 	mode?: number;
 	flags?: string;
@@ -150,6 +152,8 @@ export interface DateFileAppender {
 	compress?: boolean;
 	// include the pattern in the name of the current log file as well as the backups.(default false)
 	alwaysIncludePattern?: boolean;
+  // keep the file extension when rotating logs
+  keepFileExt?: boolean;
 	// if this value is greater than zero, then files older than that many days will be deleted during log rolling.(default 0)
 	daysToKeep?: number;
 }
@@ -421,6 +425,7 @@ export interface Logger {
 
 	isLevelEnabled(level?: string): boolean;
 
+  isTraceEnabled(): boolean;
 	isDebugEnabled(): boolean;
 	isInfoEnabled(): boolean;
 	isWarnEnabled(): boolean;
