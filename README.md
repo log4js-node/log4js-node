@@ -6,9 +6,9 @@
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
 
-The full documentation is available [here](https://nomiddlename.github.io/log4js-node/).
+The full documentation is available [here](https://log4js-node.github.io/log4js-node/).
 
-There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this [migration guide](https://nomiddlename.github.io/log4js-node/migration-guide.html) if things aren't working.
+There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this [migration guide](https://log4js-node.github.io/log4js-node/migration-guide.html) if things aren't working.
 
 Out of the box it supports the following features:
 
@@ -70,9 +70,9 @@ Output (in `cheese.log`):
 If you're writing a library and would like to include support for log4js, without introducing a dependency headache for your users, take a look at [log4js-api](https://github.com/log4js-node/log4js-api).
 
 ## Documentation
-Available [here](https://nomiddlename.github.io/log4js-node/).
+Available [here](https://log4js-node.github.io/log4js-node/).
 
-There's also [an example application](https://github.com/nomiddlename/log4js-example).
+There's also [an example application](https://github.com/log4js-node/log4js-example).
 
 ## TypeScript
 ```ts
@@ -89,7 +89,7 @@ configure({
 ```
 
 ## Contributing
-Contributions welcome, but take a look at the [rules](https://github.com/nomiddlename/log4js-node/wiki/Contributing) first.
+Contributions welcome, but take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) first.
 
 ## License
 

@@ -71,20 +71,20 @@ export type Layout = BaseLayout | ColoredLayout | MessagePassThroughLayout | Dum
 /**
  * Category Filter
  *
- * @see https://nomiddlename.github.io/log4js-node/categoryFilter.html
+ * @see https://log4js-node.github.io/log4js-node/categoryFilter.html
  */
 export interface CategoryFilterAppender {
 	type: "categoryFilter";
 	// the category (or categories if you provide an array of values) that will be excluded from the appender.
 	exclude?: string | string[];
-	// the name of the appender to filter. see https://nomiddlename.github.io/log4js-node/layouts.html
+	// the name of the appender to filter. see https://log4js-node.github.io/log4js-node/layouts.html
 	appender?: string;
 }
 
 /**
  * Console Appender
  *
- * @see https://nomiddlename.github.io/log4js-node/console.html
+ * @see https://log4js-node.github.io/log4js-node/console.html
  */
 export interface ConsoleAppender {
 	type: 'console';
