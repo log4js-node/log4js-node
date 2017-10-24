@@ -143,6 +143,49 @@ test('logstashUDP appender', (batch) => {
     t.end();
   });
 
+  batch.test('use direct args', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      args: 'direct',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    setup.logger.log('info', 'Log event with fields', { extra1: 'value1', extra2: 'value2' });
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.extra1, 'value1');
+    t.equal(json.extra2, 'value2');
+    t.equal(json.fields, undefined);
+    t.end();
+  });
+
+  batch.test('use fields args', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      args: 'fields',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    setup.logger.log('info', 'Log event with fields', { extra1: 'value1', extra2: 'value2' });
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.extra1, undefined);
+    t.equal(json.extra2, undefined);
+    t.equal(json.fields.extra1, 'value1');
+    t.equal(json.fields.extra2, 'value2');
+    t.end();
+  });
+
   batch.test('shutdown should close sockets', (t) => {
     const setup = setupLogging('myLogger', {
       host: '127.0.0.1',
