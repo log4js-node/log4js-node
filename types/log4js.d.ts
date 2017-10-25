@@ -415,8 +415,6 @@ export interface Configuration {
 }
 
 export interface Logger {
-	setLevel(level: string): void;
-	setLevel(level: Level): void;
 	new(dispatch: Function, name: string): Logger;
 
 	level: string;
