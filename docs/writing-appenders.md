@@ -4,7 +4,15 @@ Log4js can load appenders from outside its core set. To add a custom appender, t
 
 ## Loading mechanism
 
-When log4js parses your configuration, it loops through the defined appenders. For each one, it will `require` the appender initially using the `type` value prepended with './appenders' as the module identifier - this is to try loading from the core appenders first. If that fails (the module could not be found in the core appenders), then log4js will try to require the module using just the `type` value. If that fails, an error will be raised.
+When log4js parses your configuration, it loops through the defined appenders. For each one, it will `require` the appender initially using the `type` value prepended with './appenders' as the module identifier - this is to try loading from the core appenders first. If that fails (the module could not be found in the core appenders), then log4js will try to require the module using variations of the `type` value.
+
+Log4js checks the following places (in this order) for appenders based on the type value:
+1. The core appenders: `require('./appenders/' + type)`
+2. node_modules: `require(type)`
+3. relative to the main file of your application: `require(path.dirname(require.main.filename) + '/' + type)`
+4. relative to the process' current working directory: `require(process.cwd() + '/' + type)`
+
+If that fails, an error will be raised.
 
 ## Appender Modules
 
