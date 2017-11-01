@@ -186,6 +186,44 @@ test('logstashUDP appender', (batch) => {
     t.end();
   });
 
+  batch.test('Send null as argument', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    const msg = 'test message with null';
+    setup.logger.info(msg, null);
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.message, msg);
+    t.end();
+  });
+
+  batch.test('Send undefined as argument', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    const msg = 'test message with undefined';
+    setup.logger.info(msg, undefined);
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.message, msg);
+    t.end();
+  });
+
   batch.test('shutdown should close sockets', (t) => {
     const setup = setupLogging('myLogger', {
       host: '127.0.0.1',
