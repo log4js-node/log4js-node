@@ -29,9 +29,9 @@ test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
           t.ok(err, 'we got a connection error');
           t.end();
         });
-      }, 500);
+      }, 250);
     });
-  }, 500);
+  }, 250);
 });
 
 test('multiprocess appender shutdown (worker)', (t) => {
