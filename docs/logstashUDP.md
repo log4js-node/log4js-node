@@ -46,6 +46,7 @@ This will result in a JSON message being sent to `log.server:12345` over UDP, wi
     'level': 'INFO',
     'category': 'default',
     'biscuits': 'hobnob',
+    'user': 'charlie',
     'cheese': 'gouda',
     'tea': 'tetley'
   }
