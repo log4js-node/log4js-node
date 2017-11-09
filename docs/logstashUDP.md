@@ -22,7 +22,10 @@ log4js.configure({
       host: 'log.server',
       port: '12345',
       logType: 'application',
-      fields: { biscuits: 'digestive', tea: 'tetley' }
+      fields: { biscuits: 'digestive', tea: 'tetley', user: function(logEvent) {
+          return AuthLibrary.currentUser();
+        }
+      }
     }
   },
   categories: {
