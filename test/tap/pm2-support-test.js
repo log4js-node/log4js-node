@@ -76,12 +76,12 @@ if (cluster.isMaster) {
     });
     const anotherLogger = log4js.getLogger('test');
     anotherLogger.info('this should now get logged');
-  }, 1000);
+  }, 500);
 
   // we have to wait a bit, so that the process.send messages get a chance to propagate
   setTimeout(() => {
     const events = recorder.replay();
     process.send({ type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events });
     cluster.worker.disconnect();
-  }, 2000);
+  }, 2500);
 }
