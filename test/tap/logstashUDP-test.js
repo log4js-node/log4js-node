@@ -120,6 +120,33 @@ test('logstashUDP appender', (batch) => {
     t.end();
   });
 
+  batch.test('configuration can include functions to generate field values at run-time', (t) => {
+    const setup = setupLogging('myCategory', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      logType: 'myAppType',
+      category: 'myLogger',
+      fields: {
+        field1: 'value1',
+        field2: function () {
+          return 'evaluated at runtime';
+        }
+      },
+      layout: {
+        type: 'pattern',
+        pattern: '%m'
+      }
+    });
+  setup.logger.log('trace', 'Log event #1');
+
+  const json = JSON.parse(setup.results.buffer.toString());
+  t.equal(json.fields.field1, 'value1');
+  t.equal(json.fields.field2, 'evaluated at runtime' );
+
+  t.end();
+  });
+
   batch.test('extra fields should be added to the fields structure', (t) => {
     const setup = setupLogging('myLogger', {
       host: '127.0.0.1',
