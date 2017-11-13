@@ -15,6 +15,7 @@ Any other configuration parameters will be passed to the underlying [streamrolle
 * `mode`- `integer` (default 0644)
 * `flags` - `string` (default 'a')
 * `compress` - `boolean` (default false) - compress the backup files during rolling (backup files will have `.gz` extension)
+* `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`)
 
 ## Example
 

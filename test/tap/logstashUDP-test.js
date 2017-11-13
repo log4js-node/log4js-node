@@ -120,6 +120,33 @@ test('logstashUDP appender', (batch) => {
     t.end();
   });
 
+  batch.test('configuration can include functions to generate field values at run-time', (t) => {
+    const setup = setupLogging('myCategory', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      logType: 'myAppType',
+      category: 'myLogger',
+      fields: {
+        field1: 'value1',
+        field2: function () {
+          return 'evaluated at runtime';
+        }
+      },
+      layout: {
+        type: 'pattern',
+        pattern: '%m'
+      }
+    });
+  setup.logger.log('trace', 'Log event #1');
+
+  const json = JSON.parse(setup.results.buffer.toString());
+  t.equal(json.fields.field1, 'value1');
+  t.equal(json.fields.field2, 'evaluated at runtime' );
+
+  t.end();
+  });
+
   batch.test('extra fields should be added to the fields structure', (t) => {
     const setup = setupLogging('myLogger', {
       host: '127.0.0.1',
@@ -140,6 +167,87 @@ test('logstashUDP appender', (batch) => {
       category: 'myLogger'
     };
     t.equal(JSON.stringify(json.fields), JSON.stringify(fields));
+    t.end();
+  });
+
+  batch.test('use direct args', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      args: 'direct',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    setup.logger.log('info', 'Log event with fields', { extra1: 'value1', extra2: 'value2' });
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.extra1, 'value1');
+    t.equal(json.extra2, 'value2');
+    t.equal(json.fields, undefined);
+    t.end();
+  });
+
+  batch.test('use fields args', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      args: 'fields',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    setup.logger.log('info', 'Log event with fields', { extra1: 'value1', extra2: 'value2' });
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.extra1, undefined);
+    t.equal(json.extra2, undefined);
+    t.equal(json.fields.extra1, 'value1');
+    t.equal(json.fields.extra2, 'value2');
+    t.end();
+  });
+
+  batch.test('Send null as argument', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    const msg = 'test message with null';
+    setup.logger.info(msg, null);
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.message, msg);
+    t.end();
+  });
+
+  batch.test('Send undefined as argument', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    const msg = 'test message with undefined';
+    setup.logger.info(msg, undefined);
+    const json = JSON.parse(setup.results.buffer.toString());
+
+    t.equal(json.message, msg);
     t.end();
   });
 

@@ -9,8 +9,9 @@ This appender sends log events to a [logstash](https://www.elastic.co/products/l
 * `port` - `integer` - port of the logstash server
 * `logType` - `string` (optional) - used for the `type` field in the logstash data
 * `category` - `string` (optional) - used for the `type` field of the logstash data if `logType` is not defined
-* `fields` - `object` (optional) - extra fields to log with each event
+* `fields` - `object` (optional) - extra fields to log with each event. User-defined fields can be either a string or a function. Functions will be passed the log event, and should return a string. 
 * `layout` - (optional, defaults to dummyLayout) - used for the `message` field of the logstash data (see [layouts](layouts.md))
+* `args` - (optional, defaults to both) - determines how to log arguments and configuration fields: `direct` logs them as direct properties of the log object, `fields` logs them as child properties of the `fields` property, and `both` logs both.
 
 ## Example
 ```javascript
@@ -21,7 +22,10 @@ log4js.configure({
       host: 'log.server',
       port: '12345',
       logType: 'application',
-      fields: { biscuits: 'digestive', tea: 'tetley' }
+      fields: { biscuits: 'digestive', tea: 'tetley', user: function(logEvent) {
+          return AuthLibrary.currentUser();
+        }
+      }
     }
   },
   categories: {
@@ -42,6 +46,7 @@ This will result in a JSON message being sent to `log.server:12345` over UDP, wi
     'level': 'INFO',
     'category': 'default',
     'biscuits': 'hobnob',
+    'user': 'charlie',
     'cheese': 'gouda',
     'tea': 'tetley'
   }

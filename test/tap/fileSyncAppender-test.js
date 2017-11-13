@@ -158,5 +158,31 @@ test('log4js fileSyncAppender', (batch) => {
     });
   });
 
+  batch.test('test options', (t) => {
+    // using non-standard options
+    log4js.configure({
+      appenders: {
+        sync: {
+          type: 'fileSync',
+          filename: 'tmp-options-tests.log',
+          layout: { type: 'messagePassThrough' },
+          flags: 'w',
+          encoding: 'ascii',
+          mode: 0o666
+        }
+      },
+      categories: {
+        default: { appenders: ['sync'], level: 'info' }
+      }
+    });
+    const logger = log4js.getLogger();
+    logger.warn('log message');
+
+    fs.readFile('tmp-options-tests.log', 'ascii', (err, contents) => {
+      t.include(contents, `log message${EOL}`);
+      t.end();
+    });
+  });
+
   batch.end();
 });
