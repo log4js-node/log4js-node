@@ -7,7 +7,11 @@ const fs = require('fs');
 test('multiFile appender', (batch) => {
   batch.test('should write to multiple files based on the loggingEvent property', (t) => {
     log4js.configure({
-      appenders: { multi: { type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log' } },
+      appenders: {
+        multi: {
+          type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log'
+        }
+      },
       categories: { default: { appenders: ['multi'], level: 'info' } }
     });
     const loggerA = log4js.getLogger('A');
@@ -23,7 +27,11 @@ test('multiFile appender', (batch) => {
 
   batch.test('should write to multiple files based on loggingEvent.context properties', (t) => {
     log4js.configure({
-      appenders: { multi: { type: 'multiFile', base: 'logs/', property: 'label', extension: '.log' } },
+      appenders: {
+        multi: {
+          type: 'multiFile', base: 'logs/', property: 'label', extension: '.log'
+        }
+      },
       categories: { default: { appenders: ['multi'], level: 'info' } }
     });
     const loggerC = log4js.getLogger('cheese');
@@ -41,7 +49,11 @@ test('multiFile appender', (batch) => {
 
   batch.test('should fail silently if loggingEvent property has no value', (t) => {
     log4js.configure({
-      appenders: { multi: { type: 'multiFile', base: 'logs/', property: 'label', extension: '.log' } },
+      appenders: {
+        multi: {
+          type: 'multiFile', base: 'logs/', property: 'label', extension: '.log'
+        }
+      },
       categories: { default: { appenders: ['multi'], level: 'info' } }
     });
     const loggerE = log4js.getLogger();
@@ -62,14 +74,16 @@ test('multiFile appender', (batch) => {
 
   batch.test('should pass options to rolling file stream', (t) => {
     log4js.configure({
-      appenders: { multi: {
-        type: 'multiFile',
-        base: 'logs/',
-        property: 'label',
-        extension: '.log',
-        maxLogSize: 61,
-        backups: 2
-      } },
+      appenders: {
+        multi: {
+          type: 'multiFile',
+          base: 'logs/',
+          property: 'label',
+          extension: '.log',
+          maxLogSize: 61,
+          backups: 2
+        }
+      },
       categories: { default: { appenders: ['multi'], level: 'info' } }
     });
     const loggerF = log4js.getLogger();

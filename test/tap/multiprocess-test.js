@@ -68,7 +68,11 @@ test('Multiprocess Appender', (batch) => {
       }
     );
     log4js.configure({
-      appenders: { worker: { type: 'multiprocess', mode: 'worker', loggerPort: 1234, loggerHost: 'pants' } },
+      appenders: {
+        worker: {
+          type: 'multiprocess', mode: 'worker', loggerPort: 1234, loggerHost: 'pants'
+        }
+      },
       categories: { default: { appenders: ['worker'], level: 'trace' } }
     });
 
@@ -233,32 +237,22 @@ test('Multiprocess Appender', (batch) => {
     });
 
     t.test('when a client connects', (assert) => {
-      const logString = `${JSON.stringify(
-        {
-          level: { level: 10000, levelStr: 'DEBUG' },
-          data: ['some debug']
-        }
-      )}__LOG4JS__`;
+      const logString = `${JSON.stringify({
+        level: { level: 10000, levelStr: 'DEBUG' },
+        data: ['some debug']
+      })}__LOG4JS__`;
 
-      net.cbs.data(
-        `${JSON.stringify(
-          {
-            level: { level: 40000, levelStr: 'ERROR' },
-            data: ['an error message']
-          }
-        )}__LOG4JS__`
-      );
+      net.cbs.data(`${JSON.stringify({
+        level: { level: 40000, levelStr: 'ERROR' },
+        data: ['an error message']
+      })}__LOG4JS__`);
       net.cbs.data(logString.substring(0, 10));
       net.cbs.data(logString.substring(10));
       net.cbs.data(logString + logString + logString);
-      net.cbs.end(
-        `${JSON.stringify(
-          {
-            level: { level: 50000, levelStr: 'FATAL' },
-            data: ["that's all folks"]
-          }
-        )}__LOG4JS__`
-      );
+      net.cbs.end(`${JSON.stringify({
+        level: { level: 50000, levelStr: 'FATAL' },
+        data: ["that's all folks"]
+      })}__LOG4JS__`);
       net.cbs.data('bad message__LOG4JS__');
 
       const logEvents = recording.replay();
@@ -304,11 +298,12 @@ test('Multiprocess Appender', (batch) => {
         }
       }
     );
-    t.throws(() =>
-      log4js.configure({
-        appenders: { master: { type: 'multiprocess', mode: 'master' } },
-        categories: { default: { appenders: ['master'], level: 'trace' } }
-      }),
+    t.throws(
+      () =>
+        log4js.configure({
+          appenders: { master: { type: 'multiprocess', mode: 'master' } },
+          categories: { default: { appenders: ['master'], level: 'trace' } }
+        }),
       new Error('multiprocess master must have an "appender" defined')
     );
     t.end();
@@ -325,11 +320,12 @@ test('Multiprocess Appender', (batch) => {
         }
       }
     );
-    t.throws(() =>
-      log4js.configure({
-        appenders: { master: { type: 'multiprocess', mode: 'master', appender: 'cheese' } },
-        categories: { default: { appenders: ['master'], level: 'trace' } }
-      }),
+    t.throws(
+      () =>
+        log4js.configure({
+          appenders: { master: { type: 'multiprocess', mode: 'master', appender: 'cheese' } },
+          categories: { default: { appenders: ['master'], level: 'trace' } }
+        }),
       new Error('multiprocess master appender "cheese" not defined')
     );
     t.end();
