@@ -45,17 +45,17 @@
     "streamroller": "^0.6.0"
   },
   "devDependencies": {
-    "codecov": "^1.0.1",
-    "conventional-changelog": "^1.1.4",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.2.0",
+    "codecov": "^3.0.0",
+    "conventional-changelog": "^1.1.6",
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-node": "^0.3.1",
-    "eslint-plugin-import": "^2.6.1",
-    "husky": "^0.12.0",
-    "nyc": "^10.3.2",
+    "eslint-plugin-import": "^2.8.0",
+    "husky": "^0.14.3",
+    "nyc": "^11.3.0",
     "sandboxed-module": "^2.0.3",
-    "tap": "^8.0.1",
-    "validate-commit-msg": "^2.12.2"
+    "tap": "^10.7.3",
+    "validate-commit-msg": "^2.14.0"
   },
   "optionalDependencies": {
     "hipchat-notifier": "^1.1.0",
