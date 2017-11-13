@@ -318,7 +318,8 @@ test('log4js layouts', (batch) => {
     });
 
     t.test('should handle complicated patterns', (assert) => {
-      testPattern(assert, layout, event, tokens,
+      testPattern(
+        assert, layout, event, tokens,
         '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
         `this is a test${EOL} of.tests at 14:18:30.045 cheese DEBUG${EOL}`
       );
