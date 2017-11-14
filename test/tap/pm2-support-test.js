@@ -14,7 +14,7 @@ if (cluster.isMaster) {
     cluster.fork({ NODE_APP_INSTANCE: i });
   });
 
-  cluster.on('message', (worker, msg) => {
+  const messageHandler = (worker, msg) => {
     if (worker.type || worker.topic) {
       msg = worker;
     }
@@ -28,7 +28,9 @@ if (cluster.isMaster) {
         cluster.workers[id].send(msg);
       }
     }
-  });
+  };
+
+  cluster.on('message', messageHandler);
 
   let count = 0;
   cluster.on('exit', () => {
@@ -55,6 +57,7 @@ if (cluster.isMaster) {
         batch.end();
       });
     }
+    cluster.removeListener('message', messageHandler);
   });
 } else {
   const recorder = require('../../lib/appenders/recording');
@@ -67,21 +70,28 @@ if (cluster.isMaster) {
   const logger = log4js.getLogger('test');
   logger.info('this is a test, but without enabling PM2 support it will not be logged');
 
-  // we have to wait a bit, so that the process.send messages get a chance to propagate
+  // IPC messages can take a while to get through to start with.
   setTimeout(() => {
-    log4js.configure({
-      appenders: { out: { type: 'recording' } },
-      categories: { default: { appenders: ['out'], level: 'info' } },
-      pm2: true
-    });
-    const anotherLogger = log4js.getLogger('test');
-    anotherLogger.info('this should now get logged');
-  }, 500);
+    log4js.shutdown(() => {
+      process.nextTick(() => {
+        log4js.configure({
+          appenders: { out: { type: 'recording' } },
+          categories: { default: { appenders: ['out'], level: 'info' } },
+          pm2: true
+        });
+        const anotherLogger = log4js.getLogger('test');
+        anotherLogger.info('this should now get logged');
 
-  // we have to wait a bit, so that the process.send messages get a chance to propagate
-  setTimeout(() => {
-    const events = recorder.replay();
-    process.send({ type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events });
-    cluster.worker.disconnect();
-  }, 2500);
+        setTimeout(() => {
+          log4js.shutdown(() => {
+            const events = recorder.replay();
+            process.nextTick(() => {
+              process.send({ type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events });
+              cluster.worker.disconnect();
+            });
+          });
+        }, 1000);
+      });
+    });
+  }, 1000);
 }

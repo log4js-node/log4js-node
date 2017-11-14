@@ -76,7 +76,9 @@ const setupLogging = function (options, category, compressedLength) {
             exitHandler = handler;
           }
         },
-        env: {}
+        removeListener: () => {},
+        env: {},
+        stderr: process.stderr
       },
       console: fakeConsole
     }
