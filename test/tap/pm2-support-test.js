@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const cluster = require('cluster');
+const debug = require('debug')('log4js:pm2-test');
 
 // PM2 runs everything as workers
 // - no master in the cluster (PM2 acts as master itself)
@@ -19,11 +20,13 @@ if (cluster.isMaster) {
       msg = worker;
     }
     if (msg.type === 'testing') {
+      debug(`Received testing message from ${msg.instance} with events ${msg.events}`);
       appEvents[msg.instance] = msg.events;
     }
 
     // we have to do the re-broadcasting that the pm2-intercom module would do.
     if (msg.topic === 'log4js:message') {
+      debug(`Received log message ${msg}`);
       for (const id in cluster.workers) {
         cluster.workers[id].send(msg);
       }
@@ -57,10 +60,10 @@ if (cluster.isMaster) {
             t.end();
           });
           batch.end();
+          cluster.removeListener('message', messageHandler);
         });
-      }, 1000);
+      }, 100);
     }
-    cluster.removeListener('message', messageHandler);
   });
 } else {
   const recorder = require('../../lib/appenders/recording');
@@ -76,25 +79,27 @@ if (cluster.isMaster) {
   // IPC messages can take a while to get through to start with.
   setTimeout(() => {
     log4js.shutdown(() => {
-      process.nextTick(() => {
-        log4js.configure({
-          appenders: { out: { type: 'recording' } },
-          categories: { default: { appenders: ['out'], level: 'info' } },
-          pm2: true
-        });
-        const anotherLogger = log4js.getLogger('test');
-        anotherLogger.info('this should now get logged');
-
-        setTimeout(() => {
-          log4js.shutdown(() => {
-            const events = recorder.replay();
-            process.send(
-              { type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events },
-              () => { cluster.worker.disconnect(); }
-            );
-          });
-        }, 1000);
+      log4js.configure({
+        appenders: { out: { type: 'recording' } },
+        categories: { default: { appenders: ['out'], level: 'info' } },
+        pm2: true
       });
+      const anotherLogger = log4js.getLogger('test');
+      setTimeout(() => {
+        anotherLogger.info('this should now get logged');
+      }, 100);
+
+      // if we're the pm2-master we should wait for the other process to send its log messages
+      setTimeout(() => {
+        log4js.shutdown(() => {
+          const events = recorder.replay();
+          debug(`Sending test events ${events} from ${process.env.NODE_APP_INSTANCE}`);
+          process.send(
+            { type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events },
+            () => { setTimeout(() => { cluster.worker.disconnect(); }, 100); }
+          );
+        });
+      }, 300);
     });
-  }, 1000);
+  }, 200);
 }
