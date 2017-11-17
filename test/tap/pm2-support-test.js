@@ -36,26 +36,29 @@ if (cluster.isMaster) {
   cluster.on('exit', () => {
     count += 1;
     if (count === 2) {
-      test('PM2 Support', (batch) => {
-        batch.test('should not get any events when turned off', (t) => {
-          t.notOk(appEvents['0'].filter(e => e && e.data[0].indexOf('will not be logged') > -1).length);
-          t.notOk(appEvents['1'].filter(e => e && e.data[0].indexOf('will not be logged') > -1).length);
-          t.end();
-        });
+      // wait for any IPC messages still to come, because it seems they are slooooow.
+      setTimeout(() => {
+        test('PM2 Support', (batch) => {
+          batch.test('should not get any events when turned off', (t) => {
+            t.notOk(appEvents['0'].filter(e => e && e.data[0].indexOf('will not be logged') > -1).length);
+            t.notOk(appEvents['1'].filter(e => e && e.data[0].indexOf('will not be logged') > -1).length);
+            t.end();
+          });
 
-        batch.test('should get events on app instance 0', (t) => {
-          t.equal(appEvents['0'].length, 2);
-          t.equal(appEvents['0'][0].data[0], 'this should now get logged');
-          t.equal(appEvents['0'][1].data[0], 'this should now get logged');
-          t.end();
-        });
+          batch.test('should get events on app instance 0', (t) => {
+            t.equal(appEvents['0'].length, 2);
+            t.equal(appEvents['0'][0].data[0], 'this should now get logged');
+            t.equal(appEvents['0'][1].data[0], 'this should now get logged');
+            t.end();
+          });
 
-        batch.test('should not get events on app instance 1', (t) => {
-          t.equal(appEvents['1'].length, 0);
-          t.end();
+          batch.test('should not get events on app instance 1', (t) => {
+            t.equal(appEvents['1'].length, 0);
+            t.end();
+          });
+          batch.end();
         });
-        batch.end();
-      });
+      }, 1000);
     }
     cluster.removeListener('message', messageHandler);
   });
