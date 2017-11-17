@@ -85,10 +85,10 @@ if (cluster.isMaster) {
         setTimeout(() => {
           log4js.shutdown(() => {
             const events = recorder.replay();
-            process.nextTick(() => {
-              process.send({ type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events });
-              cluster.worker.disconnect();
-            });
+            process.send(
+              { type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events },
+              () => { cluster.worker.disconnect(); }
+            );
           });
         }, 1000);
       });
