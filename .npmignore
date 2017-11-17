@@ -12,3 +12,5 @@ lib-cov
 coverage.html
 Makefile
 coverage
+Gemfile
+Gemfile.lock

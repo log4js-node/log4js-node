@@ -39,10 +39,10 @@
     "lib": "lib"
   },
   "dependencies": {
-    "date-format": "^1.1.0",
-    "debug": "^2.6.8",
+    "date-format": "^1.2.0",
+    "debug": "^3.1.0",
     "semver": "^5.3.0",
-    "streamroller": "^0.6.0"
+    "streamroller": "^0.7.0"
   },
   "devDependencies": {
     "codecov": "^3.0.0",

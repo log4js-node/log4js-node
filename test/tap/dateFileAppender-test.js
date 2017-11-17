@@ -32,7 +32,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.include(contents, 'This should be in the file');
         t.match(
           contents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
@@ -124,7 +124,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.equal(fileContents.split(EOL).length, 4);
         t.match(
           fileContents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
