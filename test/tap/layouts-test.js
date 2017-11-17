@@ -30,7 +30,7 @@ test('log4js layouts', (batch) => {
 
       assert.equal(
         output,
-        '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mnonsense'
+        '\x1B[31m[2010-12-05T14:18:30.045] [ERROR] cheese - \x1B[39mnonsense'
       );
       assert.end();
     });
@@ -47,7 +47,7 @@ test('log4js layouts', (batch) => {
           colour: 'red'
         }
       });
-      assert.equal(output, '\x1B[31m[2010-12-05 14:18:30.045] [ERROR] cheese - \x1B[39mthing 2');
+      assert.equal(output, '\x1B[31m[2010-12-05T14:18:30.045] [ERROR] cheese - \x1B[39mthing 2');
       assert.end();
     });
     t.end();
@@ -151,7 +151,7 @@ test('log4js layouts', (batch) => {
       }
     };
 
-    t.equal(layout(event), '[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test');
+    t.equal(layout(event), '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test');
 
     t.test('should output a stacktrace, message if the event has an error attached', (assert) => {
       let i;
@@ -166,7 +166,7 @@ test('log4js layouts', (batch) => {
         assert.equal(lines.length, stack.length);
         assert.equal(
           lines[0],
-          '[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error'
+          '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error'
         );
         for (i = 1; i < stack.length; i++) {
           assert.equal(lines[i], stack[i]);
@@ -175,7 +175,7 @@ test('log4js layouts', (batch) => {
         assert.equal(lines.length - 1, stack.length);
         assert.equal(
           lines[0],
-          '[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]'
+          '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test [Error: Some made-up error]'
         );
         for (i = 1; i < stack.length; i++) {
           assert.equal(lines[i + 2], stack[i + 1]);
@@ -194,7 +194,7 @@ test('log4js layouts', (batch) => {
       const output = layout(event);
       assert.equal(
         output,
-        '[2010-12-05 14:18:30.045] [DEBUG] tests - this is a test ' +
+        '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test ' +
         "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
       );
       assert.end();
@@ -287,13 +287,13 @@ test('log4js layouts', (batch) => {
     });
 
     t.test('%d should output the date in ISO8601 format', (assert) => {
-      testPattern(assert, layout, event, tokens, '%d', '2010-12-05 14:18:30.045');
+      testPattern(assert, layout, event, tokens, '%d', '2010-12-05T14:18:30.045');
       assert.end();
     });
 
     t.test('%d should allow for format specification', (assert) => {
       testPattern(assert, layout, event, tokens, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30.045-0000');
-      testPattern(assert, layout, event, tokens, '%d{ISO8601}', '2010-12-05 14:18:30.045');
+      testPattern(assert, layout, event, tokens, '%d{ISO8601}', '2010-12-05T14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{ABSOLUTE}', '14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{DATE}', '05 12 2010 14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{yy MM dd hh mm ss}', '10 12 05 14 18 30');

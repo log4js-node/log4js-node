@@ -35,7 +35,7 @@ test('log4js fileSyncAppender', (batch) => {
       t.include(fileContents, `This should be in the file.${EOL}`);
       t.match(
         fileContents,
-        /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+        /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
       );
       t.end();
     });
@@ -60,11 +60,7 @@ test('log4js fileSyncAppender', (batch) => {
           type: 'fileSync', filename: testFile, maxLogSize: 100, backups: 0
         }
       },
-      categories: {
-        default: {
-          appenders: ['sync'], level: 'debug'
-        }
-      }
+      categories: { default: { appenders: ['sync'], level: 'debug' } }
     });
     logger.info('This is the first log message.');
     logger.info('This is an intermediate log message.');
