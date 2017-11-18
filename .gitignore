@@ -21,3 +21,5 @@ coverage/
 .nyc_output/
 _site
 Gemfile.lock
+Dockerfile
+docker-compose.yml
