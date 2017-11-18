@@ -62,7 +62,7 @@ if (cluster.isMaster) {
           batch.end();
           cluster.removeListener('message', messageHandler);
         });
-      }, 100);
+      }, 1000);
     }
   });
 } else {
@@ -87,7 +87,7 @@ if (cluster.isMaster) {
       const anotherLogger = log4js.getLogger('test');
       setTimeout(() => {
         anotherLogger.info('this should now get logged');
-      }, 100);
+      }, 1000);
 
       // if we're the pm2-master we should wait for the other process to send its log messages
       setTimeout(() => {
@@ -96,10 +96,10 @@ if (cluster.isMaster) {
           debug(`Sending test events ${events} from ${process.env.NODE_APP_INSTANCE}`);
           process.send(
             { type: 'testing', instance: process.env.NODE_APP_INSTANCE, events: events },
-            () => { setTimeout(() => { cluster.worker.disconnect(); }, 100); }
+            () => { setTimeout(() => { cluster.worker.disconnect(); }, 1000); }
           );
         });
-      }, 300);
+      }, 3000);
     });
-  }, 200);
+  }, 2000);
 }
