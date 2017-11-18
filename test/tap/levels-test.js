@@ -49,126 +49,108 @@ test('levels', (batch) => {
 
     t.test('ALL', (assert) => {
       const all = levels.ALL;
-      assertThat(assert, all).isLessThanOrEqualTo(
-        [
-          levels.ALL,
-          levels.TRACE,
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
-      assertThat(assert, all).isNotGreaterThanOrEqualTo(
-        [
-          levels.TRACE,
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, all).isLessThanOrEqualTo([
+        levels.ALL,
+        levels.TRACE,
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
+      assertThat(assert, all).isNotGreaterThanOrEqualTo([
+        levels.TRACE,
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assertThat(assert, all).isEqualTo([levels.getLevel('ALL')]);
-      assertThat(assert, all).isNotEqualTo(
-        [
-          levels.TRACE,
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, all).isNotEqualTo([
+        levels.TRACE,
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assert.end();
     });
 
     t.test('TRACE', (assert) => {
       const trace = levels.TRACE;
-      assertThat(assert, trace).isLessThanOrEqualTo(
-        [
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, trace).isLessThanOrEqualTo([
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assertThat(assert, trace).isNotLessThanOrEqualTo([levels.ALL]);
       assertThat(assert, trace).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE]);
-      assertThat(assert, trace).isNotGreaterThanOrEqualTo(
-        [
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, trace).isNotGreaterThanOrEqualTo([
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assertThat(assert, trace).isEqualTo([levels.getLevel('TRACE')]);
-      assertThat(assert, trace).isNotEqualTo(
-        [
-          levels.ALL,
-          levels.DEBUG,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, trace).isNotEqualTo([
+        levels.ALL,
+        levels.DEBUG,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assert.end();
     });
 
     t.test('DEBUG', (assert) => {
       const debug = levels.DEBUG;
-      assertThat(assert, debug).isLessThanOrEqualTo(
-        [
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, debug).isLessThanOrEqualTo([
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assertThat(assert, debug).isNotLessThanOrEqualTo([levels.ALL, levels.TRACE]);
       assertThat(assert, debug).isGreaterThanOrEqualTo([levels.ALL, levels.TRACE]);
-      assertThat(assert, debug).isNotGreaterThanOrEqualTo(
-        [
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, debug).isNotGreaterThanOrEqualTo([
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assertThat(assert, debug).isEqualTo([levels.getLevel('DEBUG')]);
-      assertThat(assert, debug).isNotEqualTo(
-        [
-          levels.ALL,
-          levels.TRACE,
-          levels.INFO,
-          levels.WARN,
-          levels.ERROR,
-          levels.FATAL,
-          levels.MARK,
-          levels.OFF
-        ]
-      );
+      assertThat(assert, debug).isNotEqualTo([
+        levels.ALL,
+        levels.TRACE,
+        levels.INFO,
+        levels.WARN,
+        levels.ERROR,
+        levels.FATAL,
+        levels.MARK,
+        levels.OFF
+      ]);
       assert.end();
     });
 

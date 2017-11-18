@@ -118,12 +118,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { cheese: { value: 'biscuits' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese".value must have an integer value'
-    ));
+      'level "cheese".value must have an integer value'));
 
     t.throws(() => {
       log4js.configure({
@@ -133,12 +131,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { cheese: 'biscuits' },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese" must be an object'
-    ));
+      'level "cheese" must be an object'));
 
     t.throws(() => {
       log4js.configure({
@@ -148,12 +144,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { cheese: { thing: 'biscuits' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese" must have a \'value\' property'
-    ));
+      'level "cheese" must have a \'value\' property'));
 
     t.throws(() => {
       log4js.configure({
@@ -163,12 +157,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { cheese: { value: 3 } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese" must have a \'colour\' property'
-    ));
+      'level "cheese" must have a \'colour\' property'));
 
     t.throws(() => {
       log4js.configure({
@@ -178,12 +170,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { cheese: { value: 3, colour: 'pants' } },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level "cheese".colour must be one of white, grey, black, blue, cyan, green, magenta, red, yellow'
-    ));
+      'level "cheese".colour must be one of white, grey, black, blue, cyan, green, magenta, red, yellow'));
 
     t.throws(() => {
       log4js.configure({
@@ -193,12 +183,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { '#pants': 3 },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level name "#pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'
-    ));
+      'level name "#pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'));
 
     t.throws(() => {
       log4js.configure({
@@ -208,12 +196,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { 'thing#pants': 3 },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level name "thing#pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'
-    ));
+      'level name "thing#pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'));
 
     t.throws(() => {
       log4js.configure({
@@ -223,12 +209,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { '1pants': 3 },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level name "1pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'
-    ));
+      'level name "1pants" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'));
 
     t.throws(() => {
       log4js.configure({
@@ -238,12 +222,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { '2': 3 },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level name "2" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'
-    ));
+      'level name "2" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'));
 
     t.throws(() => {
       log4js.configure({
@@ -253,12 +235,10 @@ test('../../lib/logger', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'trace' } }
       });
-    }, new Error(
-      'Problem with log4js configuration: ' +
+    }, new Error('Problem with log4js configuration: ' +
       "({ levels: { 'cheese!': 3 },\n  appenders: { stdout: { type: 'stdout' } },\n" +
       "  categories: { default: { appenders: [ 'stdout' ], level: 'trace' } } }) - " +
-      'level name "cheese!" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'
-    ));
+      'level name "cheese!" is not a valid identifier (must start with a letter, only contain A-Z,a-z,0-9,_)'));
 
     t.end();
   });

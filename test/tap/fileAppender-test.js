@@ -88,7 +88,9 @@ test('log4js fileAppender', (batch) => {
           type: 'file', filename: testFile, maxLogSize: 100, backups: 0
         }
       },
-      categories: { default: { appenders: ['file'], level: 'debug' } }
+      categories: {
+        default: { appenders: ['file'], level: 'debug' }
+      }
     });
 
     logger.info('This is the first log message.');
