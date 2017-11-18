@@ -1,4 +1,4 @@
-# log4js-node [![Build Status](https://secure.travis-ci.org/nomiddlename/log4js-node.png?branch=master)](http://travis-ci.org/nomiddlename/log4js-node)
+# log4js-node [![Build Status](https://secure.travis-ci.org/log4js-node/log4js-node.png?branch=master)](http://travis-ci.org/log4js-node/log4js-node)
 
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
 [![codecov](https://codecov.io/gh/nomiddlename/log4js-node/branch/master/graph/badge.svg)](https://codecov.io/gh/nomiddlename/log4js-node)
