@@ -35,7 +35,7 @@ test('log4js fileSyncAppender', (batch) => {
       t.include(fileContents, `This should be in the file.${EOL}`);
       t.match(
         fileContents,
-        /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+        /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
       );
       t.end();
     });
@@ -55,7 +55,11 @@ test('log4js fileSyncAppender', (batch) => {
 
     // log file of 100 bytes maximum, no backups
     log4js.configure({
-      appenders: { sync: { type: 'fileSync', filename: testFile, maxLogSize: 100, backups: 0 } },
+      appenders: {
+        sync: {
+          type: 'fileSync', filename: testFile, maxLogSize: 100, backups: 0
+        }
+      },
       categories: { default: { appenders: ['sync'], level: 'debug' } }
     });
     logger.info('This is the first log message.');
@@ -72,9 +76,7 @@ test('log4js fileSyncAppender', (batch) => {
 
     t.test('there should be two test files', (assert) => {
       fs.readdir(__dirname, (err, files) => {
-        const logFiles = files.filter(
-          file => file.includes('fa-maxFileSize-sync-test.log')
-        );
+        const logFiles = files.filter(file => file.includes('fa-maxFileSize-sync-test.log'));
         assert.equal(logFiles.length, 2);
         assert.end();
       });
@@ -97,7 +99,11 @@ test('log4js fileSyncAppender', (batch) => {
 
     // log file of 50 bytes maximum, 2 backups
     log4js.configure({
-      appenders: { sync: { type: 'fileSync', filename: testFile, maxLogSize: 50, backups: 2 } },
+      appenders: {
+        sync: {
+          type: 'fileSync', filename: testFile, maxLogSize: 50, backups: 2
+        }
+      },
       categories: { default: { appenders: ['sync'], level: 'debug' } }
     });
     logger.info('This is the first log message.');
@@ -108,9 +114,7 @@ test('log4js fileSyncAppender', (batch) => {
     t.test('the log files', (assert) => {
       assert.plan(5);
       fs.readdir(__dirname, (err, files) => {
-        const logFiles = files.filter(
-          file => file.includes('fa-maxFileSize-with-backups-sync-test.log')
-        );
+        const logFiles = files.filter(file => file.includes('fa-maxFileSize-with-backups-sync-test.log'));
         assert.equal(logFiles.length, 3, 'should be 3 files');
         assert.same(logFiles, [
           'fa-maxFileSize-with-backups-sync-test.log',
@@ -136,11 +140,12 @@ test('log4js fileSyncAppender', (batch) => {
     // this config defines one file appender (to ./tmp-sync-tests.log)
     // and sets the log level for "tests" to WARN
     log4js.configure({
-      appenders: { sync: {
-        type: 'fileSync',
-        filename: 'tmp-sync-tests.log',
-        layout: { type: 'messagePassThrough' }
-      }
+      appenders: {
+        sync: {
+          type: 'fileSync',
+          filename: 'tmp-sync-tests.log',
+          layout: { type: 'messagePassThrough' }
+        }
       },
       categories: {
         default: { appenders: ['sync'], level: 'debug' },

@@ -138,13 +138,13 @@ test('logstashUDP appender', (batch) => {
         pattern: '%m'
       }
     });
-  setup.logger.log('trace', 'Log event #1');
+    setup.logger.log('trace', 'Log event #1');
 
-  const json = JSON.parse(setup.results.buffer.toString());
-  t.equal(json.fields.field1, 'value1');
-  t.equal(json.fields.field2, 'evaluated at runtime' );
+    const json = JSON.parse(setup.results.buffer.toString());
+    t.equal(json.fields.field1, 'value1');
+    t.equal(json.fields.field2, 'evaluated at runtime');
 
-  t.end();
+    t.end();
   });
 
   batch.test('extra fields should be added to the fields structure', (t) => {

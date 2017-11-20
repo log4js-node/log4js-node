@@ -12,3 +12,7 @@ lib-cov
 coverage.html
 Makefile
 coverage
+Gemfile
+Gemfile.lock
+docker-compose.yml
+Dockerfile

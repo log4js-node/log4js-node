@@ -36,7 +36,7 @@ test('log4js fileAppender', (batch) => {
         t.include(fileContents, `This should be in the file.${EOL}`);
         t.match(
           fileContents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
@@ -63,7 +63,7 @@ test('log4js fileAppender', (batch) => {
         t.equal(fileContents.split(EOL).length, 4);
         t.match(
           fileContents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
@@ -84,9 +84,13 @@ test('log4js fileAppender', (batch) => {
     // log file of 100 bytes maximum, no backups
     log4js.configure({
       appenders: {
-        file: { type: 'file', filename: testFile, maxLogSize: 100, backups: 0 }
+        file: {
+          type: 'file', filename: testFile, maxLogSize: 100, backups: 0
+        }
       },
-      categories: { default: { appenders: ['file'], level: 'debug' } }
+      categories: {
+        default: { appenders: ['file'], level: 'debug' }
+      }
     });
 
     logger.info('This is the first log message.');
@@ -98,9 +102,7 @@ test('log4js fileAppender', (batch) => {
         t.include(fileContents, 'This is the second log message.');
         t.equal(fileContents.indexOf('This is the first log message.'), -1);
         fs.readdir(__dirname, (e, files) => {
-          const logFiles = files.filter(
-            file => file.includes('fa-maxFileSize-test.log')
-          );
+          const logFiles = files.filter(file => file.includes('fa-maxFileSize-test.log'));
           t.equal(logFiles.length, 2, 'should be 2 files');
           t.end();
         });
@@ -124,7 +126,9 @@ test('log4js fileAppender', (batch) => {
     // log file of 50 bytes maximum, 2 backups
     log4js.configure({
       appenders: {
-        file: { type: 'file', filename: testFile, maxLogSize: 50, backups: 2 }
+        file: {
+          type: 'file', filename: testFile, maxLogSize: 50, backups: 2
+        }
       },
       categories: { default: { appenders: ['file'], level: 'debug' } }
     });
@@ -136,9 +140,7 @@ test('log4js fileAppender', (batch) => {
     // give the system a chance to open the stream
     setTimeout(() => {
       fs.readdir(__dirname, (err, files) => {
-        const logFiles = files.sort().filter(
-          file => file.includes('fa-maxFileSize-with-backups-test.log')
-        );
+        const logFiles = files.sort().filter(file => file.includes('fa-maxFileSize-with-backups-test.log'));
         t.equal(logFiles.length, 3);
         t.same(logFiles, [
           'fa-maxFileSize-with-backups-test.log',
@@ -184,7 +186,9 @@ test('log4js fileAppender', (batch) => {
     // log file of 50 bytes maximum, 2 backups
     log4js.configure({
       appenders: {
-        file: { type: 'file', filename: testFile, maxLogSize: 50, backups: 2, compress: true }
+        file: {
+          type: 'file', filename: testFile, maxLogSize: 50, backups: 2, compress: true
+        }
       },
       categories: { default: { appenders: ['file'], level: 'debug' } }
     });
@@ -195,9 +199,7 @@ test('log4js fileAppender', (batch) => {
     // give the system a chance to open the stream
     setTimeout(() => {
       fs.readdir(__dirname, (err, files) => {
-        const logFiles = files.sort().filter(
-          file => file.includes('fa-maxFileSize-with-backups-compressed-test.log')
-        );
+        const logFiles = files.sort().filter(file => file.includes('fa-maxFileSize-with-backups-compressed-test.log'));
         t.equal(logFiles.length, 3, 'should be 3 files');
         t.same(logFiles, [
           'fa-maxFileSize-with-backups-compressed-test.log',

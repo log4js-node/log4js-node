@@ -25,11 +25,10 @@
   },
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
-    "lint": "eslint lib/ test/",
     "prepush": "npm test",
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
-    "pretest": "eslint lib/**/*",
+    "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
     "test": "tap 'test/tap/**/*.js'",
     "coverage": "tap 'test/tap/**/*.js' --cov",
     "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
@@ -39,10 +38,10 @@
     "lib": "lib"
   },
   "dependencies": {
-    "date-format": "^1.1.0",
-    "debug": "^2.6.8",
+    "date-format": "^1.2.0",
+    "debug": "^3.1.0",
     "semver": "^5.3.0",
-    "streamroller": "^0.6.0"
+    "streamroller": "^0.7.0"
   },
   "devDependencies": {
     "codecov": "^3.0.0",

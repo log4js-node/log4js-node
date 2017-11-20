@@ -32,7 +32,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.include(contents, 'This should be in the file');
         t.match(
           contents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
@@ -55,13 +55,15 @@ test('../../lib/appenders/dateFile', (batch) => {
     logger.info('this should not be written to the file');
     logger.warn('this should be written to the file');
 
-    t.teardown(() => { removeFile('date-file-test.log'); });
-
-    fs.readFile(path.join(__dirname, 'date-file-test.log'), 'utf8', (err, contents) => {
-      t.include(contents, `this should be written to the file${EOL}`);
-      t.equal(contents.indexOf('this should not be written to the file'), -1);
-      t.end();
+    log4js.shutdown(() => {
+      fs.readFile(path.join(__dirname, 'date-file-test.log'), 'utf8', (err, contents) => {
+        t.include(contents, `this should be written to the file${EOL}`);
+        t.equal(contents.indexOf('this should not be written to the file'), -1);
+        t.end();
+      });
     });
+
+    t.teardown(() => { removeFile('date-file-test.log'); });
   });
 
   batch.test('configure with options.alwaysIncludePattern', (t) => {
@@ -96,13 +98,13 @@ test('../../lib/appenders/dateFile', (batch) => {
     t.teardown(() => { removeFile(`date-file-test${thisTime}`); });
 
     // wait for filesystem to catch up
-    setTimeout(() => {
+    log4js.shutdown(() => {
       fs.readFile(path.join(__dirname, `date-file-test${thisTime}`), 'utf8', (err, contents) => {
         t.include(contents, 'this should be written to the file with the appended date');
         t.include(contents, 'this is existing data', 'should not overwrite the file on open (issue #132)');
         t.end();
       });
-    }, 100);
+    });
   });
 
   batch.test('should flush logs on shutdown', (t) => {
@@ -124,7 +126,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.equal(fileContents.split(EOL).length, 4);
         t.match(
           fileContents,
-          /\[\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
         );
         t.end();
       });
