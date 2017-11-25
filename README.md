@@ -1,7 +1,7 @@
-# log4js-node [![Build Status](https://secure.travis-ci.org/log4js-node/log4js-node.png?branch=master)](http://travis-ci.org/log4js-node/log4js-node)
+# log4js-node [![Build Status](https://secure.travis-ci.org/log4js-node/log4js-node.png?branch=master)](http://travis-ci.org/log4js-node/log4js-node) [![codecov](https://codecov.io/gh/log4js-node/log4js-node/branch/master/graph/badge.svg)](https://codecov.io/gh/log4js-node/log4js-node)
+
 
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
-[![codecov](https://codecov.io/gh/nomiddlename/log4js-node/branch/master/graph/badge.svg)](https://codecov.io/gh/nomiddlename/log4js-node)
 
 This is a conversion of the [log4js](https://github.com/stritti/log4js)
 framework to work with [node](http://nodejs.org). I started out just stripping out the browser-specific code and tidying up some of the javascript to work better in node. It grew from there. Although it's got a similar name to the Java library [log4j](https://logging.apache.org/log4j/2.x/), thinking that it will behave the same way will only bring you sorrow and confusion.
