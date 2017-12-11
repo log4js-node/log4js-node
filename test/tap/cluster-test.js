@@ -42,6 +42,8 @@ if (cluster.isMaster) {
         t.equal(logEvents[1].pid, workerPid);
         t.type(logEvents[1].data[1], 'Error');
         t.contains(logEvents[1].data[1].stack, 'Error: oh dear');
+        t.type(logEvents[1].data[2], 'object');
+        t.type(logEvents[1].data[2].me, 'object');
         t.equal(logEvents[2].categoryName, 'log4js');
         t.equal(logEvents[2].level.toString(), 'ERROR');
         t.equal(logEvents[2].data[0], 'Unable to parse log:');
@@ -61,7 +63,9 @@ if (cluster.isMaster) {
   });
 } else {
   const workerLogger = log4js.getLogger('worker');
-  workerLogger.info('this is worker', new Error('oh dear'));
+  const circle = {};
+  circle.me = circle;
+  workerLogger.info('this is worker', new Error('oh dear'), circle);
   // can't run the test in the worker, things get weird
   process.send({
     type: '::testing',
