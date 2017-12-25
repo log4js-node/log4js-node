@@ -6,11 +6,21 @@ const sandbox = require('sandboxed-module');
 function setupLogging(category, options) {
   const udpSent = {};
   const socket = { closed: false };
+  let errorsOn = false;
 
   const fakeDgram = {
     createSocket: function () {
       return {
         send: function (buffer, offset, length, port, host, callback) {
+          if (errorsOn) {
+            process.emit(
+              'log4jsError', 'logstashUDP',
+              new Error('failed to send event'),
+              JSON.parse(buffer.toString())
+            );
+            return;
+          }
+
           udpSent.date = new Date();
           udpSent.host = host;
           udpSent.port = port;
@@ -40,11 +50,16 @@ function setupLogging(category, options) {
     categories: { default: { appenders: ['logstash'], level: 'trace' } }
   });
 
+  function setErrorsOn(val) {
+    errorsOn = val;
+  }
+
   return {
     logger: log4js.getLogger(category),
     log4js: log4js,
     results: udpSent,
-    socket: socket
+    socket: socket,
+    setErrorsOn: setErrorsOn
   };
 }
 
@@ -265,6 +280,50 @@ test('logstashUDP appender', (batch) => {
       t.ok(setup.socket.closed);
       t.end();
     });
+  });
+
+  batch.test('emit errors', (t) => {
+    const setup = setupLogging('myLogger', {
+      host: '127.0.0.1',
+      port: 10001,
+      type: 'logstashUDP',
+      category: 'myLogger',
+      layout: {
+        type: 'dummy'
+      }
+    });
+
+    // handle errors
+    let errorEmitted = false;
+    process.on('log4jsError', (adapter, err, logEvent) => {
+      t.equal(adapter, 'logstashUDP');
+      t.equal(err.message, 'failed to send event');
+      t.equal(logEvent.level, 'INFO');
+      errorEmitted = true;
+    });
+
+    // Send a message that should succeed
+    let msg = 'this message should work';
+    setup.logger.info(msg);
+    let json = JSON.parse(setup.results.buffer.toString());
+    t.equal(json.message, msg);
+
+    // Send a message that should fail
+    setup.results.buffer = null;
+    setup.setErrorsOn(true);
+    msg = 'this message should not work';
+    setup.logger.info(msg);
+    t.notOk(setup.results.buffer);
+    t.true(errorEmitted);
+
+    // Send another message that should succeed
+    setup.setErrorsOn(false);
+    msg = 'this message should work too';
+    setup.logger.info(msg);
+    json = JSON.parse(setup.results.buffer.toString());
+    t.equal(json.message, msg);
+
+    t.end();
   });
 
   batch.end();
