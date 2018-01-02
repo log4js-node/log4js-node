@@ -59,7 +59,7 @@
   },
   "optionalDependencies": {
     "hipchat-notifier": "^1.1.0",
-    "loggly": "^1.1.0",
+    "node-loggly-bulk": "^2.2.1",
     "mailgun-js": "^0.7.0",
     "nodemailer": "^2.5.0",
     "redis": "^2.7.1",
