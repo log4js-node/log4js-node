@@ -21,7 +21,7 @@
     "url": "http://github.com/log4js-node/log4js-node/issues"
   },
   "engines": {
-    "node": ">=4.0"
+    "node": ">=6.0"
   },
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
