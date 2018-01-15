@@ -37,7 +37,7 @@ test('log4js configure', (batch) => {
       }
     };
 
-    sandbox.require(
+    const log4js = sandbox.require(
       '../../lib/log4js',
       {
         requires: {
@@ -45,6 +45,8 @@ test('log4js configure', (batch) => {
         }
       }
     );
+
+    log4js.getLogger('test-logger');
 
     delete process.env.LOG4JS_CONFIG;
 
