@@ -40,6 +40,7 @@ The following appenders are included with log4js. Some require extra dependencie
 * [smtp](smtp.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
+* [rabbitmq](rabbitmq.md)
 
 ## Other Appenders
 
