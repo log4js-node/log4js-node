@@ -15,12 +15,11 @@ function setupLogging(category, options) {
       this.exchange = conn.exchange;
       this.mq_type = conn.mq_type;
       this.durable = conn.durable;
-      const rn = new Promise(() => {
-      });
-      rn.publish = (client, message) => {
-        fakeRabbitmq.msgs.push(message);
+      return {
+        publish: function (client, message) {
+          fakeRabbitmq.msgs.push(message);
+        }
       };
-      return rn;
     }
   };
 
@@ -80,8 +79,8 @@ test('log4js rabbitmqAppender', (batch) => {
       assert.equal(result.fakeRabbitmq.exchange, 'exchange_logs');
       assert.equal(result.fakeRabbitmq.mq_type, 'direct');
       assert.equal(result.fakeRabbitmq.durable, true);
-      // assert.equal(result.fakeRabbitmq.msgs.length, 1, 'should be one message only');
-      // assert.equal(result.fakeRabbitmq.msgs[0], 'cheese Log event #1');
+      assert.equal(result.fakeRabbitmq.msgs.length, 1, 'should be one message only');
+      assert.equal(result.fakeRabbitmq.msgs[0], 'cheese Log event #1');
       assert.end();
     });
 
@@ -108,8 +107,8 @@ test('log4js rabbitmqAppender', (batch) => {
     });
 
     t.test('should use message pass through layout', (assert) => {
-      // assert.equal(setup.fakeRabbitmq.msgs.length, 1);
-      // assert.equal(setup.fakeRabbitmq.msgs[0], 'just testing');
+      assert.equal(setup.fakeRabbitmq.msgs.length, 1);
+      assert.equal(setup.fakeRabbitmq.msgs[0], 'just testing');
       assert.end();
     });
 
