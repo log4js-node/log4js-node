@@ -4,7 +4,7 @@
 
 const test = require('tap').test;
 const EE = require('events').EventEmitter;
-const levels = require('../../lib/levels')();
+const levels = require('../../lib/levels');
 
 class MockLogger {
   constructor() {
@@ -58,7 +58,7 @@ function request(cl, method, url, code, reqHeaders, resHeaders) {
 }
 
 test('log4js connect logger', (batch) => {
-  const clm = require('../../lib/connect-logger')(levels);
+  const clm = require('../../lib/connect-logger');
   batch.test('getConnectLoggerModule', (t) => {
     t.type(clm, 'object', 'should return a connect logger factory');
 

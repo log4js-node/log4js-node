@@ -2,8 +2,8 @@ const test = require('tap').test;
 const net = require('net');
 const log4js = require('../../lib/log4js');
 const vcr = require('../../lib/appenders/recording');
-const levels = require('../../lib/levels')();
-const LoggingEvent = (require('../../lib/logger')(levels)).LoggingEvent;
+const levels = require('../../lib/levels');
+const LoggingEvent = require('../../lib/LoggingEvent');
 
 log4js.configure({
   appenders: {
