@@ -41,7 +41,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "circular-json": "^0.4.0",
+    "circular-json": "^0.5.1",
     "date-format": "^1.2.0",
     "debug": "^3.1.0",
     "semver": "^5.3.0",
