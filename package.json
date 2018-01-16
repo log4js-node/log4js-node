@@ -64,7 +64,8 @@
     "nodemailer": "^2.5.0",
     "redis": "^2.7.1",
     "slack-node": "~0.2.0",
-    "axios": "^0.15.3"
+    "axios": "^0.15.3",
+    "amqplib": "^0.5.2"
   },
   "browser": {
     "os": false
