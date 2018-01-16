@@ -23,7 +23,6 @@ log4js.configure({
       exchange: 'exchange_logs',
       mq_type: 'direct',
       durable: true,
-      channel: 'q_log',
       layout: {
         type: 'pattern',
         pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
