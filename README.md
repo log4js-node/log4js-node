@@ -17,7 +17,7 @@ Out of the box it supports the following features:
 * SMTP appender
 * GELF appender
 * Loggly appender
-* Logstash UDP appender
+* Logstash (UDP and HTTP) appender
 * logFaces (UDP and HTTP) appender
 * multiprocess appender (useful when you've got multiple servers)
 * a logger for connect/express servers
