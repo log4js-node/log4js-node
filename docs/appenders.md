@@ -30,6 +30,7 @@ The following appenders are included with log4js. Some require extra dependencie
 * [logFaces-UDP](logFaces-UDP.md)
 * [loggly](loggly.md)
 * [logLevelFilter](logLevelFilter.md)
+* [logstashHTTP](logstashHTTP.md)
 * [logstashUDP](logstashUDP.md)
 * [mailgun](mailgun.md)
 * [multiFile](multiFile.md)
