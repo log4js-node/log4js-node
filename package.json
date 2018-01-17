@@ -4,7 +4,8 @@
   "description": "Port of Log4js to work with node.",
   "homepage": "https://log4js-node.github.io/log4js-node/",
   "files": [
-    "lib"
+    "lib",
+    "types"
   ],
   "keywords": [
     "logging",
