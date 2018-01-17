@@ -17,12 +17,15 @@ Out of the box it supports the following features:
 * SMTP appender
 * GELF appender
 * Loggly appender
-* Logstash UDP appender
+* Logstash (UDP and HTTP) appender
 * logFaces (UDP and HTTP) appender
 * multiprocess appender (useful when you've got multiple servers)
 * a logger for connect/express servers
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
+
+## Getting help
+Having problems? Jump on the [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtMjk5OTcxODMwNDA1LTk5ZTA0YjcwNWRiYmFkNGQyZTkyZTYzYTFiYTE2NTRhNzFmNmY3OTdjZTY3MWM3M2RlMGQxN2ZlMmY4ZDFmZWY) channel, or create an issue. If you want to help out with the development, the slack channel is a good place to go as well.
 
 ## installation
 
@@ -89,7 +92,8 @@ configure({
 ```
 
 ## Contributing
-Contributions welcome, but take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) first.
+
+We're always looking for people to help out. Jump on [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtMjk5OTcxODMwNDA1LTk5ZTA0YjcwNWRiYmFkNGQyZTkyZTYzYTFiYTE2NTRhNzFmNmY3OTdjZTY3MWM3M2RlMGQxN2ZlMmY4ZDFmZWY) and discuss what you want to do. Also, take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) before submitting a pull request.
 
 ## License
 

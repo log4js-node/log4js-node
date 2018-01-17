@@ -1,8 +1,11 @@
 {
   "name": "log4js",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Port of Log4js to work with node.",
   "homepage": "https://log4js-node.github.io/log4js-node/",
+  "files": [
+    "lib"
+  ],
   "keywords": [
     "logging",
     "log",
@@ -38,7 +41,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "circular-json": "^0.4.0",
+    "circular-json": "^0.5.1",
     "date-format": "^1.2.0",
     "debug": "^3.1.0",
     "semver": "^5.3.0",
@@ -64,7 +67,8 @@
     "nodemailer": "^2.5.0",
     "redis": "^2.7.1",
     "slack-node": "~0.2.0",
-    "axios": "^0.15.3"
+    "axios": "^0.15.3",
+    "amqplib": "^0.5.2"
   },
   "browser": {
     "os": false
