@@ -6,7 +6,7 @@ Log4js uses dynamic require for loading appenders. Webpack doesn't know at build
 const stdout = require('log4js/lib/appenders/stdout');
 import * as Configuration from 'log4js/lib/configuration';
 
-Configuration.prototype.loadAppenderModule = function(_type: string): void {
+Configuration.prototype.loadAppenderModule = function(type) {
 	return stdout;
 };
 ```
