@@ -10,7 +10,7 @@ const debug = require('debug')('log4js:test.configuration-validation');
 
 const testAppender = (label, result) => ({
   configure: function (config, layouts, findAppender) {
-    debug(`testAppender(${label}).configure called`);
+    debug(`testAppender(${label}).configure called, with config: ${util.inspect(config)}`);
     result.configureCalled = true;
     result.type = config.type;
     result.label = label;
@@ -334,8 +334,6 @@ test('log4js configuration validation', (batch) => {
     t.type(result.layouts.basicLayout, 'function');
     t.type(result.findAppender, 'function');
     t.type(result.findAppender('thing2'), 'object');
-    debug(`thing2: ${util.inspect(result.findAppender('thing2'))}`);
-    t.type(result.findAppender('thing2').type, 'notCheese');
     t.end();
   });
 

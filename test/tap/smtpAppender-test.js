@@ -2,7 +2,7 @@
 
 const test = require('tap').test;
 const realLayouts = require('../../lib/layouts');
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 
 function setupLogging(category, options, errorOnSend) {
   const msgs = [];
