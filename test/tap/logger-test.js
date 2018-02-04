@@ -1,23 +1,35 @@
 'use strict';
 
 const test = require('tap').test;
+const debug = require('debug')('log4js:test.logger');
 const levels = require('../../lib/levels');
-const Logger = require('../../lib/logger');
+const sandbox = require('@log4js-node/sandboxed-module');
+
+const events = [];
+const Logger = sandbox.require(
+  '../../lib/logger',
+  {
+    requires: {
+      './levels': levels,
+      './clustering': {
+        isMaster: () => true,
+        onlyOnMaster: fn => fn(),
+        send: (evt) => {
+          debug('fake clustering got event:', evt);
+          events.push(evt);
+        }
+      }
+    }
+  }
+);
 
 const testConfig = {
   level: levels.TRACE
 };
 
-const testDispatcher = {
-  events: [],
-  dispatch: function (evt) {
-    this.events.push(evt);
-  }
-};
-
 test('../../lib/logger', (batch) => {
   batch.beforeEach((done) => {
-    testDispatcher.events = [];
+    events.length = 0;
     testConfig.level = levels.TRACE;
     done();
   });
@@ -33,7 +45,7 @@ test('../../lib/logger', (batch) => {
   batch.test('constructor with category', (t) => {
     const logger = new Logger('cheese');
     t.equal(logger.category, 'cheese', 'should use category');
-    t.equal(logger.level, levels.TRACE, 'should use TRACE log level');
+    t.equal(logger.level, levels.OFF, 'should use OFF log level');
     t.end();
   });
 
@@ -69,10 +81,10 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should send log events to dispatch function', (t) => {
     const logger = new Logger('cheese');
+    logger.level = 'debug';
     logger.debug('Event 1');
     logger.debug('Event 2');
     logger.debug('Event 3');
-    const events = testDispatcher.events;
 
     t.equal(events.length, 3);
     t.equal(events[0].data[0], 'Event 1');
@@ -83,6 +95,7 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should add context values to every event', (t) => {
     const logger = new Logger('fromage');
+    logger.level = 'debug';
     logger.debug('Event 1');
     logger.addContext('cheese', 'edam');
     logger.debug('Event 2');
@@ -93,7 +106,6 @@ test('../../lib/logger', (batch) => {
     logger.debug('Event 5');
     logger.clearContext();
     logger.debug('Event 6');
-    const events = testDispatcher.events;
 
     t.equal(events.length, 6);
     t.same(events[0].context, {});
@@ -107,9 +119,9 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should not break when log data has no toString', (t) => {
     const logger = new Logger('thing');
+    logger.level = 'debug';
     logger.info('Just testing ', Object.create(null));
 
-    const events = testDispatcher.events;
     t.equal(events.length, 1);
     t.end();
   });

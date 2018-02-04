@@ -33,6 +33,7 @@ function setupLogging(category, options) {
   };
 
   const fakeConsole = {
+    log: () => {},
     errors: [],
     error: function (msg, value) {
       this.errors.push({ msg: msg, value: value });

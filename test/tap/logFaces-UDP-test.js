@@ -21,6 +21,7 @@ function setupLogging(category, options) {
   };
 
   const fakeConsole = {
+    log: () => {},
     error: function (msg, err) {
       this.msg = msg;
       this.err = err;
