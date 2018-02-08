@@ -16,7 +16,7 @@ There have been a few changes between log4js 1.x and 2.x (and 0.x too). You shou
 * [Loggly appender](loggly.md)
 * [Logstash UDP appender](logstashUDP.md)
 * logFaces ([UDP](logFaces-UDP.md) and [HTTP](logFaces-HTTP.md)) appender
-* [multiprocess appender](multiprocess.md) (useful when you've got multiple servers but want to centralise logging)
+* [TCP appender](tcp.md) (useful when you've got multiple servers but want to centralise logging)
 * a [logger for connect/express](connect-logger.md) servers
 * configurable log message [layout/patterns](layouts.md)
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
@@ -37,6 +37,9 @@ var logger = log4js.getLogger();
 logger.level = 'debug'; // default level is OFF - which means no logs at all.
 logger.debug("Some debug messages");
 ```
+
+## Clustering
+If you use node's cluster, or passenger, or pm2, then you should read this [clustering guide](clustering.md)
 
 ## Note for library makers
 
