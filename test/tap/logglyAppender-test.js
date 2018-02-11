@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 const layouts = require('../../lib/layouts');
 
 function setupLogging(category, options) {
@@ -33,6 +33,7 @@ function setupLogging(category, options) {
   };
 
   const fakeConsole = {
+    log: () => {},
     errors: [],
     error: function (msg, value) {
       this.errors.push({ msg: msg, value: value });

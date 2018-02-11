@@ -1,25 +1,25 @@
 'use strict';
 
 const test = require('tap').test;
-const Configuration = require('../../lib/configuration');
 const util = require('util');
 const path = require('path');
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
+const log4js = require('../../lib/log4js');
+const configuration = require('../../lib/configuration');
+const debug = require('debug')('log4js:test.configuration-validation');
 
-function testAppender(label) {
-  return {
-    configure: function (config, layouts, findAppender) {
-      return {
-        configureCalled: true,
-        type: config.type,
-        label: label,
-        config: config,
-        layouts: layouts,
-        findAppender: findAppender
-      };
-    }
-  };
-}
+const testAppender = (label, result) => ({
+  configure: function (config, layouts, findAppender) {
+    debug(`testAppender(${label}).configure called, with config: ${util.inspect(config)}`);
+    result.configureCalled = true;
+    result.type = config.type;
+    result.label = label;
+    result.config = config;
+    result.layouts = layouts;
+    result.findAppender = findAppender;
+    return { };
+  }
+});
 
 test('log4js configuration validation', (batch) => {
   batch.test('should give error if config is just plain silly', (t) => {
@@ -27,7 +27,7 @@ test('log4js configuration validation', (batch) => {
       const expectedError =
         new Error(`Problem with log4js configuration: (${util.inspect(config)}) - must be an object.`);
       t.throws(
-        () => new Configuration(config),
+        () => configuration.configure(config),
         expectedError
       );
     });
@@ -38,7 +38,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if config is an empty object', (t) => {
     const expectedError =
       new Error('Problem with log4js configuration: ({}) - must have a property "appenders" of type object.');
-    t.throws(() => new Configuration({}), expectedError);
+    t.throws(() => log4js.configure({}), expectedError);
     t.end();
   });
 
@@ -46,15 +46,15 @@ test('log4js configuration validation', (batch) => {
     const expectedError =
       new Error('Problem with log4js configuration: ({ categories: {} }) ' +
       '- must have a property "appenders" of type object.');
-    t.throws(() => new Configuration({ categories: {} }), expectedError);
+    t.throws(() => log4js.configure({ categories: {} }), expectedError);
     t.end();
   });
 
   batch.test('should give error if config has no categories', (t) => {
     const expectedError =
-      new Error('Problem with log4js configuration: ({ appenders: {} }) ' +
+      new Error('Problem with log4js configuration: ({ appenders: { out: { type: \'stdout\' } } }) ' +
       '- must have a property "categories" of type object.');
-    t.throws(() => new Configuration({ appenders: {} }), expectedError);
+    t.throws(() => log4js.configure({ appenders: { out: { type: 'stdout' } } }), expectedError);
     t.end();
   });
 
@@ -63,7 +63,7 @@ test('log4js configuration validation', (batch) => {
       new Error('Problem with log4js configuration: ({ appenders: [], categories: [] })' +
       ' - must have a property "appenders" of type object.');
     t.throws(
-      () => new Configuration({ appenders: [], categories: [] }),
+      () => log4js.configure({ appenders: [], categories: [] }),
       error
     );
     t.end();
@@ -74,7 +74,7 @@ test('log4js configuration validation', (batch) => {
       new Error('Problem with log4js configuration: ({ appenders: { thing: \'cheese\' }, categories: {} })' +
       ' - appender "thing" is not valid (must be an object with property "type")');
     t.throws(
-      () => new Configuration({ appenders: { thing: 'cheese' }, categories: {} }),
+      () => log4js.configure({ appenders: { thing: 'cheese' }, categories: {} }),
       error
     );
     t.end();
@@ -84,7 +84,7 @@ test('log4js configuration validation', (batch) => {
     const error = new Error('Problem with log4js configuration: ({ appenders: {}, categories: {} })' +
       ' - must define at least one appender.');
     t.throws(
-      () => new Configuration({ appenders: {}, categories: {} }),
+      () => log4js.configure({ appenders: {}, categories: {} }),
       error
     );
     t.end();
@@ -95,7 +95,7 @@ test('log4js configuration validation', (batch) => {
       '({ appenders: { stdout: { type: \'stdout\' } },\n  categories: { thing: \'cheese\' } })' +
       ' - category "thing" is not valid (must be an object with properties "appenders" and "level")');
     t.throws(
-      () => new Configuration({ appenders: { stdout: { type: 'stdout' } }, categories: { thing: 'cheese' } }),
+      () => log4js.configure({ appenders: { stdout: { type: 'stdout' } }, categories: { thing: 'cheese' } }),
       error
     );
     t.end();
@@ -107,7 +107,7 @@ test('log4js configuration validation', (batch) => {
       '  categories: { thing: { appenders: [ \'stdout\' ], level: \'ERROR\' } } })' +
       ' - must define a "default" category.');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: ['stdout'], level: 'ERROR' } }
       }),
@@ -121,7 +121,7 @@ test('log4js configuration validation', (batch) => {
       new Error('Problem with log4js configuration: ({ appenders: { stdout: { type: \'stdout\' } }, categories: {} })' +
       ' - must define at least one category.');
     t.throws(
-      () => new Configuration({ appenders: { stdout: { type: 'stdout' } }, categories: {} }),
+      () => log4js.configure({ appenders: { stdout: { type: 'stdout' } }, categories: {} }),
       error
     );
     t.end();
@@ -133,7 +133,7 @@ test('log4js configuration validation', (batch) => {
       '  categories: { thing: { appenders: {}, level: \'ERROR\' } } })' +
       ' - category "thing" is not valid (appenders must be an array of appender names)');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: {}, level: 'ERROR' } }
       }),
@@ -148,7 +148,7 @@ test('log4js configuration validation', (batch) => {
       '  categories: { thing: { appenders: [], level: \'ERROR\' } } })' +
       ' - category "thing" is not valid (appenders must contain at least one appender name)');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: [], level: 'ERROR' } }
       }),
@@ -163,7 +163,7 @@ test('log4js configuration validation', (batch) => {
       '  categories: { thing: { appenders: [ \'cheese\' ], level: \'ERROR\' } } })' +
       ' - category "thing" is not valid (appender "cheese" is not defined)');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: ['cheese'], level: 'ERROR' } }
       }),
@@ -179,7 +179,7 @@ test('log4js configuration validation', (batch) => {
       ' - category "default" is not valid (level "Biscuits" not recognised; ' +
       'valid levels are ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, MARK, OFF)');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'Biscuits' } }
       }),
@@ -194,7 +194,7 @@ test('log4js configuration validation', (batch) => {
       '  categories: { default: { appenders: [ \'thing\' ], level: \'ERROR\' } } })' +
       ' - appender "thing" is not valid (type "cheese" could not be found)');
     t.throws(
-      () => new Configuration({
+      () => log4js.configure({
         appenders: { thing: { type: 'cheese' } },
         categories: { default: { appenders: ['thing'], level: 'ERROR' } }
       }),
@@ -204,123 +204,136 @@ test('log4js configuration validation', (batch) => {
   });
 
   batch.test('should create appender instances', (t) => {
-    const SandboxedConfiguration = sandbox.require(
-      '../../lib/configuration',
+    const thing = {};
+    const sandboxedLog4js = sandbox.require(
+      '../../lib/log4js',
       {
-        singleOnly: true,
         requires: {
-          cheese: testAppender('cheesy')
-        }
+          cheese: testAppender('cheesy', thing)
+        },
+        ignoreMissing: true
       }
     );
 
-    const config = new SandboxedConfiguration({
+    sandboxedLog4js.configure({
       appenders: { thing: { type: 'cheese' } },
       categories: { default: { appenders: ['thing'], level: 'ERROR' } }
     });
 
-    const thing = config.appenders.get('thing');
     t.ok(thing.configureCalled);
     t.equal(thing.type, 'cheese');
     t.end();
   });
 
   batch.test('should load appenders from core first', (t) => {
-    const SandboxedConfiguration = sandbox.require(
-      '../../lib/configuration',
+    const result = {};
+    const sandboxedLog4js = sandbox.require(
+      '../../lib/log4js',
       {
-        singleOnly: true,
         requires: {
-          './appenders/cheese': testAppender('correct'),
-          cheese: testAppender('wrong')
-        }
+          './cheese': testAppender('correct', result),
+          cheese: testAppender('wrong', result)
+        },
+        ignoreMissing: true
       }
     );
 
-    const config = new SandboxedConfiguration({
+    sandboxedLog4js.configure({
       appenders: { thing: { type: 'cheese' } },
       categories: { default: { appenders: ['thing'], level: 'ERROR' } }
     });
 
-    const thing = config.appenders.get('thing');
-    t.ok(thing.configureCalled);
-    t.equal(thing.type, 'cheese');
-    t.equal(thing.label, 'correct');
+    t.ok(result.configureCalled);
+    t.equal(result.type, 'cheese');
+    t.equal(result.label, 'correct');
     t.end();
   });
 
   batch.test('should load appenders relative to main file if not in core, or node_modules', (t) => {
+    const result = {};
     const mainPath = path.dirname(require.main.filename);
-    const sandboxConfig = { singleOnly: true, requires: {} };
-    sandboxConfig.requires[`${mainPath}/cheese`] = testAppender('correct');
+    const sandboxConfig = {
+      ignoreMissing: true,
+      requires: {}
+    };
+    sandboxConfig.requires[`${mainPath}/cheese`] = testAppender('correct', result);
     // add this one, because when we're running coverage the main path is a bit different
     sandboxConfig.requires[
       `${path.join(mainPath, '../../node_modules/nyc/bin/cheese')}`
-    ] = testAppender('correct');
-    const SandboxedConfiguration = sandbox.require('../../lib/configuration', sandboxConfig);
+    ] = testAppender('correct', result);
+    const sandboxedLog4js = sandbox.require('../../lib/log4js', sandboxConfig);
 
-    const config = new SandboxedConfiguration({
+    sandboxedLog4js.configure({
       appenders: { thing: { type: 'cheese' } },
       categories: { default: { appenders: ['thing'], level: 'ERROR' } }
     });
 
-    const thing = config.appenders.get('thing');
-    t.ok(thing.configureCalled);
-    t.equal(thing.type, 'cheese');
-    t.equal(thing.label, 'correct');
+    t.ok(result.configureCalled);
+    t.equal(result.type, 'cheese');
+    t.equal(result.label, 'correct');
     t.end();
   });
 
   batch.test('should load appenders relative to process.cwd if not found in core, node_modules', (t) => {
-    const SandboxedConfiguration = sandbox.require(
-      '../../lib/configuration',
+    const result = {};
+    const fakeProcess = new Proxy(process, {
+      get(target, key) {
+        if (key === 'cwd') {
+          return () => '/var/lib/cheese';
+        }
+
+        return target[key];
+      }
+    });
+    const sandboxedLog4js = sandbox.require(
+      '../../lib/log4js',
       {
-        singleOnly: true,
+        ignoreMissing: true,
         requires: {
-          '/var/lib/cheese/cheese': testAppender('correct'),
+          '/var/lib/cheese/cheese': testAppender('correct', result),
         },
         globals: {
-          process: { cwd: () => '/var/lib/cheese', env: {} }
+          process: fakeProcess
         }
       }
     );
 
-    const config = new SandboxedConfiguration({
+    sandboxedLog4js.configure({
       appenders: { thing: { type: 'cheese' } },
       categories: { default: { appenders: ['thing'], level: 'ERROR' } }
     });
 
-    const thing = config.appenders.get('thing');
-    t.ok(thing.configureCalled);
-    t.equal(thing.type, 'cheese');
-    t.equal(thing.label, 'correct');
+    t.ok(result.configureCalled);
+    t.equal(result.type, 'cheese');
+    t.equal(result.label, 'correct');
     t.end();
   });
 
   batch.test('should pass config, layout, findAppender to appenders', (t) => {
-    const SandboxedConfiguration = sandbox.require(
-      '../../lib/configuration',
+    const result = {};
+    const sandboxedLog4js = sandbox.require(
+      '../../lib/log4js',
       {
-        singleOnly: true,
+        ignoreMissing: true,
         requires: {
-          cheese: testAppender('cheesy')
+          cheese: testAppender('cheesy', result),
+          notCheese: testAppender('notCheesy', {})
         }
       }
     );
 
-    const config = new SandboxedConfiguration({
-      appenders: { thing: { type: 'cheese', foo: 'bar' }, thing2: { type: 'cheese' } },
+    sandboxedLog4js.configure({
+      appenders: { thing: { type: 'cheese', foo: 'bar' }, thing2: { type: 'notCheese' } },
       categories: { default: { appenders: ['thing'], level: 'ERROR' } }
     });
 
-    const thing = config.appenders.get('thing');
-    t.ok(thing.configureCalled);
-    t.equal(thing.type, 'cheese');
-    t.equal(thing.config.foo, 'bar');
-    t.type(thing.layouts, 'object');
-    t.type(thing.layouts.basicLayout, 'function');
-    t.type(thing.findAppender, 'function');
-    t.type(thing.findAppender('thing2'), 'object');
+    t.ok(result.configureCalled);
+    t.equal(result.type, 'cheese');
+    t.equal(result.config.foo, 'bar');
+    t.type(result.layouts, 'object');
+    t.type(result.layouts.basicLayout, 'function');
+    t.type(result.findAppender, 'function');
+    t.type(result.findAppender('thing2'), 'object');
     t.end();
   });
 

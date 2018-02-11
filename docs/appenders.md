@@ -35,13 +35,15 @@ The following appenders are included with log4js. Some require extra dependencie
 * [mailgun](mailgun.md)
 * [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
+* [rabbitmq](rabbitmq.md)
 * [recording](recording.md)
 * [redis](redis.md)
 * [slack](slack.md)
 * [smtp](smtp.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
-* [rabbitmq](rabbitmq.md)
+* [tcp](tcp.md)
+* [tcp-server](tcp-server.md)
 
 ## Other Appenders
 

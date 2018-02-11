@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const levels = require('../../lib/levels')();
+const levels = require('../../lib/levels');
 
 function assertThat(assert, level) {
   function assertForEach(assertion, testFn, otherLevels) {

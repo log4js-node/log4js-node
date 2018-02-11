@@ -2,7 +2,7 @@
 
 const test = require('tap').test;
 const layouts = require('../../lib/layouts');
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 
 function setupLogging(category, options) {
   const msgs = [];

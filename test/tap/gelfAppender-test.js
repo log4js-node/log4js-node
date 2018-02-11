@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 const realLayouts = require('../../lib/layouts');
 
 const setupLogging = function (options, category, compressedLength) {
@@ -48,6 +48,7 @@ const setupLogging = function (options, category, compressedLength) {
   let exitHandler;
 
   const fakeConsole = {
+    log: () => {},
     error: function (message) {
       this.message = message;
     }
@@ -63,7 +64,6 @@ const setupLogging = function (options, category, compressedLength) {
   };
 
   const log4js = sandbox.require('../../lib/log4js', {
-    // singleOnly: true,
     requires: {
       dgram: fakeDgram,
       zlib: fakeZlib,
@@ -71,6 +71,7 @@ const setupLogging = function (options, category, compressedLength) {
     },
     globals: {
       process: {
+        version: process.version,
         on: function (evt, handler) {
           if (evt === 'exit') {
             exitHandler = handler;
