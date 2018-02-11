@@ -48,7 +48,7 @@ log4js.configure({
       recipients: 'dev.team@company.name',
       subject: 'Latest logs',
       sender: 'my.application@company.name',
-      attachments: {
+      attachment: {
         enable: true,
         filename: 'latest.log',
         message: 'See the attachment for the latest logs'
