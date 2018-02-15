@@ -18,7 +18,10 @@ function setupLogging(category, options) {
         publish: function (channel, message, callback) {
           fakeRedis.msgs.push({ channel: channel, message: message });
           fakeRedis.publishCb = callback;
-        }
+        },
+        quit: function () {
+          fakeRedis.quitCalled = true;
+        },
       };
     }
   };
@@ -46,6 +49,7 @@ function setupLogging(category, options) {
 
   return {
     logger: log4js.getLogger(category),
+    log4js: log4js,
     fakeRedis: fakeRedis,
     fakeConsole: fakeConsole
   };
@@ -127,6 +131,15 @@ test('log4js redisAppender', (batch) => {
       assert.end();
     });
     t.end();
+  });
+
+  batch.test('shutdown', (t) => {
+    const setup = setupLogging('shutdown', { type: 'redis', channel: 'testing' });
+
+    setup.log4js.shutdown(() => {
+      t.ok(setup.fakeRedis.quitCalled);
+      t.end();
+    });
   });
 
   batch.end();

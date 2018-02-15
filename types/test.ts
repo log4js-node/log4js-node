@@ -108,3 +108,8 @@ configure({
 	appenders: { cheese: { type: 'file', filename: 'cheese.log' } },
 	categories: { default: { appenders: ['cheese'], level: 'error' } }
 });
+
+log4js.configure('./filename').getLogger();
+const logger7 = log4js.getLogger();
+logger7.level = 'debug';
+logger7.debug("Some debug messages");
