@@ -10,6 +10,8 @@ If you are using `cluster`, then include the call to `configure` in the worker p
 
 Configuration objects must define at least one appender, and a default category. Log4js will throw an exception if the configuration is invalid.
 
+`configure` method call returns the configured log4js object.
+
 ### Configuration Object
 Properties:
 * `levels` (optional, object) - used for defining custom log levels, or redefining existing ones; this is a map with the level name as the key (string, case insensitive), and an object as the value. The object should have two properties: the level value (integer) as the value, and the colour. Log levels are used to assign importance to log messages, with the integer value being used to sort them. If you do not specify anything in your configuration, the default values are used (ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF - note that OFF is intended to be used to turn off logging, not as a level for actual logging, i.e. you would never call `logger.off('some log message')`). Levels defined here are used in addition to the default levels, with the integer value being used to determine their relation to the default levels. If you define a level with the same name as a default level, then the integer value in the config takes precedence. Level names must begin with a letter, and can only contain letters, numbers and underscores.
