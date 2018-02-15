@@ -1,9 +1,18 @@
 // Type definitions for log4js
 
+export interface Log4js {
+	getLogger,
+	configure,
+	addLayout,
+	connectLogger,
+	levels,
+	shutdown
+}
+
 export function getLogger(category?: string): Logger;
 
-export function configure(filename: string): void;
-export function configure(config: Configuration): void;
+export function configure(filename: string): Log4js;
+export function configure(config: Configuration): Log4js;
 
 export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
 
