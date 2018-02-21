@@ -24,7 +24,6 @@ The following appenders are included with log4js. Some require extra dependencie
 * [dateFile](dateFile.md)
 * [file](file.md)
 * [fileSync](fileSync.md)
-* [gelf](gelf.md)
 * [hipchat](hipchat.md)
 * [logFaces-HTTP](logFaces-HTTP.md)
 * [logFaces-UDP](logFaces-UDP.md)
@@ -44,6 +43,14 @@ The following appenders are included with log4js. Some require extra dependencie
 * [stdout](stdout.md)
 * [tcp](tcp.md)
 * [tcp-server](tcp-server.md)
+
+## Optional Appenders
+
+The following appenders are supported by log4js, but are no longer distributed with log4js core from version 3 onwards.
+
+* [gelf](https://github.com/log4js-node/gelf)
+
+For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
 
 ## Other Appenders
 
