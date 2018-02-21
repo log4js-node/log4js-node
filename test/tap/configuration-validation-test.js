@@ -6,7 +6,7 @@ const util = require('util');
 const path = require('path');
 const sandbox = require('sandboxed-module');
 
-function testAppender(label) {
+function testAppender(label, deprecated) {
   return {
     configure: function (config, layouts, findAppender) {
       return {
@@ -15,7 +15,8 @@ function testAppender(label) {
         label: label,
         config: config,
         layouts: layouts,
-        findAppender: findAppender
+        findAppender: findAppender,
+        deprecated: deprecated
       };
     }
   };
@@ -321,6 +322,90 @@ test('log4js configuration validation', (batch) => {
     t.type(thing.layouts.basicLayout, 'function');
     t.type(thing.findAppender, 'function');
     t.type(thing.findAppender('thing2'), 'object');
+    t.end();
+  });
+
+  batch.test('should display deprecation warning if needed', (t) => {
+    let deprecationMessage;
+    const SandboxedConfiguration = sandbox.require(
+      '../../lib/configuration',
+      {
+        singleOnly: true,
+        requires: {
+          './appenders/gelf': testAppender('gelf', '@some/lib')
+        },
+        globals: {
+          console: {
+            error: (msg) => {
+              deprecationMessage = msg;
+            }
+          }
+        }
+      }
+    );
+
+    const config = new SandboxedConfiguration({
+      appenders: { thing: { type: 'gelf' } },
+      categories: { default: { appenders: ['thing'], level: 'debug' } }
+    });
+
+    t.test('should output warning on console.error', (assert) => {
+      assert.equal(
+        deprecationMessage,
+        'Appender "thing" uses a deprecated type "gelf", which will be removed in log4js v3. ' +
+        'You should change it to use "@some/lib". ' +
+        'To turn off this warning add "deprecationWarnings: false" to your config.'
+      );
+      assert.end();
+    });
+
+    t.test('should still return an appender', (assert) => {
+      const thing = config.appenders.get('thing');
+      assert.ok(thing.configureCalled);
+      assert.equal(thing.type, 'gelf');
+      assert.end();
+    });
+
+    t.end();
+  });
+
+  batch.test('should not display deprecation warning if turned off', (t) => {
+    let deprecationMessage;
+    const SandboxedConfiguration = sandbox.require(
+      '../../lib/configuration',
+      {
+        singleOnly: true,
+        requires: {
+          './appenders/gelf': testAppender('gelf', '@some/lib')
+        },
+        globals: {
+          console: {
+            error: (msg) => {
+              deprecationMessage = msg;
+            }
+          }
+        }
+      }
+    );
+
+    const config = new SandboxedConfiguration({
+      appenders: { thing: { type: 'gelf' } },
+      categories: { default: { appenders: ['thing'], level: 'debug' } },
+      deprecationWarnings: false
+    });
+
+    t.test('should not output warning on console.error', (assert) => {
+      assert.notOk(deprecationMessage);
+      assert.end();
+    });
+
+    t.test('should still return an appender', (assert) => {
+      const thing = config.appenders.get('thing');
+      assert.ok(thing.configureCalled);
+      assert.equal(thing.type, 'gelf');
+      assert.end();
+    });
+
     t.end();
   });
 

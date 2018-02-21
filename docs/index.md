@@ -12,7 +12,7 @@ There have been a few changes between log4js 1.x and 2.x (and 0.x too). You shou
 * coloured console logging to [stdout](stdout.md) or [stderr](stderr.md)
 * [file appender](file.md), with configurable log rolling based on file size or [date](dateFile.md)
 * [SMTP appender](smtp.md)
-* [GELF appender](gelf.md)
+* [GELF appender](https://github.com/log4js-node/gelf)
 * [Loggly appender](loggly.md)
 * [Logstash UDP appender](logstashUDP.md)
 * logFaces ([UDP](logFaces-UDP.md) and [HTTP](logFaces-HTTP.md)) appender
