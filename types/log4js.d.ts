@@ -167,19 +167,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface GELFAppender {
-	'type': 'gelf';
-	// (defaults to localhost) - the gelf server hostname
-	host?: string;
-	// (defaults to 12201) - the port the gelf server is listening on
-	port?: number;
-	// (defaults to OS.hostname()) - the hostname used to identify the origin of the log messages.
-	hostname?: string;
-	facility?: string;
-	// fields to be added to each log message; custom fields must start with an underscore.
-	customFields?: { [field: string]: any };
-}
-
 export interface HipchatAppender {
 	type: 'hipchat';
 	// User token with notification privileges
@@ -389,7 +376,6 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| GELFAppender
 	| HipchatAppender
 	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
