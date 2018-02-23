@@ -8,6 +8,7 @@ Sends logging events to [Loggly](https://www.loggly.com), optionally adding tags
 * `token` - `string` - your really long input token
 * `subdomain` - `string` - your subdomain
 * `tags` - `Array<string>` (optional) - tags to include in every log message
+* `data` - `object` (optional) - initial object that will be sent to loggly (extra properties will be added to a copy of this object before sending)
 
 This appender will scan the msg from the logging event, and pull out any argument of the
 shape `{ tags: [] }` so that it's possible to add additional tags in a normal logging call. See the example below.
@@ -21,6 +22,7 @@ log4js.configure({
       type: 'loggly',
       token: 'somethinglong',
       subdomain: 'your.subdomain',
+      data: { pid: process.pid },
       tags: [ 'tag1' ]
     }
   },
