@@ -48,19 +48,9 @@ The following appenders are included with log4js. Some require extra dependencie
 The following appenders are supported by log4js, but are no longer distributed with log4js core from version 3 onwards.
 
 * [gelf](https://github.com/log4js-node/gelf)
-
-For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
-
-## Optional Appenders
-
-The following appenders are supported by log4js, but will issue deprecation warnings from version 2.6 onwards - they will be removed from the log4js core in version 3. If you are using these appenders, you should alter your dependencies to include them explicitly.
-
-* [gelf](https://github.com/log4js-node/gelf)
 * [loggly](https://github.com/log4js-node/loggly)
 
 For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
-
-To turn off the deprecation warnings, add `deprecationWarnings: false` to your log4js config. The core version of the appender will still work. But note that you will have to install the external appenders when version 3 is released as they will not be included at all.
 
 ## Other Appenders
 
