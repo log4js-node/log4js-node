@@ -205,16 +205,6 @@ export interface LogFacesUDPAppender {
 	application?: string;
 }
 
-export interface LogglyAppender {
-	type: 'loggly';
-	// your really long input token
-	token: string;
-	// your subdomain
-	subdomain: string;
-	// tags to include in every log message
-	tags?: string[];
-}
-
 export interface LogLevelFilterAppender {
 	type: 'logLevelFilter';
 	// the name of an appender, defined in the same configuration, that you want to filter
@@ -379,7 +369,6 @@ export type Appender = CategoryFilterAppender
 	| HipchatAppender
 	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
-	| LogglyAppender
 	| LogLevelFilterAppender
 	| LogstashUDPAppender
 	| MailgunAppender
