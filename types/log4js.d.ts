@@ -215,22 +215,6 @@ export interface LogLevelFilterAppender {
 	maxLevel?: string;
 }
 
-export interface LogstashUDPAppender {
-	type: 'logstashUDP';
-	// hostname (or IP-address) of the logstash server
-	host: string;
-	// port of the logstash server
-	port: number;
-	// used for the type field in the logstash data
-	logType?: string;
-	// used for the type field of the logstash data if logType is not defined
-	category?: string;
-	// extra fields to log with each event
-	fields?: { [fieldname: string]: any };
-	// (defaults to dummyLayout) used for the message field of the logstash data
-	layout?: Layout;
-}
-
 export interface MailgunAppender {
 	type: 'mailgun';
 	// your mailgun API key
@@ -370,7 +354,6 @@ export type Appender = CategoryFilterAppender
 	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
 	| LogLevelFilterAppender
-	| LogstashUDPAppender
 	| MailgunAppender
 	| MultiFileAppender
 	| MultiprocessAppender
