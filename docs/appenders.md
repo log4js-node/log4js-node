@@ -28,7 +28,6 @@ The following appenders are included with log4js. Some require extra dependencie
 * [logFaces-UDP](logFaces-UDP.md)
 * [logLevelFilter](logLevelFilter.md)
 * [logstashHTTP](logstashHTTP.md)
-* [logstashUDP](logstashUDP.md)
 * [mailgun](mailgun.md)
 * [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
@@ -47,6 +46,7 @@ The following appenders are supported by log4js, but will issue deprecation warn
 * [gelf](https://github.com/log4js-node/gelf)
 * [hipchat](https://github.com/log4js-node/hipchat)
 * [loggly](https://github.com/log4js-node/loggly)
+* [logstashUDP](https://github.com/log4js-node/logstashUDP)
 
 For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
 
