@@ -14,7 +14,7 @@ There have been a few changes between log4js 1.x and 2.x (and 0.x too). You shou
 * [SMTP appender](smtp.md)
 * [GELF appender](https://github.com/log4js-node/gelf)
 * [Loggly appender](https://github.com/log4js-node/loggly)
-* [Logstash UDP appender](logstashUDP.md)
+* [Logstash UDP appender](https://github.com/log4js-node/logstashUDP)
 * logFaces ([UDP](logFaces-UDP.md) and [HTTP](logFaces-HTTP.md)) appender
 * [TCP appender](tcp.md) (useful when you've got multiple servers but want to centralise logging)
 * a [logger for connect/express](connect-logger.md) servers
