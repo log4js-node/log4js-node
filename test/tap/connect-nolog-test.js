@@ -2,7 +2,7 @@
 
 const test = require('tap').test;
 const EE = require('events').EventEmitter;
-const levels = require('../../lib/levels')();
+const levels = require('../../lib/levels');
 
 class MockLogger {
   constructor() {
@@ -41,11 +41,11 @@ class MockResponse extends EE {
 }
 
 test('log4js connect logger', (batch) => {
-  const clm = require('../../lib/connect-logger')(levels);
+  const clm = require('../../lib/connect-logger');
 
   batch.test('with nolog config', (t) => {
     const ml = new MockLogger();
-    const cl = clm.connectLogger(ml, { nolog: '\\.gif' });
+    const cl = clm(ml, { nolog: '\\.gif' });
 
     t.beforeEach((done) => { ml.messages = []; done(); });
 
@@ -82,7 +82,7 @@ test('log4js connect logger', (batch) => {
 
   batch.test('nolog Strings', (t) => {
     const ml = new MockLogger();
-    const cl = clm.connectLogger(ml, { nolog: '\\.gif|\\.jpe?g' });
+    const cl = clm(ml, { nolog: '\\.gif|\\.jpe?g' });
 
     t.beforeEach((done) => { ml.messages = []; done(); });
 
@@ -129,7 +129,7 @@ test('log4js connect logger', (batch) => {
 
   batch.test('nolog Array<String>', (t) => {
     const ml = new MockLogger();
-    const cl = clm.connectLogger(ml, { nolog: ['\\.gif', '\\.jpe?g'] });
+    const cl = clm(ml, { nolog: ['\\.gif', '\\.jpe?g'] });
 
     t.beforeEach((done) => { ml.messages = []; done(); });
 
@@ -176,7 +176,7 @@ test('log4js connect logger', (batch) => {
 
   batch.test('nolog RegExp', (t) => {
     const ml = new MockLogger();
-    const cl = clm.connectLogger(ml, { nolog: /\.gif|\.jpe?g/ });
+    const cl = clm(ml, { nolog: /\.gif|\.jpe?g/ });
 
     t.beforeEach((done) => { ml.messages = []; done(); });
 

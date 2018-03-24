@@ -1,8 +1,11 @@
 # Multiprocess Appender
 
+*You probably want to use the [tcp server](tcp-server.md) or [tcp appender](tcp.md) instead of this - they are more flexible*
+
+*Note that if you're just using node core's `cluster` module then you don't need to use this appender - log4js will handle logging within the cluster transparently.*
+
 The multiprocess appender sends log events to a master server over TCP sockets. It can be used as a simple way to centralise logging when you have multiple servers or processes. It uses the node.js core networking modules, and so does not require any extra dependencies. Remember to call `log4js.shutdown` when your application terminates, so that the sockets get closed cleanly.
 
-Note that if you're just using node core's `cluster` module then you don't need to use this appender - log4js will handle logging within the cluster transparently.
 
 ## Configuration
 

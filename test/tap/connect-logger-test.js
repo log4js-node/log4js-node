@@ -4,7 +4,7 @@
 
 const test = require('tap').test;
 const EE = require('events').EventEmitter;
-const levels = require('../../lib/levels')();
+const levels = require('../../lib/levels');
 
 class MockLogger {
   constructor() {
@@ -58,13 +58,13 @@ function request(cl, method, url, code, reqHeaders, resHeaders) {
 }
 
 test('log4js connect logger', (batch) => {
-  const clm = require('../../lib/connect-logger')(levels);
+  const clm = require('../../lib/connect-logger');
   batch.test('getConnectLoggerModule', (t) => {
-    t.type(clm, 'object', 'should return a connect logger factory');
+    t.type(clm, 'function', 'should return a connect logger factory');
 
     t.test('should take a log4js logger and return a "connect logger"', (assert) => {
       const ml = new MockLogger();
-      const cl = clm.connectLogger(ml);
+      const cl = clm(ml);
 
       assert.type(cl, 'function');
       assert.end();
@@ -72,7 +72,7 @@ test('log4js connect logger', (batch) => {
 
     t.test('log events', (assert) => {
       const ml = new MockLogger();
-      const cl = clm.connectLogger(ml);
+      const cl = clm(ml);
       request(cl, 'GET', 'http://url', 200);
 
       const messages = ml.messages;
@@ -89,7 +89,7 @@ test('log4js connect logger', (batch) => {
     t.test('log events with level below logging level', (assert) => {
       const ml = new MockLogger();
       ml.level = levels.FATAL;
-      const cl = clm.connectLogger(ml);
+      const cl = clm(ml);
       request(cl, 'GET', 'http://url', 200);
 
       assert.type(ml.messages, 'Array');
@@ -100,7 +100,7 @@ test('log4js connect logger', (batch) => {
     t.test('log events with non-default level and custom format', (assert) => {
       const ml = new MockLogger();
       ml.level = levels.INFO;
-      const cl = clm.connectLogger(ml, { level: levels.INFO, format: ':method :url' });
+      const cl = clm(ml, { level: levels.INFO, format: ':method :url' });
       request(cl, 'GET', 'http://url', 200);
 
       const messages = ml.messages;
@@ -116,7 +116,7 @@ test('log4js connect logger', (batch) => {
   batch.test('logger with options as string', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, ':method :url');
+    const cl = clm(ml, ':method :url');
     request(cl, 'POST', 'http://meh', 200);
 
     const messages = ml.messages;
@@ -127,7 +127,7 @@ test('log4js connect logger', (batch) => {
   batch.test('auto log levels', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, { level: 'auto', format: ':method :url' });
+    const cl = clm(ml, { level: 'auto', format: ':method :url' });
     request(cl, 'GET', 'http://meh', 200);
     request(cl, 'GET', 'http://meh', 201);
     request(cl, 'GET', 'http://meh', 302);
@@ -161,7 +161,7 @@ test('log4js connect logger', (batch) => {
   batch.test('format using a function', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, () => 'I was called');
+    const cl = clm(ml, () => 'I was called');
     request(cl, 'GET', 'http://blah', 200);
 
     t.equal(ml.messages[0].message, 'I was called');
@@ -171,7 +171,7 @@ test('log4js connect logger', (batch) => {
   batch.test('format that includes request headers', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, ':req[Content-Type]');
+    const cl = clm(ml, ':req[Content-Type]');
     request(
       cl,
       'GET', 'http://blah', 200,
@@ -185,7 +185,7 @@ test('log4js connect logger', (batch) => {
   batch.test('format that includes response headers', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, ':res[Content-Type]');
+    const cl = clm(ml, ':res[Content-Type]');
     request(
       cl,
       'GET', 'http://blah', 200,
@@ -200,7 +200,7 @@ test('log4js connect logger', (batch) => {
   batch.test('log events with custom token', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, {
+    const cl = clm(ml, {
       level: levels.INFO,
       format: ':method :url :custom_string',
       tokens: [
@@ -221,7 +221,7 @@ test('log4js connect logger', (batch) => {
   batch.test('log events with custom override token', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
-    const cl = clm.connectLogger(ml, {
+    const cl = clm(ml, {
       level: levels.INFO,
       format: ':method :url :date',
       tokens: [

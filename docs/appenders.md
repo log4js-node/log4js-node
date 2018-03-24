@@ -31,17 +31,19 @@ The following appenders are included with log4js. Some require extra dependencie
 * [mailgun](mailgun.md)
 * [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
+* [rabbitmq](rabbitmq.md)
 * [recording](recording.md)
 * [redis](redis.md)
 * [slack](slack.md)
 * [smtp](smtp.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
-* [rabbitmq](rabbitmq.md)
+* [tcp](tcp.md)
+* [tcp-server](tcp-server.md)
 
 ## Optional Appenders
 
-The following appenders are supported by log4js, but will issue deprecation warnings from version 2.6 onwards - they will be removed from the log4js core in version 3. If you are using these appenders, you should alter your dependencies to include them explicitly.
+The following appenders are supported by log4js, but are no longer distributed with log4js core from version 3 onwards.
 
 * [gelf](https://github.com/log4js-node/gelf)
 * [hipchat](https://github.com/log4js-node/hipchat)
@@ -49,8 +51,6 @@ The following appenders are supported by log4js, but will issue deprecation warn
 * [logstashUDP](https://github.com/log4js-node/logstashUDP)
 
 For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
-
-To turn off the deprecation warnings, add `deprecationWarnings: false` to your log4js config. The core version of the appender will still work. But note that you will have to install the external appenders when version 3 is released as they will not be included at all.
 
 ## Other Appenders
 

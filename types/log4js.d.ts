@@ -167,19 +167,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface GELFAppender {
-	'type': 'gelf';
-	// (defaults to localhost) - the gelf server hostname
-	host?: string;
-	// (defaults to 12201) - the port the gelf server is listening on
-	port?: number;
-	// (defaults to OS.hostname()) - the hostname used to identify the origin of the log messages.
-	hostname?: string;
-	facility?: string;
-	// fields to be added to each log message; custom fields must start with an underscore.
-	customFields?: { [field: string]: any };
-}
-
 export interface HipchatAppender {
 	type: 'hipchat';
 	// User token with notification privileges
@@ -218,16 +205,6 @@ export interface LogFacesUDPAppender {
 	application?: string;
 }
 
-export interface LogglyAppender {
-	type: 'loggly';
-	// your really long input token
-	token: string;
-	// your subdomain
-	subdomain: string;
-	// tags to include in every log message
-	tags?: string[];
-}
-
 export interface LogLevelFilterAppender {
 	type: 'logLevelFilter';
 	// the name of an appender, defined in the same configuration, that you want to filter
@@ -236,22 +213,6 @@ export interface LogLevelFilterAppender {
 	level: string;
 	// (defaults to FATAL) - the maximum level of event to allow through the filter
 	maxLevel?: string;
-}
-
-export interface LogstashUDPAppender {
-	type: 'logstashUDP';
-	// hostname (or IP-address) of the logstash server
-	host: string;
-	// port of the logstash server
-	port: number;
-	// used for the type field in the logstash data
-	logType?: string;
-	// used for the type field of the logstash data if logType is not defined
-	category?: string;
-	// extra fields to log with each event
-	fields?: { [fieldname: string]: any };
-	// (defaults to dummyLayout) used for the message field of the logstash data
-	layout?: Layout;
 }
 
 export interface MailgunAppender {
@@ -389,13 +350,10 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| GELFAppender
 	| HipchatAppender
 	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
-	| LogglyAppender
 	| LogLevelFilterAppender
-	| LogstashUDPAppender
 	| MailgunAppender
 	| MultiFileAppender
 	| MultiprocessAppender
