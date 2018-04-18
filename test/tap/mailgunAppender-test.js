@@ -147,8 +147,9 @@ test('log4js mailgunAppender', (batch) => {
     const cons = setup.console;
 
     t.test('should be logged to console', (assert) => {
-      assert.equal(cons.errors.length, 1);
-      assert.equal(cons.errors[0].msg, 'log4js.mailgunAppender - Error happened');
+      assert.equal(cons.errors.length, 2);
+      // errors[0] is the deprecation warning
+      assert.equal(cons.errors[1].msg, 'log4js.mailgunAppender - Error happened');
       assert.end();
     });
     t.end();
