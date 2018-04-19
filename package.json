@@ -62,7 +62,6 @@
     "validate-commit-msg": "^2.14.0"
   },
   "optionalDependencies": {
-    "mailgun-js": "^0.7.0",
     "nodemailer": "^2.5.0",
     "redis": "^2.7.1",
     "slack-node": "~0.2.0",
