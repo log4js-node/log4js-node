@@ -45,7 +45,7 @@ test('file appender SIGHUP', (t) => {
     t.equal(openCalled, 1, 'open should be called once');
     t.equal(closeCalled, 1, 'close should be called once');
     t.end();
-  }, 10);
+  }, 100);
 });
 
 test('file appender SIGHUP handler leak', (t) => {
