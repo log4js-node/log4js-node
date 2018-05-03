@@ -8,6 +8,7 @@ The multiFile appender can be used to dynamically write logs to multiple files, 
 * `base` - `string` - the base part of the generated log filename
 * `property` - `string` - the value to use to split files (see below).
 * `extension` - `string` - the suffix for the generated log filename.
+* `timeout` - `integer` - optional activity timeout in ms after which the file will be closed.
 
 All other properties will be passed to the created [file](file.md) appenders. For the property value, `categoryName` is probably the most useful - although you could use `pid` or `level`. If the property is not found then the appender will look for the value in the context map. If that fails, then the logger will not output the logging event, without an error. This is to allow for dynamic properties which may not exist for all log messages.
 

@@ -4,6 +4,16 @@ const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const fs = require('fs');
 
+function isFileLocked(path) {
+  let locked = false;
+  try {
+    fs.renameSync(path, `${path}.temp`);
+  } catch (err) {
+    locked = err.code === 'ETXTBSY';
+  }
+  return locked;
+}
+
 test('multiFile appender', (batch) => {
   batch.test('should write to multiple files based on the loggingEvent property', (t) => {
     log4js.configure({
@@ -45,6 +55,30 @@ test('multiFile appender', (batch) => {
       t.contains(fs.readFileSync('logs/D.log', 'utf-8'), 'I am in logger D');
       t.end();
     });
+  });
+
+  batch.test('should close file after timeout', (t) => {
+    log4js.configure({
+      appenders: {
+        multi: {
+          type: 'multiFile', base: 'logs/', property: 'label', extension: '.log', timeout: 20
+        }
+      },
+      categories: { default: { appenders: ['multi'], level: 'info' } }
+    });
+    const loggerC = log4js.getLogger('cheese');
+    const loggerD = log4js.getLogger('biscuits');
+    loggerC.addContext('label', 'C');
+    loggerD.addContext('label', 'D');
+    loggerC.info('I am in logger C');
+    loggerD.info('I am in logger D');
+    t.equals(isFileLocked('logs/C.log'), true);
+    t.equals(isFileLocked('logs/D.log'), true);
+    setTimeout(() => {
+      t.equals(isFileLocked('logs/C.log'), false);
+      t.equals(isFileLocked('logs/D.log'), false);
+      t.end();
+    }, 30);
   });
 
   batch.test('should fail silently if loggingEvent property has no value', (t) => {
