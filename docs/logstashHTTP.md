@@ -1,6 +1,6 @@
 # logstash Appender (HTTP)
 
-The logstash appenders send NDJSON formatted log events to [logstash](https://www.elastic.co/products/logstash) receivers. This appender uses HTTP to send the events (there is another logstash appender that uses [UDP](logstashUDP.md)). You will need to include [axios](https://www.npmjs.com/package/axios) in your dependencies to use this appender.
+The logstash appenders send NDJSON formatted log events to [logstash](https://www.elastic.co/products/logstash) receivers. This appender uses HTTP to send the events (there is another logstash appender that uses [UDP](https://github.com/log4js-node/logstashUDP)). You will need to include [axios](https://www.npmjs.com/package/axios) in your dependencies to use this appender.
 
 ## Configuration
 
