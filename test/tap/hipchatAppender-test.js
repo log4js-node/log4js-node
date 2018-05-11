@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
+const hipchatAppender = require('../../lib/appenders/hipchat');
 
 function setupLogging(category, options) {
   const lastRequest = {};
@@ -70,6 +71,11 @@ function setupLogging(category, options) {
 }
 
 test('HipChat appender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(hipchatAppender.configure, 'function');
+    t.end();
+  });
+
   batch.test('when logging to HipChat v2 API', (t) => {
     const customCallback = function () {
       return 'works';

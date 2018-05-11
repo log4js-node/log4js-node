@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
+const appender = require('../../lib/appenders/logFaces-UDP');
 
 function setupLogging(category, options) {
   const fakeDgram = {
@@ -52,6 +53,11 @@ function setupLogging(category, options) {
 }
 
 test('logFaces appender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(appender.configure, 'function');
+    t.end();
+  });
+
   batch.test('when using UDP receivers', (t) => {
     const setup = setupLogging('udpCategory', {
       application: 'LFS-UDP',

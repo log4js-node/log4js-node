@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
+const appender = require('../../lib/appenders/logstashUDP');
 
 function setupLogging(category, options) {
   const udpSent = {};
@@ -49,6 +50,11 @@ function setupLogging(category, options) {
 }
 
 test('logstashUDP appender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(appender.configure, 'function');
+    t.end();
+  });
+
   batch.test('a UDP packet should be sent', (t) => {
     const setup = setupLogging('myCategory', {
       host: '127.0.0.1',

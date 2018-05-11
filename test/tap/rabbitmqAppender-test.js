@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
+const appender = require('../../lib/appenders/rabbitmq');
 
 function setupLogging(category, options) {
   const fakeRabbitmq = {
@@ -51,6 +52,11 @@ function setupLogging(category, options) {
 }
 
 test('log4js rabbitmqAppender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(appender.configure, 'function');
+    t.end();
+  });
+
   batch.test('rabbitmq setup', (t) => {
     const result = setupLogging('rabbitmq setup', {
       host: '123.123.123.123',

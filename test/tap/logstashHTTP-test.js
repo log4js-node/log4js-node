@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('sandboxed-module');
+const appender = require('../../lib/appenders/logstashHTTP');
 
 function setupLogging(category, options) {
   const fakeAxios = {
@@ -49,6 +50,11 @@ function setupLogging(category, options) {
 }
 
 test('logstashappender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(appender.configure, 'function');
+    t.end();
+  });
+
   batch.test('when using HTTP receivers', (t) => {
     const setup = setupLogging('myCategory', {
       application: 'logstash-sample',
