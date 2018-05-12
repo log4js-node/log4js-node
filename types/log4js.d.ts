@@ -1,12 +1,13 @@
 // Type definitions for log4js
 
 export interface Log4js {
-	getLogger,
-	configure,
-	addLayout,
-	connectLogger,
-	levels,
-	shutdown
+	getLogger(category?: string): Logger;
+	configure(filename: string): Log4js;
+	configure(config: Configuration): Log4js;
+	addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
+	connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
+	levels(): Levels;
+	shutdown(cb?: (error: Error) => void): void | null;
 }
 
 export function getLogger(category?: string): Logger;
@@ -113,8 +114,8 @@ export interface FileAppender {
 	layout?: Layout;
 	numBackups?: number;
 	compress?: boolean; // compress the backups
-  // keep the file extension when rotating logs
-  keepFileExt?: boolean;
+	// keep the file extension when rotating logs
+	keepFileExt?: boolean;
 	encoding?: string;
 	mode?: number;
 	flags?: string;
@@ -161,8 +162,8 @@ export interface DateFileAppender {
 	compress?: boolean;
 	// include the pattern in the name of the current log file as well as the backups.(default false)
 	alwaysIncludePattern?: boolean;
-  // keep the file extension when rotating logs
-  keepFileExt?: boolean;
+	// keep the file extension when rotating logs
+	keepFileExt?: boolean;
 	// if this value is greater than zero, then files older than that many days will be deleted during log rolling.(default 0)
 	daysToKeep?: number;
 }
@@ -432,7 +433,7 @@ export interface Logger {
 
 	isLevelEnabled(level?: string): boolean;
 
-  isTraceEnabled(): boolean;
+	isTraceEnabled(): boolean;
 	isDebugEnabled(): boolean;
 	isInfoEnabled(): boolean;
 	isWarnEnabled(): boolean;

@@ -52,6 +52,7 @@ log4js.configure({
 });
 
 const logger4 = log4js.getLogger('thing');
+logger4.log('logging a thing');
 
 const logger5 = log4js.getLogger('json-test');
 logger5.info('this is just a test');
