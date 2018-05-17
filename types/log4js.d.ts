@@ -107,7 +107,7 @@ export interface FileAppender {
 	// the path of the file where you want your logs written.
 	filename: string;
 	// the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
-	maxLogSize?: number;
+	maxLogSize?: number | string;
 	// (default value = 5) - the number of old log files to keep during log rolling.
 	backups?: number;
 	// defaults to basic layout
@@ -126,7 +126,7 @@ export interface SyncfileAppender {
 	// the path of the file where you want your logs written.
 	filename: string;
 	// the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
-	maxLogSize?: number;
+	maxLogSize?: number | string;
 	// (default value = 5) - the number of old log files to keep during log rolling.
 	backups?: number;
 	// defaults to basic layout
