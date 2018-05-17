@@ -3,6 +3,7 @@
 const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const net = require('net');
+const childProcess = require('child_process');
 const sandbox = require('sandboxed-module');
 
 test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
@@ -87,4 +88,49 @@ test('multiprocess appender shutdown (worker)', (t) => {
     t.ok(shutdownFinished);
     t.end();
   }, 500);
+});
+
+test('multiprocess appender crash (worker)', (t) => {
+  const loggerPort = 12346;
+  const messages = [];
+  const fakeConsole = {
+    log: function (msg) {
+      messages.push(msg);
+    }
+  };
+  const log4jsWithFakeConsole = sandbox.require(
+    '../../lib/log4js',
+    {
+      globals: {
+        console: fakeConsole
+      }
+    }
+  );
+  log4jsWithFakeConsole.configure({
+    appenders: {
+      console: { type: 'console', layout: { type: 'messagePassThrough' } },
+      multi: {
+        type: 'multiprocess',
+        mode: 'master',
+        loggerPort: loggerPort,
+        appender: 'console'
+      }
+    },
+    categories: { default: { appenders: ['multi'], level: 'debug' } }
+  });
+
+  setTimeout(() => {
+    const worker = childProcess.fork(
+      require.resolve('./multiprocess-worker'),
+      ['start-multiprocess-worker', loggerPort]
+    );
+
+    setTimeout(() => {
+      worker.kill();
+      setTimeout(() => {
+        t.equal(messages[0], 'Logging from worker');
+        log4jsWithFakeConsole.shutdown(() => t.end());
+      }, 250);
+    }, 250);
+  }, 250);
 });
