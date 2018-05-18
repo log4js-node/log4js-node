@@ -1,18 +1,10 @@
 'use strict';
 
+const process = require('process');
 const test = require('tap').test;
+const debug = require('debug');
 const log4js = require('../../lib/log4js');
 const fs = require('fs');
-
-function isFileLocked(path) {
-  let locked = false;
-  try {
-    fs.renameSync(path, `${path}.temp`);
-  } catch (err) {
-    locked = err.code === 'ETXTBSY';
-  }
-  return locked;
-}
 
 test('multiFile appender', (batch) => {
   batch.test('should write to multiple files based on the loggingEvent property', (t) => {
@@ -58,6 +50,19 @@ test('multiFile appender', (batch) => {
   });
 
   batch.test('should close file after timeout', (t) => {
+    /* checking that the file is closed after a timeout is done by looking at the debug logs
+      since detecting file locks with node.js is platform specific.
+     */
+    const debugWasEnabled = debug.enabled('log4js:multiFile');
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    debug.enable('log4js:multiFile');
     log4js.configure({
       appenders: {
         multi: {
@@ -67,16 +72,14 @@ test('multiFile appender', (batch) => {
       categories: { default: { appenders: ['multi'], level: 'info' } }
     });
     const loggerC = log4js.getLogger('cheese');
-    const loggerD = log4js.getLogger('biscuits');
     loggerC.addContext('label', 'C');
-    loggerD.addContext('label', 'D');
     loggerC.info('I am in logger C');
-    loggerD.info('I am in logger D');
-    t.equals(isFileLocked('logs/C.log'), true);
-    t.equals(isFileLocked('logs/D.log'), true);
     setTimeout(() => {
-      t.equals(isFileLocked('logs/C.log'), false);
-      t.equals(isFileLocked('logs/D.log'), false);
+      t.contains(debugLogs[debugLogs.length - 1], 'C not used for > 20 ms => close');
+      if (!debugWasEnabled) {
+        debug.disable('log4js:multiFile');
+      }
+      process.stderr.write = originalWrite;
       t.end();
     }, 30);
   });
