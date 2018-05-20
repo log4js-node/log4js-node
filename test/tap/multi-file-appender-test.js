@@ -81,7 +81,7 @@ test('multiFile appender', (batch) => {
       }
       process.stderr.write = originalWrite;
       t.end();
-    }, 30);
+    }, 50);
   });
 
   batch.test('should fail silently if loggingEvent property has no value', (t) => {
