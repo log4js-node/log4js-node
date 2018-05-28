@@ -196,9 +196,10 @@ test('log4js smtpAppender', (batch) => {
     setup.logger.info('This will break');
 
     t.test('should be logged to console', (assert) => {
-      assert.equal(setup.console.errors.length, 1);
-      assert.equal(setup.console.errors[0].msg, 'log4js.smtpAppender - Error happened');
-      assert.equal(setup.console.errors[0].value.message, 'oh noes');
+      assert.equal(setup.console.errors.length, 2);
+      // first error will be deprecation warning, ignore it
+      assert.equal(setup.console.errors[1].msg, 'log4js.smtpAppender - Error happened');
+      assert.equal(setup.console.errors[1].value.message, 'oh noes');
       assert.end();
     });
     t.end();
