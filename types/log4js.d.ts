@@ -448,15 +448,15 @@ export interface Logger {
 
 	clearContext(): void;
 
-	trace(message: string, ...args: any[]): void;
+	trace(message: any, ...args: any[]): void;
 
-	debug(message: string, ...args: any[]): void;
+	debug(message: any, ...args: any[]): void;
 
-	info(message: string, ...args: any[]): void;
+	info(message: any, ...args: any[]): void;
 
-	warn(message: string, ...args: any[]): void;
+	warn(message: any, ...args: any[]): void;
 
-	error(message: string, ...args: any[]): void;
+	error(message: any, ...args: any[]): void;
 
-	fatal(message: string, ...args: any[]): void;
+	fatal(message: any, ...args: any[]): void;
 }
