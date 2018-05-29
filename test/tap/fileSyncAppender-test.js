@@ -84,6 +84,52 @@ test('log4js fileSyncAppender', (batch) => {
     t.end();
   });
 
+  batch.test('with a max file size in unit mode and no backups', (t) => {
+    const testFile = path.join(__dirname, '/fa-maxFileSize-unit-sync-test.log');
+    const logger = log4js.getLogger('max-file-size-unit');
+
+    remove(testFile);
+    remove(`${testFile}.1`);
+
+    t.tearDown(() => {
+      remove(testFile);
+      remove(`${testFile}.1`);
+    });
+
+    // log file of 100 bytes maximum, no backups
+    log4js.configure({
+      appenders: {
+        sync: {
+          type: 'fileSync', filename: testFile, maxLogSize: '1K', backups: 0
+        }
+      },
+      categories: { default: { appenders: ['sync'], level: 'debug' } }
+    });
+    const maxLine = 13;
+    for (let i = 0; i < maxLine; i++) {
+      logger.info('This is the first log message.');
+    }
+
+    logger.info('This is the second log message.');
+
+    t.test('log file should only contain the second message', (assert) => {
+      fs.readFile(testFile, 'utf8', (err, fileContents) => {
+        assert.include(fileContents, `This is the second log message.${EOL}`);
+        assert.equal(fileContents.indexOf('This is the first log message.'), -1);
+        assert.end();
+      });
+    });
+
+    t.test('there should be two test files', (assert) => {
+      fs.readdir(__dirname, (err, files) => {
+        const logFiles = files.filter(file => file.includes('fa-maxFileSize-unit-sync-test.log'));
+        assert.equal(logFiles.length, 2);
+        assert.end();
+      });
+    });
+    t.end();
+  });
+
   batch.test('with a max file size and 2 backups', (t) => {
     const testFile = path.join(__dirname, '/fa-maxFileSize-with-backups-sync-test.log');
     const logger = log4js.getLogger('max-file-size-backups');

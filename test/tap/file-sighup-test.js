@@ -47,3 +47,18 @@ test('file appender SIGHUP', (t) => {
     t.end();
   }, 100);
 });
+
+test('file appender SIGHUP handler leak', (t) => {
+  const log4js = require('../../lib/log4js');
+  const initialListeners = process.listenerCount('SIGHUP');
+  log4js.configure({
+    appenders: {
+      file: { type: 'file', filename: 'test.log' }
+    },
+    categories: { default: { appenders: ['file'], level: 'info' } }
+  });
+  log4js.shutdown(() => {
+    t.equal(process.listenerCount('SIGHUP'), initialListeners);
+    t.end();
+  });
+});

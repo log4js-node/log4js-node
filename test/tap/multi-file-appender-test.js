@@ -1,6 +1,8 @@
 'use strict';
 
+const process = require('process');
 const test = require('tap').test;
+const debug = require('debug');
 const log4js = require('../../lib/log4js');
 const fs = require('fs');
 
@@ -45,6 +47,41 @@ test('multiFile appender', (batch) => {
       t.contains(fs.readFileSync('logs/D.log', 'utf-8'), 'I am in logger D');
       t.end();
     });
+  });
+
+  batch.test('should close file after timeout', (t) => {
+    /* checking that the file is closed after a timeout is done by looking at the debug logs
+      since detecting file locks with node.js is platform specific.
+     */
+    const debugWasEnabled = debug.enabled('log4js:multiFile');
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    debug.enable('log4js:multiFile');
+    log4js.configure({
+      appenders: {
+        multi: {
+          type: 'multiFile', base: 'logs/', property: 'label', extension: '.log', timeout: 20
+        }
+      },
+      categories: { default: { appenders: ['multi'], level: 'info' } }
+    });
+    const loggerC = log4js.getLogger('cheese');
+    loggerC.addContext('label', 'C');
+    loggerC.info('I am in logger C');
+    setTimeout(() => {
+      t.contains(debugLogs[debugLogs.length - 1], 'C not used for > 20 ms => close');
+      if (!debugWasEnabled) {
+        debug.disable('log4js:multiFile');
+      }
+      process.stderr.write = originalWrite;
+      t.end();
+    }, 50);
   });
 
   batch.test('should fail silently if loggingEvent property has no value', (t) => {

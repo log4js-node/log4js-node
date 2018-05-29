@@ -236,6 +236,14 @@ test('Multiprocess Appender', (batch) => {
       assert.end();
     });
 
+    t.test('should log the error on "error" event', (assert) => {
+      net.cbs.error(new Error('Expected error'));
+      const logEvents = recording.replay();
+      assert.plan(2);
+      assert.equal(logEvents.length, 1);
+      assert.equal('A worker log process hung up unexpectedly', logEvents[0].data[0]);
+    });
+
     t.test('when a client connects', (assert) => {
       const logString = `${JSON.stringify({
         level: { level: 10000, levelStr: 'DEBUG' },

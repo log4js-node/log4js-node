@@ -4,6 +4,9 @@ log4js.configure('./filename');
 const logger1 = log4js.getLogger();
 logger1.level = 'debug';
 logger1.debug("Some debug messages");
+logger1.fatal({
+  whatever: 'foo'
+})
 
 const logger3 = log4js.getLogger('cheese');
 logger3.trace('Entering cheese testing');
@@ -52,6 +55,7 @@ log4js.configure({
 });
 
 const logger4 = log4js.getLogger('thing');
+logger4.log('logging a thing');
 
 const logger5 = log4js.getLogger('json-test');
 logger5.info('this is just a test');

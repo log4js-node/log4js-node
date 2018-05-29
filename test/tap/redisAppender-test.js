@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('@log4js-node/sandboxed-module');
+const appender = require('../../lib/appenders/redis');
 
 function setupLogging(category, options) {
   const fakeRedis = {
@@ -56,6 +57,11 @@ function setupLogging(category, options) {
 }
 
 test('log4js redisAppender', (batch) => {
+  batch.test('should export a configure function', (t) => {
+    t.type(appender.configure, 'function');
+    t.end();
+  });
+
   batch.test('redis setup', (t) => {
     const result = setupLogging('redis setup', {
       host: '123.123.123.123',

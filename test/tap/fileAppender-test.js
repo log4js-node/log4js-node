@@ -110,6 +110,49 @@ test('log4js fileAppender', (batch) => {
     }, 100);
   });
 
+  batch.test('with a max file size in unit mode and no backups', (t) => {
+    const testFile = path.join(__dirname, 'fa-maxFileSize-unit-test.log');
+    const logger = log4js.getLogger('max-file-size-unit');
+
+    t.tearDown(() => {
+      removeFile(testFile);
+      removeFile(`${testFile}.1`);
+    });
+    removeFile(testFile);
+    removeFile(`${testFile}.1`);
+
+    // log file of 1K = 1024 bytes maximum, no backups
+    log4js.configure({
+      appenders: {
+        file: {
+          type: 'file', filename: testFile, maxLogSize: '1K', backups: 0
+        }
+      },
+      categories: {
+        default: { appenders: ['file'], level: 'debug' }
+      }
+    });
+    const maxLine = 13;
+    for (let i = 0; i < maxLine; i++) {
+      logger.info('This is the first log message.');
+    }
+
+    logger.info('This is the second log message.');
+
+    // wait for the file system to catch up
+    setTimeout(() => {
+      fs.readFile(testFile, 'utf8', (err, fileContents) => {
+        t.include(fileContents, 'This is the second log message.');
+        t.equal(fileContents.indexOf('This is the first log message.'), -1);
+        fs.readdir(__dirname, (e, files) => {
+          const logFiles = files.filter(file => file.includes('fa-maxFileSize-unit-test.log'));
+          t.equal(logFiles.length, 2, 'should be 2 files');
+          t.end();
+        });
+      });
+    }, 100);
+  });
+
   batch.test('with a max file size and 2 backups', (t) => {
     const testFile = path.join(__dirname, 'fa-maxFileSize-with-backups-test.log');
     const logger = log4js.getLogger('max-file-size-backups');
