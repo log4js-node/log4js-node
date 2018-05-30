@@ -8,4 +8,5 @@ if (process.argv.indexOf('start-multiprocess-worker') >= 0) {
     categories: { default: { appenders: ['multi'], level: 'debug' } }
   });
   log4js.getLogger('worker').info('Logging from worker');
+  process.send('worker is done');
 }

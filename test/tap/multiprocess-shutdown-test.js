@@ -119,18 +119,17 @@ test('multiprocess appender crash (worker)', (t) => {
     categories: { default: { appenders: ['multi'], level: 'debug' } }
   });
 
-  setTimeout(() => {
-    const worker = childProcess.fork(
-      require.resolve('./multiprocess-worker'),
-      ['start-multiprocess-worker', loggerPort]
-    );
-
-    setTimeout(() => {
+  const worker = childProcess.fork(
+    require.resolve('./multiprocess-worker'),
+    ['start-multiprocess-worker', loggerPort]
+  );
+  worker.on('message', (m) => {
+    if (m === 'worker is done') {
       worker.kill();
       setTimeout(() => {
         t.equal(messages[0], 'Logging from worker');
         log4jsWithFakeConsole.shutdown(() => t.end());
-      }, 250);
-    }, 250);
-  }, 250);
+      }, 500);
+    }
+  });
 });
