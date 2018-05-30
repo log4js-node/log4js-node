@@ -33,9 +33,8 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
-    "test": "tap 'test/tap/**/*.js'",
+    "test": "tap 'test/tap/**/*.js' --cov",
     "typings": "tsc -p types/tsconfig.json",
-    "coverage": "tap 'test/tap/**/*.js' --cov",
     "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
   },
   "directories": {
@@ -64,7 +63,6 @@
     "validate-commit-msg": "^2.14.0"
   },
   "optionalDependencies": {
-    "nodemailer": "^2.5.0",
     "redis": "^2.7.1",
     "slack-node": "~0.2.0",
     "axios": "^0.15.3",
