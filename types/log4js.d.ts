@@ -368,7 +368,7 @@ export interface Configuration {
 	disableClustering?: boolean;
 }
 
-export interface Logger {
+export class Logger {
 	new(dispatch: Function, name: string): Logger;
 
 	level: string;
