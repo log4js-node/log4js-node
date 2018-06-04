@@ -9,7 +9,7 @@ log4js.configure({
       type: 'console'
     },
     mail: {
-      type: 'smtp',
+      type: '@log4js-node/smtp',
       recipients: 'logfilerecipient@logging.com',
       sendInterval: 5,
       transport: 'SMTP',
