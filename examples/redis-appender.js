@@ -14,7 +14,7 @@ log4js.configure({
       alwaysIncludePattern: false
     },
     db: {
-      type: 'redis',
+      type: '@log4js-node/redis',
       host: '127.0.0.1',
       port: 6379,
       pass: '',
