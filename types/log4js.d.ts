@@ -168,24 +168,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface HipchatAppender {
-	type: 'hipchat';
-	// User token with notification privileges
-	hipchat_token: string;
-	// Room ID or name
-	hipchat_room: string;
-	// (defaults to empty string) - a label to say where the message is from
-	hipchat_from?: string;
-	// (defaults to false) - make hipchat annoy people
-	hipchat_notify?: boolean;
-	// (defaults to api.hipchat.com) - set this if you have your own hipchat server
-	hipchat_host?: string;
-	// (defaults to only throwing errors) - implement this function if you want intercept the responses from hipchat
-	hipchat_response_callback?(err: Error, response: any): any;
-	// (defaults to messagePassThroughLayout)
-	layout?: Layout;
-}
-
 export interface LogFacesHTTPAppender {
 	type: 'logFaces-HTTP';
 	// logFaces receiver servlet URL
@@ -238,20 +220,6 @@ export interface MultiprocessAppender {
 	loggerHost?: string;
 }
 
-export interface RedisAppender {
-	type: 'redis';
-	// (defaults to 127.0.0.1) - the location of the redis server
-	host?: string;
-	// (defaults to 6379) - the port the redis server is listening on
-	port?: number;
-	// password to use when authenticating connection to redis
-	pass?: string;
-	// the redis channel that log events will be published to
-	channel: string;
-	// (defaults to messagePassThroughLayout) - the layout to use for log events.
-	layout?: Layout;
-}
-
 export interface SlackAppender {
 	type: 'slack';
 	// your Slack API token (see the slack and slack-node docs)
@@ -268,52 +236,6 @@ export interface SlackAppender {
 
 export interface RecordingAppender {
 	type: 'recording';
-}
-
-export interface SmtpAppender {
-	type: 'smtp';
-	// (if not present will use transport field)
-	SMTP?: {
-		// (defaults to localhost)
-		host?: string;
-		// (defaults to 25)
-		port?: number;
-		// authentication details
-		auth?: {
-			user: string;
-			pass: string;
-		};
-	};
-	// (if not present will use SMTP) - see nodemailer docs for transport options
-	transport?: {
-		// (defaults to smtp) - the nodemailer transport plugin to use
-		plugin?: string;
-		// configuration for the transport plugin
-		options?: any;
-	} | string;
-	// send logs as email attachment
-	attachment?: {
-		// (defaults to false)
-		enable?: boolean;
-		// (defaults to See logs as attachment) - message to put in body of email
-		message: string;
-		// (defaults to default.log) - attachment filename
-		filename: string;
-	};
-	// integer(defaults to 0) - batch emails and send in one email every sendInterval seconds, if 0 then every log message will send an email.
-	sendInterval?: number;
-	// (defaults to 5) - time in seconds to wait for emails to be sent during shutdown
-	shutdownTimeout?: number;
-	// email addresses to send the logs to
-	recipients: string;
-	// (defaults to message from first log event in batch) - subject for email
-	subject?: string;
-	// who the logs should be sent as
-	sender?: string;
-	// (defaults to false) - send the email as HTML instead of plain text
-	html?: boolean;
-	// (defaults to basicLayout)
-	layout?: Layout;
 }
 
 export interface StandardErrorAppender {
@@ -338,16 +260,13 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| HipchatAppender
 	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
 	| LogLevelFilterAppender
 	| MultiFileAppender
 	| MultiprocessAppender
-	| RedisAppender
 	| SlackAppender
 	| RecordingAppender
-	| SmtpAppender
 	| StandardErrorAppender
 	| StandardOutputAppender
 	| CustomAppender;
