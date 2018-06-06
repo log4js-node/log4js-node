@@ -123,13 +123,14 @@ test('multiprocess appender crash (worker)', (t) => {
     require.resolve('./multiprocess-worker'),
     ['start-multiprocess-worker', loggerPort]
   );
+
   worker.on('message', (m) => {
     if (m === 'worker is done') {
-      worker.kill();
       setTimeout(() => {
+        worker.kill();
         t.equal(messages[0], 'Logging from worker');
         log4jsWithFakeConsole.shutdown(() => t.end());
-      }, 500);
+      }, 100);
     }
   });
 });
