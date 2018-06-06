@@ -63,7 +63,6 @@
     "validate-commit-msg": "^2.14.0"
   },
   "optionalDependencies": {
-    "redis": "^2.7.1",
     "slack-node": "~0.2.0",
     "axios": "^0.15.3",
     "amqplib": "^0.5.2"
