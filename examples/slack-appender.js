@@ -4,7 +4,7 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     slack: {
-      type: 'slack',
+      type: '@log4js-node/slack',
       token: 'TOKEN',
       channel_id: '#CHANNEL',
       username: 'USERNAME',
