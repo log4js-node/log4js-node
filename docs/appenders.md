@@ -32,7 +32,6 @@ The following appenders are included with log4js. Some require extra dependencie
 * [multiprocess](multiprocess.md)
 * [rabbitmq](rabbitmq.md)
 * [recording](recording.md)
-* [slack](slack.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
 * [tcp](tcp.md)
@@ -48,6 +47,7 @@ The following appenders are supported by log4js, but are no longer distributed w
 * [logstashUDP](https://github.com/log4js-node/logstashUDP)
 * [mailgun](https://github.com/log4js-node/mailgun)
 * [redis](https://github.com/log4js-node/redis)
+* [slack](https://github.com/log4js-node/slack)
 * [smtp](https://github.com/log4js-node/smtp)
 
 For example, if you were previously using the gelf appender (`type: 'gelf'`) then you should add `@log4js-node/gelf` to your dependencies and change the type to `type: '@log4js-node/gelf'`.
