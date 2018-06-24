@@ -14,7 +14,7 @@ log4js.configure({
       alwaysIncludePattern: false
     },
     mq: {
-      type: 'rabbitmq',
+      type: '@log4js-node/rabbitmq',
       host: '127.0.0.1',
       port: 5672,
       username: 'guest',
