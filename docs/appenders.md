@@ -33,7 +33,6 @@ The following appenders are included with log4js. Some require extra dependencie
 * [recording](recording.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
-* [rabbitmq](rabbitmq.md)
 
 ## Optional Appenders
 
@@ -44,6 +43,7 @@ The following appenders are supported by log4js, but will issue deprecation warn
 * [loggly](https://github.com/log4js-node/loggly)
 * [logstashUDP](https://github.com/log4js-node/logstashUDP)
 * [mailgun](https://github.com/log4js-node/mailgun)
+* [rabbitmq](https://github.com/log4js-node/rabbitmq)
 * [redis](https://github.com/log4js-node/redis)
 * [slack](https://github.com/log4js-node/slack)
 * [smtp](https://github.com/log4js-node/smtp)
