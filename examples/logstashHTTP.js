@@ -7,7 +7,7 @@ log4js.configure({
     },
     logstash: {
       url: 'http://172.17.0.5:9200/_bulk',
-      type: 'logstashHTTP',
+      type: '@log4js-node/logstash-http',
       logType: 'application',
       logChannel: 'node',
       application: 'logstash-log4js',
