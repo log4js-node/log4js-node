@@ -117,3 +117,6 @@ log4js.configure('./filename').getLogger();
 const logger7 = log4js.getLogger();
 logger7.level = 'debug';
 logger7.debug("Some debug messages");
+
+const levels: log4js.Levels = log4js.levels;
+const level: log4js.Level = levels.getLevel('info');
