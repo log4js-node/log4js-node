@@ -6,7 +6,7 @@ export interface Log4js {
 	configure(config: Configuration): Log4js;
 	addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
 	connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
-	levels(): Levels;
+	levels: Levels;
 	shutdown(cb?: (error: Error) => void): void | null;
 }
 
@@ -19,7 +19,7 @@ export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEv
 
 export function connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
 
-export function levels(): Levels;
+export const levels: Levels;
 
 export function shutdown(cb?: (error: Error) => void): void | null;
 
@@ -409,10 +409,17 @@ export type Appender = CategoryFilterAppender
 	| CustomAppender;
 
 export interface Levels {
-	[index: string]: {
-		value: number;
-		colour: string;
-	};
+  ALL: Level;
+  MARK: Level;
+  TRACE: Level;
+  DEBUG: Level;
+  INFO: Level;
+  WARN: Level;
+  ERROR: Level;
+  FATAL: Level;
+  OFF: Level;
+  levels: Level[];
+  getLevel(level: string): Level;
 }
 
 export interface Configuration {
