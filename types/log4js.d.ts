@@ -168,16 +168,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface LogFacesHTTPAppender {
-	type: 'logFaces-HTTP';
-	// logFaces receiver servlet URL
-	url: string;
-	// (defaults to empty string) - used to identify your application’s logs
-	application?: string;
-	// (defaults to 5000ms) - the timeout for the HTTP request.
-	timeout?: number;
-}
-
 export interface LogFacesUDPAppender {
 	type: 'logFaces-UDP';
 	// (defaults to ‘127.0.0.1’)- hostname or IP address of the logFaces receiver
@@ -246,7 +236,6 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| LogFacesHTTPAppender
 	| LogFacesUDPAppender
 	| LogLevelFilterAppender
 	| MultiFileAppender
