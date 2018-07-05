@@ -62,9 +62,6 @@
     "typescript": "^2.8.3",
     "validate-commit-msg": "^2.14.0"
   },
-  "optionalDependencies": {
-    "axios": "^0.15.3"
-  },
   "browser": {
     "os": false
   },
