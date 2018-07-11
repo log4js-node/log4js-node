@@ -8,11 +8,11 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     logFaces: {
-      type: 'logFaces-UDP',       // (mandatory) appender type
-      application: 'MY-NODEJS',       // (optional) name of the application (domain)
-      remoteHost: 'localhost',        // (optional) logFaces server host or IP address
-      port: 55201,                    // (optional) logFaces UDP receiver port (must use JSON format)
-      layout: {                       // (optional) the layout to use for messages
+      type: '@log4js-node/logfaces-udp', // (mandatory) appender type
+      application: 'MY-NODEJS', // (optional) name of the application (domain)
+      remoteHost: 'localhost', // (optional) logFaces server host or IP address
+      port: 55201, // (optional) logFaces UDP receiver port (must use JSON format)
+      layout: { // (optional) the layout to use for messages
         type: 'pattern',
         pattern: '%m'
       }
