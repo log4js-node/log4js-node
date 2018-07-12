@@ -25,7 +25,7 @@
     "url": "http://github.com/log4js-node/log4js-node/issues"
   },
   "engines": {
-    "node": ">=4.0"
+    "node": ">=6.0"
   },
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
@@ -33,9 +33,8 @@
     "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
-    "test": "tap 'test/tap/**/*.js'",
+    "test": "tap 'test/tap/**/*.js' --cov",
     "typings": "tsc -p types/tsconfig.json",
-    "coverage": "tap 'test/tap/**/*.js' --cov",
     "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
   },
   "directories": {
@@ -58,20 +57,10 @@
     "eslint-plugin-import": "^2.11.0",
     "husky": "^0.14.3",
     "nyc": "^11.7.3",
-    "sandboxed-module": "^2.0.3",
+    "@log4js-node/sandboxed-module": "^2.1.0",
     "tap": "^11.1.5",
     "typescript": "^2.8.3",
     "validate-commit-msg": "^2.14.0"
-  },
-  "optionalDependencies": {
-    "hipchat-notifier": "^1.1.0",
-    "loggly": "^1.1.0",
-    "mailgun-js": "^0.18.0",
-    "nodemailer": "^2.5.0",
-    "redis": "^2.7.1",
-    "slack-node": "~0.2.0",
-    "axios": "^0.15.3",
-    "amqplib": "^0.5.2"
   },
   "browser": {
     "os": false

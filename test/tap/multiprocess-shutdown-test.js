@@ -4,7 +4,7 @@ const test = require('tap').test;
 const log4js = require('../../lib/log4js');
 const net = require('net');
 const childProcess = require('child_process');
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 
 test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
   log4js.configure({

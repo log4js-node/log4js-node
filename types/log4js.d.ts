@@ -168,67 +168,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface GELFAppender {
-	'type': 'gelf';
-	// (defaults to localhost) - the gelf server hostname
-	host?: string;
-	// (defaults to 12201) - the port the gelf server is listening on
-	port?: number;
-	// (defaults to OS.hostname()) - the hostname used to identify the origin of the log messages.
-	hostname?: string;
-	facility?: string;
-	// fields to be added to each log message; custom fields must start with an underscore.
-	customFields?: { [field: string]: any };
-}
-
-export interface HipchatAppender {
-	type: 'hipchat';
-	// User token with notification privileges
-	hipchat_token: string;
-	// Room ID or name
-	hipchat_room: string;
-	// (defaults to empty string) - a label to say where the message is from
-	hipchat_from?: string;
-	// (defaults to false) - make hipchat annoy people
-	hipchat_notify?: boolean;
-	// (defaults to api.hipchat.com) - set this if you have your own hipchat server
-	hipchat_host?: string;
-	// (defaults to only throwing errors) - implement this function if you want intercept the responses from hipchat
-	hipchat_response_callback?(err: Error, response: any): any;
-	// (defaults to messagePassThroughLayout)
-	layout?: Layout;
-}
-
-export interface LogFacesHTTPAppender {
-	type: 'logFaces-HTTP';
-	// logFaces receiver servlet URL
-	url: string;
-	// (defaults to empty string) - used to identify your application’s logs
-	application?: string;
-	// (defaults to 5000ms) - the timeout for the HTTP request.
-	timeout?: number;
-}
-
-export interface LogFacesUDPAppender {
-	type: 'logFaces-UDP';
-	// (defaults to ‘127.0.0.1’)- hostname or IP address of the logFaces receiver
-	remoteHost?: string;
-	// (defaults to 55201) - port the logFaces receiver is listening on
-	port?: number;
-	// (defaults to empty string) - used to identify your application’s logs
-	application?: string;
-}
-
-export interface LogglyAppender {
-	type: 'loggly';
-	// your really long input token
-	token: string;
-	// your subdomain
-	subdomain: string;
-	// tags to include in every log message
-	tags?: string[];
-}
-
 export interface LogLevelFilterAppender {
 	type: 'logLevelFilter';
 	// the name of an appender, defined in the same configuration, that you want to filter
@@ -237,35 +176,6 @@ export interface LogLevelFilterAppender {
 	level: string;
 	// (defaults to FATAL) - the maximum level of event to allow through the filter
 	maxLevel?: string;
-}
-
-export interface LogstashUDPAppender {
-	type: 'logstashUDP';
-	// hostname (or IP-address) of the logstash server
-	host: string;
-	// port of the logstash server
-	port: number;
-	// used for the type field in the logstash data
-	logType?: string;
-	// used for the type field of the logstash data if logType is not defined
-	category?: string;
-	// extra fields to log with each event
-	fields?: { [fieldname: string]: any };
-	// (defaults to dummyLayout) used for the message field of the logstash data
-	layout?: Layout;
-}
-
-export interface MailgunAppender {
-	type: 'mailgun';
-	// your mailgun API key
-	apiKey: string;
-	// your domain
-	domain: string;
-	from: string;
-	to: string;
-	subject: string;
-	// (defaults to basicLayout)
-	layout?: Layout;
 }
 
 export interface MultiFileAppender {
@@ -290,82 +200,8 @@ export interface MultiprocessAppender {
 	loggerHost?: string;
 }
 
-export interface RedisAppender {
-	type: 'redis';
-	// (defaults to 127.0.0.1) - the location of the redis server
-	host?: string;
-	// (defaults to 6379) - the port the redis server is listening on
-	port?: number;
-	// password to use when authenticating connection to redis
-	pass?: string;
-	// the redis channel that log events will be published to
-	channel: string;
-	// (defaults to messagePassThroughLayout) - the layout to use for log events.
-	layout?: Layout;
-}
-
-export interface SlackAppender {
-	type: 'slack';
-	// your Slack API token (see the slack and slack-node docs)
-	token: string;
-	// the channel to send log messages
-	channel_id: string;
-	// the icon to use for the message
-	icon_url?: string;
-	// the username to display with the message
-	username: string;
-	// (defaults to basicLayout) - the layout to use for the message.
-	layout?: Layout;
-}
-
 export interface RecordingAppender {
 	type: 'recording';
-}
-
-export interface SmtpAppender {
-	type: 'smtp';
-	// (if not present will use transport field)
-	SMTP?: {
-		// (defaults to localhost)
-		host?: string;
-		// (defaults to 25)
-		port?: number;
-		// authentication details
-		auth?: {
-			user: string;
-			pass: string;
-		};
-	};
-	// (if not present will use SMTP) - see nodemailer docs for transport options
-	transport?: {
-		// (defaults to smtp) - the nodemailer transport plugin to use
-		plugin?: string;
-		// configuration for the transport plugin
-		options?: any;
-	} | string;
-	// send logs as email attachment
-	attachment?: {
-		// (defaults to false)
-		enable?: boolean;
-		// (defaults to See logs as attachment) - message to put in body of email
-		message: string;
-		// (defaults to default.log) - attachment filename
-		filename: string;
-	};
-	// integer(defaults to 0) - batch emails and send in one email every sendInterval seconds, if 0 then every log message will send an email.
-	sendInterval?: number;
-	// (defaults to 5) - time in seconds to wait for emails to be sent during shutdown
-	shutdownTimeout?: number;
-	// email addresses to send the logs to
-	recipients: string;
-	// (defaults to message from first log event in batch) - subject for email
-	subject?: string;
-	// who the logs should be sent as
-	sender?: string;
-	// (defaults to false) - send the email as HTML instead of plain text
-	html?: boolean;
-	// (defaults to basicLayout)
-	layout?: Layout;
 }
 
 export interface StandardErrorAppender {
@@ -390,20 +226,10 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| GELFAppender
-	| HipchatAppender
-	| LogFacesHTTPAppender
-	| LogFacesUDPAppender
-	| LogglyAppender
 	| LogLevelFilterAppender
-	| LogstashUDPAppender
-	| MailgunAppender
 	| MultiFileAppender
 	| MultiprocessAppender
-	| RedisAppender
-	| SlackAppender
 	| RecordingAppender
-	| SmtpAppender
 	| StandardErrorAppender
 	| StandardOutputAppender
 	| CustomAppender;

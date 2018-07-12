@@ -1,7 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 const consoleAppender = require('../../lib/appenders/console');
 
 test('log4js console appender', (batch) => {

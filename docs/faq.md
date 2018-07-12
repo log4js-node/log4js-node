@@ -35,23 +35,9 @@ const logger = log4js.getLogger('console');
 console.log = logger.info.bind(logger); // do the same for others - console.debug, etc.
 ```
 
-## I'm using PM2, but I'm not getting any logs!
-To get log4js working with PM2, you'll need to install the [pm2-intercom](https://www.npmjs.com/package/pm2-intercom) module.
-```bash
-pm2 install pm2-intercom
-```
-Then add the value `pm2: true` to your log4js configuration. If you're also using `node-config`, then you'll probably have renamed your `NODE_APP_INSTANCE` environment variable. If so, you'll also need to add `pm2InstanceVar: '<NEW_APP_INSTANCE_ID>'` where `<NEW_APP_INSTANCE_ID>` should be replaced with the new name you gave the instance environment variable.
-```javascript
-log4js.configure({
-  appenders: { out: { type: 'stdout'}},
-  categories: { default: { appenders: ['out'], level: 'info'}},
-  pm2: true,
-  pm2InstanceVar: 'INSTANCE_ID'
-});
-```
+## I'm using pm2/passenger/some other third thing and I'm not getting any logs!
 
-## FFS, why did you mess with the PM2 stuff? It was working fine for me!
-You can turn off the clustering support, with the `disableClustering: true` option in your config. This will make log4js behave more like it did before version 2.x. Each worker process will log its own output, instead of sending it all to the master process. Be careful if you're logging to files though, this could result in weird behaviour.
+Take a look at the [clustering](clustering.md) docs, they should help you out.
 
 ## NPM complains about nodemailer being deprecated, what should I do?
 

@@ -3,7 +3,7 @@
 const test = require('tap').test;
 const fs = require('fs');
 const path = require('path');
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
 const zlib = require('zlib');
 const EOL = require('os').EOL || '\n';

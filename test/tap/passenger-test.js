@@ -1,5 +1,5 @@
 const test = require('tap').test;
-const sandbox = require('sandboxed-module');
+const sandbox = require('@log4js-node/sandboxed-module');
 
 // passenger provides a non-functional cluster module,
 // but it does not implement the event emitter functions
