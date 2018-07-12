@@ -14,15 +14,22 @@ Out of the box it supports the following features:
 
 * coloured console logging to stdout or stderr
 * file appender, with configurable log rolling based on file size or date
-* SMTP appender
-* GELF appender
-* Loggly appender
-* Logstash (UDP and HTTP) appender
-* logFaces (UDP and HTTP) appender
-* multiprocess appender (useful when you've got multiple servers)
 * a logger for connect/express servers
 * configurable log message layout/patterns
 * different log levels for different log categories (make some parts of your app log as DEBUG, others only ERRORS, etc.)
+
+Optional appenders are available:
+* [SMTP](https://github.com/log4js-node/smtp)
+* [GELF](https://github.com/log4js-node/gelf)
+* [Loggly](https://github.com/log4js-node/loggly)
+* Logstash ([UDP](https://github.com/log4js-node/logstashUDP) and [HTTP](https://github.com/log4js-node/logstashHTTP))
+* logFaces ([UDP](https://github.com/log4js-node/logFaces-UDP) and [HTTP](https://github.com/log4js-node/logFaces-HTTP))
+* [RabbitMQ](https://github.com/log4js-node/rabbitmq)
+* [Redis](https://github.com/log4js-node/redis)
+* [Hipchat](https://github.com/log4js-node/hipchat)
+* [Slack](https://github.com/log4js-node/slack)
+* [mailgun](https://github.com/log4js-node/mailgun)
+
 
 ## Getting help
 Having problems? Jump on the [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtMjk5OTcxODMwNDA1LTk5ZTA0YjcwNWRiYmFkNGQyZTkyZTYzYTFiYTE2NTRhNzFmNmY3OTdjZTY3MWM3M2RlMGQxN2ZlMmY4ZDFmZWY) channel, or create an issue. If you want to help out with the development, the slack channel is a good place to go as well.
