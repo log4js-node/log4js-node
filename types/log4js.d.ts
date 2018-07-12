@@ -168,16 +168,6 @@ export interface DateFileAppender {
 	daysToKeep?: number;
 }
 
-export interface LogFacesUDPAppender {
-	type: 'logFaces-UDP';
-	// (defaults to ‘127.0.0.1’)- hostname or IP address of the logFaces receiver
-	remoteHost?: string;
-	// (defaults to 55201) - port the logFaces receiver is listening on
-	port?: number;
-	// (defaults to empty string) - used to identify your application’s logs
-	application?: string;
-}
-
 export interface LogLevelFilterAppender {
 	type: 'logLevelFilter';
 	// the name of an appender, defined in the same configuration, that you want to filter
@@ -236,7 +226,6 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| LogFacesUDPAppender
 	| LogLevelFilterAppender
 	| MultiFileAppender
 	| MultiprocessAppender
