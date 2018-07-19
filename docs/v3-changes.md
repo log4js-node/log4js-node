@@ -15,6 +15,7 @@ The following appenders have been removed from the core, and moved to their own 
 * [redis](https://github.com/log4js-node/redis)
 * [slack](https://github.com/log4js-node/slack)
 * [smtp](https://github.com/log4js-node/smtp)
+
 If you were using them, you'll need to `npm i @log4js-node/<appender>`.
 
 Removing the optional appenders removed all the security vulnerabilities.
@@ -22,4 +23,5 @@ Removing the optional appenders removed all the security vulnerabilities.
 The TCP [client](tcp.md)/[server](tcp-server.md) was introduced to replace the multiprocess appender.
 
 [Issues resolved in 3.0.0](https://github.com/log4js-node/log4js-node/milestone/31?closed=1)
+
 [PR for the code changes](https://github.com/log4js-node/log4js-node/pull/754)
