@@ -8,6 +8,8 @@ framework to work with [node](http://nodejs.org). I started out just stripping o
 
 The full documentation is available [here](https://log4js-node.github.io/log4js-node/).
 
+[Changes in version 3.x](https://log4js-node.github.io/log4js-node/v3-changes.md)
+
 There have been a few changes between log4js 1.x and 2.x (and 0.x too). You should probably read this [migration guide](https://log4js-node.github.io/log4js-node/migration-guide.html) if things aren't working.
 
 Out of the box it supports the following features:
