@@ -28,13 +28,23 @@ app.listen(5000);
 
 The log4js.connectLogger supports the passing of an options object that can be used to set the following:
 - log level
-- log format string (the same as the connect/express logger)
+- log format string or function (the same as the connect/express logger)
 - nolog expressions (represented as a string, regexp, or array)
 
-The options object that is passed to log4js.connectLogger supports a format string the same as the connect/express logger. For example:
+For example:
 
 ```javascript
 app.use(log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' }));
+```
+
+or:
+
+```javascript
+app.use(log4js.connectLogger(logger, {
+  level: 'auto',
+  // include the Express request ID in the logs
+  format: (req, res, format) => format(`:remote-addr - ${req.id} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
+}));
 ```
 
 Added automatic level detection to connect-logger, depends on http status response, compatible with express 3.x and 4.x.
