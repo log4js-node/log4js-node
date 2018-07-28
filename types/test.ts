@@ -120,3 +120,12 @@ logger7.debug("Some debug messages");
 
 const levels: log4js.Levels = log4js.levels;
 const level: log4js.Level = levels.getLevel('info');
+
+log4js.connectLogger(logger1, {
+  format: ':x, :y',
+  level: 'info'
+});
+
+log4js.connectLogger(logger2, {
+  format: (req, _res, format) => format(`:remote-addr - ${req.id} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
+});

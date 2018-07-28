@@ -1,11 +1,13 @@
 // Type definitions for log4js
 
+type Format = string | ((req: any, res: any, formatter: ((str: string) => string)) => string);
+
 export interface Log4js {
 	getLogger(category?: string): Logger;
 	configure(filename: string): Log4js;
 	configure(config: Configuration): Log4js;
 	addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
-	connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
+	connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; }): any;	// express.Handler;
 	levels: Levels;
 	shutdown(cb?: (error: Error) => void): void | null;
 }
@@ -17,7 +19,7 @@ export function configure(config: Configuration): Log4js;
 
 export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
 
-export function connectLogger(logger: Logger, options: { format?: string; level?: string; nolog?: any; }): any;	// express.Handler;
+export function connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; }): any;	// express.Handler;
 
 export const levels: Levels;
 
