@@ -42,7 +42,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "circular-json": "^0.5.4",
+    "circular-json": "^0.5.5",
     "date-format": "^1.2.0",
     "debug": "^3.1.0",
     "streamroller": "0.7.0"
