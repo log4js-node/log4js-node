@@ -337,5 +337,13 @@ test('log4js configuration validation', (batch) => {
     t.end();
   });
 
+  batch.test('should not give error if level object is used instead of string', (t) => {
+    t.doesNotThrow(() => log4js.configure({
+      appenders: { thing: { type: 'stdout' } },
+      categories: { default: { appenders: ['thing'], level: log4js.levels.ERROR } }
+    }));
+    t.end();
+  });
+
   batch.end();
 });
