@@ -45,6 +45,7 @@
     "circular-json": "^0.5.5",
     "date-format": "^1.2.0",
     "debug": "^3.1.0",
+    "deep-freeze": "0.0.1",
     "streamroller": "0.7.0"
   },
   "devDependencies": {

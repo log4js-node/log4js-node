@@ -17,7 +17,7 @@ If that fails, an error will be raised.
 ## Appender Modules
 
 An appender module should export a single function called `configure`. The function should accept the following arguments:
-* `config` - `object` - the appender's configuration object
+* `config` - `object` - the appender's configuration object, note that this will be immutable (Object.freeze)
 * `layouts` - `module` - gives access to the [layouts](layouts.md) module, which most appenders will need
   * `layout` - `function(type, config)` - this is the main function that appenders will use to find a layout
 * `findAppender` - `function(name)` - if your appender is a wrapper around another appender (like the [logLevelFilter](logLevelFilter.md) for example), this function can be used to find another appender by name
