@@ -45,18 +45,20 @@
     "circular-json": "^0.5.5",
     "date-format": "^1.2.0",
     "debug": "^3.1.0",
+    "rfdc": "^1.1.2",
     "streamroller": "0.7.0"
   },
   "devDependencies": {
+    "@log4js-node/sandboxed-module": "^2.1.0",
     "codecov": "^3.0.2",
     "conventional-changelog": "^1.1.24",
+    "deep-freeze": "0.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-import": "^2.11.0",
     "husky": "^0.14.3",
     "nyc": "^11.7.3",
-    "@log4js-node/sandboxed-module": "^2.1.0",
     "tap": "^11.1.5",
     "typescript": "^2.8.3",
     "validate-commit-msg": "^2.14.0"
