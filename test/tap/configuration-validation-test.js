@@ -7,6 +7,7 @@ const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
 const configuration = require('../../lib/configuration');
 const debug = require('debug')('log4js:test.configuration-validation');
+const deepFreeze = require('deep-freeze');
 
 const testAppender = (label, result) => ({
   configure: function (config, layouts, findAppender) {
@@ -342,6 +343,18 @@ test('log4js configuration validation', (batch) => {
       appenders: { thing: { type: 'stdout' } },
       categories: { default: { appenders: ['thing'], level: log4js.levels.ERROR } }
     }));
+    t.end();
+  });
+
+  batch.test('should not throw error if configure object is freezed', (t) => {
+    t.doesNotThrow(() => log4js.configure(deepFreeze({
+      appenders: {
+        dateFile: {
+          type: 'dateFile', filename: 'test/tap/freeze-date-file-test', alwaysIncludePattern: false
+        }
+      },
+      categories: { default: { appenders: ['dateFile'], level: log4js.levels.ERROR } }
+    })));
     t.end();
   });
 
