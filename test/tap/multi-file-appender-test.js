@@ -162,5 +162,24 @@ test('multiFile appender', (batch) => {
     });
   });
 
+  batch.test('should shutdown safely even if it is not used', (t) => {
+    log4js.configure({
+      appenders: {
+        out: { type: 'stdout' },
+        test: {
+          type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log'
+        }
+      },
+      categories: {
+        default: { appenders: ['out'], level: 'info' },
+        test: { appenders: ['test'], level: 'debug' }
+      }
+    });
+    log4js.shutdown(() => {
+      t.ok('callback is called');
+      t.end();
+    });
+  });
+
   batch.end();
 });
