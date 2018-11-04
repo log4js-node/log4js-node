@@ -1,6 +1,7 @@
 'use strict';
 
 const test = require('tap').test;
+const flatted = require('flatted');
 const sandbox = require('@log4js-node/sandboxed-module');
 const recording = require('../../lib/appenders/recording');
 
@@ -94,23 +95,23 @@ test('Multiprocess Appender', (batch) => {
     });
 
     t.test('should buffer messages written before socket is connected', (assert) => {
-      assert.include(net.data[0], JSON.stringify('before connect'));
+      assert.include(net.data[0], 'before connect');
       assert.end();
     });
 
-    t.test('should write log messages to socket as json strings with a terminator string', (assert) => {
-      assert.include(net.data[0], JSON.stringify('before connect'));
+    t.test('should write log messages to socket as flatted strings with a terminator string', (assert) => {
+      assert.include(net.data[0], 'before connect');
       assert.equal(net.data[1], '__LOG4JS__');
-      assert.include(net.data[2], JSON.stringify('after connect'));
+      assert.include(net.data[2], 'after connect');
       assert.equal(net.data[3], '__LOG4JS__');
       assert.equal(net.encoding, 'utf8');
       assert.end();
     });
 
     t.test('should attempt to re-open the socket on error', (assert) => {
-      assert.include(net.data[4], JSON.stringify('after error, before connect'));
+      assert.include(net.data[4], 'after error, before connect');
       assert.equal(net.data[5], '__LOG4JS__');
-      assert.include(net.data[6], JSON.stringify('after error, after connect'));
+      assert.include(net.data[6], 'after error, after connect');
       assert.equal(net.data[7], '__LOG4JS__');
       assert.equal(net.createConnectionCalled, 2);
       assert.end();
@@ -118,10 +119,10 @@ test('Multiprocess Appender', (batch) => {
 
     t.test('should serialize an Error correctly', (assert) => {
       assert.ok(
-        JSON.parse(net.data[8]).data[0].stack,
+        flatted.parse(net.data[8]).data[0].stack,
         `Expected:\n\n${net.data[8]}\n\n to have a 'data[0].stack' property`
       );
-      const actual = JSON.parse(net.data[8]).data[0].stack;
+      const actual = flatted.parse(net.data[8]).data[0].stack;
       assert.match(actual, /^Error: Error test/);
       assert.end();
     });
@@ -160,11 +161,11 @@ test('Multiprocess Appender', (batch) => {
 
     t.test('should attempt to re-open the socket', (assert) => {
       // skipping the __LOG4JS__ separators
-      assert.include(net.data[0], JSON.stringify('before connect'));
-      assert.include(net.data[2], JSON.stringify('after connect'));
-      assert.include(net.data[4], JSON.stringify('after timeout, before close'));
-      assert.include(net.data[6], JSON.stringify('after close, before connect'));
-      assert.include(net.data[8], JSON.stringify('after close, after connect'));
+      assert.include(net.data[0], 'before connect');
+      assert.include(net.data[2], 'after connect');
+      assert.include(net.data[4], 'after timeout, before close');
+      assert.include(net.data[6], 'after close, before connect');
+      assert.include(net.data[8], 'after close, after connect');
       assert.equal(net.createConnectionCalled, 2);
       assert.end();
     });
@@ -245,19 +246,19 @@ test('Multiprocess Appender', (batch) => {
     });
 
     t.test('when a client connects', (assert) => {
-      const logString = `${JSON.stringify({
+      const logString = `${flatted.stringify({
         level: { level: 10000, levelStr: 'DEBUG' },
         data: ['some debug']
       })}__LOG4JS__`;
 
-      net.cbs.data(`${JSON.stringify({
+      net.cbs.data(`${flatted.stringify({
         level: { level: 40000, levelStr: 'ERROR' },
         data: ['an error message']
       })}__LOG4JS__`);
       net.cbs.data(logString.substring(0, 10));
       net.cbs.data(logString.substring(10));
       net.cbs.data(logString + logString + logString);
-      net.cbs.end(`${JSON.stringify({
+      net.cbs.end(`${flatted.stringify({
         level: { level: 50000, levelStr: 'FATAL' },
         data: ["that's all folks"]
       })}__LOG4JS__`);

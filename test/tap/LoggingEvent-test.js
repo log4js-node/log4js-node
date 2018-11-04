@@ -1,13 +1,14 @@
+const flatted = require('flatted');
 const test = require('tap').test;
 const LoggingEvent = require('../../lib/LoggingEvent');
 const levels = require('../../lib/levels');
 
 test('LoggingEvent', (batch) => {
-  batch.test('should serialise to JSON', (t) => {
+  batch.test('should serialise to flatted', (t) => {
     const event = new LoggingEvent('cheese', levels.DEBUG, ['log message'], { user: 'bob' });
     // set the event date to a known value
     event.startTime = new Date(Date.UTC(2018, 1, 4, 18, 30, 23, 10));
-    const rehydratedEvent = JSON.parse(event.serialise());
+    const rehydratedEvent = flatted.parse(event.serialise());
     t.equal(rehydratedEvent.startTime, '2018-02-04T18:30:23.010Z');
     t.equal(rehydratedEvent.categoryName, 'cheese');
     t.equal(rehydratedEvent.level.levelStr, 'DEBUG');
@@ -17,16 +18,16 @@ test('LoggingEvent', (batch) => {
     t.end();
   });
 
-  batch.test('should deserialise from JSON', (t) => {
-    const dehydratedEvent = `{
-      "startTime": "2018-02-04T10:25:23.010Z",
-      "categoryName": "biscuits",
-      "level": {
-        "levelStr": "INFO"
+  batch.test('should deserialise from flatted', (t) => {
+    const dehydratedEvent = flatted.stringify({
+      startTime: '2018-02-04T10:25:23.010Z',
+      categoryName: 'biscuits',
+      level: {
+        levelStr: 'INFO'
       },
-      "data": [ "some log message", { "x": 1 } ],
-      "context": { "thing": "otherThing" }
-    }`;
+      data: ['some log message', { x: 1 }],
+      context: { thing: 'otherThing' }
+    });
     const event = LoggingEvent.deserialise(dehydratedEvent);
     t.type(event, LoggingEvent);
     t.same(event.startTime, new Date(Date.UTC(2018, 1, 4, 10, 25, 23, 10)));
