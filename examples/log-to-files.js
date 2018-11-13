@@ -7,7 +7,7 @@ log4js.configure(
         type: 'file',
         filename: 'important-things.log',
         maxLogSize: 10 * 1024 * 1024, // = 10Mb
-        numBackups: 5, // keep five backup files
+        backups: 5, // keep five backup files
         compress: true, // compress the backups
         encoding: 'utf-8',
         mode: 0o0640,
