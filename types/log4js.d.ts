@@ -94,6 +94,21 @@ export interface CategoryFilterAppender {
 }
 
 /**
+ * No Log Filter
+ *
+ * @see https://log4js-node.github.io/log4js-node/noLogFilter.html
+ */
+export interface NoLogFilterAppender {
+  type: "noLogFilter";
+  // the regular expression (or the regular expressions if you provide an array of values)
+  // will be used for evaluating the events to pass to the appender. 
+  // The events, which will match the regular expression, will be excluded and so not logged. 
+  exclude: string | string[];
+  // the name of an appender, defined in the same configuration, that you want to filter.
+	appender: string;
+}
+
+/**
  * Console Appender
  *
  * @see https://log4js-node.github.io/log4js-node/console.html
@@ -228,7 +243,8 @@ export type Appender = CategoryFilterAppender
 	| FileAppender
 	| SyncfileAppender
 	| DateFileAppender
-	| LogLevelFilterAppender
+  | LogLevelFilterAppender
+  | NoLogFilterAppender
 	| MultiFileAppender
 	| MultiprocessAppender
 	| RecordingAppender
