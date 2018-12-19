@@ -30,6 +30,7 @@ The log4js.connectLogger supports the passing of an options object that can be u
 - log level
 - log format string or function (the same as the connect/express logger)
 - nolog expressions (represented as a string, regexp, or array)
+- status code rulesets
 
 For example:
 
@@ -55,6 +56,15 @@ Added automatic level detection to connect-logger, depends on http status respon
 
 ```javascript
 app.use(log4js.connectLogger(logger, { level: 'auto' }));
+```
+
+The levels of returned status codes can be configured via status code rulesets.
+
+```javascript
+app.use(log4js.connectLogger(logger, { level: 'auto', statusRules: [
+  { from: 200, to: 299, level: 'debug' },
+  { codes: [303, 304],  level: 'info' }
+]}));
 ```
 
 The log4js.connectLogger also supports a nolog option where you can specify a string, regexp, or array to omit certain log messages. Example of 1.2 below.

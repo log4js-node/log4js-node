@@ -158,6 +158,47 @@ test('log4js connect logger', (batch) => {
     t.end();
   });
 
+  batch.test('logger with status code rules applied', (t) => {
+    const ml = new MockLogger();
+    ml.level = levels.DEBUG;
+    const clr = [
+      { codes: [201, 304], level: levels.DEBUG.toString() },
+      { from: 200, to: 299, level: levels.DEBUG.toString() },
+      { from: 300, to: 399, level: levels.INFO.toString() }
+    ];
+    const cl = clm(ml, { level: 'auto', format: ':method :url', statusRules: clr });
+    request(cl, 'GET', 'http://meh', 200);
+    request(cl, 'GET', 'http://meh', 201);
+    request(cl, 'GET', 'http://meh', 302);
+    request(cl, 'GET', 'http://meh', 304);
+    request(cl, 'GET', 'http://meh', 404);
+    request(cl, 'GET', 'http://meh', 500);
+
+    const messages = ml.messages;
+    t.test('should use DEBUG for 2xx', (assert) => {
+      assert.ok(levels.DEBUG.isEqualTo(messages[0].level));
+      assert.ok(levels.DEBUG.isEqualTo(messages[1].level));
+      assert.end();
+    });
+
+    t.test('should use WARN for 3xx, DEBUG for 304', (assert) => {
+      assert.ok(levels.INFO.isEqualTo(messages[2].level));
+      assert.ok(levels.DEBUG.isEqualTo(messages[3].level));
+      assert.end();
+    });
+
+    t.test('should use ERROR for 4xx', (assert) => {
+      assert.ok(levels.ERROR.isEqualTo(messages[4].level));
+      assert.end();
+    });
+
+    t.test('should use ERROR for 5xx', (assert) => {
+      assert.ok(levels.ERROR.isEqualTo(messages[5].level));
+      assert.end();
+    });
+    t.end();
+  });
+
   batch.test('format using a function', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
