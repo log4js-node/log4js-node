@@ -104,6 +104,7 @@ test('log4js', (batch) => {
     const log4js = sandbox.require(
       '../../lib/log4js',
       {
+        ignoreMissing: true,
         requires: {
           fs: {
             statSync: function () {
@@ -125,7 +126,7 @@ test('log4js', (batch) => {
               return ['file'];
             }
           },
-          './appenders/file': {
+          './file': {
             configure: function (configuration) {
               appenderConfig = configuration;
               return function () {
@@ -145,6 +146,7 @@ test('log4js', (batch) => {
   batch.test('with configure not called', (t) => {
     const fakeStdoutAppender = {
       configure: function () {
+        this.required = true;
         return function (evt) {
           fakeStdoutAppender.evt = evt;
         };
@@ -162,6 +164,7 @@ test('log4js', (batch) => {
 
     const logger = log4js.getLogger('some-logger');
     logger.debug('This is a test');
+    t.ok(fakeStdoutAppender.required, 'stdout should be required');
     t.notOk(fakeStdoutAppender.evt, 'should not log anything');
     t.end();
   });

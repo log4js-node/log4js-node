@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const log4js = require('../../lib/log4js');
 const EOL = require('os').EOL || '\n';
+const format = require('date-format');
 
 function removeFile(filename) {
   try {
@@ -45,7 +46,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         date: {
           type: 'dateFile',
           filename: 'test/tap/date-file-test.log',
-          pattern: '-from-MM-dd',
+          pattern: '-yyyy-MM-dd',
           layout: { type: 'messagePassThrough' }
         }
       },
@@ -67,15 +68,13 @@ test('../../lib/appenders/dateFile', (batch) => {
   });
 
   batch.test('configure with options.alwaysIncludePattern', (t) => {
-    const format = require('date-format');
-
     const options = {
       appenders: {
         date: {
           category: 'tests',
           type: 'dateFile',
           filename: 'test/tap/date-file-test',
-          pattern: '-from-MM-dd.log',
+          pattern: '-yyyy-MM-dd.log',
           alwaysIncludePattern: true,
           layout: {
             type: 'messagePassThrough'
