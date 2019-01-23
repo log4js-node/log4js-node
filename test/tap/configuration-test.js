@@ -2,6 +2,7 @@
 
 const test = require('tap').test;
 const sandbox = require('@log4js-node/sandboxed-module');
+const realFS = require('fs');
 
 const modulePath = 'some/path/to/mylog4js.json';
 const pathsChecked = [];
@@ -15,6 +16,9 @@ test('log4js configure', (batch) => {
     fileRead = 0;
 
     fakeFS = {
+      ReadStream: realFS.ReadStream, // need to define these, because graceful-fs uses them
+      WriteStream: realFS.WriteStream,
+      closeSync: () => {},
       config: {
         appenders: {
           console: {
