@@ -226,6 +226,18 @@ test('log4js configuration validation', (batch) => {
     t.end();
   });
 
+  batch.test('should not throw error if configure object is freezed', (t) => {
+    t.doesNotThrow(() => log4js.configure(deepFreeze({
+      appenders: {
+        dateFile: {
+          type: 'dateFile', filename: 'test/tap/freeze-date-file-test', alwaysIncludePattern: false
+        }
+      },
+      categories: { default: { appenders: ['dateFile'], level: log4js.levels.ERROR } }
+    })));
+    t.end();
+  });
+
   batch.test('should load appenders from core first', (t) => {
     const result = {};
     const sandboxedLog4js = sandbox.require(
@@ -343,18 +355,6 @@ test('log4js configuration validation', (batch) => {
       appenders: { thing: { type: 'stdout' } },
       categories: { default: { appenders: ['thing'], level: log4js.levels.ERROR } }
     }));
-    t.end();
-  });
-
-  batch.test('should not throw error if configure object is freezed', (t) => {
-    t.doesNotThrow(() => log4js.configure(deepFreeze({
-      appenders: {
-        dateFile: {
-          type: 'dateFile', filename: 'test/tap/freeze-date-file-test', alwaysIncludePattern: false
-        }
-      },
-      categories: { default: { appenders: ['dateFile'], level: log4js.levels.ERROR } }
-    })));
     t.end();
   });
 

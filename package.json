@@ -43,13 +43,13 @@
   },
   "dependencies": {
     "circular-json": "^0.5.5",
-    "date-format": "^1.2.0",
+    "date-format": "^2.0.0",
     "debug": "^3.1.0",
     "rfdc": "^1.1.2",
-    "streamroller": "^0.8.5"
+    "streamroller": "^1.0.1"
   },
   "devDependencies": {
-    "@log4js-node/sandboxed-module": "^2.1.0",
+    "@log4js-node/sandboxed-module": "^2.2.0",
     "codecov": "^3.0.2",
     "conventional-changelog": "^1.1.24",
     "deep-freeze": "0.0.1",

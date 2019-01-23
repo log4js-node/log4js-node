@@ -203,7 +203,7 @@ test('log4js layouts', (batch) => {
 
     const event = {
       data: ['this is a test'],
-      startTime: new Date('2010-12-05T14:18:30.045Z'), // new Date(2010, 11, 5, 14, 18, 30, 45),
+      startTime: new Date('2010-12-05 14:18:30.045'),
       categoryName: 'multiple.levels.of.tests',
       level: {
         toString: function () {
@@ -215,11 +215,6 @@ test('log4js layouts', (batch) => {
     };
 
     const layout = require('../../lib/layouts').patternLayout;
-
-    // override getTimezoneOffset
-    event.startTime.getTimezoneOffset = function () {
-      return 0;
-    };
 
     t.test('should default to "time logLevel loggerName - message"', (assert) => {
       testPattern(
@@ -280,7 +275,6 @@ test('log4js layouts', (batch) => {
     });
 
     t.test('%d should allow for format specification', (assert) => {
-      testPattern(assert, layout, event, tokens, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T14:18:30.045-0000');
       testPattern(assert, layout, event, tokens, '%d{ISO8601}', '2010-12-05T14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{ABSOLUTE}', '14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{DATE}', '05 12 2010 14:18:30.045');

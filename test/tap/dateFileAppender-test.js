@@ -74,7 +74,7 @@ test('../../lib/appenders/dateFile', (batch) => {
           category: 'tests',
           type: 'dateFile',
           filename: 'test/tap/date-file-test',
-          pattern: '-yyyy-MM-dd.log',
+          pattern: 'yyyy-MM-dd.log',
           alwaysIncludePattern: true,
           layout: {
             type: 'messagePassThrough'
@@ -85,8 +85,9 @@ test('../../lib/appenders/dateFile', (batch) => {
     };
 
     const thisTime = format.asString(options.appenders.date.pattern, new Date());
+    const existingFile = path.join(process.cwd(), 'test/tap/', `date-file-test.${thisTime}`);
     fs.writeFileSync(
-      path.join(__dirname, `date-file-test${thisTime}`),
+      existingFile,
       `this is existing data${EOL}`,
       'utf8'
     );
@@ -94,13 +95,13 @@ test('../../lib/appenders/dateFile', (batch) => {
     const logger = log4js.getLogger('tests');
     logger.warn('this should be written to the file with the appended date');
 
-    t.teardown(() => { removeFile(`date-file-test${thisTime}`); });
+    t.teardown(() => { removeFile(existingFile); });
 
     // wait for filesystem to catch up
     log4js.shutdown(() => {
-      fs.readFile(path.join(__dirname, `date-file-test${thisTime}`), 'utf8', (err, contents) => {
-        t.include(contents, 'this should be written to the file with the appended date');
+      fs.readFile(existingFile, 'utf8', (err, contents) => {
         t.include(contents, 'this is existing data', 'should not overwrite the file on open (issue #132)');
+        t.include(contents, 'this should be written to the file with the appended date');
         t.end();
       });
     });
