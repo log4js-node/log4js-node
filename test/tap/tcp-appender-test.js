@@ -1,6 +1,7 @@
 const test = require('tap').test;
 const net = require('net');
 const log4js = require('../../lib/log4js');
+const LoggingEvent = require('../../lib/LoggingEvent');
 
 const messages = [];
 const server = net.createServer((socket) => {
@@ -9,7 +10,7 @@ const server = net.createServer((socket) => {
     data
       .split('__LOG4JS__')
       .filter(s => s.length)
-      .forEach((s) => { messages.push(JSON.parse(s)); });
+      .forEach((s) => { messages.push(LoggingEvent.deserialise(s)); });
   });
 });
 
