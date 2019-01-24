@@ -20,6 +20,9 @@ Any other configuration parameters will be passed to the underlying [streamrolle
 
 The `pattern` is used to determine when the current log file should be renamed and a new log file created. For example, with a filename of 'cheese.log', and the default pattern of `.yyyy-MM-dd` - on startup this will result in a file called `cheese.log` being created and written to until the next write after midnight. When this happens, `cheese.log` will be renamed to `cheese.log.2017-04-30` and a new `cheese.log` file created. The appender uses the [date-format](https://github.com/nomiddlename/date-format) library to parse the `pattern`, and any of the valid formats can be used. Also note that there is no timer controlling the log rolling - changes in the pattern are determined on every log write. If no writes occur, then no log rolling will happen. If your application logs infrequently this could result in no log file being written for a particular time period.
 
+Note that, from version 4.x of log4js onwards, the file appender can take any of the options for the [file appender](file.md) as well. So you could roll files by both date and size.
+
+
 ## Example (default daily log rolling)
 
 ```javascript
