@@ -265,12 +265,18 @@ test('../../lib/logger', (batch) => {
       levels: {
         info: { value: 1234, colour: 'blue' }
       },
-      appenders: { stdout: { type: 'stdout' } },
-      categories: { default: { appenders: ['stdout'], level: 'trace' } }
+      appenders: { recorder: { type: 'recording' } },
+      categories: { default: { appenders: ['recorder'], level: 'all' } }
     });
 
     t.equal(log4js.levels.INFO.level, 1234, 'should override the existing log level');
     t.equal(log4js.levels.INFO.colour, 'blue', 'should override the existing log level');
+
+    const logger = log4js.getLogger();
+    logger.info('test message');
+
+    const events = recording.replay();
+    t.equal(events[0].level.level, 1234, 'should override the existing log level');
     t.end();
   });
   batch.end();
