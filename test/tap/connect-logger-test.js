@@ -19,9 +19,10 @@ class MockLogger {
   }
 }
 
-function MockRequest(remoteAddr, method, originalUrl, headers) {
+function MockRequest(remoteAddr, method, originalUrl, headers, url) {
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
+  this.url = url;
   this.method = method;
   this.httpVersionMajor = '5';
   this.httpVersionMinor = '0';
@@ -48,11 +49,15 @@ class MockResponse extends EE {
   }
 }
 
-function request(cl, method, url, code, reqHeaders, resHeaders) {
-  const req = new MockRequest('my.remote.addr', method, url, reqHeaders);
+function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url) {
+  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url);
   const res = new MockResponse();
-  cl(req, res, () => {
-  });
+  if (next) {
+    next = next.bind(null, req, res, () => {});
+  } else {
+    next = () => {};
+  }
+  cl(req, res, next);
   res.writeHead(code, resHeaders);
   res.end('chunk', 'encoding');
 }
@@ -100,14 +105,30 @@ test('log4js connect logger', (batch) => {
     t.test('log events with non-default level and custom format', (assert) => {
       const ml = new MockLogger();
       ml.level = levels.INFO;
-      const cl = clm(ml, { level: levels.INFO, format: ':method :url' });
+      const cl = clm(ml, { level: levels.WARN, format: ':method :url' });
       request(cl, 'GET', 'http://url', 200);
 
       const messages = ml.messages;
       assert.type(messages, Array);
       assert.equal(messages.length, 1);
-      assert.ok(levels.INFO.isEqualTo(messages[0].level));
+      assert.ok(levels.WARN.isEqualTo(messages[0].level));
       assert.equal(messages[0].message, 'GET http://url');
+      assert.end();
+    });
+
+    t.test('adding multiple loggers should only log once', (assert) => {
+      const ml = new MockLogger();
+      ml.level = levels.INFO;
+      const cl = clm(ml, { level: levels.WARN, format: ':method :url' });
+      const nextLogger = clm(ml, { level: levels.INFO, format: ':method' });
+      request(cl, 'GET', 'http://url', 200, null, null, nextLogger);
+
+      const messages = ml.messages;
+      assert.type(messages, Array);
+      assert.equal(messages.length, 1);
+      assert.ok(levels.WARN.isEqualTo(messages[0].level));
+      assert.equal(messages[0].message, 'GET http://url');
+
       assert.end();
     });
     t.end();
@@ -209,6 +230,26 @@ test('log4js connect logger', (batch) => {
     t.end();
   });
 
+  batch.test('format using a function that also uses tokens', (t) => {
+    const ml = new MockLogger();
+    ml.level = levels.INFO;
+    const cl = clm(ml, (req, res, tokenReplacer) => `${req.method} ${tokenReplacer(':status')}`);
+    request(cl, 'GET', 'http://blah', 200);
+
+    t.equal(ml.messages[0].message, 'GET 200');
+    t.end();
+  });
+
+  batch.test('format using a function, but do not log anything if the function returns nothing', (t) => {
+    const ml = new MockLogger();
+    ml.level = levels.INFO;
+    const cl = clm(ml, () => null);
+    request(cl, 'GET', 'http://blah', 200);
+
+    t.equal(ml.messages.length, 0);
+    t.end();
+  });
+
   batch.test('format that includes request headers', (t) => {
     const ml = new MockLogger();
     ml.level = levels.INFO;
@@ -235,6 +276,15 @@ test('log4js connect logger', (batch) => {
     );
 
     t.equal(ml.messages[0].message, 'application/cheese');
+    t.end();
+  });
+
+  batch.test('url token should check originalUrl and url', (t) => {
+    const ml = new MockLogger();
+    const cl = clm(ml, ':url');
+    request(cl, 'GET', null, 200, null, null, null, 'http://cheese');
+
+    t.equal(ml.messages[0].message, 'http://cheese');
     t.end();
   });
 

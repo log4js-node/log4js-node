@@ -221,5 +221,52 @@ test('log4js connect logger', (batch) => {
     t.end();
   });
 
+  batch.test('nolog Array<RegExp>', (t) => {
+    const ml = new MockLogger();
+    const cl = clm(ml, { nolog: [/\.gif/, /\.jpe?g/] });
+
+    t.beforeEach((done) => { ml.messages = []; done(); });
+
+    t.test('check unmatch url request (png)', (assert) => {
+      const messages = ml.messages;
+      const req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.png'); // not gif
+      const res = new MockResponse(200);
+      cl(req, res, () => { });
+      res.end('chunk', 'encoding');
+
+      assert.equal(messages.length, 1);
+      assert.ok(levels.INFO.isEqualTo(messages[0].level));
+      assert.include(messages[0].message, 'GET');
+      assert.include(messages[0].message, 'http://url');
+      assert.include(messages[0].message, 'my.remote.addr');
+      assert.include(messages[0].message, '200');
+      assert.end();
+    });
+
+    t.test('check match url request (gif)', (assert) => {
+      const messages = ml.messages;
+      const req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.gif'); // gif
+      const res = new MockResponse(200);
+      cl(req, res, () => {});
+      res.end('chunk', 'encoding');
+
+      assert.equal(messages.length, 0);
+      assert.end();
+    });
+
+    t.test('check match url request (jpeg)', (assert) => {
+      const messages = ml.messages;
+      const req = new MockRequest('my.remote.addr', 'GET', 'http://url/hoge.jpeg'); // gif
+      const res = new MockResponse(200);
+      cl(req, res, () => {});
+      res.end('chunk', 'encoding');
+
+      assert.equal(messages.length, 0);
+      assert.end();
+    });
+
+    t.end();
+  });
+
   batch.end();
 });
