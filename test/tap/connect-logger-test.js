@@ -37,15 +37,22 @@ function MockRequest(remoteAddr, method, originalUrl, headers, url) {
 class MockResponse extends EE {
   constructor() {
     super();
-    const r = this;
-    this.end = function () {
-      r.emit('finish');
-    };
+    this.cachedHeaders = {};
+  }
+  end() {
+    this.emit('finish');
+  }
 
-    this.writeHead = function (code, headers) {
-      this.statusCode = code;
-      this._headers = headers;
-    };
+  setHeader(key, value) {
+    this.cachedHeaders[key.toLowerCase()] = value;
+  }
+
+  getHeader(key) {
+    return this.cachedHeaders[key.toLowerCase()];
+  }
+
+  writeHead(code /* , headers */) {
+    this.statusCode = code;
   }
 }
 
@@ -327,6 +334,21 @@ test('log4js connect logger', (batch) => {
     t.equal(ml.messages.length, 1);
     t.ok(levels.INFO.isEqualTo(ml.messages[0].level));
     t.equal(ml.messages[0].message, 'GET http://url 20150310');
+    t.end();
+  });
+
+  batch.test('handle weird old node versions where socket contains socket', (t) => {
+    const ml = new MockLogger();
+    const cl = clm(ml, ':remote-addr');
+    const req = new MockRequest(null, 'GET', 'http://blah');
+    req.socket = { socket: { remoteAddress: 'this is weird' } };
+
+    const res = new MockResponse();
+    cl(req, res, () => {});
+    res.writeHead(200, {});
+    res.end('chunk', 'encoding');
+
+    t.equal(ml.messages[0].message, 'this is weird');
     t.end();
   });
 

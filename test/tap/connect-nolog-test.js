@@ -29,14 +29,25 @@ function MockRequest(remoteAddr, method, originalUrl) {
 }
 
 class MockResponse extends EE {
-  constructor(statusCode) {
+  constructor(code) {
     super();
-    const r = this;
-    this.statusCode = statusCode;
+    this.statusCode = code;
+    this.cachedHeaders = {};
+  }
+  end() {
+    this.emit('finish');
+  }
 
-    this.end = function () {
-      r.emit('finish');
-    };
+  setHeader(key, value) {
+    this.cachedHeaders[key.toLowerCase()] = value;
+  }
+
+  getHeader(key) {
+    return this.cachedHeaders[key.toLowerCase()];
+  }
+
+  writeHead(code /* , headers */) {
+    this.statusCode = code;
   }
 }
 
