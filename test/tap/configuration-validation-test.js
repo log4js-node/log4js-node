@@ -226,6 +226,26 @@ test('log4js configuration validation', (batch) => {
     t.end();
   });
 
+  batch.test('should use provided appender instance if instance provided', (t) => {
+    const thing = {};
+    const cheese = testAppender('cheesy', thing);
+    const sandboxedLog4js = sandbox.require(
+      '../../lib/log4js',
+      {
+        ignoreMissing: true
+      }
+    );
+
+    sandboxedLog4js.configure({
+      appenders: { thing: { type: cheese } },
+      categories: { default: { appenders: ['thing'], level: 'ERROR' } }
+    });
+
+    t.ok(thing.configureCalled);
+    t.same(thing.type, cheese);
+    t.end();
+  });
+
   batch.test('should not throw error if configure object is freezed', (t) => {
     t.doesNotThrow(() => log4js.configure(deepFreeze({
       appenders: {
