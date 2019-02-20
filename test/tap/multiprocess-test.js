@@ -308,11 +308,10 @@ test('Multiprocess Appender', (batch) => {
       }
     );
     t.throws(
-      () =>
-        log4js.configure({
-          appenders: { master: { type: 'multiprocess', mode: 'master' } },
-          categories: { default: { appenders: ['master'], level: 'trace' } }
-        }),
+      () => log4js.configure({
+        appenders: { master: { type: 'multiprocess', mode: 'master' } },
+        categories: { default: { appenders: ['master'], level: 'trace' } }
+      }),
       new Error('multiprocess master must have an "appender" defined')
     );
     t.end();
@@ -330,11 +329,10 @@ test('Multiprocess Appender', (batch) => {
       }
     );
     t.throws(
-      () =>
-        log4js.configure({
-          appenders: { master: { type: 'multiprocess', mode: 'master', appender: 'cheese' } },
-          categories: { default: { appenders: ['master'], level: 'trace' } }
-        }),
+      () => log4js.configure({
+        appenders: { master: { type: 'multiprocess', mode: 'master', appender: 'cheese' } },
+        categories: { default: { appenders: ['master'], level: 'trace' } }
+      }),
       new Error('multiprocess master appender "cheese" not defined')
     );
     t.end();

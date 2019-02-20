@@ -39,6 +39,7 @@ class MockResponse extends EE {
     super();
     this.cachedHeaders = {};
   }
+
   end() {
     this.emit('finish');
   }

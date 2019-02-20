@@ -1,8 +1,8 @@
 'use strict';
 
 const test = require('tap').test;
-const layouts = require('../../lib/layouts');
 const sandbox = require('@log4js-node/sandboxed-module');
+const layouts = require('../../lib/layouts');
 
 test('stdout appender', (t) => {
   const output = [];

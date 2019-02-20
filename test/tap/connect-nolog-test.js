@@ -34,6 +34,7 @@ class MockResponse extends EE {
     this.statusCode = code;
     this.cachedHeaders = {};
   }
+
   end() {
     this.emit('finish');
   }
