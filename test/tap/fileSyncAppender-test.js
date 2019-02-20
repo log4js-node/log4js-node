@@ -3,8 +3,8 @@
 const test = require('tap').test;
 const fs = require('fs');
 const path = require('path');
-const log4js = require('../../lib/log4js');
 const EOL = require('os').EOL || '\n';
+const log4js = require('../../lib/log4js');
 
 function remove(filename) {
   try {

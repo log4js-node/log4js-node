@@ -3,8 +3,8 @@
 const process = require('process');
 const test = require('tap').test;
 const debug = require('debug');
-const log4js = require('../../lib/log4js');
 const fs = require('fs');
+const log4js = require('../../lib/log4js');
 
 test('multiFile appender', (batch) => {
   batch.test('should write to multiple files based on the loggingEvent property', (t) => {
