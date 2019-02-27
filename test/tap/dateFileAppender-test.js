@@ -3,9 +3,9 @@
 const test = require('tap').test;
 const path = require('path');
 const fs = require('fs');
-const log4js = require('../../lib/log4js');
 const EOL = require('os').EOL || '\n';
 const format = require('date-format');
+const log4js = require('../../lib/log4js');
 
 function removeFile(filename) {
   try {

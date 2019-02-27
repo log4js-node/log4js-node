@@ -2,8 +2,8 @@
 
 const test = require('tap').test;
 const debug = require('debug')('log4js:test.logger');
-const levels = require('../../lib/levels');
 const sandbox = require('@log4js-node/sandboxed-module');
+const levels = require('../../lib/levels');
 
 const events = [];
 const Logger = sandbox.require(

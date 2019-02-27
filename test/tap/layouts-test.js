@@ -182,8 +182,8 @@ test('log4js layouts', (batch) => {
       const output = layout(event);
       assert.equal(
         output,
-        '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test ' +
-        "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
+        '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test '
+        + "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
       );
       assert.end();
     });
