@@ -29,8 +29,6 @@
   },
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
-    "prepush": "npm test && npm run typings",
-    "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
     "test": "tap 'test/tap/**/*.js' --cov",
@@ -95,5 +93,11 @@
     "require": [
       "./test/sandbox-coverage"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "validate-commit-msg",
+      "pre-push": "npm test && npm run typings"
+    }
   }
 }
