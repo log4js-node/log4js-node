@@ -29,8 +29,6 @@
   },
   "scripts": {
     "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
-    "prepush": "npm test && npm run typings",
-    "commitmsg": "validate-commit-msg",
     "posttest": "npm run clean",
     "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
     "test": "tap 'test/tap/**/*.js' --cov",
@@ -46,7 +44,7 @@
     "debug": "^4.1.1",
     "flatted": "^2.0.0",
     "rfdc": "^1.1.2",
-    "streamroller": "^1.0.1"
+    "streamroller": "^1.0.3"
   },
   "devDependencies": {
     "@log4js-node/sandboxed-module": "^2.2.0",
@@ -95,5 +93,11 @@
     "require": [
       "./test/sandbox-coverage"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "validate-commit-msg",
+      "pre-push": "npm test && npm run typings"
+    }
   }
 }

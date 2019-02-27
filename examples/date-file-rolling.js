@@ -4,7 +4,9 @@ const log4js = require('../lib/log4js');
 
 log4js.configure({
   appenders: {
-    file: { type: 'dateFile', filename: 'thing.log', pattern: '.mm' }
+    file: {
+      type: 'dateFile', filename: 'thing.log', pattern: '.ss'
+    }
   },
   categories: {
     default: { appenders: ['file'], level: 'debug' }
