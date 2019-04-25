@@ -73,6 +73,26 @@ The log4js.connectLogger also supports a nolog option where you can specify a st
 app.use(log4js.connectLogger(logger, { level: 'auto', format: ':method :url', nolog: '\\.gif|\\.jpg$' }));
 ```
 
+The log4js.connectLogger can add a response of express to context if `context` flag is set to `true`.
+Application can use it in layouts or appenders.
+
+In application:
+
+```javascript
+app.use(log4js.connectLogger(logger, { context: true }));
+```
+
+In layout:
+
+```javascript
+log4js.addLayout('customLayout', () => {
+  return (loggingEvent) => {
+    const res = loggingEvent.context.res;
+    return util.format(...loggingEvent.data, res ? `status: ${res.statusCode}` : '');
+  };
+});
+```
+
 ## Example nolog values
 
 | nolog value | Will Not Log | Will Log |
