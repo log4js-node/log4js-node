@@ -132,6 +132,30 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
     t.end();
   });
 
+  batch.test('should deal gracefully with missing parent', (t) => {
+    const config = {
+      appenders: {
+        stdout1: { type: 'stdout' },
+        stdout2: { type: 'stdout' }
+      },
+      categories: {
+        default: { appenders: ['stdout1'], level: 'ERROR' },
+        // no catA nor catA.catB, but should get created, with default values
+        'catA.catB.catC': { appenders: ['stdout2'], level: 'DEBUG' } // should get stdout2, DEBUG
+      }
+    };
+
+    log4js.configure(config);
+
+    const child = config.categories['catA.catB.catC'];
+    t.ok(child);
+    t.ok(child.appenders);
+    t.isEqual(child.appenders.length, 1);
+    t.ok(child.appenders.includes('stdout2'));
+
+    t.end();
+  });
+
 
   batch.test('should not get duplicate appenders if parent has the same one', (t) => {
     const config = {
