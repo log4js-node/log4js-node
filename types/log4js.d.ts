@@ -264,6 +264,7 @@ export interface Levels {
   OFF: Level;
   levels: Level[];
   getLevel(level: string): Level;
+  addLevels(customLevels: object): void;
 }
 
 export interface Configuration {
