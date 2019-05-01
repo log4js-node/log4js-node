@@ -17,7 +17,7 @@ export function getLogger(category?: string): Logger;
 export function configure(filename: string): Log4js;
 export function configure(config: Configuration): Log4js;
 
-export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
+export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => any): void;
 
 export function connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; statusRules?: any[] }): any; // express.Handler;
 
