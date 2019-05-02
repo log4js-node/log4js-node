@@ -47,7 +47,10 @@ export interface Level {
 	isLessThanOrEqualTo(other: string): boolean;
 	isLessThanOrEqualTo(otherLevel: Level): boolean;
 	isGreaterThanOrEqualTo(other: string): boolean;
-	isGreaterThanOrEqualTo(otherLevel: Level): boolean;
+  isGreaterThanOrEqualTo(otherLevel: Level): boolean;
+  colour: string;
+  level: number;
+  levelStr: string;
 }
 
 export interface LoggingEvent {
