@@ -1,18 +1,15 @@
 'use strict';
 
 const test = require('tap').test;
-// const util = require('util');
-// const debug = require('debug')('log4js:test.configuration-inheritance');
 const log4js = require('../../lib/log4js');
-// const configuration = require('../../lib/configuration');
-
+const categories = require('../../lib/categories');
 
 test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should inherit appenders from direct parent', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -23,21 +20,23 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 2, 'inherited 2 appenders');
-    t.ok(child.appenders.includes('stdout1'), 'inherited stdout1');
-    t.ok(child.appenders.includes('stdout2'), 'inherited stdout2');
-    t.isEqual(child.level, 'DEBUG', 'child level overrides parent');
+    const childCategoryName = 'catA.catB';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
+    const childLevel = categories.getLevelForCategory(childCategoryName);
+
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 2, 'inherited 2 appenders');
+    t.ok(childAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+    t.ok(childAppenders.some(a => a.label === 'stdout2'), 'inherited stdout2');
+    t.isEqual(childLevel.levelStr, 'DEBUG', 'child level overrides parent');
     t.end();
   });
 
   batch.test('multiple children should inherit config from shared parent', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -49,20 +48,23 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child1 = config.categories['catA.catB.cat1'];
-    t.ok(child1);
-    t.ok(child1.appenders);
-    t.isEqual(child1.appenders.length, 1, 'inherited 1 appender');
-    t.ok(child1.appenders.includes('stdout1'), 'inherited stdout1');
-    t.isEqual(child1.level, 'DEBUG', 'child level overrides parent');
+    const child1CategoryName = 'catA.catB.cat1';
+    const child1Appenders = categories.appendersForCategory(child1CategoryName);
+    const child1Level = categories.getLevelForCategory(child1CategoryName);
 
-    const child2 = config.categories['catA.catB.cat2'];
-    t.ok(child2);
-    t.ok(child2.appenders);
-    t.isEqual(child2.appenders.length, 2, 'inherited 1 appenders, plus its original');
-    t.ok(child2.appenders.includes('stdout1'), 'inherited stdout1');
-    t.ok(child2.appenders.includes('stdout2'), 'kept stdout2');
-    t.isEqual(child2.level, 'INFO', 'inherited parent level');
+    t.isEqual(child1Appenders.length, 1, 'inherited 1 appender');
+    t.ok(child1Appenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+    t.isEqual(child1Level.levelStr, 'DEBUG', 'child level overrides parent');
+
+    const child2CategoryName = 'catA.catB.cat2';
+    const child2Appenders = categories.appendersForCategory(child2CategoryName);
+    const child2Level = categories.getLevelForCategory(child2CategoryName);
+
+    t.ok(child2Appenders);
+    t.isEqual(child2Appenders.length, 2, 'inherited 1 appenders, plus its original');
+    t.ok(child2Appenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+    t.ok(child2Appenders.some(a => a.label === 'stdout2'), 'kept stdout2');
+    t.isEqual(child2Level.levelStr, 'INFO', 'inherited parent level');
 
     t.end();
   });
@@ -70,8 +72,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should inherit appenders from multiple parents', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -83,20 +85,21 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB.catC'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 2, 'inherited 2 appenders');
-    t.ok(child.appenders.includes('stdout1'), 'inherited stdout1');
-    t.ok(child.appenders.includes('stdout1'), 'inherited stdout1');
+    const childCategoryName = 'catA.catB.catC';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
 
-    const firstParent = config.categories['catA.catB'];
-    t.ok(firstParent);
-    t.ok(firstParent.appenders);
-    t.isEqual(firstParent.appenders.length, 2, 'ended up with 2 appenders');
-    t.ok(firstParent.appenders.includes('stdout1'), 'inherited stdout1');
-    t.ok(firstParent.appenders.includes('stdout2'), 'kept stdout2');
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 2, 'inherited 2 appenders');
+    t.ok(childAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+    t.ok(childAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
 
+    const firstParentName = 'catA.catB';
+    const firstParentAppenders = categories.appendersForCategory(firstParentName);
+
+    t.ok(firstParentAppenders);
+    t.isEqual(firstParentAppenders.length, 2, 'ended up with 2 appenders');
+    t.ok(firstParentAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+    t.ok(firstParentAppenders.some(a => a.label === 'stdout2'), 'kept stdout2');
 
     t.end();
   });
@@ -104,8 +107,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should inherit appenders from deep parent with missing direct parent', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -117,17 +120,19 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB.catC'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 1, 'inherited 1 appenders');
-    t.ok(child.appenders.includes('stdout1'), 'inherited stdout1');
+    const childCategoryName = 'catA.catB.catC';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
 
-    const firstParent = config.categories['catA.catB'];
-    t.ok(firstParent);
-    t.ok(firstParent.appenders, 'catA.catB got created implicitily');
-    t.isEqual(firstParent.appenders.length, 1, 'created with 1 inherited appender');
-    t.ok(firstParent.appenders.includes('stdout1'), 'inherited stdout1');
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 1, 'inherited 1 appenders');
+    t.ok(childAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
+
+    const firstParentCategoryName = 'catA.catB';
+    const firstParentAppenders = categories.appendersForCategory(firstParentCategoryName);
+
+    t.ok(firstParentAppenders, 'catA.catB got created implicitily');
+    t.isEqual(firstParentAppenders.length, 1, 'created with 1 inherited appender');
+    t.ok(firstParentAppenders.some(a => a.label === 'stdout1'), 'inherited stdout1');
 
     t.end();
   });
@@ -135,8 +140,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should deal gracefully with missing parent', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -147,11 +152,12 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB.catC'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 1);
-    t.ok(child.appenders.includes('stdout2'));
+    const childCategoryName = 'catA.catB.catC';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
+
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 1);
+    t.ok(childAppenders.some(a => a.label === 'stdout2'));
 
     t.end();
   });
@@ -160,8 +166,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should not get duplicate appenders if parent has the same one', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -172,20 +178,21 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 2, 'inherited 1 appender');
-    t.ok(child.appenders.includes('stdout1'), 'still have stdout1');
-    t.ok(child.appenders.includes('stdout2'), 'inherited stdout2');
+    const childCategoryName = 'catA.catB';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
+
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 2, 'inherited 1 appender');
+    t.ok(childAppenders.some(a => a.label === 'stdout1'), 'still have stdout1');
+    t.ok(childAppenders.some(a => a.label === 'stdout2'), 'inherited stdout2');
     t.end();
   });
 
   batch.test('inherit:falses should disable inheritance', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -196,11 +203,12 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 1, 'inherited no appender');
-    t.ok(child.appenders.includes('stdout2'), 'kept stdout2');
+    const childCategoryName = 'catA.catB';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
+
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 1, 'inherited no appender');
+    t.ok(childAppenders.some(a => a.label === 'stdout2'), 'kept stdout2');
 
     t.end();
   });
@@ -209,8 +217,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('inheritance should stop if direct parent has inherit off', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -222,17 +230,19 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB.catC'];
-    t.ok(child);
-    t.ok(child.appenders);
-    t.isEqual(child.appenders.length, 1, 'inherited 1 appender');
-    t.ok(child.appenders.includes('stdout2'), 'inherited stdout2');
+    const childCategoryName = 'catA.catB.catC';
+    const childAppenders = categories.appendersForCategory(childCategoryName);
 
-    const firstParent = config.categories['catA.catB'];
-    t.ok(firstParent);
-    t.ok(firstParent.appenders);
-    t.isEqual(firstParent.appenders.length, 1, 'did not inherit new appenders');
-    t.ok(firstParent.appenders.includes('stdout2'), 'kept stdout2');
+    t.ok(childAppenders);
+    t.isEqual(childAppenders.length, 1, 'inherited 1 appender');
+    t.ok(childAppenders.some(a => a.label === 'stdout2'), 'inherited stdout2');
+
+    const firstParentCategoryName = 'catA.catB';
+    const firstParentAppenders = categories.appendersForCategory(firstParentCategoryName);
+
+    t.ok(firstParentAppenders);
+    t.isEqual(firstParentAppenders.length, 1, 'did not inherit new appenders');
+    t.ok(firstParentAppenders.some(a => a.label === 'stdout2'), 'kept stdout2');
 
     t.end();
   });
@@ -240,8 +250,8 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
   batch.test('should inherit level when it is missing', (t) => {
     const config = {
       appenders: {
-        stdout1: { type: 'stdout' },
-        stdout2: { type: 'stdout' }
+        stdout1: { type: 'dummy-appender', label: 'stdout1' },
+        stdout2: { type: 'dummy-appender', label: 'stdout2' }
       },
       categories: {
         default: { appenders: ['stdout1'], level: 'ERROR' },
@@ -253,13 +263,15 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
 
     log4js.configure(config);
 
-    const child = config.categories['catA.catB.catC'];
-    t.ok(child);
-    t.isEqual(child.level, 'INFO', 'inherited level');
+    const childCategoryName = 'catA.catB.catC';
+    const childLevel = categories.getLevelForCategory(childCategoryName);
 
-    const firstParent = config.categories['catA.catB'];
-    t.ok(firstParent);
-    t.isEqual(firstParent.level, 'INFO', 'generate parent inherited level from base');
+    t.isEqual(childLevel.levelStr, 'INFO', 'inherited level');
+
+    const firstParentCategoryName = 'catA.catB';
+    const firstParentLevel = categories.getLevelForCategory(firstParentCategoryName);
+
+    t.isEqual(firstParentLevel.levelStr, 'INFO', 'generate parent inherited level from base');
 
     t.end();
   });
