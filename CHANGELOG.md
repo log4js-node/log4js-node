@@ -1,6 +1,7 @@
 # log4js-node changelog
 
 ## 4.1.1
+* [Various test fixes for node v12](https://github.com/log4js-node/log4js-node/pull/870)
 * [Fix layout problem in node v12](https://github.com/log4js-node/log4js-node/pull/860) - thanks [@bjornstar](https://github.com/bjornstar)
 * [Add missing types for addLevels](https://github.com/log4js-node/log4js-node/pull/867) - thanks [@Ivkaa](https://github.com/Ivkaa)
 * [Allow any return type for layout function](https://github.com/log4js-node/log4js-node/pull/845) - thanks [@xinbenlv](https://github.com/xinbenlv)
