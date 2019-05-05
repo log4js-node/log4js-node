@@ -40,7 +40,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if config is an empty object', (t) => {
     t.throws(
       () => log4js.configure({}),
-      /- must have a property "appenders" of type object\./
+      '- must have a property "appenders" of type object.'
     );
     t.end();
   });
@@ -48,7 +48,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if config has no appenders', (t) => {
     t.throws(
       () => log4js.configure({ categories: {} }),
-      /- must have a property "appenders" of type object\./
+      '- must have a property "appenders" of type object.'
     );
     t.end();
   });
@@ -56,7 +56,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if config has no categories', (t) => {
     t.throws(
       () => log4js.configure({ appenders: { out: { type: 'stdout' } } }),
-      /- must have a property "categories" of type object\./
+      '- must have a property "categories" of type object.'
     );
     t.end();
   });
@@ -64,7 +64,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if appenders is not an object', (t) => {
     t.throws(
       () => log4js.configure({ appenders: [], categories: [] }),
-      /- must have a property "appenders" of type object\./
+      '- must have a property "appenders" of type object.'
     );
     t.end();
   });
@@ -72,7 +72,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if appenders are not all valid', (t) => {
     t.throws(
       () => log4js.configure({ appenders: { thing: 'cheese' }, categories: {} }),
-      /- appender "thing" is not valid \(must be an object with property "type"\)/
+      '- appender "thing" is not valid (must be an object with property "type")'
     );
     t.end();
   });
@@ -80,7 +80,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should require at least one appender', (t) => {
     t.throws(
       () => log4js.configure({ appenders: {}, categories: {} }),
-      /- must define at least one appender\./
+      '- must define at least one appender.'
     );
     t.end();
   });
@@ -88,7 +88,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should give error if categories are not all valid', (t) => {
     t.throws(
       () => log4js.configure({ appenders: { stdout: { type: 'stdout' } }, categories: { thing: 'cheese' } }),
-      /- category "thing" is not valid \(must be an object with properties "appenders" and "level"\)/
+      '- category "thing" is not valid (must be an object with properties "appenders" and "level")'
     );
     t.end();
   });
@@ -99,7 +99,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: ['stdout'], level: 'ERROR' } }
       }),
-      /- must define a "default" category\./
+      '- must define a "default" category.'
     );
     t.end();
   });
@@ -107,7 +107,7 @@ test('log4js configuration validation', (batch) => {
   batch.test('should require at least one category', (t) => {
     t.throws(
       () => log4js.configure({ appenders: { stdout: { type: 'stdout' } }, categories: {} }),
-      /- must define at least one category\./
+      '- must define at least one category.'
     );
     t.end();
   });
@@ -118,7 +118,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: {}, level: 'ERROR' } }
       }),
-      /- category "thing" is not valid \(appenders must be an array of appender names\)/
+      '- category "thing" is not valid (appenders must be an array of appender names)'
     );
     t.end();
   });
@@ -129,7 +129,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: [], level: 'ERROR' } }
       }),
-      /- category "thing" is not valid \(appenders must contain at least one appender name\)/
+      '- category "thing" is not valid (appenders must contain at least one appender name)'
     );
     t.end();
   });
@@ -140,7 +140,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { thing: { appenders: ['cheese'], level: 'ERROR' } }
       }),
-      /- category "thing" is not valid \(appender "cheese" is not defined\)/
+      '- category "thing" is not valid (appender "cheese" is not defined)'
     );
     t.end();
   });
@@ -151,7 +151,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { stdout: { type: 'stdout' } },
         categories: { default: { appenders: ['stdout'], level: 'Biscuits' } }
       }),
-      /- category "default" is not valid \(level "Biscuits" not recognised; valid levels are ALL, TRACE/
+      '- category "default" is not valid (level "Biscuits" not recognised; valid levels are ALL, TRACE'
     );
     t.end();
   });
@@ -162,7 +162,7 @@ test('log4js configuration validation', (batch) => {
         appenders: { thing: { type: 'cheese' } },
         categories: { default: { appenders: ['thing'], level: 'ERROR' } }
       }),
-      /- appender "thing" is not valid \(type "cheese" could not be found\)/
+      '- appender "thing" is not valid (type "cheese" could not be found)'
     );
     t.end();
   });
