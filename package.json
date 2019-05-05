@@ -47,7 +47,7 @@
     "streamroller": "^1.0.4"
   },
   "devDependencies": {
-    "@log4js-node/sandboxed-module": "^2.2.0",
+    "@log4js-node/sandboxed-module": "^2.2.1",
     "codecov": "^3.3.0",
     "conventional-changelog": "^3.1.4",
     "deep-freeze": "0.0.1",
