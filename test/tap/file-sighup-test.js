@@ -7,42 +7,46 @@ test('file appender SIGHUP', (t) => {
   let closeCalled = 0;
   let openCalled = 0;
 
-  sandbox.require(
+  const appender = sandbox.require(
     '../../lib/appenders/file',
     {
       requires: {
         streamroller: {
-          RollingFileStream: function () {
-            this.openTheStream = function () {
+          RollingFileStream: class RollingFileStream {
+            constructor() {
               openCalled++;
-            };
+              this.ended = false;
+            }
 
-            this.closeTheStream = function (cb) {
+            on() {
+              this.dummy = 'easier than turning off lint rule';
+            }
+
+            end(cb) {
+              this.ended = true;
               closeCalled++;
-              if (cb) {
-                cb();
+              cb();
+            }
+
+            write() {
+              if (this.ended) {
+                throw new Error('write after end');
               }
-            };
-
-            this.on = function () {
-            };
-
-            this.end = function () {
-            };
-
-            this.write = function () {
               return true;
-            };
+            }
           }
         }
       }
     }
-  ).configure({ type: 'file', filename: 'sighup-test-file' }, { basicLayout: function () {} });
+  ).configure({ type: 'file', filename: 'sighup-test-file' }, { basicLayout: function () { return 'whatever'; } });
 
+  appender('something to log');
   process.kill(process.pid, 'SIGHUP');
+
   t.plan(2);
   setTimeout(() => {
-    t.equal(openCalled, 1, 'open should be called once');
+    appender('something to log after sighup');
+    t.equal(openCalled, 2, 'open should be called twice');
     t.equal(closeCalled, 1, 'close should be called once');
     t.end();
   }, 100);
