@@ -116,7 +116,7 @@ test('log4js connect logger', (batch) => {
       assert.include(messages[0].message, 'http://url');
       assert.include(messages[0].message, 'my.remote.addr');
       assert.include(messages[0].message, '200');
-      t.includes(messages[0].message, JSON.stringify({message: 'hello post'}));
+      t.includes(messages[0].message, JSON.stringify({ message: 'hello post' }));
       assert.end();
     });
 
