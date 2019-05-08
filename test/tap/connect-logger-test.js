@@ -19,7 +19,7 @@ class MockLogger {
   }
 }
 
-function MockRequest(remoteAddr, method, originalUrl, headers, url) {
+function MockRequest(remoteAddr, method, originalUrl, headers, url, body) {
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.url = url;
@@ -27,6 +27,10 @@ function MockRequest(remoteAddr, method, originalUrl, headers, url) {
   this.httpVersionMajor = '5';
   this.httpVersionMinor = '0';
   this.headers = headers || {};
+
+  if (body) {
+    this.body = body;
+  }
 
   const self = this;
   Object.keys(this.headers).forEach((key) => {
@@ -57,8 +61,8 @@ class MockResponse extends EE {
   }
 }
 
-function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url) {
-  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url);
+function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url, body = undefined) {
+  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url, body);
   const res = new MockResponse();
   if (next) {
     next = next.bind(null, req, res, () => {});
@@ -96,6 +100,23 @@ test('log4js connect logger', (batch) => {
       assert.include(messages[0].message, 'http://url');
       assert.include(messages[0].message, 'my.remote.addr');
       assert.include(messages[0].message, '200');
+      assert.end();
+    });
+
+    t.test('log events with body on post request', (assert) => {
+      const ml = new MockLogger();
+      const cl = clm(ml);
+      request(cl, 'POST', 'http://url', 200, null, { 'Content-Type': 'application/json' }, null, 'http://url', { message: 'hello post' });
+
+      const messages = ml.messages;
+      assert.type(messages, 'Array');
+      assert.equal(messages.length, 1);
+      assert.ok(levels.INFO.isEqualTo(messages[0].level));
+      assert.include(messages[0].message, 'POST');
+      assert.include(messages[0].message, 'http://url');
+      assert.include(messages[0].message, 'my.remote.addr');
+      assert.include(messages[0].message, '200');
+      t.includes(messages[0].message, JSON.stringify({message: 'hello post'}));
       assert.end();
     });
 
