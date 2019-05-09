@@ -351,10 +351,8 @@ test('log4js connect logger', (batch) => {
       tokens: [
         {
           token: ':body',
-          replacement: (req, res) => {
-            return (_, field) => {
-              return JSON.stringify(req.body);
-            }
+          replacement: function (req) {
+            return (() => (JSON.stringify(req.body)));
           }
         },
         {
@@ -363,17 +361,22 @@ test('log4js connect logger', (batch) => {
         },
         {
           token: ':xhr',
-          replacement: (req, res) => {
-            return req.xhr
+          replacement: function (req) {
+            return req.xhr;
           }
         }
       ]
-    }
+    };
     const cl = clm(ml, options);
-    request(cl, 'POST', 'http://meh', 200, null, { 'contentType': 'application/json' }, null, 'http://meh', { body: { message: 'hello body' }, baseUrl: 'http://baseURL', xhr: false });
+    request(cl, 'POST', 'http://meh', 200, null, null, null, 'http://meh', {
+      body: { message: 'hello body' },
+      baseUrl: 'http://baseURL',
+      xhr: false
+    });
     t.type(cl, 'function');
     const messages = ml.messages;
-    t.equal(messages[0].message, 'POST http://meh ' + JSON.stringify({ message: 'hello body' }) + ' http://meh' + ' false');
+    const jsonBody = JSON.stringify({ message: 'hello body' });
+    t.equal(messages[0].message, `POST http://meh ${jsonBody} http://meh false`);
     t.end();
   });
 
