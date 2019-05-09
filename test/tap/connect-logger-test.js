@@ -19,7 +19,7 @@ class MockLogger {
   }
 }
 
-function MockRequest(remoteAddr, method, originalUrl, headers, url, body) {
+function MockRequest(remoteAddr, method, originalUrl, headers, url, custom) {
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.url = url;
@@ -28,8 +28,10 @@ function MockRequest(remoteAddr, method, originalUrl, headers, url, body) {
   this.httpVersionMinor = '0';
   this.headers = headers || {};
 
-  if (body) {
-    this.body = body;
+  if (custom) {
+    for (const key of Object.keys(custom)) {
+      this[key] = custom[key];
+    }
   }
 
   const self = this;
@@ -61,8 +63,8 @@ class MockResponse extends EE {
   }
 }
 
-function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url, body = undefined) {
-  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url, body);
+function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url, custom = undefined) {
+  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url, custom);
   const res = new MockResponse();
   if (next) {
     next = next.bind(null, req, res, () => {});
@@ -100,23 +102,6 @@ test('log4js connect logger', (batch) => {
       assert.include(messages[0].message, 'http://url');
       assert.include(messages[0].message, 'my.remote.addr');
       assert.include(messages[0].message, '200');
-      assert.end();
-    });
-
-    t.test('log events with body on post request', (assert) => {
-      const ml = new MockLogger();
-      const cl = clm(ml);
-      request(cl, 'POST', 'http://url', 200, null, { 'Content-Type': 'application/json' }, null, 'http://url', { message: 'hello post' });
-
-      const messages = ml.messages;
-      assert.type(messages, 'Array');
-      assert.equal(messages.length, 1);
-      assert.ok(levels.INFO.isEqualTo(messages[0].level));
-      assert.include(messages[0].message, 'POST');
-      assert.include(messages[0].message, 'http://url');
-      assert.include(messages[0].message, 'my.remote.addr');
-      assert.include(messages[0].message, '200');
-      t.includes(messages[0].message, JSON.stringify({ message: 'hello post' }));
       assert.end();
     });
 
@@ -356,6 +341,39 @@ test('log4js connect logger', (batch) => {
     t.equal(ml.messages.length, 1);
     t.ok(levels.INFO.isEqualTo(ml.messages[0].level));
     t.equal(ml.messages[0].message, 'GET http://url 20150310');
+    t.end();
+  });
+
+  batch.test('logger event with custom token on post request', (t) => {
+    const ml = new MockLogger();
+    const options = {
+      format: ':method :url :body :baseUrl :xhr',
+      tokens: [
+        {
+          token: ':body',
+          replacement: (req, res) => {
+            return (_, field) => {
+              return JSON.stringify(req.body);
+            }
+          }
+        },
+        {
+          token: ':baseUrl',
+          replacement: 'http://meh'
+        },
+        {
+          token: ':xhr',
+          replacement: (req, res) => {
+            return req.xhr
+          }
+        }
+      ]
+    }
+    const cl = clm(ml, options);
+    request(cl, 'POST', 'http://meh', 200, null, { 'contentType': 'application/json' }, null, 'http://meh', { body: { message: 'hello body' }, baseUrl: 'http://baseURL', xhr: false });
+    t.type(cl, 'function');
+    const messages = ml.messages;
+    t.equal(messages[0].message, 'POST http://meh ' + JSON.stringify({ message: 'hello body' }) + ' http://meh' + ' false');
     t.end();
   });
 
