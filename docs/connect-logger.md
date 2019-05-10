@@ -48,6 +48,18 @@ app.use(log4js.connectLogger(logger, {
 }));
 ```
 
+When you request of POST, you want to log the request body parameter like JSON.
+The log format function is very useful.
+Please use log format function instead “tokens” property for use express's request or response.
+
+
+```javascript
+app.use(log4js.connectLogger(logger, {
+  level: 'info',
+  format: (req, res, format) => format(`:remote-addr :method :url ${JSON.stringify(req.body)}`)
+}));
+```
+
 Added automatic level detection to connect-logger, depends on http status response, compatible with express 3.x and 4.x.
 
 * http responses 3xx, level = WARN
