@@ -19,7 +19,7 @@ class MockLogger {
   }
 }
 
-function MockRequest(remoteAddr, method, originalUrl, headers, url) {
+function MockRequest(remoteAddr, method, originalUrl, headers, url, custom) {
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.url = url;
@@ -27,6 +27,12 @@ function MockRequest(remoteAddr, method, originalUrl, headers, url) {
   this.httpVersionMajor = '5';
   this.httpVersionMinor = '0';
   this.headers = headers || {};
+
+  if (custom) {
+    for (const key of Object.keys(custom)) {
+      this[key] = custom[key];
+    }
+  }
 
   const self = this;
   Object.keys(this.headers).forEach((key) => {
@@ -57,13 +63,13 @@ class MockResponse extends EE {
   }
 }
 
-function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url) {
-  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url);
+function request(cl, method, originalUrl, code, reqHeaders, resHeaders, next, url, custom = undefined) {
+  const req = new MockRequest('my.remote.addr', method, originalUrl, reqHeaders, url, custom);
   const res = new MockResponse();
   if (next) {
-    next = next.bind(null, req, res, () => {});
+    next = next.bind(null, req, res, () => { });
   } else {
-    next = () => {};
+    next = () => { };
   }
   cl(req, res, next);
   res.writeHead(code, resHeaders);
@@ -338,6 +344,21 @@ test('log4js connect logger', (batch) => {
     t.end();
   });
 
+  batch.test('log events with custom format', (t) => {
+    const ml = new MockLogger();
+    const body = { say: 'hi!' };
+    ml.level = levels.INFO;
+    const cl = clm(ml, {
+      level: levels.INFO,
+      format: (req, res, format) => (format(`:method :url ${JSON.stringify(req.body)}`))
+    });
+    request(cl, 'POST', 'http://url', 200, { 'Content-Type': 'application/json' }, null, null, null, { body: body });
+
+    t.ok(levels.INFO.isEqualTo(ml.messages[0].level));
+    t.equal(ml.messages[0].message, `POST http://url ${JSON.stringify(body)}`);
+    t.end();
+  });
+
   batch.test('handle weird old node versions where socket contains socket', (t) => {
     const ml = new MockLogger();
     const cl = clm(ml, ':remote-addr');
@@ -345,7 +366,7 @@ test('log4js connect logger', (batch) => {
     req.socket = { socket: { remoteAddress: 'this is weird' } };
 
     const res = new MockResponse();
-    cl(req, res, () => {});
+    cl(req, res, () => { });
     res.writeHead(200, {});
     res.end('chunk', 'encoding');
 
