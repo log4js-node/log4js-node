@@ -88,7 +88,7 @@ There's also [an example application](https://github.com/log4js-node/log4js-exam
 
 ## TypeScript
 ```ts
-import { configure, getLogger } from './log4js';
+import { configure, getLogger } from 'log4js';
 configure('./filename');
 const logger = getLogger();
 logger.level = 'debug';

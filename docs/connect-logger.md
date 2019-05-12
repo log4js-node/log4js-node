@@ -3,7 +3,7 @@
 The connect/express logger was added to log4js by [danbell](https://github.com/danbell). This allows connect/express servers to log using log4js. See `example-connect-logger.js`.
 
 ```javascript
-var log4js = require('./lib/log4js');
+var log4js = require('log4js');
 var express = require('express');
 
 log4js.configure({
