@@ -123,7 +123,8 @@ const level: log4js.Level = levels.getLevel('info');
 
 log4js.connectLogger(logger1, {
   format: ':x, :y',
-  level: 'info'
+  level: 'info',
+  context: true
 });
 
 log4js.connectLogger(logger2, {
