@@ -20,8 +20,8 @@ The array that stores log events is shared across all recording appender instanc
 ## Example
 
 ```javascript
-const recording = require('../lib/appenders/recording');
-const log4js = require('../lib/log4js');
+const recording = require('log4js/lib/appenders/recording');
+const log4js = require('log4js');
 log4js.configure({
   appenders: { vcr: { type: 'recording' } },
   categories: { default: { appenders: ['vcr'], level: 'info' } }
