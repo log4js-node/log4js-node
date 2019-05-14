@@ -5,6 +5,7 @@
 * [Feature: add response to context for connectLogger](https://github.com/log4js-node/log4js-node/pull/862) - thanks [@leak4mk0](https://github.com/leak4mk0)
 * [Fix for broken sighup handler](https://github.com/log4js-node/log4js-node/pull/873)
 * [Add missing types for Level](https://github.com/log4js-node/log4js-node/pull/872) - thanks [@Ivkaa](https://github.com/Ivkaa)
+* [Typescript fixes for connect logger context](https://github.com/log4js-node/log4js-node/pull/876) - thanks [@leak4mk0](https://github.com/leak4mk0)
 
 ## 4.1.1
 * [Various test fixes for node v12](https://github.com/log4js-node/log4js-node/pull/870)
