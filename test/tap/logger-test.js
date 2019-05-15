@@ -4,6 +4,7 @@ const test = require('tap').test;
 const debug = require('debug')('log4js:test.logger');
 const sandbox = require('@log4js-node/sandboxed-module');
 const levels = require('../../lib/levels');
+const callsites = require('callsites');
 
 const events = [];
 const Logger = sandbox.require(
@@ -123,6 +124,49 @@ test('../../lib/logger', (batch) => {
     logger.info('Just testing ', Object.create(null));
 
     t.equal(events.length, 1);
+    t.end();
+  });
+
+  batch.test('should (default) disable stack trace unless manual enable', (t) => {
+    const logger = new Logger('stack');
+    logger.level = 'debug';
+
+    t.equal(logger.isCallStackEnable(), false);
+
+    logger.enabelCallStack(false);
+    t.equal(logger.isCallStackEnable(), false);
+
+    logger.enabelCallStack(0);
+    t.equal(logger.isCallStackEnable(), false);
+
+    logger.enabelCallStack('');
+    t.equal(logger.isCallStackEnable(), false);
+
+    logger.enabelCallStack(null);
+    t.equal(logger.isCallStackEnable(), false);
+
+    logger.enabelCallStack();
+    t.equal(logger.isCallStackEnable(), true);
+    t.end();
+  });
+
+  batch.test('should enable stack trace for call stack support', (t) => {
+    const logger = new Logger('stack');
+    logger.level = 'debug';
+    logger.enabelCallStack();
+    t.equal(logger.isCallStackEnable(), true);
+
+    logger.info('hello world');
+    const callsite = callsites()[0];
+
+    t.equal(events.length, 1);
+    t.ok(events[0].data, 'hello world');
+    t.ok(events[0].fileName, callsite.getFileName());
+    t.ok(events[0].lineNumber, callsite.getLineNumber() - 1);
+    t.ok(events[0].lineNumber, 12);
+
+    logger.enabelCallStack(false);
+    t.equal(logger.isCallStackEnable(), false);
     t.end();
   });
 
