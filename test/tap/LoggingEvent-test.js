@@ -39,5 +39,32 @@ test('LoggingEvent', (batch) => {
     t.end();
   });
 
+  batch.test('Should correct construct with/without location info', (t) => {
+    // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
+    /* eslint-disable-next-line */
+    const callStack = '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)';
+    const fileName = '/log4js-node/test/tap/layouts-test.js';
+    const lineNumber = 1;
+    const columnNumber = 14;
+    const location = {
+      fileName,
+      lineNumber,
+      columnNumber,
+      stack: callStack
+    };
+    const event = new LoggingEvent('cheese', levels.DEBUG, ['log message'], { user: 'bob' }, location);
+    t.equal(event.fileName, fileName);
+    t.equal(event.lineNumber, lineNumber);
+    t.equal(event.columnNumber, columnNumber);
+    t.equal(event.stack, callStack);
+
+    const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], { user: 'bob' });
+    t.equal(event2.fileName, undefined);
+    t.equal(event2.lineNumber, undefined);
+    t.equal(event2.columnNumber, undefined);
+    t.equal(event2.stack, undefined);
+    t.end();
+  });
+
   batch.end();
 });
