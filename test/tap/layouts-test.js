@@ -201,6 +201,12 @@ test('log4js layouts', (batch) => {
       }
     };
 
+    // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
+    /* eslint-disable-next-line */
+    const callStack = '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)';
+    const fileName = '/log4js-node/test/tap/layouts-test.js';
+    const lineNumber = 1;
+    const columnNumber = 14;
     const event = {
       data: ['this is a test'],
       startTime: new Date('2010-12-05 14:18:30.045'),
@@ -211,7 +217,13 @@ test('log4js layouts', (batch) => {
         },
         colour: 'cyan'
       },
-      context: tokens
+      context: tokens,
+
+      // location
+      stack: callStack,
+      fileName,
+      lineNumber,
+      columnNumber,
     };
 
     const layout = require('../../lib/layouts').patternLayout;
@@ -286,6 +298,26 @@ test('log4js layouts', (batch) => {
 
     t.test('%% should output %', (assert) => {
       testPattern(assert, layout, event, tokens, '%%', '%');
+      assert.end();
+    });
+
+    t.test('%s should output stack', (assert) => {
+      testPattern(assert, layout, event, tokens, '%s', callStack);
+      assert.end();
+    });
+
+    t.test('%f should output filename', (assert) => {
+      testPattern(assert, layout, event, tokens, '%f', fileName);
+      assert.end();
+    });
+
+    t.test('%l should output line number', (assert) => {
+      testPattern(assert, layout, event, tokens, '%l', lineNumber.toString());
+      assert.end();
+    });
+
+    t.test('%o should output column postion', (assert) => {
+      testPattern(assert, layout, event, tokens, '%o', columnNumber.toString());
       assert.end();
     });
 
