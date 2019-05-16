@@ -220,7 +220,7 @@ test('log4js layouts', (batch) => {
       context: tokens,
 
       // location
-      stack: callStack,
+      callStack,
       fileName,
       lineNumber,
       columnNumber,

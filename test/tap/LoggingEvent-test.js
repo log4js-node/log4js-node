@@ -50,19 +50,19 @@ test('LoggingEvent', (batch) => {
       fileName,
       lineNumber,
       columnNumber,
-      stack: callStack
+      callStack
     };
     const event = new LoggingEvent('cheese', levels.DEBUG, ['log message'], { user: 'bob' }, location);
     t.equal(event.fileName, fileName);
     t.equal(event.lineNumber, lineNumber);
     t.equal(event.columnNumber, columnNumber);
-    t.equal(event.stack, callStack);
+    t.equal(event.callStack, callStack);
 
     const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], { user: 'bob' });
     t.equal(event2.fileName, undefined);
     t.equal(event2.lineNumber, undefined);
     t.equal(event2.columnNumber, undefined);
-    t.equal(event2.stack, undefined);
+    t.equal(event2.callStack, undefined);
     t.end();
   });
 

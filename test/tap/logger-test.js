@@ -133,19 +133,19 @@ test('../../lib/logger', (batch) => {
 
     t.equal(logger.isCallStackEnable(), false);
 
-    logger.enabelCallStack(false);
+    logger.enableCallStack(false);
     t.equal(logger.isCallStackEnable(), false);
 
-    logger.enabelCallStack(0);
+    logger.enableCallStack(0);
     t.equal(logger.isCallStackEnable(), false);
 
-    logger.enabelCallStack('');
+    logger.enableCallStack('');
     t.equal(logger.isCallStackEnable(), false);
 
-    logger.enabelCallStack(null);
+    logger.enableCallStack(null);
     t.equal(logger.isCallStackEnable(), false);
 
-    logger.enabelCallStack();
+    logger.enableCallStack();
     t.equal(logger.isCallStackEnable(), true);
     t.end();
   });
@@ -153,7 +153,7 @@ test('../../lib/logger', (batch) => {
   batch.test('should enable stack trace for call stack support', (t) => {
     const logger = new Logger('stack');
     logger.level = 'debug';
-    logger.enabelCallStack();
+    logger.enableCallStack();
     t.equal(logger.isCallStackEnable(), true);
 
     logger.info('hello world');
@@ -165,7 +165,7 @@ test('../../lib/logger', (batch) => {
     t.ok(events[0].lineNumber, callsite.getLineNumber() - 1);
     t.ok(events[0].lineNumber, 12);
 
-    logger.enabelCallStack(false);
+    logger.enableCallStack(false);
     t.equal(logger.isCallStackEnable(), false);
     t.end();
   });
