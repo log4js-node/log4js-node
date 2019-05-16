@@ -160,10 +160,10 @@ test('../../lib/logger', (batch) => {
     const callsite = callsites()[0];
 
     t.equal(events.length, 1);
-    t.ok(events[0].data, 'hello world');
-    t.ok(events[0].fileName, callsite.getFileName());
-    t.ok(events[0].lineNumber, callsite.getLineNumber() - 1);
-    t.ok(events[0].lineNumber, 12);
+    t.equal(events[0].data[0], 'hello world');
+    t.equal(events[0].fileName, callsite.getFileName());
+    t.equal(events[0].lineNumber, callsite.getLineNumber() - 1);
+    t.equal(events[0].columnNumber, 12);
 
     logger.enableCallStack(false);
     t.equal(logger.isCallStackEnable(), false);

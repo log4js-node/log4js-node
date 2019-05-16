@@ -156,6 +156,17 @@ test('log4js configuration validation', (batch) => {
     t.end();
   });
 
+  batch.test('should give error if category enableCallStack is not valid', (t) => {
+    t.throws(
+      () => log4js.configure({
+        appenders: { stdout: { type: 'stdout' } },
+        categories: { default: { appenders: ['stdout'], level: 'Debug', enableCallStack: '123' } }
+      }),
+      '- category "default" is not valid (enableCallStack must be boolean type)'
+    );
+    t.end();
+  });
+
   batch.test('should give error if appender type cannot be found', (t) => {
     t.throws(
       () => log4js.configure({

@@ -184,5 +184,34 @@ test('log4js', (batch) => {
     t.end();
   });
 
+  batch.test('useCallStack', (t) => {
+    const log4js = require('../../lib/log4js');
+    log4js.configure({
+      appenders: { recorder: { type: 'recording' } },
+      categories: {
+        default: { appenders: ['recorder'], level: 'DEBUG' },
+        test: { appenders: ['recorder'], level: 'DEBUG' }
+      }
+    });
+    const logger = log4js.getLogger();
+    const loggerT1 = log4js.getLogger('test');
+    const loggerT2 = log4js.getLogger('test');
+    loggerT1.enableCallStack(true);
+    t.deepEqual(loggerT1, loggerT2, 'should get the same logger when same category');
+    t.equal(logger.isCallStackEnable(), false, 'default enableCallStack should be false');
+
+    /* eslint-disable max-len */
+    log4js.useCallStack();
+    t.equal(logger.isCallStackEnable(), true, 'after log.useCallStack() called, all logger enableCallStack should be true');
+    t.equal(loggerT1.isCallStackEnable(), true, 'after log.useCallStack() called, all logger enableCallStack should be true');
+
+    log4js.useCallStack(false);
+    t.equal(logger.isCallStackEnable(), false, 'after log.useCallStack(false) called, all logger enableCallStack should be false');
+    t.equal(loggerT1.isCallStackEnable(), false, 'after log.useCallStack(false) called, all logger enableCallStack should be false');
+    /* eslint-enable max-len */
+
+    t.end();
+  });
+
   batch.end();
 });
