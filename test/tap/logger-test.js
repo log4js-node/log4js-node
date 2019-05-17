@@ -127,34 +127,40 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
-  batch.test('should (default) disable stack trace unless manual enable', (t) => {
+  batch.test('default should disable useCallStack unless manual enable', (t) => {
     const logger = new Logger('stack');
     logger.level = 'debug';
 
-    t.equal(logger.isCallStackEnable(), false);
+    t.equal(logger.useCallStack, false);
 
-    logger.enableCallStack(false);
-    t.equal(logger.isCallStackEnable(), false);
+    logger.useCallStack = false;
+    t.equal(logger.useCallStack, false);
 
-    logger.enableCallStack(0);
-    t.equal(logger.isCallStackEnable(), false);
+    logger.useCallStack = 0;
+    t.equal(logger.useCallStack, false);
 
-    logger.enableCallStack('');
-    t.equal(logger.isCallStackEnable(), false);
+    logger.useCallStack = '';
+    t.equal(logger.useCallStack, false);
 
-    logger.enableCallStack(null);
-    t.equal(logger.isCallStackEnable(), false);
+    logger.useCallStack = null;
+    t.equal(logger.useCallStack, false);
 
-    logger.enableCallStack();
-    t.equal(logger.isCallStackEnable(), true);
+    logger.useCallStack = undefined;
+    t.equal(logger.useCallStack, false);
+
+    logger.useCallStack = 'true';
+    t.equal(logger.useCallStack, false);
+
+    logger.useCallStack = true;
+    t.equal(logger.useCallStack, true);
     t.end();
   });
 
-  batch.test('should enable stack trace for call stack support', (t) => {
+  batch.test('should correctly switch on/off useCallStack', (t) => {
     const logger = new Logger('stack');
     logger.level = 'debug';
-    logger.enableCallStack();
-    t.equal(logger.isCallStackEnable(), true);
+    logger.useCallStack = true;
+    t.equal(logger.useCallStack, true);
 
     logger.info('hello world');
     const callsite = callsites()[0];
@@ -165,8 +171,50 @@ test('../../lib/logger', (batch) => {
     t.equal(events[0].lineNumber, callsite.getLineNumber() - 1);
     t.equal(events[0].columnNumber, 12);
 
-    logger.enableCallStack(false);
-    t.equal(logger.isCallStackEnable(), false);
+    logger.useCallStack = false;
+    logger.info('disabled');
+    t.equal(logger.useCallStack, false);
+    t.equal(events[1].data[0], 'disabled');
+    t.equal(events[1].fileName, undefined);
+    t.equal(events[1].lineNumber, undefined);
+    t.equal(events[1].columnNumber, undefined);
+    t.end();
+  });
+
+  batch.test('Once switch on/off useCallStack will apply all same category loggers', (t) => {
+    const logger1 = new Logger('stack');
+    logger1.level = 'debug';
+    logger1.useCallStack = true;
+    const logger2 = new Logger('stack');
+    logger2.level = 'debug';
+
+    logger1.info('hello world');
+    const callsite = callsites()[0];
+
+    t.equal(logger1.useCallStack, true);
+    t.equal(events.length, 1);
+    t.equal(events[0].data[0], 'hello world');
+    t.equal(events[0].fileName, callsite.getFileName());
+    t.equal(events[0].lineNumber, callsite.getLineNumber() - 1);
+    t.equal(events[0].columnNumber, 13);
+
+    logger2.info('hello world');
+    const callsite2 = callsites()[0];
+
+    t.equal(logger2.useCallStack, true);
+    t.equal(events[1].data[0], 'hello world');
+    t.equal(events[1].fileName, callsite2.getFileName());
+    t.equal(events[1].lineNumber, callsite2.getLineNumber() - 1);
+    t.equal(events[1].columnNumber, 13);
+
+    logger1.useCallStack = false;
+    logger2.info('hello world');
+    t.equal(logger2.useCallStack, false);
+    t.equal(events[2].data[0], 'hello world');
+    t.equal(events[2].fileName, undefined);
+    t.equal(events[2].lineNumber, undefined);
+    t.equal(events[2].columnNumber, undefined);
+
     t.end();
   });
 
