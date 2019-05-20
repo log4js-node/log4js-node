@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@log4js-node/sandboxed-module": "^2.2.1",
+    "callsites": "^3.1.0",
     "codecov": "^3.3.0",
     "conventional-changelog": "^3.1.4",
     "deep-freeze": "0.0.1",
