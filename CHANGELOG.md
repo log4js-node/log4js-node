@@ -1,5 +1,8 @@
 # log4js-node changelog
 
+## 4.3.0
+* [Feature: line number support](https://github.com/log4js-node/log4js-node/pull/879) - thanks [@victor0801x](https://github.com/victor0801x)
+
 ## 4.2.0
 * [Feature: add appender and level inheritance](https://github.com/log4js-node/log4js-node/pull/863) - thanks [@pharapiak](https://github.com/pharapiak)
 * [Feature: add response to context for connectLogger](https://github.com/log4js-node/log4js-node/pull/862) - thanks [@leak4mk0](https://github.com/leak4mk0)
