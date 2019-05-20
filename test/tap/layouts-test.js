@@ -301,11 +301,6 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
-    t.test('%s should output stack', (assert) => {
-      testPattern(assert, layout, event, tokens, '%s', callStack);
-      assert.end();
-    });
-
     t.test('%f should output filename', (assert) => {
       testPattern(assert, layout, event, tokens, '%f', fileName);
       assert.end();
@@ -318,6 +313,35 @@ test('log4js layouts', (batch) => {
 
     t.test('%o should output column postion', (assert) => {
       testPattern(assert, layout, event, tokens, '%o', columnNumber.toString());
+      assert.end();
+    });
+
+    t.test('%s should output stack', (assert) => {
+      testPattern(assert, layout, event, tokens, '%s', callStack);
+      assert.end();
+    });
+
+    t.test('%f should output empty string when fileName not exist', (assert) => {
+      delete event.fileName;
+      testPattern(assert, layout, event, tokens, '%f', '');
+      assert.end();
+    });
+
+    t.test('%l should output empty string when lineNumber not exist', (assert) => {
+      delete event.lineNumber;
+      testPattern(assert, layout, event, tokens, '%l', '');
+      assert.end();
+    });
+
+    t.test('%o should output empty string when culumnNumber not exist', (assert) => {
+      delete event.columnNumber;
+      testPattern(assert, layout, event, tokens, '%o', '');
+      assert.end();
+    });
+
+    t.test('%s should output empty string when callStack not exist', (assert) => {
+      delete event.callStack;
+      testPattern(assert, layout, event, tokens, '%s', '');
       assert.end();
     });
 
