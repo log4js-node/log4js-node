@@ -2,6 +2,7 @@
 
 ## 4.3.0
 * [Feature: line number support](https://github.com/log4js-node/log4js-node/pull/879) - thanks [@victor0801x](https://github.com/victor0801x)
+* [Fix for missing core appenders in webpack](https://github.com/log4js-node/log4js-node/pull/882)
 
 ## 4.2.0
 * [Feature: add appender and level inheritance](https://github.com/log4js-node/log4js-node/pull/863) - thanks [@pharapiak](https://github.com/pharapiak)
