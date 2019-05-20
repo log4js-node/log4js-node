@@ -232,6 +232,7 @@ test('log4js configuration validation', (batch) => {
       ignoreMissing: true,
       requires: {}
     };
+    sandboxConfig.requires['./cheese'] = testAppender('correct', result);
     sandboxConfig.requires[`${mainPath}/cheese`] = testAppender('correct', result);
     // add this one, because when we're running coverage the main path is a bit different
     sandboxConfig.requires[
