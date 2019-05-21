@@ -42,3 +42,29 @@ Take a look at the [clustering](clustering.md) docs, they should help you out.
 ## NPM complains about nodemailer being deprecated, what should I do?
 
 Nodemailer version 4.0.1 (the not-deprecated version) requires a node version >= 6, but log4js supports node versions >= 4. So until I stop supporting node versions less than 6 I can't update the dependency. It's only an optional dependency anyway, so you're free to install nodemailer@4.0.1 if you want - as far as I know it should work, the API looks the same to me. If you know that the smtp appender definitely doesn't work with nodemailer v4, then please create an issue with some details about the problem.
+
+## I want line numbers in my logs!
+
+You need to enable call stack for the category, and use pattern layout to output the values. e.g.
+```javascript
+const log4js = require('log4js');
+log4js.configure({
+  appenders: {
+    out: {
+      type: 'stdout',
+      layout: {
+        type: 'pattern', pattern: '%d %p %c %f:%l %m%n'
+      }
+    }
+  },
+  categories: {
+    default: { appenders: ['out'], level: 'info', enableCallStack: true }
+  }
+});
+const logger = log4js.getLogger('thing');
+logger.info('this should give me a line number now');
+```
+Would output something like this:
+```bash
+2019-05-22T08:41:07.312 INFO thing index.js:16 this should give me a line number now
+```
