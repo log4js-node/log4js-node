@@ -112,6 +112,10 @@ Fields can be any of:
 *  `%%` % - for when you want a literal `%` in your output
 *  `%n` newline
 *  `%z` process id (from `process.pid`)
+*  `%f` filename (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+*  `%l` line number (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+*  `%o` column postion (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+*  `%s` call stack (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 *  `%x{<tokenname>}` add dynamic tokens to your log. Tokens are specified in the tokens parameter.
 *  `%X{<tokenname>}` add values from the Logger context. Tokens are keys into the context values.
 *  `%[` start a coloured block (colour will be taken from the log level, similar to `colouredLayout`)
