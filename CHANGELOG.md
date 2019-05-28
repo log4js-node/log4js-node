@@ -1,5 +1,8 @@
 # log4js-node changelog
 
+## 4.3.1
+* [Fix for maxLogSize in dateFile appender](https://github.com/log4js-node/log4js-node/pull/889)
+
 ## 4.3.0
 * [Feature: line number support](https://github.com/log4js-node/log4js-node/pull/879) - thanks [@victor0801x](https://github.com/victor0801x)
 * [Fix for missing core appenders in webpack](https://github.com/log4js-node/log4js-node/pull/882)
