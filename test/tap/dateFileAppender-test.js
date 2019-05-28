@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const EOL = require('os').EOL || '\n';
 const format = require('date-format');
+const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
 
 function removeFile(filename) {
@@ -131,6 +132,27 @@ test('../../lib/appenders/dateFile', (batch) => {
         t.end();
       });
     });
+  });
+
+  batch.test('should map maxLogSize to maxSize', (t) => {
+    const fakeStreamroller = {};
+    class DateRollingFileStream {
+      constructor(filename, pattern, options) {
+        fakeStreamroller.filename = filename;
+        fakeStreamroller.pattern = pattern;
+        fakeStreamroller.options = options;
+      }
+    }
+    fakeStreamroller.DateRollingFileStream = DateRollingFileStream;
+    const dateFileAppenderModule = sandbox.require('../../lib/appenders/dateFile', {
+      requires: { streamroller: fakeStreamroller }
+    });
+    dateFileAppenderModule.configure({
+      filename: 'cheese.log', pattern: 'yyyy', maxLogSize: 100
+    }, { basicLayout: () => {} });
+
+    t.equal(fakeStreamroller.options.maxSize, 100);
+    t.end();
   });
 
   batch.end();
