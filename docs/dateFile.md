@@ -11,7 +11,7 @@ This is a file appender that rolls log files based on a configurable time, rathe
 
 Any other configuration parameters will be passed to the underlying [streamroller](https://github.com/nomiddlename/streamroller) implementation (see also node.js core file streams):
 * `encoding` - `string` (default "utf-8")
-* `mode`- `integer` (default 0644)
+* `mode`- `integer` (default 0o644 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
 * `flags` - `string` (default 'a')
 * `compress` - `boolean` (default false) - compress the backup files during rolling (backup files will have `.gz` extension)
 * `alwaysIncludePattern` - `boolean` (default false) - include the pattern in the name of the current log file as well as the backups.
