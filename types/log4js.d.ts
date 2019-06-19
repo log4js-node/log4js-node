@@ -277,7 +277,6 @@ export interface Configuration {
 	pm2InstanceVar?: string;
 	levels?: Levels;
 	disableClustering?: boolean;
-  enableCallStack?: boolean;
 }
 
 export class Logger {
