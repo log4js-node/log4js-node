@@ -272,7 +272,7 @@ export interface Levels {
 
 export interface Configuration {
 	appenders: { [name: string]: Appender; };
-	categories: { [name: string]: { appenders: string[]; level: string; } };
+	categories: { [name: string]: { appenders: string[]; level: string; enableCallStack?: boolean; } };
 	pm2?: boolean;
 	pm2InstanceVar?: string;
 	levels?: Levels;
