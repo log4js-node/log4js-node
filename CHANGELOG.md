@@ -1,5 +1,8 @@
 # log4js-node changelog
 
+## 4.3.2
+* [Types for enableCallStack](https://github.com/log4js-node/log4js-node/pull/897) - thanks [@citrusjunoss](https://github.com/citrusjunoss)
+
 ## 4.3.1
 * [Fix for maxLogSize in dateFile appender](https://github.com/log4js-node/log4js-node/pull/889)
 
