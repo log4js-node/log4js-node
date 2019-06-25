@@ -257,8 +257,7 @@ export type Appender = CategoryFilterAppender
 	| RecordingAppender
 	| StandardErrorAppender
 	| StandardOutputAppender
-	| CustomAppender
-	| AppenderModule;
+	| CustomAppender;
 
 export interface Levels {
   ALL: Level;
