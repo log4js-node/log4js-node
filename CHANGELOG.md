@@ -2,6 +2,7 @@
 
 ## 4.4.0
 * [Add option to pass appender module in config](https://github.com/log4js-node/log4js-node/pull/833) - thanks [@kaxelson](https://github.com/kaxelson)
+* [Added docs for passing appender module](https://github.com/log4js-node/log4js-node/pull/904)
 * [Updated dependencies](https://github.com/log4js-node/log4js-node/pull/900)
 
 ## 4.3.2
