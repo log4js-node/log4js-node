@@ -104,8 +104,8 @@ export interface CategoryFilterAppender {
 export interface NoLogFilterAppender {
   type: "noLogFilter";
   // the regular expression (or the regular expressions if you provide an array of values)
-  // will be used for evaluating the events to pass to the appender. 
-  // The events, which will match the regular expression, will be excluded and so not logged. 
+  // will be used for evaluating the events to pass to the appender.
+  // The events, which will match the regular expression, will be excluded and so not logged.
   exclude: string | string[];
   // the name of an appender, defined in the same configuration, that you want to filter.
 	appender: string;
@@ -237,8 +237,12 @@ export interface StandardOutputAppender {
 }
 
 export interface CustomAppender {
-	type: string;
+	type: string | AppenderModule;
 	[key: string]: any;
+}
+
+export interface AppenderModule {
+	configure: Function
 }
 
 export type Appender = CategoryFilterAppender

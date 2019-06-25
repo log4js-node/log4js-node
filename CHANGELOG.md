@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 4.4.0
+* [Add option to pass appender module in config](https://github.com/log4js-node/log4js-node/pull/833) - thanks [@kaxelson](https://github.com/kaxelson)
+* [Updated dependencies](https://github.com/log4js-node/log4js-node/pull/900)
+
 ## 4.3.2
 * [Types for enableCallStack](https://github.com/log4js-node/log4js-node/pull/897) - thanks [@citrusjunoss](https://github.com/citrusjunoss)
 

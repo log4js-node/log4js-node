@@ -130,3 +130,9 @@ log4js.connectLogger(logger1, {
 log4js.connectLogger(logger2, {
   format: (req, _res, format) => format(`:remote-addr - ${req.id} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
 });
+
+//support for passing in an appender module
+log4js.configure({
+  appenders: { thing: { type: { configure: () => {} }}},
+  categories: { default: { appenders: ['thing'], level: 'debug'}}
+});

@@ -68,3 +68,16 @@ Log4js checks the following places (in this order) for appenders based on the ty
 4. relative to the process' current working directory: `require(process.cwd() + '/' + type)`
 
 If you want to write your own appender, read the [documentation](writing-appenders.md) first.
+
+## Advanced configuration
+If you've got a custom appender of your own, or are using webpack (or some other bundler), you may find it easier to pass
+in the appender module in the config instead of loading from the node.js require path. Here's an example:
+```javascript
+const myAppenderModule = {
+  configure: (config, layouts, findAppender, levels) => { /* ...your appender config... */ }
+};
+log4js.configure({
+  appenders: { custom: { type: myAppenderModule } },
+  categories: { default: { appenders: ['custom'], level: 'debug' } }
+});
+```
