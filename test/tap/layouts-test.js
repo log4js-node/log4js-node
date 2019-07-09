@@ -311,8 +311,8 @@ test('log4js layouts', (batch) => {
       testPattern(assert, layout, event, tokens, '%f{2}', 'tap/layouts-test.js');
       testPattern(assert, layout, event, tokens, '%f{3}', 'test/tap/layouts-test.js');
       testPattern(assert, layout, event, tokens, '%f{4}', 'log4js-node/test/tap/layouts-test.js');
-      testPattern(assert, layout, event, tokens, '%f{5}', 'log4js-node/test/tap/layouts-test.js');
-      testPattern(assert, layout, event, tokens, '%f{99}', 'log4js-node/test/tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{5}', '/log4js-node/test/tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{99}', '/log4js-node/test/tap/layouts-test.js');
       assert.end();
     });
 
