@@ -112,7 +112,8 @@ Fields can be any of:
 *  `%%` % - for when you want a literal `%` in your output
 *  `%n` newline
 *  `%z` process id (from `process.pid`)
-*  `%f` filename (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+*  `%f` full path of filename (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+*  `%f{depth}` path's depth let you chose to have only filename (`%f{1}`) or a chosen number of directories
 *  `%l` line number (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 *  `%o` column postion (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 *  `%s` call stack (requires `enableCallStack: true` on the category, see [configuration object](api.md))

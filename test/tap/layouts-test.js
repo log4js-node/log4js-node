@@ -306,6 +306,16 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
+    t.test('%f should handle filename depth', (assert) => {
+      testPattern(assert, layout, event, tokens, '%f{1}', 'layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{2}', 'tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{3}', 'test/tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{4}', 'log4js-node/test/tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{5}', 'log4js-node/test/tap/layouts-test.js');
+      testPattern(assert, layout, event, tokens, '%f{99}', 'log4js-node/test/tap/layouts-test.js');
+      assert.end();
+    });
+
     t.test('%l should output line number', (assert) => {
       testPattern(assert, layout, event, tokens, '%l', lineNumber.toString());
       assert.end();
