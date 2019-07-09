@@ -218,5 +218,32 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
+  batch.test('should correctly change the parseCallStack function', (t) => {
+    const logger = new Logger('stack');
+    const parseFunction = function () {
+      return {
+        functionName: 'test function name',
+        fileName: 'test file name',
+        lineNumber: 15,
+        columnNumber: 25,
+        callStack: 'test callstack',
+      };
+    };
+    logger.level = 'debug';
+    logger.useCallStack = true;
+    logger.setParseCallStackFunction(parseFunction);
+
+    t.equal(logger.parseCallStack, parseFunction);
+
+    logger.info('test parseCallStack');
+    t.equal(events[0].functionName, 'test function name');
+    t.equal(events[0].fileName, 'test file name');
+    t.equal(events[0].lineNumber, 15);
+    t.equal(events[0].columnNumber, 25);
+    t.equal(events[0].callStack, 'test callstack');
+
+    t.end();
+  });
+
   batch.end();
 });
