@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 4.5.0
+* [Override call stack parsing](https://github.com/log4js-node/log4js-node/pull/914) - thanks [@rommni](https://github.com/rommni)
+* [patternLayout filename depth token](https://github.com/log4js-node/log4js-node/pull/913) - thanks [@rommni](https://github.com/rommni)
+
 ## 4.4.0
 * [Add option to pass appender module in config](https://github.com/log4js-node/log4js-node/pull/833) - thanks [@kaxelson](https://github.com/kaxelson)
 * [Added docs for passing appender module](https://github.com/log4js-node/log4js-node/pull/904)

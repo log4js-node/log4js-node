@@ -307,6 +307,8 @@ export class Logger {
 
 	clearContext(): void;
 
+	setParseCallStackFunction(parseFunction: Function): void;
+
 	trace(message: any, ...args: any[]): void;
 
 	debug(message: any, ...args: any[]): void;
