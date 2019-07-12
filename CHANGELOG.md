@@ -1,6 +1,7 @@
 # log4js-node changelog
 
-## Next release
+## 4.5.1
+* [Update streamroller 1.0.5 -> 1.0.6 (to fix overwriting old backup log files)](https://github.com/log4js-node/log4js-node/pull/918)
 * [Dependency update: lodash 4.17.4 (dependency of a dependency, not log4js)](https://github.com/log4js-node/log4js-node/pull/917) - thanks Github Automated Security Thing.
 * [Dependency update: lodash 4.4.0 -> 4.5.0 (dependency of a dependency, not log4js)](https://github.com/log4js-node/log4js-node/pull/915) - thanks Github Automated Security Thing.
 
