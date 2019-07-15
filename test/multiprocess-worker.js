@@ -1,5 +1,5 @@
 if (process.argv.indexOf('start-multiprocess-worker') >= 0) {
-  const log4js = require('../../lib/log4js');
+  const log4js = require('../lib/log4js');
   const port = parseInt(process.argv[process.argv.length - 1], 10);
   log4js.configure({
     appenders: {

@@ -23,13 +23,15 @@ test('multiprocess appender shutdown (master)', { timeout: 2000 }, (t) => {
   setTimeout(() => {
     log4js.shutdown(() => {
       setTimeout(() => {
-        net.connect({ port: 12345 }, () => {
-          t.fail('connection should not still work');
-          t.end();
-        }).on('error', (err) => {
-          t.ok(err, 'we got a connection error');
-          t.end();
-        });
+        net
+          .connect({ port: 12345 }, () => {
+            t.fail('connection should not still work');
+            t.end();
+          })
+          .on('error', (err) => {
+            t.ok(err, 'we got a connection error');
+            t.end();
+          });
       }, 250);
     });
   }, 250);
@@ -92,23 +94,10 @@ test('multiprocess appender shutdown (worker)', (t) => {
 
 test('multiprocess appender crash (worker)', (t) => {
   const loggerPort = 12346;
-  const messages = [];
-  const fakeConsole = {
-    log: function (msg) {
-      messages.push(msg);
-    }
-  };
-  const log4jsWithFakeConsole = sandbox.require(
-    '../../lib/log4js',
-    {
-      globals: {
-        console: fakeConsole
-      }
-    }
-  );
-  log4jsWithFakeConsole.configure({
+  const vcr = require('../../lib/appenders/recording');
+  log4js.configure({
     appenders: {
-      console: { type: 'console', layout: { type: 'messagePassThrough' } },
+      console: { type: 'recording' },
       multi: {
         type: 'multiprocess',
         mode: 'master',
@@ -119,17 +108,17 @@ test('multiprocess appender crash (worker)', (t) => {
     categories: { default: { appenders: ['multi'], level: 'debug' } }
   });
 
-  const worker = childProcess.fork(
-    require.resolve('./multiprocess-worker'),
-    ['start-multiprocess-worker', loggerPort]
-  );
+  const worker = childProcess.fork(require.resolve('../multiprocess-worker'), [
+    'start-multiprocess-worker',
+    loggerPort
+  ]);
 
   worker.on('message', (m) => {
     if (m === 'worker is done') {
       setTimeout(() => {
         worker.kill();
-        t.equal(messages[0], 'Logging from worker');
-        log4jsWithFakeConsole.shutdown(() => t.end());
+        t.equal(vcr.replay()[0].data[0], 'Logging from worker');
+        log4js.shutdown(() => t.end());
       }, 100);
     }
   });
