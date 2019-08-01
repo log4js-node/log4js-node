@@ -2,9 +2,8 @@ language: node_js
 dist: trusty
 sudo: false
 node_js:
-  - "12"
-  - "10"
-  - "8"
-  - "6"
+  - '12'
+  - '10'
+  - '8'
 after_success:
   - npm run codecov
