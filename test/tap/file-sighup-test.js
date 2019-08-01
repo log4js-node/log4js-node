@@ -1,15 +1,12 @@
-'use strict';
+const { test } = require("tap");
+const sandbox = require("@log4js-node/sandboxed-module");
 
-const test = require('tap').test;
-const sandbox = require('@log4js-node/sandboxed-module');
-
-test('file appender SIGHUP', (t) => {
+test("file appender SIGHUP", t => {
   let closeCalled = 0;
   let openCalled = 0;
 
-  const appender = sandbox.require(
-    '../../lib/appenders/file',
-    {
+  const appender = sandbox
+    .require("../../lib/appenders/file", {
       requires: {
         streamroller: {
           RollingFileStream: class RollingFileStream {
@@ -19,7 +16,7 @@ test('file appender SIGHUP', (t) => {
             }
 
             on() {
-              this.dummy = 'easier than turning off lint rule';
+              this.dummy = "easier than turning off lint rule";
             }
 
             end(cb) {
@@ -30,39 +27,46 @@ test('file appender SIGHUP', (t) => {
 
             write() {
               if (this.ended) {
-                throw new Error('write after end');
+                throw new Error("write after end");
               }
               return true;
             }
           }
         }
       }
-    }
-  ).configure({ type: 'file', filename: 'sighup-test-file' }, { basicLayout: function () { return 'whatever'; } });
+    })
+    .configure(
+      { type: "file", filename: "sighup-test-file" },
+      {
+        basicLayout() {
+          return "whatever";
+        }
+      }
+    );
 
-  appender('something to log');
-  process.kill(process.pid, 'SIGHUP');
+  appender("something to log");
+  process.kill(process.pid, "SIGHUP");
 
   t.plan(2);
   setTimeout(() => {
-    appender('something to log after sighup');
-    t.equal(openCalled, 2, 'open should be called twice');
-    t.equal(closeCalled, 1, 'close should be called once');
+    appender("something to log after sighup");
+    t.equal(openCalled, 2, "open should be called twice");
+    t.equal(closeCalled, 1, "close should be called once");
     t.end();
   }, 100);
 });
 
-test('file appender SIGHUP handler leak', (t) => {
-  const log4js = require('../../lib/log4js');
-  const initialListeners = process.listenerCount('SIGHUP');
+test("file appender SIGHUP handler leak", t => {
+  const log4js = require("../../lib/log4js");
+  const initialListeners = process.listenerCount("SIGHUP");
   log4js.configure({
     appenders: {
-      file: { type: 'file', filename: 'test.log' }
+      file: { type: "file", filename: "test.log" }
     },
-    categories: { default: { appenders: ['file'], level: 'info' } }
+    categories: { default: { appenders: ["file"], level: "info" } }
   });
   log4js.shutdown(() => {
-    t.equal(process.listenerCount('SIGHUP'), initialListeners);
+    t.equal(process.listenerCount("SIGHUP"), initialListeners);
     t.end();
   });
 });
