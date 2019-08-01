@@ -16,6 +16,7 @@ test('log4js configure', (batch) => {
     fileRead = 0;
 
     fakeFS = {
+      realpath: () => {}, // fs-extra looks for this
       ReadStream: realFS.ReadStream, // need to define these, because graceful-fs uses them
       WriteStream: realFS.WriteStream,
       closeSync: () => {},
