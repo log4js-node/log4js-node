@@ -3,7 +3,7 @@
 const test = require('tap').test;
 const os = require('os');
 
-const EOL = os.EOL || '\n';
+const EOL = os.EOL;
 
 // used for patternLayout tests.
 function testPattern(assert, layout, event, tokens, pattern, value) {
@@ -27,10 +27,7 @@ test('log4js layouts', (batch) => {
         }
       });
 
-      assert.equal(
-        output,
-        '\x1B[91m[2010-12-05T14:18:30.045] [ERROR] cheese - \x1B[39mnonsense'
-      );
+      assert.equal(output, '\x1B[91m[2010-12-05T14:18:30.045] [ERROR] cheese - \x1B[39mnonsense');
       assert.end();
     });
 
@@ -55,41 +52,53 @@ test('log4js layouts', (batch) => {
   batch.test('messagePassThroughLayout', (t) => {
     const layout = require('../../lib/layouts').messagePassThroughLayout;
 
-    t.equal(layout({
-      data: ['nonsense'],
-      startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: 'cheese',
-      level: {
-        colour: 'green',
-        toString: function () {
-          return 'ERROR';
+    t.equal(
+      layout({
+        data: ['nonsense'],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: 'cheese',
+        level: {
+          colour: 'green',
+          toString: function () {
+            return 'ERROR';
+          }
         }
-      }
-    }), 'nonsense', 'should take a logevent and output only the message');
+      }),
+      'nonsense',
+      'should take a logevent and output only the message'
+    );
 
-    t.equal(layout({
-      data: ['thing %d', 1, 'cheese'],
-      startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: 'cheese',
-      level: {
-        colour: 'green',
-        toString: function () {
-          return 'ERROR';
+    t.equal(
+      layout({
+        data: ['thing %d', 1, 'cheese'],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: 'cheese',
+        level: {
+          colour: 'green',
+          toString: function () {
+            return 'ERROR';
+          }
         }
-      }
-    }), 'thing 1 cheese', 'should support the console.log format for the message');
+      }),
+      'thing 1 cheese',
+      'should support the console.log format for the message'
+    );
 
-    t.equal(layout({
-      data: [{ thing: 1 }],
-      startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
-      categoryName: 'cheese',
-      level: {
-        colour: 'green',
-        toString: function () {
-          return 'ERROR';
+    t.equal(
+      layout({
+        data: [{ thing: 1 }],
+        startTime: new Date(2010, 11, 5, 14, 18, 30, 45),
+        categoryName: 'cheese',
+        level: {
+          colour: 'green',
+          toString: function () {
+            return 'ERROR';
+          }
         }
-      }
-    }), '{ thing: 1 }', 'should output the first item even if it is not a string');
+      }),
+      '{ thing: 1 }',
+      'should output the first item even if it is not a string'
+    );
 
     t.match(
       layout({
@@ -162,10 +171,7 @@ test('log4js layouts', (batch) => {
       const lines = output.split(/\n/);
 
       assert.equal(lines.length, stack.length);
-      assert.equal(
-        lines[0],
-        '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error'
-      );
+      assert.equal(lines[0], '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test Error: Some made-up error');
       for (i = 1; i < stack.length; i++) {
         assert.equal(lines[i], stack[i]);
       }
@@ -174,7 +180,8 @@ test('log4js layouts', (batch) => {
 
     t.test('should output any extra data in the log event as util.inspect strings', (assert) => {
       event.data = [
-        'this is a test', {
+        'this is a test',
+        {
           name: 'Cheese',
           message: 'Gorgonzola smells.'
         }
@@ -183,8 +190,30 @@ test('log4js layouts', (batch) => {
       assert.equal(
         output,
         '[2010-12-05T14:18:30.045] [DEBUG] tests - this is a test '
-        + "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
+          + "{ name: 'Cheese', message: 'Gorgonzola smells.' }"
       );
+      assert.end();
+    });
+    t.end();
+  });
+
+  batch.test('dummyLayout', (t) => {
+    const layout = require('../../lib/layouts').dummyLayout;
+
+    t.test('should output just the first element of the log data', (assert) => {
+      const event = {
+        data: ['this is the first value', 'this is not'],
+        startTime: new Date('2010-12-05 14:18:30.045'),
+        categoryName: 'multiple.levels.of.tests',
+        level: {
+          toString: function () {
+            return 'DEBUG';
+          },
+          colour: 'cyan'
+        }
+      };
+
+      assert.equal(layout(event), 'this is the first value');
       assert.end();
     });
     t.end();
@@ -202,8 +231,7 @@ test('log4js layouts', (batch) => {
     };
 
     // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
-    /* eslint-disable-next-line */
-    const callStack = '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)';
+    const callStack =      '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line
     const fileName = '/log4js-node/test/tap/layouts-test.js';
     const lineNumber = 1;
     const columnNumber = 14;
@@ -223,14 +251,20 @@ test('log4js layouts', (batch) => {
       callStack,
       fileName,
       lineNumber,
-      columnNumber,
+      columnNumber
     };
+
+    event.startTime.getTimezoneOffset = () => -600;
 
     const layout = require('../../lib/layouts').patternLayout;
 
     t.test('should default to "time logLevel loggerName - message"', (assert) => {
       testPattern(
-        assert, layout, event, tokens, null,
+        assert,
+        layout,
+        event,
+        tokens,
+        null,
         `14:18:30 DEBUG multiple.levels.of.tests - this is a test${EOL}`
       );
       assert.end();
@@ -271,6 +305,18 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
+    t.test('%z should pick up pid from log event if present', (assert) => {
+      event.pid = '1234';
+      testPattern(assert, layout, event, tokens, '%z', '1234');
+      delete event.pid;
+      assert.end();
+    });
+
+    t.test('%y should output pid (was cluster info)', (assert) => {
+      testPattern(assert, layout, event, tokens, '%y', process.pid.toString());
+      assert.end();
+    });
+
     t.test('%c should handle category names like java-style package names', (assert) => {
       testPattern(assert, layout, event, tokens, '%c{1}', 'tests');
       testPattern(assert, layout, event, tokens, '%c{2}', 'of.tests');
@@ -288,6 +334,7 @@ test('log4js layouts', (batch) => {
 
     t.test('%d should allow for format specification', (assert) => {
       testPattern(assert, layout, event, tokens, '%d{ISO8601}', '2010-12-05T14:18:30.045');
+      testPattern(assert, layout, event, tokens, '%d{ISO8601_WITH_TZ_OFFSET}', '2010-12-05T03:18:30.045+1000');
       testPattern(assert, layout, event, tokens, '%d{ABSOLUTE}', '14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{DATE}', '05 12 2010 14:18:30.045');
       testPattern(assert, layout, event, tokens, '%d{yy MM dd hh mm ss}', '10 12 05 14 18 30');
@@ -367,7 +414,10 @@ test('log4js layouts', (batch) => {
 
     t.test('should handle complicated patterns', (assert) => {
       testPattern(
-        assert, layout, event, tokens,
+        assert,
+        layout,
+        event,
+        tokens,
         '%m%n %c{2} at %d{ABSOLUTE} cheese %p%n',
         `this is a test${EOL} of.tests at 14:18:30.045 cheese DEBUG${EOL}`
       );
@@ -462,6 +512,15 @@ test('log4js layouts', (batch) => {
       assert.ok(layouts.layout('colored'));
       assert.ok(layouts.layout('coloured'));
       assert.ok(layouts.layout('pattern'));
+      assert.ok(layouts.layout('dummy'));
+      assert.end();
+    });
+
+    t.test('layout pattern maker should pass pattern and tokens to layout from config', (assert) => {
+      let layout = layouts.layout('pattern', { pattern: '%%' });
+      assert.equal(layout({}), '%');
+      layout = layouts.layout('pattern', { pattern: '%x{testStringToken}', tokens: { testStringToken: 'cheese' } });
+      assert.equal(layout({}), 'cheese');
       assert.end();
     });
     t.end();
