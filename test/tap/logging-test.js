@@ -1,5 +1,6 @@
 const { test } = require("tap");
 const sandbox = require("@log4js-node/sandboxed-module");
+const util = require("util");
 const recording = require("../../lib/appenders/recording");
 
 test("log4js", batch => {
@@ -58,7 +59,7 @@ test("log4js", batch => {
 
   batch.test("when shutdown is called", t => {
     const events = {
-      appenderShutdownCalled: false
+      shutdownCalled: []
     };
 
     const log4js = sandbox.require("../../lib/log4js", {
@@ -66,12 +67,13 @@ test("log4js", batch => {
         "./appenders/file": {
           name: "file",
           configure() {
-            function thing() {
+            function thing(evt) {
+              events.event = evt;
               return null;
             }
 
             thing.shutdown = function(cb) {
-              events.appenderShutdownCalled = true;
+              events.shutdownCalled.push(true);
               cb();
             };
             return thing;
@@ -87,14 +89,26 @@ test("log4js", batch => {
           filename: "cheesy-wotsits.log",
           maxLogSize: 1024,
           backups: 3
+        },
+        alsoFile: {
+          type: "file"
         }
       },
-      categories: { default: { appenders: ["file"], level: "DEBUG" } }
+      categories: {
+        default: { appenders: ["file", "alsoFile"], level: "DEBUG" }
+      }
     };
 
     log4js.configure(config);
+    const logger = log4js.getLogger();
     log4js.shutdown(() => {
-      t.ok(events.appenderShutdownCalled, "should invoke appender shutdowns");
+      t.equal(
+        events.shutdownCalled.length,
+        2,
+        "should invoke appender shutdowns"
+      );
+      logger.info("this should not go to the appenders");
+      t.notOk(events.event);
       t.end();
     });
   });
@@ -169,6 +183,18 @@ test("log4js", batch => {
     logger.debug("This is a test");
     t.ok(fakeStdoutAppender.required, "stdout should be required");
     t.notOk(fakeStdoutAppender.evt, "should not log anything");
+    t.end();
+  });
+
+  batch.test("with configure called with empty values", t => {
+    [null, undefined, "", " ", []].forEach(config => {
+      const log4js = require("../../lib/log4js");
+      const expectedError = `Problem reading config from file "${util.inspect(
+        config
+      )}". Error was ENOENT: no such file or directory`;
+      t.throws(() => log4js.configure(config), expectedError);
+    });
+
     t.end();
   });
 
