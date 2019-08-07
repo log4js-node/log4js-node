@@ -262,7 +262,9 @@ test("log4js layouts", batch => {
     const columnNumber = 14;
     const event = {
       data: ["this is a test"],
-      startTime: new Date("2010-12-05 14:18:30.045"),
+      startTime: new Date(
+        Date.UTC(2010, 11, 5, 3, 18, 30, 45) /* "2010-12-05 14:18:30.045" */
+      ),
       categoryName: "multiple.levels.of.tests",
       level: {
         toString() {
@@ -278,6 +280,7 @@ test("log4js layouts", batch => {
       lineNumber,
       columnNumber
     };
+    event.startTime.getTimezoneOffset = () => -600;
 
     const layout = require("../../lib/layouts").patternLayout;
 
@@ -410,7 +413,6 @@ test("log4js layouts", batch => {
         "2010-12-05T14:18:30.045"
       );
 
-      event.startTime.getTimezoneOffset = () => -600;
       testPattern(
         assert,
         layout,
@@ -419,7 +421,6 @@ test("log4js layouts", batch => {
         "%d{ISO8601_WITH_TZ_OFFSET}",
         "2010-12-05T03:18:30.045+1000"
       );
-      delete event.startTime.getTimezoneOffset;
 
       testPattern(
         assert,
