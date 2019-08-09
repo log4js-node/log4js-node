@@ -262,15 +262,7 @@ test("log4js layouts", batch => {
     const columnNumber = 14;
     const event = {
       data: ["this is a test"],
-      startTime: new Date(
-        2010,
-        11,
-        5,
-        14,
-        18,
-        30,
-        45
-      ) /* "2010-12-05 14:18:30.045" */,
+      startTime: new Date("2010-12-05 14:18:30.045"),
       categoryName: "multiple.levels.of.tests",
       level: {
         toString() {
