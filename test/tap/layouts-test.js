@@ -263,8 +263,14 @@ test("log4js layouts", batch => {
     const event = {
       data: ["this is a test"],
       startTime: new Date(
-        Date.UTC(2010, 11, 5, 3, 18, 30, 45) /* "2010-12-05 14:18:30.045" */
-      ),
+        2010,
+        11,
+        5,
+        14,
+        18,
+        30,
+        45
+      ) /* "2010-12-05 14:18:30.045" */,
       categoryName: "multiple.levels.of.tests",
       level: {
         toString() {
