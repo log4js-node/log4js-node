@@ -4,6 +4,8 @@
 
 - [Update streamroller to 2.0.0 (remove support for node v6)](https://github.com/log4js-node/log4js-node/pull/922)
 - [Update dependencies (mostly dev deps)](https://github.com/log4js-node/log4js-node/pull/923)
+- [Fix error when cluster not available](https://github.com/log4js-node/log4js-node/pull/930)
+- [Test coverage improvements](https://github.com/log4js-node/log4js-node/pull/925)
 
 ## 4.5.1
 
