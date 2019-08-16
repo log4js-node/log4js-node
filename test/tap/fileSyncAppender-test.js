@@ -109,25 +109,23 @@ test("log4js fileSyncAppender", batch => {
           type: "fileSync",
           filename: testFile,
           maxLogSize: "1K",
-          backups: 0
+          backups: 0,
+          layout: { type: "messagePassThrough" }
         }
       },
       categories: { default: { appenders: ["sync"], level: "debug" } }
     });
-    const maxLine = 13;
+    const maxLine = 22; // 1024 max file size / 47 bytes per line 
     for (let i = 0; i < maxLine; i++) {
-      logger.info("This is the first log message.");
+      logger.info("These are the log messages for the first file."); // 46 bytes per line + '\n'
     }
 
     logger.info("This is the second log message.");
 
     t.test("log file should only contain the second message", assert => {
       fs.readFile(testFile, "utf8", (err, fileContents) => {
-        assert.include(fileContents, `This is the second log message.${EOL}`);
-        assert.equal(
-          fileContents.indexOf("This is the first log message."),
-          -1
-        );
+        assert.match(fileContents, `This is the second log message.${EOL}`);
+        assert.notMatch(fileContents, "These are the log messages for the first file.");
         assert.end();
       });
     });

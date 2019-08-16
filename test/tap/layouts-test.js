@@ -1,5 +1,6 @@
 const { test } = require("tap");
 const os = require("os");
+const path = require("path");
 
 const { EOL } = os;
 
@@ -257,7 +258,7 @@ test("log4js layouts", batch => {
     // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
     const callStack =
       "    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)"; // eslint-disable-line
-    const fileName = "/log4js-node/test/tap/layouts-test.js";
+    const fileName = path.normalize("/log4js-node/test/tap/layouts-test.js");
     const lineNumber = 1;
     const columnNumber = 14;
     const event = {
@@ -483,7 +484,7 @@ test("log4js layouts", batch => {
         event,
         tokens,
         "%f{2}",
-        "tap/layouts-test.js"
+        path.join("tap", "layouts-test.js")
       );
       testPattern(
         assert,
@@ -491,7 +492,7 @@ test("log4js layouts", batch => {
         event,
         tokens,
         "%f{3}",
-        "test/tap/layouts-test.js"
+        path.join("test", "tap", "layouts-test.js")
       );
       testPattern(
         assert,
@@ -499,7 +500,7 @@ test("log4js layouts", batch => {
         event,
         tokens,
         "%f{4}",
-        "log4js-node/test/tap/layouts-test.js"
+        path.join("log4js-node","test","tap","layouts-test.js")
       );
       testPattern(
         assert,
@@ -507,7 +508,7 @@ test("log4js layouts", batch => {
         event,
         tokens,
         "%f{5}",
-        "/log4js-node/test/tap/layouts-test.js"
+        path.join("/log4js-node","test","tap","layouts-test.js")
       );
       testPattern(
         assert,
@@ -515,7 +516,7 @@ test("log4js layouts", batch => {
         event,
         tokens,
         "%f{99}",
-        "/log4js-node/test/tap/layouts-test.js"
+        path.join("/log4js-node","test","tap","layouts-test.js")
       );
       assert.end();
     });

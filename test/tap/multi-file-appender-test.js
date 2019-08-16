@@ -140,16 +140,17 @@ test("multiFile appender", batch => {
           base: "logs/",
           property: "label",
           extension: ".log",
-          maxLogSize: 61,
-          backups: 2
+          maxLogSize: 30,
+          backups: 2,
+          layout: { type: "messagePassThrough" }
         }
       },
       categories: { default: { appenders: ["multi"], level: "info" } }
     });
     const loggerF = log4js.getLogger();
     loggerF.addContext("label", "F");
-    loggerF.info("Being in logger F is the best");
-    loggerF.info("I am also in logger F");
+    loggerF.info("Being in logger F is the best.");
+    loggerF.info("I am also in logger F, awesome");
     loggerF.info("I am in logger F");
     log4js.shutdown(() => {
       let contents = fs.readFileSync("logs/F.log", "utf-8");

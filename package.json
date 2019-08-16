@@ -28,12 +28,10 @@
     "node": ">=8.0"
   },
   "scripts": {
-    "clean": "find test -type f ! -name '*.json' ! -name '*.js' ! -name '.eslintrc' -delete && rm *.log",
-    "posttest": "npm run clean",
-    "pretest": "eslint 'lib/**/*.js' 'test/**/*.js'",
-    "test": "tap 'test/tap/**/*.js' --cov",
+    "pretest": "eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "test": "tap \"test/tap/**/*.js\" --cov",
     "typings": "tsc -p types/tsconfig.json",
-    "codecov": "tap 'test/tap/**/*.js' --cov --coverage-report=lcov && codecov"
+    "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
   },
   "directories": {
     "test": "test",
@@ -57,6 +55,7 @@
     "eslint-import-resolver-node": "^0.3.2",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.0",
+    "fs-extra": "^8.1.0",
     "husky": "^3.0.2",
     "nyc": "^14.1.1",
     "prettier": "^1.18.2",
