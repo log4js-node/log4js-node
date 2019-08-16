@@ -4,7 +4,7 @@ const childProcess = require("child_process");
 const sandbox = require("@log4js-node/sandboxed-module");
 const log4js = require("../../lib/log4js");
 
-test("multiprocess appender shutdown (master)", { timeout: 2000 }, t => {
+test("multiprocess appender shutdown (master)", { timeout: 5000 }, t => {
   log4js.configure({
     appenders: {
       stdout: { type: "stdout" },
@@ -30,9 +30,9 @@ test("multiprocess appender shutdown (master)", { timeout: 2000 }, t => {
             t.ok(err, "we got a connection error");
             t.end();
           });
-      }, 250);
+      }, 1000);
     });
-  }, 250);
+  }, 1000);
 });
 
 test("multiprocess appender shutdown (worker)", t => {

@@ -342,11 +342,14 @@ test("log4js configuration validation", batch => {
           return target[key];
         }
       });
+
+      // windows file paths are different to unix, so let's make this work for both.
+      const requires = {};
+      requires[path.join("/var", "lib", "cheese", "cheese")] = testAppender("correct", result);
+
       const sandboxedLog4js = sandbox.require("../../lib/log4js", {
         ignoreMissing: true,
-        requires: {
-          "/var/lib/cheese/cheese": testAppender("correct", result)
-        },
+        requires,
         globals: {
           process: fakeProcess
         }

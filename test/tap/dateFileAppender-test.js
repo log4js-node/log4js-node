@@ -130,7 +130,7 @@ test("../../lib/appenders/dateFile", batch => {
   });
 
   batch.test("should flush logs on shutdown", t => {
-    const testFile = path.join(__dirname, "date-appender-default.log");
+    const testFile = path.join(__dirname, "date-appender-flush.log");
     log4js.configure({
       appenders: { test: { type: "dateFile", filename: testFile } },
       categories: { default: { appenders: ["test"], level: "trace" } }
@@ -141,7 +141,7 @@ test("../../lib/appenders/dateFile", batch => {
     logger.info("2");
     logger.info("3");
     t.teardown(() => {
-      removeFile("date-appender-default.log");
+      removeFile("date-appender-flush.log");
     });
 
     log4js.shutdown(() => {
