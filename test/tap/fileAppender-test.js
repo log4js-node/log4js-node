@@ -3,7 +3,7 @@ const fs = require("fs-extra");
 const path = require("path");
 const sandbox = require("@log4js-node/sandboxed-module");
 const zlib = require("zlib");
-const util = require('util');
+const util = require("util");
 
 const sleep = util.promisify(setTimeout);
 const gunzip = util.promisify(zlib.gunzip);
@@ -43,7 +43,6 @@ test("log4js fileAppender", batch => {
       /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
     );
     t.end();
-    
   });
 
   batch.test("should flush logs on shutdown", async t => {
@@ -60,17 +59,15 @@ test("log4js fileAppender", batch => {
     logger.info("2");
     logger.info("3");
 
-    log4js.shutdown(() => {
-      fs.readFile(testFile, "utf8", (err, fileContents) => {
-        // 3 lines of output, plus the trailing newline.
-        t.equal(fileContents.split(EOL).length, 4);
-        t.match(
-          fileContents,
-          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
-        );
-        t.end();
-      });
-    });
+    await new Promise(resolve => log4js.shutdown(resolve));
+    const fileContents = await fs.readFile(testFile, "utf8");
+    // 3 lines of output, plus the trailing newline.
+    t.equal(fileContents.split(EOL).length, 4);
+    t.match(
+      fileContents,
+      /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+    );
+    t.end();
   });
 
   batch.test("with a max file size and no backups", async t => {
@@ -78,9 +75,9 @@ test("log4js fileAppender", batch => {
     const logger = log4js.getLogger("max-file-size");
 
     t.tearDown(async () => {
-      await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`) ]);
+      await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
-    await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`) ]);
+    await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
 
     // log file of 100 bytes maximum, no backups
     log4js.configure({
@@ -118,9 +115,9 @@ test("log4js fileAppender", batch => {
     const logger = log4js.getLogger("max-file-size-unit");
 
     t.tearDown(async () => {
-      await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`) ]);
+      await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
-    await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`) ]);
+    await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
 
     // log file of 1K = 1024 bytes maximum, no backups
     log4js.configure({
@@ -137,7 +134,7 @@ test("log4js fileAppender", batch => {
         default: { appenders: ["file"], level: "debug" }
       }
     });
-    const maxLine = 22; // 1024 max file size / 47 bytes per line 
+    const maxLine = 22; // 1024 max file size / 47 bytes per line
     for (let i = 0; i < maxLine; i++) {
       logger.info("These are the log messages for the first file."); // 46 bytes per line + '\n'
     }
@@ -163,10 +160,18 @@ test("log4js fileAppender", batch => {
       "fa-maxFileSize-with-backups-test.log"
     );
     const logger = log4js.getLogger("max-file-size-backups");
-    await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`), removeFile(`${testFile}.2`) ]);
+    await Promise.all([
+      removeFile(testFile),
+      removeFile(`${testFile}.1`),
+      removeFile(`${testFile}.2`)
+    ]);
 
     t.tearDown(async () => {
-      await Promise.all([ removeFile(testFile), removeFile(`${testFile}.1`), removeFile(`${testFile}.2`) ]);
+      await Promise.all([
+        removeFile(testFile),
+        removeFile(`${testFile}.1`),
+        removeFile(`${testFile}.2`)
+      ]);
     });
 
     // log file of 50 bytes maximum, 2 backups
@@ -191,28 +196,20 @@ test("log4js fileAppender", batch => {
     const files = await fs.readdir(__dirname);
     const logFiles = files
       .sort()
-      .filter(file =>
-        file.includes("fa-maxFileSize-with-backups-test.log")
-      );
+      .filter(file => file.includes("fa-maxFileSize-with-backups-test.log"));
     t.equal(logFiles.length, 3);
     t.same(logFiles, [
       "fa-maxFileSize-with-backups-test.log",
       "fa-maxFileSize-with-backups-test.log.1",
       "fa-maxFileSize-with-backups-test.log.2"
     ]);
-    let contents = await fs.readFile(
-      path.join(__dirname, logFiles[0]),
-      "utf8");
+    let contents = await fs.readFile(path.join(__dirname, logFiles[0]), "utf8");
     t.include(contents, "This is the fourth log message.");
-    contents = await fs.readFile(
-      path.join(__dirname, logFiles[1]),
-      "utf8");
+    contents = await fs.readFile(path.join(__dirname, logFiles[1]), "utf8");
     t.include(contents, "This is the third log message.");
-    contents = await fs.readFile(
-      path.join(__dirname, logFiles[2]),
-      "utf8");
+    contents = await fs.readFile(path.join(__dirname, logFiles[2]), "utf8");
     t.include(contents, "This is the second log message.");
-            
+
     t.end();
   });
 
@@ -225,14 +222,14 @@ test("log4js fileAppender", batch => {
     await Promise.all([
       removeFile(testFile),
       removeFile(`${testFile}.1.gz`),
-      removeFile(`${testFile}.2.gz`)  
+      removeFile(`${testFile}.2.gz`)
     ]);
 
     t.tearDown(async () => {
       await Promise.all([
         removeFile(testFile),
         removeFile(`${testFile}.1.gz`),
-        removeFile(`${testFile}.2.gz`)  
+        removeFile(`${testFile}.2.gz`)
       ]);
     });
 
@@ -267,21 +264,17 @@ test("log4js fileAppender", batch => {
       "fa-maxFileSize-with-backups-compressed-test.log.1.gz",
       "fa-maxFileSize-with-backups-compressed-test.log.2.gz"
     ]);
-    let contents = await fs.readFile(
-      path.join(__dirname, logFiles[0]),
-      "utf8");
+    let contents = await fs.readFile(path.join(__dirname, logFiles[0]), "utf8");
     t.include(contents, "This is the fourth log message.");
-            
-    contents = await gunzip(await fs.readFile(path.join(__dirname, logFiles[1])));
-    t.include(
-      contents.toString("utf8"),
-      "This is the third log message."
+
+    contents = await gunzip(
+      await fs.readFile(path.join(__dirname, logFiles[1]))
     );
-    contents = await gunzip(await fs.readFile(path.join(__dirname, logFiles[2])));
-    t.include(
-      contents.toString("utf8"),
-      "This is the second log message."
+    t.include(contents.toString("utf8"), "This is the third log message.");
+    contents = await gunzip(
+      await fs.readFile(path.join(__dirname, logFiles[2]))
     );
+    t.include(contents.toString("utf8"), "This is the second log message.");
     t.end();
   });
 
