@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 5.1.0
+
+- [Update streamroller to 2.1.0 (windows fixes)](https://github.com/log4js-node/log4js-node/pull/933)
+
 ## 5.0.0
 
 - [Update streamroller to 2.0.0 (remove support for node v6)](https://github.com/log4js-node/log4js-node/pull/922)
