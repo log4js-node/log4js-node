@@ -25,6 +25,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFile);
 
     t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFile);
     });
 
