@@ -1,6 +1,6 @@
 {
   "name": "log4js",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "Port of Log4js to work with node.",
   "homepage": "https://log4js-node.github.io/log4js-node/",
   "files": [
