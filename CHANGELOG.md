@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 5.2.0
+
+- [Update streamroller to 2.2.0 (copy and truncate when file is busy)](https://github.com/log4js-node/log4js-node/pull/948)
+
 ## 5.1.0
 
 - [Update streamroller to 2.1.0 (windows fixes)](https://github.com/log4js-node/log4js-node/pull/933)
