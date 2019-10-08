@@ -5,7 +5,7 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     file: {
-      type: 'dateFile', filename: 'thing.log', pattern: '.ss'
+      type: 'dateFile', filename: 'thing.log', daysToKeep: 3, pattern: '.mm'
     }
   },
   categories: {
