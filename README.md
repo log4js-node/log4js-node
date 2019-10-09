@@ -34,7 +34,7 @@ Optional appenders are available:
 
 
 ## Getting help
-Having problems? Jump on the [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtMjk5OTcxODMwNDA1LTk5ZTA0YjcwNWRiYmFkNGQyZTkyZTYzYTFiYTE2NTRhNzFmNmY3OTdjZTY3MWM3M2RlMGQxN2ZlMmY4ZDFmZWY) channel, or create an issue. If you want to help out with the development, the slack channel is a good place to go as well.
+Having problems? Jump on the [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtNzkyMTIzODgxMDQ2LWZmZGEzOGQzN2MzMmE3YWNiNDVmZDY3MjM2MTM3ZTlhOTg0ODkyODc3ODc5OWQ3MWNmMjU1M2U4ZmUzNTViNzI) channel, or create an issue. If you want to help out with the development, the slack channel is a good place to go as well.
 
 ## installation
 
@@ -102,7 +102,7 @@ configure({
 
 ## Contributing
 
-We're always looking for people to help out. Jump on [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtMjk5OTcxODMwNDA1LTk5ZTA0YjcwNWRiYmFkNGQyZTkyZTYzYTFiYTE2NTRhNzFmNmY3OTdjZTY3MWM3M2RlMGQxN2ZlMmY4ZDFmZWY) and discuss what you want to do. Also, take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) before submitting a pull request.
+We're always looking for people to help out. Jump on [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtNzkyMTIzODgxMDQ2LWZmZGEzOGQzN2MzMmE3YWNiNDVmZDY3MjM2MTM3ZTlhOTg0ODkyODc3ODc5OWQ3MWNmMjU1M2U4ZmUzNTViNzI) and discuss what you want to do. Also, take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) before submitting a pull request.
 
 ## License
 
