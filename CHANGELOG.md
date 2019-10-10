@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 5.2.2
+
+- [Update streamroller to fix overwriting old files when using date rolling](https://github.com/log4js-node/log4js-node/pull/951)
+
 ## 5.2.1
 
 - [Update streamroller to fix numToKeep not working with dateFile pattern that is all digits](https://github.com/log4js-node/log4js-node/pull/949)
