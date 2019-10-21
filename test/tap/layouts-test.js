@@ -521,13 +521,38 @@ test("log4js layouts", batch => {
       assert.end();
     });
 
+    t.test("%f should accept truncation and padding", assert => {
+      testPattern(assert, layout, event, tokens, "%.5f", fileName.substring(0, 5));
+      testPattern(assert, layout, event, tokens, "%20f{1}", "     layouts-test.js");
+      testPattern(assert, layout, event, tokens, "%30.30f{2}", `           ${  path.join("tap","layouts-test.js")}`);
+      testPattern(assert, layout, event, tokens, "%10.-5f{1}", "     st.js");
+      assert.end();
+    });
+
     t.test("%l should output line number", assert => {
       testPattern(assert, layout, event, tokens, "%l", lineNumber.toString());
       assert.end();
     });
 
+    t.test("%l should accept truncation and padding", assert => {
+      testPattern(assert, layout, event, tokens, "%5.10l", "    1");
+      testPattern(assert, layout, event, tokens, "%.5l", "1");
+      testPattern(assert, layout, event, tokens, "%.-5l", "1");
+      testPattern(assert, layout, event, tokens, "%-5l", "1    ");
+      assert.end();
+    });
+
     t.test("%o should output column postion", assert => {
       testPattern(assert, layout, event, tokens, "%o", columnNumber.toString());
+      assert.end();
+    });
+
+    t.test("%o should accept truncation and padding", assert => {
+      testPattern(assert, layout, event, tokens, "%5.10o", "   14");
+      testPattern(assert, layout, event, tokens, "%.5o", "14");
+      testPattern(assert, layout, event, tokens, "%.1o", "1");
+      testPattern(assert, layout, event, tokens, "%.-1o", "4");
+      testPattern(assert, layout, event, tokens, "%-5o", "14   ");
       assert.end();
     });
 
@@ -552,7 +577,7 @@ test("log4js layouts", batch => {
     );
 
     t.test(
-      "%o should output empty string when culumnNumber not exist",
+      "%o should output empty string when columnNumber not exist",
       assert => {
         delete event.columnNumber;
         testPattern(assert, layout, event, tokens, "%o", "");
@@ -611,6 +636,7 @@ test("log4js layouts", batch => {
         "%.2919102m",
         "this is a test"
       );
+      testPattern(assert, layout, event, tokens, "%.-4m", "test");
       assert.end();
     });
 
