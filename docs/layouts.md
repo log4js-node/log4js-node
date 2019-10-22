@@ -99,8 +99,16 @@ Cheese is too ripe! Cheese was:
 
 ## Pattern format
 The pattern string can contain any characters, but sequences beginning with `%` will be replaced with values taken from the log event, and other environmental values.
-Format for specifiers is `%[padding].[truncation][field]{[format]}` - padding and truncation are optional, and format only applies to a few tokens (notably, date).
-e.g. %5.10p - left pad the log level by 5 characters, up to a max of 10
+Format for specifiers is `%[padding].[truncation][field]{[format]}` - padding and truncation are optional, and format only applies to a few tokens (notably, date). Both padding and truncation values can be negative.
+* Positive truncation - truncate the string starting from the beginning
+* Negative truncation - truncate the string starting from the end of the string
+* Positive padding - left pad the string to make it this length, if the string is longer than the padding value then nothing happens
+* Negative padding - right pad the string to make it this length, if the string is longer than the padding value then nothing happens
+To make fixed-width columns in your log output, set padding and truncation to the same size (they don't have to have the same sign though, you could have right truncated, left padded columns that are always 10 characters wide with a pattern like "%10.-10m").
+
+e.g. %5.10p - left pad the log level by up to 5 characters, keep the whole string to a max length of 10.
+So, for a log level of INFO the output would be " INFO", for DEBUG it would be "DEBUG" and for a (custom) log level of CATASTROPHIC it would be "CATASTROPH".
+
 
 Fields can be any of:
 *  `%r` time in toLocaleTimeString format
