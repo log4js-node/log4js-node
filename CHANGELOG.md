@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 5.3.0
+
+- [Padding and truncation changes](https://github.com/log4js-node/log4js-node/pull/956)
+
 ## 5.2.2
 
 - [Update streamroller to fix overwriting old files when using date rolling](https://github.com/log4js-node/log4js-node/pull/951)
