@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 6.0.0
+
+- [Updated date-format library](https://github.com/log4js-node/log4js-node/pull/960)
+
 ## 5.3.0
 
 - [Padding and truncation changes](https://github.com/log4js-node/log4js-node/pull/956)
