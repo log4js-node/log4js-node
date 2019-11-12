@@ -2,6 +2,7 @@
 
 ## 6.0.0
 
+- [Update streamroller to fix unhandled promise rejection](https://github.com/log4js-node/log4js-node/pull/962)
 - [Updated date-format library](https://github.com/log4js-node/log4js-node/pull/960)
 
 ## 5.3.0
