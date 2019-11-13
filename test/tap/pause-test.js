@@ -17,7 +17,7 @@ tap.test("Drain event test", batch => {
     let onPause = false;
     let onResume = false;
 
-    process.on("pause", value => {
+    process.on("log4js:pause", value => {
       if (value) {
         onPause = true;
       } else {
