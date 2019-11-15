@@ -33,5 +33,37 @@ tap.test("Drain event test", batch => {
     t.end();
   });
 
+
+  batch.test("Should emit pause event and resume when logging in a date file with high frequency", (t) => {
+    // Generate date file logger with 5MB of highWaterMark config
+    log4js.configure({
+      appenders: {
+        file: { type: "dateFile", filename: "logs/date-file-drain.log", highWaterMark: 5 * 1024 * 1024 }
+      },
+      categories: {
+        default: { appenders: ["file"], level: "debug" }
+      }
+    });
+
+    let onPause = false;
+    let onResume = false;
+
+    process.on("log4js:pause", value => {
+      if (value) {
+        onPause = true;
+      } else {
+        onResume = true;
+      }
+    });
+
+    const logger = log4js.getLogger();
+    while (onPause === false && onResume === false) {
+      if (onPause === false)
+        logger.info("This is a test for emitting drain event in date file logger");
+    }
+    t.end();
+
+  });
+
   batch.end();
 });
