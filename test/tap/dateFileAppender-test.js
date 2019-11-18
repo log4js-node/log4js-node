@@ -165,6 +165,8 @@ test("../../lib/appenders/dateFile", batch => {
         fakeStreamroller.pattern = pattern;
         fakeStreamroller.options = options;
       }
+
+      on() { } // eslint-disable-line 
     }
     fakeStreamroller.DateRollingFileStream = DateRollingFileStream;
     const dateFileAppenderModule = sandbox.require(
