@@ -50,3 +50,23 @@ log4js.configure({
 });
 ```
 This will result in one current log file (`all-the-logs.log`). Every hour this file will be compressed and renamed to `all-the-logs.log.2017-04-30-08.gz` (for example) and a new `all-the-logs.log` created.
+
+## Memory usage
+
+If your application logs a large volume of messages, and find memory usage increasing due to buffering log messages before being written to a file, then you can listen for "log4js:pause" events emitted by the file appenders. Your application should stop logging when it receives one of these events with a value of `true` and resume when it receives an event with a value of `false`.
+```javascript
+log4js.configure({
+  appenders: {
+    output: { type: 'dateFile', filename: 'out.log' }
+  },
+  categories: { default: { appenders: ['output'], level: 'debug'}}
+});
+
+let paused = false;
+process.on("log4js:pause", (value) => paused = value);
+
+const logger = log4js.getLogger();
+while (!paused) {
+  logger.info("I'm logging, but I will stop once we start buffering");
+}
+```
