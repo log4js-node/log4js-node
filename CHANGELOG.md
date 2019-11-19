@@ -1,5 +1,11 @@
 # log4js-node changelog
 
+## 6.1.0
+
+- [Add pause event to dateFile appender](https://github.com/log4js-node/log4js-node/pull/965) - thanks [@shayantabatabaee](https://github.com/shayantabatabaee)
+- [Add pause event to file appender](https://github.com/log4js-node/log4js-node/pull/938) - thanks [@shayantabatabaee](https://github.com/shayantabatabaee)
+- [Add pause/resume event to docs](https://github.com/log4js-node/log4js-node/pull/966)
+
 ## 6.0.0
 
 - [Update streamroller to fix unhandled promise rejection](https://github.com/log4js-node/log4js-node/pull/962)
