@@ -61,7 +61,7 @@ const logger5 = log4js.getLogger('json-test');
 logger5.info('this is just a test');
 logger5.error('of a custom appender');
 logger5.warn('that outputs json');
-log4js.shutdown(() => { });
+log4js.shutdown();
 
 log4js.configure({
 	appenders: {
