@@ -16,3 +16,4 @@ Gemfile
 Gemfile.lock
 docker-compose.yml
 Dockerfile
+.bob
