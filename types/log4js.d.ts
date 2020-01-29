@@ -320,4 +320,6 @@ export class Logger {
 	error(message: any, ...args: any[]): void;
 
 	fatal(message: any, ...args: any[]): void;
+
+	mark(message: any, ...args: any[]): void;
 }
