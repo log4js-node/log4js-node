@@ -1,5 +1,11 @@
 # log4js-node changelog
 
+## 6.1.1
+
+- [Add guards for undefined shutdown callback](https://github.com/log4js-node/log4js-node/pull/972) - thanks [@aaron-edwards](https://github.com/aaron-edwards)
+- [Ignore .bob files](https://github.com/log4js-node/log4js-node/pull/975) - thanks [@cesine](https://github.com/cesine)
+- [Add mark method to type definitions](https://github.com/log4js-node/log4js-node/pull/984) - thanks [@techmunk](https://github.com/techmunk)
+
 ## 6.1.0
 
 - [Add pause event to dateFile appender](https://github.com/log4js-node/log4js-node/pull/965) - thanks [@shayantabatabaee](https://github.com/shayantabatabaee)
