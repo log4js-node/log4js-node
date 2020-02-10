@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 6.1.2
+
+- [Handle out-of-order appender loading](https://github.com/log4js-node/log4js-node/pull/986) - thanks [@mvastola](https://github.com/mvastola)
+
 ## 6.1.1
 
 - [Add guards for undefined shutdown callback](https://github.com/log4js-node/log4js-node/pull/972) - thanks [@aaron-edwards](https://github.com/aaron-edwards)
