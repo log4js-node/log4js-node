@@ -1,5 +1,10 @@
 # log4js-node changelog
 
+## 6.2.0
+
+- [Add custom message end token to TCP appender](https://github.com/log4js-node/log4js-node/pull/994) - thanks [@rnd-debug](https://github.com/rnd-debug)
+- [Update acorn (dev dep of a dep)](https://github.com/log4js-node/log4js-node/pull/992) - thanks Github Robots.
+
 ## 6.1.2
 
 - [Handle out-of-order appender loading](https://github.com/log4js-node/log4js-node/pull/986) - thanks [@mvastola](https://github.com/mvastola)
