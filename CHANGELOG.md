@@ -1,5 +1,9 @@
 # log4js-node changelog
 
+## 6.2.1
+
+- [Update streamroller to 2.2.4 to fix incorrect filename matching during log rotation](https://github.com/log4js-node/log4js-node/pull/996)
+
 ## 6.2.0
 
 - [Add custom message end token to TCP appender](https://github.com/log4js-node/log4js-node/pull/994) - thanks [@rnd-debug](https://github.com/rnd-debug)
