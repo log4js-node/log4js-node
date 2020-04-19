@@ -42,7 +42,7 @@
     "debug": "^4.1.1",
     "flatted": "^2.0.1",
     "rfdc": "^1.1.4",
-    "streamroller": "^2.2.3"
+    "streamroller": "^2.2.4"
   },
   "devDependencies": {
     "@log4js-node/sandboxed-module": "^2.2.1",
