@@ -333,6 +333,46 @@ test("log4js fileAppender", batch => {
     });
     t.end();
   });
+  
+  batch.test("with removeColor fileAppender settings", async t => {
+    const testFilePlain = path.join(__dirname, "fa-removeColor-test.log");
+    const testFileAsIs = path.join(__dirname, "fa-asIs-test.log");
+    const logger = log4js.getLogger("default-settings");
+    await removeFile(testFilePlain);
+    await removeFile(testFileAsIs);
+
+    t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
+      await removeFile(testFilePlain);
+      await removeFile(testFileAsIs);
+    });
+
+    log4js.configure({
+      appenders: { 
+        plainFile: { type: "file", filename: testFilePlain, removeColor: true },
+        asIsFile: { type: "file", filename: testFilePlain, removeColor: false }
+      },
+      categories: { default: { appenders: ["plainFile", "asIsFile"], level: "debug" } }
+    });
+
+    logger.info("This should be in the file. \x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.");
+
+    await sleep(100);
+    let fileContents = await fs.readFile(testFilePlain, "utf8");
+    t.include(fileContents, `This should be in the file. Color should be plain.${EOL}`);
+    t.match(
+      fileContents,
+      /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+    );
+    
+    fileContents = await fs.readFile(testFileAsIs, "utf8");
+    t.include(fileContents, `This should be in the file. \x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.${EOL}`);
+    t.match(
+      fileContents,
+      /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+    );
+    t.end();
+  });
 
   batch.end();
 });
