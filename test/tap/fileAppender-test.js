@@ -356,7 +356,7 @@ test("log4js fileAppender", batch => {
     });
 
     logger.info("This should be in the file.", 
-                "\x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.");
+      "\x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.");
 
     await sleep(100);
     let fileContents = await fs.readFile(testFilePlain, "utf8");
@@ -368,7 +368,7 @@ test("log4js fileAppender", batch => {
     
     fileContents = await fs.readFile(testFileAsIs, "utf8");
     t.include(fileContents, "This should be in the file.",
-                            `\x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.${EOL}`);
+      `\x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.${EOL}`);
     t.match(
       fileContents,
       /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
