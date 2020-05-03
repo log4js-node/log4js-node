@@ -410,5 +410,26 @@ test("log4js configuration validation", batch => {
     }
   );
 
+  batch.test("should not create appender instance if not used in categories", t => {
+    const used = {};
+    const notUsed = {};
+    const sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        cat: testAppender("meow", used),
+        dog: testAppender("woof", notUsed)
+      },
+      ignoreMissing: true
+    });
+
+    sandboxedLog4js.configure({
+      appenders: { used: { type: "cat" }, notUsed: { type: "dog" } },
+      categories: { default: { appenders: ["used"], level: "ERROR" } }
+    });
+
+    t.ok(used.configureCalled);
+    t.notOk(notUsed.configureCalled);
+    t.end();
+  });
+
   batch.end();
 });
