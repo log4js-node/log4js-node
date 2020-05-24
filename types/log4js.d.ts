@@ -286,7 +286,8 @@ export interface Configuration {
 export class Logger {
   new(dispatch: Function, name: string): Logger;
 
-  level: string;
+	readonly category: string;
+	level: string;
 
   log(...args: any[]): void;
 
