@@ -54,6 +54,11 @@ For example, if you were previously using the gelf appender (`type: 'gelf'`) the
 
 ## Other Appenders
 
+These appenders are maintained by its own authors and may be useful for you:
+* [udp](https://github.com/iassasin/log4js-udp-appender)
+
+## Custom Appenders
+
 Log4js can load appenders from outside the core appenders. The `type` config value is used as a require path if no matching appender can be found. For example, the following configuration will attempt to load an appender from the module 'cheese/appender', passing the rest of the config for the appender to that module:
 ```javascript
 log4js.configure({
