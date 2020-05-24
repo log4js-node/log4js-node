@@ -1,5 +1,17 @@
 # log4js-node changelog
 
+## 6.3.0
+
+- [Add option to file appender to remove ANSI colours](https://github.com/log4js-node/log4js-node/pull/1001) - thanks [@BlueCocoa](https://github.com/BlueCocoa)
+- [Do not create appender if no categories use it](https://github.com/log4js-node/log4js-node/pull/1002) - thanks [@rnd-debug](https://github.com/rnd-debug)
+- [Docs: better categories inheritance description](https://github.com/log4js-node/log4js-node/pull/1003) - thanks [@rnd-debug](https://github.com/rnd-debug)
+- [Better jsdoc docs](https://github.com/log4js-node/log4js-node/pull/1004) - thanks [@wataash](https://github.com/wataash)
+- [Typescript: access category field in Logger](https://github.com/log4js-node/log4js-node/pull/1006) - thanks [@rtvd](https://github.com/rtvd)
+- [Docs: influxdb appender](https://github.com/log4js-node/log4js-node/pull/1014) - thanks [@rnd-debug](https://github.com/rnd-debug)
+- [Support for fileSync appender in webpack](https://github.com/log4js-node/log4js-node/pull/1015) - thanks [@lauren-li](https://github.com/lauren-li)
+- [Docs: UDP appender](https://github.com/log4js-node/log4js-node/pull/1018) - thanks [@iassasin](https://github.com/iassasin)
+- [Style: spaces and tabs](https://github.com/log4js-node/log4js-node/pull/1016) - thanks [@abetomo](https://github.com/abetomo)
+
 ## 6.2.1
 
 - [Update streamroller to 2.2.4 to fix incorrect filename matching during log rotation](https://github.com/log4js-node/log4js-node/pull/996)
