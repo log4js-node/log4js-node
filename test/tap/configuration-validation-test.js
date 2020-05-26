@@ -1,4 +1,5 @@
 const { test } = require("tap");
+const { unlinkSync } = require("fs");
 const util = require("util");
 const path = require("path");
 const sandbox = require("@log4js-node/sandboxed-module");
@@ -247,13 +248,21 @@ test("log4js configuration validation", batch => {
   );
 
   batch.test("should not throw error if configure object is freezed", t => {
+    const filename = "test/tap/freeze-date-file-test"
+    t.tearDown(() => {
+      try {
+        unlinkSync(filename);
+      } catch (_) {
+        // doesn't really matter if it failed
+      }
+    });
     t.doesNotThrow(() =>
       log4js.configure(
         deepFreeze({
           appenders: {
             dateFile: {
+              filename,
               type: "dateFile",
-              filename: "test/tap/freeze-date-file-test",
               alwaysIncludePattern: false
             }
           },
