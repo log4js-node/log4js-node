@@ -132,7 +132,6 @@ export interface FileAppender {
   backups?: number;
   // defaults to basic layout
   layout?: Layout;
-  numBackups?: number;
   compress?: boolean; // compress the backups
   // keep the file extension when rotating logs
   keepFileExt?: boolean;
