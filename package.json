@@ -30,6 +30,7 @@
   "scripts": {
     "pretest": "eslint \"lib/**/*.js\" \"test/**/*.js\"",
     "test": "tap \"test/tap/**/*.js\" --cov",
+    "test:only": "tap \"test/tap/fileAppender-test.js\"",
     "typings": "tsc -p types/tsconfig.json",
     "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
   },
