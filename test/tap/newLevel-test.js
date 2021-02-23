@@ -237,8 +237,10 @@ test("../../lib/logger", batch => {
     logger.log(log4js.levels.getLevel("LEVEL_DOES_NEXT_EXIST"), "Event 2");
 
     const events = recording.replay();
-    t.equal(events[0].level.toString(), "INFO", "should fall back to INFO");
+    t.equal(events[0].level.toString(), "WARN", "should log warning");
     t.equal(events[1].level.toString(), "INFO", "should fall back to INFO");
+    t.equal(events[2].level.toString(), "WARN", "should log warning");
+    t.equal(events[3].level.toString(), "INFO", "should fall back to INFO");
     t.end();
   });
 
