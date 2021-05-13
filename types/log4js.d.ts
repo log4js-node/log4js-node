@@ -1,13 +1,21 @@
 // Type definitions for log4js
 
-type Format = string | ((req: any, res: any, formatter: ((str: string) => string)) => string);
+type Format =
+  | string
+  | ((req: any, res: any, formatter: (str: string) => string) => string);
 
 export interface Log4js {
   getLogger(category?: string): Logger;
   configure(filename: string): Log4js;
   configure(config: Configuration): Log4js;
-  addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
-  connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; }): any;  // express.Handler;
+  addLayout(
+    name: string,
+    config: (a: any) => (logEvent: LoggingEvent) => string
+  ): void;
+  connectLogger(
+    logger: Logger,
+    options: { format?: Format; level?: string; nolog?: any }
+  ): any; // express.Handler;
   levels: Levels;
   shutdown(cb: (error: Error) => void): void | null;
 }
@@ -17,28 +25,40 @@ export function getLogger(category?: string): Logger;
 export function configure(filename: string): Log4js;
 export function configure(config: Configuration): Log4js;
 
-export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => any): void;
+export function addLayout(
+  name: string,
+  config: (a: any) => (logEvent: LoggingEvent) => any
+): void;
 
-export function connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; statusRules?: any[], context?: boolean }): any; // express.Handler;
+export function connectLogger(
+  logger: Logger,
+  options: {
+    format?: Format;
+    level?: string;
+    nolog?: any;
+    statusRules?: any[];
+    context?: boolean;
+  }
+): any; // express.Handler;
 
 export const levels: Levels;
 
 export function shutdown(cb?: (error: Error) => void): void | null;
 
 export interface BaseLayout {
-  type: 'basic';
+  type: "basic";
 }
 
 export interface ColoredLayout {
-  type: 'colored' | 'coloured';
+  type: "colored" | "coloured";
 }
 
 export interface MessagePassThroughLayout {
-  type: 'messagePassThrough';
+  type: "messagePassThrough";
 }
 
 export interface DummyLayout {
-  type: 'dummy';
+  type: "dummy";
 }
 
 export interface Level {
@@ -54,9 +74,9 @@ export interface Level {
 }
 
 export interface LoggingEvent {
-  categoryName: string;  // name of category
-  level: Level;  // level of message
-  data: any[];  // objects to log
+  categoryName: string; // name of category
+  level: Level; // level of message
+  data: any[]; // objects to log
   startTime: Date;
   pid: number;
   context: any;
@@ -69,7 +89,7 @@ export interface LoggingEvent {
 export type Token = ((logEvent: LoggingEvent) => string) | string;
 
 export interface PatternLayout {
-  type: 'pattern';
+  type: "pattern";
   // specifier for the output format, using placeholders as described below
   pattern: string;
   // user-defined tokens to be used in the pattern
@@ -81,7 +101,13 @@ export interface CustomLayout {
   type: string;
 }
 
-export type Layout = BaseLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout | CustomLayout;
+export type Layout =
+  | BaseLayout
+  | ColoredLayout
+  | MessagePassThroughLayout
+  | DummyLayout
+  | PatternLayout
+  | CustomLayout;
 
 /**
  * Category Filter
@@ -117,13 +143,13 @@ export interface NoLogFilterAppender {
  * @see https://log4js-node.github.io/log4js-node/console.html
  */
 export interface ConsoleAppender {
-  type: 'console';
+  type: "console";
   // defaults to colouredLayout
   layout?: Layout;
 }
 
 export interface FileAppender {
-  type: 'file';
+  type: "file";
   // the path of the file where you want your logs written.
   filename: string;
   // the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
@@ -142,7 +168,7 @@ export interface FileAppender {
 }
 
 export interface SyncfileAppender {
-  type: 'fileSync';
+  type: "fileSync";
   // the path of the file where you want your logs written.
   filename: string;
   // the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
@@ -154,7 +180,7 @@ export interface SyncfileAppender {
 }
 
 export interface DateFileAppender {
-  type: 'dateFile';
+  type: "dateFile";
   // the path of the file where you want your logs written.
   filename: string;
   // defaults to basic layout
@@ -189,7 +215,7 @@ export interface DateFileAppender {
 }
 
 export interface LogLevelFilterAppender {
-  type: 'logLevelFilter';
+  type: "logLevelFilter";
   // the name of an appender, defined in the same configuration, that you want to filter
   appender: string;
   // the minimum level of event to allow through the filter
@@ -199,7 +225,7 @@ export interface LogLevelFilterAppender {
 }
 
 export interface MultiFileAppender {
-  type: 'multiFile';
+  type: "multiFile";
   // the base part of the generated log filename
   base: string;
   // the value to use to split files (see below).
@@ -209,9 +235,9 @@ export interface MultiFileAppender {
 }
 
 export interface MultiprocessAppender {
-  type: 'multiprocess';
+  type: "multiprocess";
   // controls whether the appender listens for log events sent over the network, or is responsible for serialising events and sending them to a server.
-  mode: 'master' | 'worker';
+  mode: "master" | "worker";
   // (only needed if mode == master)- the name of the appender to send the log events to
   appender?: string;
   // (defaults to 5000) - the port to listen on, or send to
@@ -221,17 +247,17 @@ export interface MultiprocessAppender {
 }
 
 export interface RecordingAppender {
-  type: 'recording';
+  type: "recording";
 }
 
 export interface StandardErrorAppender {
-  type: 'stderr';
+  type: "stderr";
   // (defaults to colouredLayout)
   layout?: Layout;
 }
 
 export interface StandardOutputAppender {
-  type: 'stdout';
+  type: "stdout";
   // (defaults to colouredLayout)
   layout?: Layout;
 }
@@ -242,10 +268,39 @@ export interface CustomAppender {
 }
 
 export interface AppenderModule {
-  configure: Function
+  configure: (config: ConfigParam, layouts: LayoutsParam) => AppenderGenerator;
 }
 
-export type Appender = CategoryFilterAppender
+export type AppenderGenerator = (
+  layout: LayoutFunction,
+  timezoneOffset?: string
+) => AppenderFunction;
+
+export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
+
+// TODO: Actually add types here...
+export interface ConfigParam {}
+
+export interface LayoutsParam {
+  basicLayout: LayoutFunction;
+  messagePassThroughLayout: LayoutFunction;
+  patternLayout: LayoutFunction;
+  colouredLayout: LayoutFunction;
+  coloredLayout: LayoutFunction;
+  dummyLayout: LayoutFunction;
+  addLayout: (name: string, serializerGenerator: LayoutFunction) => void;
+  layout: (name: string, config: PatternToken) => LayoutFunction;
+}
+
+export interface PatternToken {
+  pattern: string; // TODO type this to enforce good pattern...
+  tokens: { [tokenName: string]: () => any };
+}
+
+export type LayoutFunction = (loggingEvent: LoggingEvent) => string;
+
+export type Appender =
+  | CategoryFilterAppender
   | ConsoleAppender
   | FileAppender
   | SyncfileAppender
@@ -275,8 +330,14 @@ export interface Levels {
 }
 
 export interface Configuration {
-  appenders: { [name: string]: Appender; };
-  categories: { [name: string]: { appenders: string[]; level: string; enableCallStack?: boolean; } };
+  appenders: { [name: string]: Appender };
+  categories: {
+    [name: string]: {
+      appenders: string[];
+      level: string;
+      enableCallStack?: boolean;
+    };
+  };
   pm2?: boolean;
   pm2InstanceVar?: string;
   levels?: Levels;
@@ -286,8 +347,8 @@ export interface Configuration {
 export class Logger {
   new(dispatch: Function, name: string): Logger;
 
-	readonly category: string;
-	level: string;
+  readonly category: string;
+  level: string;
 
   log(...args: any[]): void;
 
