@@ -9,7 +9,7 @@ export interface Log4js {
   addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
   connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; }): any;  // express.Handler;
   levels: Levels;
-  shutdown(cb: (error: Error) => void): void | null;
+  shutdown(cb?: (error: Error | undefined) => void): null;
 }
 
 export function getLogger(category?: string): Logger;
@@ -23,7 +23,7 @@ export function connectLogger(logger: Logger, options: { format?: Format; level?
 
 export const levels: Levels;
 
-export function shutdown(cb?: (error: Error) => void): void | null;
+export function shutdown(cb?: (error: Error | undefined) => void): null;
 
 export interface BaseLayout {
   type: 'basic';
