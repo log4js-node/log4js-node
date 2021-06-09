@@ -376,5 +376,31 @@ test("log4js fileAppender", batch => {
     t.end();
   });
 
+  batch.test("with double shutdown", async t => {
+    const testFile = path.join(__dirname, "fa-default-test.log");
+    await removeFile(testFile);
+
+    log4js.configure({
+      appenders: { test: { type: "file", filename: testFile } },
+      categories: { default: { appenders: ["test"], level: "trace" } }
+    });
+    const logger = log4js.getLogger("default-settings");
+
+    logger.info("1");
+    logger.info("2");
+    logger.info("3");
+
+    await new Promise(resolve => log4js.shutdown(resolve));
+    await new Promise(resolve => log4js.shutdown(resolve));
+    const fileContents = await fs.readFile(testFile, "utf8");
+    // 3 lines of output, plus the trailing newline.
+    t.equal(fileContents.split(EOL).length, 4);
+    t.match(
+      fileContents,
+      /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+    );
+    t.end();
+  });
+
   batch.end();
 });
