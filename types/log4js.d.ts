@@ -242,7 +242,7 @@ export interface CustomAppender {
 }
 
 export interface AppenderModule {
-  configure: (config: ConfigParam, layouts: LayoutsParam) => AppenderGenerator;
+  configure: (config: Config, layouts: LayoutsParam) => AppenderGenerator;
 }
 
 export type AppenderGenerator = (
@@ -253,7 +253,8 @@ export type AppenderGenerator = (
 export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
 
 // TODO: Actually add types here...
-export interface ConfigParam {}
+// It's supposed to be the full config element
+export type Config = any
 
 export interface LayoutsParam {
   basicLayout: LayoutFunction;
