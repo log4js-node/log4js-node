@@ -236,6 +236,21 @@ export interface StandardOutputAppender {
   layout?: Layout;
 }
 
+export interface UDPAppender {
+  'type': 'udp';
+  // hostname (or IP-address) of the logstash server
+  host: string;
+  // port of the logstash server
+  port: number;
+  // used for the message field of the logstash data
+  // the layout should be the `Layout` type in log4js
+  layout?: object;
+  // used to customize the log object being sent to logstash UDP server
+  // the event should be the `LoggingEvent` type in log4s
+  extraDataProvider?: (event: object) => object;
+}
+
+
 export interface CustomAppender {
   type: string | AppenderModule;
   [key: string]: any;
@@ -257,7 +272,8 @@ export type Appender = CategoryFilterAppender
   | RecordingAppender
   | StandardErrorAppender
   | StandardOutputAppender
-  | CustomAppender;
+  | CustomAppender
+  | UDPAppender;
 
 export interface Levels {
   ALL: Level;
