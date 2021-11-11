@@ -21,6 +21,8 @@ export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEv
 
 export function connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; statusRules?: any[], context?: boolean }): any; // express.Handler;
 
+export function recording(): Recording;
+
 export const levels: Levels;
 
 export function shutdown(cb?: (error: Error) => void): void | null;
@@ -281,6 +283,14 @@ export interface Configuration {
   pm2InstanceVar?: string;
   levels?: Levels;
   disableClustering?: boolean;
+}
+
+export interface Recording {
+  configure(loggingEvent: LoggingEvent): void
+  replay(): LoggingEvent[]
+  playback(): LoggingEvent[]
+  reset(): void
+  erase(): void
 }
 
 export class Logger {
