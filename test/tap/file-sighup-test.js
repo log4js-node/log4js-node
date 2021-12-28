@@ -1,9 +1,68 @@
 const { test } = require("tap");
+const path = require("path");
+const fs = require("fs");
 const sandbox = require("@log4js-node/sandboxed-module");
+
+const removeFiles = async filenames => {
+  if (!Array.isArray(filenames))
+    filenames = [filenames];
+  const promises = filenames.map(filename => {
+    return fs.promises.unlink(filename);
+  });
+  await Promise.allSettled(promises);
+};
+
+test("file appender single SIGHUP handler", t => {
+  const initialListeners = process.listenerCount("SIGHUP");
+
+  let warning;
+  const warningListener = error => {
+    if (error.type === "SIGHUP" && error.name === "MaxListenersExceededWarning") {
+      warning = error;
+    }
+  };
+  process.on("warning", warningListener);
+
+  const config = {
+    appenders: {},
+    categories: {
+      default: { appenders: [], level: 'debug' }
+    }
+  };
+
+  // create 11 appenders to make nodejs warn for >10 max listeners
+  const numOfAppenders = 11;
+  for (let i = 1; i <= numOfAppenders; i++) {
+    config.appenders[`app${i}`] = { type: 'file', filename: path.join(__dirname, `file${i}.log`) };
+    config.categories.default.appenders.push(`app${i}`);
+  }
+
+  const log4js = require("../../lib/log4js");
+  log4js.configure(config);
+
+  t.teardown(async () => {
+    log4js.shutdown();
+
+    const filenames = Object.values(config.appenders).map(appender => {
+      return appender.filename;
+    });
+    await removeFiles(filenames);
+
+    process.off("warning", warningListener);
+  });
+
+  t.plan(2);
+  // put in a timeout 0 to allow event emitter/listener to happen
+  setTimeout(() => {
+    t.notOk(warning, "should not have MaxListenersExceededWarning for SIGHUP");
+    t.equal(process.listenerCount("SIGHUP") - initialListeners, 1, "should be 1 SIGHUP listener");
+    t.end();
+  }, 0);
+});
 
 // no SIGHUP signals on Windows, so don't run the tests
 if (process.platform !== "win32") {
-  
+
   test("file appender SIGHUP", t => {
     let closeCalled = 0;
     let openCalled = 0;
