@@ -272,7 +272,7 @@ export interface Levels {
   FATAL: Level;
   OFF: Level;
   levels: Level[];
-  getLevel(level: string): Level;
+  getLevel(level: Level | string, defaultLevel: Level): Level;
   addLevels(customLevels: object): void;
 }
 
