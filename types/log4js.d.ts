@@ -151,6 +151,9 @@ export interface SyncfileAppender {
   backups?: number;
   // defaults to basic layout
   layout?: Layout;
+  encoding?: string;
+  mode?: number;
+  flags?: string;
 }
 
 export interface DateFileAppender {
