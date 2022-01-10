@@ -289,7 +289,7 @@ export class Logger {
   new(dispatch: Function, name: string): Logger;
 
 	readonly category: string;
-	level: string;
+	level: Level | string;
 
   log(...args: any[]): void;
 
