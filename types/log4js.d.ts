@@ -302,7 +302,7 @@ export class Logger {
   isErrorEnabled(): boolean;
   isFatalEnabled(): boolean;
 
-  _log(level: string, data: any): void;
+  _log(level: Level, data: any): void;
 
   addContext(key: string, value: any): void;
 
