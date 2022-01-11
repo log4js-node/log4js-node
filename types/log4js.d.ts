@@ -291,7 +291,7 @@ export class Logger {
 	readonly category: string;
 	level: Level | string;
 
-  log(...args: any[]): void;
+  log(level: Level | string, ...args: any[]): void;
 
   isLevelEnabled(level?: string): boolean;
 
