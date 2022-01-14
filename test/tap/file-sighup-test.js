@@ -6,9 +6,7 @@ const sandbox = require("@log4js-node/sandboxed-module");
 const removeFiles = async filenames => {
   if (!Array.isArray(filenames))
     filenames = [filenames];
-  const promises = filenames.map(filename => {
-    return fs.promises.unlink(filename);
-  });
+  const promises = filenames.map(filename => fs.promises.unlink(filename));
   await Promise.allSettled(promises);
 };
 
@@ -43,9 +41,7 @@ test("file appender single SIGHUP handler", t => {
   t.teardown(async () => {
     log4js.shutdown();
 
-    const filenames = Object.values(config.appenders).map(appender => {
-      return appender.filename;
-    });
+    const filenames = Object.values(config.appenders).map(appender => appender.filename);
     await removeFiles(filenames);
 
     process.off("warning", warningListener);
