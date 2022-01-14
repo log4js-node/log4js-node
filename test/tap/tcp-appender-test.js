@@ -33,7 +33,7 @@ test("TCP Appender", batch => {
 
     const serverConfig = {
       endMsg: "__LOG4JS__",
-      deserialise: (log) => { return LoggingEvent.deserialise(log); }
+      deserialise: (log) => LoggingEvent.deserialise(log)
     }
     server = makeServer(serverConfig);
 
@@ -78,7 +78,7 @@ test("TCP Appender", batch => {
 
     const serverConfig = {
       endMsg: "\n",
-      deserialise: (log) => { return LoggingEvent.deserialise(log); }
+      deserialise: (log) => LoggingEvent.deserialise(log)
     }
     server = makeServer(serverConfig);
 
@@ -124,18 +124,16 @@ test("TCP Appender", batch => {
 
     const serverConfig = {
       endMsg: "__LOG4JS__",
-      deserialise: (log) => { return JSON.parse(log); }
+      deserialise: (log) => JSON.parse(log)
     }
     server = makeServer(serverConfig);
 
-    log4js.addLayout('json', function () {
-      return function (logEvent) {
-        return JSON.stringify({
-          "time": logEvent.startTime,
-          "message": logEvent.data[0],
-          "level": logEvent.level.toString()
-        });
-      }
+    log4js.addLayout('json', () => function (logEvent) {
+      return JSON.stringify({
+        "time": logEvent.startTime,
+        "message": logEvent.data[0],
+        "level": logEvent.level.toString()
+      });
     });
 
     server.listen(() => {
