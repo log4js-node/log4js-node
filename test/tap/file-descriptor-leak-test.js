@@ -40,7 +40,7 @@ if (process.platform !== "win32") {
         t.equal(loadedFd, initialFd + numOfAppenders, 
           `file descriptor count should increase by ${numOfAppenders} after 1st configure() call`);
         t.end();
-      }, 1000);
+      }, 250);
     });
 
     batch.test("repeated log4js configure to not increase file descriptor count", t => {
@@ -53,7 +53,7 @@ if (process.platform !== "win32") {
         t.equal(fs.readdirSync('/proc/self/fd').length, loadedFd, 
           `file descriptor count should be identical after repeated configure() calls`);
         t.end();
-      }, 1000);
+      }, 250);
     });
 
     batch.test("file descriptor count should return back to initial count", t => {
@@ -64,7 +64,7 @@ if (process.platform !== "win32") {
         t.equal(fs.readdirSync('/proc/self/fd').length, initialFd, 
           `file descriptor count should be back to initial`);
         t.end();
-      }, 1000);
+      }, 250);
     });
 
     batch.teardown(async () => {
