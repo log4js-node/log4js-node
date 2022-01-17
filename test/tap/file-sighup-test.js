@@ -127,6 +127,8 @@ if (process.platform !== "win32") {
       },
       categories: { default: { appenders: ["file"], level: "info" } }
     });
+    t.plan(2);
+    t.equal(process.listenerCount("SIGHUP"), initialListeners + 1);
     log4js.shutdown(() => {
       t.equal(process.listenerCount("SIGHUP"), initialListeners);
       t.end();
