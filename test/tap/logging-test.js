@@ -4,6 +4,52 @@ const util = require("util");
 const recording = require("../../lib/appenders/recording");
 
 test("log4js", batch => {
+  batch.test("shutdown should return appenders and categories back to initial state", t => {
+    const stringifyMap = (map) => JSON.stringify(Array.from(map));
+    const deepCopyMap = (map) => new Map(JSON.parse(stringifyMap(map)));
+
+    const log4js = require("../../lib/log4js");
+
+    const appenders = require("../../lib/appenders");
+    const categories = require("../../lib/categories");
+    const initialAppenders = deepCopyMap(appenders);
+    const initialCategories = deepCopyMap(categories);
+
+    log4js.configure({
+      appenders: { recorder: { type: "recording" } },
+      categories: { default: { appenders: ["recorder"], level: "DEBUG" } }
+    });
+
+    const configuredAppenders = deepCopyMap(appenders);
+    const configuredCategories = deepCopyMap(categories);
+    t.notEqual(
+      stringifyMap(configuredAppenders), 
+      stringifyMap(initialAppenders), 
+      "appenders should be different from initial state"
+    );
+    t.notEqual(
+      stringifyMap(configuredCategories), 
+      stringifyMap(initialCategories), 
+      "categories should be different from initial state"
+    );
+
+    log4js.shutdown(() => {
+      const finalAppenders = deepCopyMap(appenders);
+      const finalCategories = deepCopyMap(categories);
+      t.equal(
+        stringifyMap(finalAppenders),
+        stringifyMap(initialAppenders), 
+        "appenders should revert back to initial state"
+      );
+      t.equal(
+        stringifyMap(finalCategories), 
+        stringifyMap(initialCategories), 
+        "categories should revert back to initial state"
+      );
+      t.end();
+    });
+  });
+
   batch.test("getLogger", t => {
     const log4js = require("../../lib/log4js");
     log4js.configure({
