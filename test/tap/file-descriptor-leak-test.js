@@ -6,9 +6,7 @@ const log4js = require("../../lib/log4js");
 const removeFiles = async filenames => {
   if (!Array.isArray(filenames))
     filenames = [filenames];
-  const promises = filenames.map(filename => {
-    return fs.promises.unlink(filename);
-  });
+  const promises = filenames.map(filename => fs.promises.unlink(filename));
   await Promise.allSettled(promises);
 };
 
@@ -72,9 +70,7 @@ if (process.platform !== "win32") {
     batch.teardown(async () => {
       log4js.shutdown();
 
-      const filenames = Object.values(config.appenders).map(appender => {
-        return appender.filename;
-      });
+      const filenames = Object.values(config.appenders).map(appender => appender.filename);
       await removeFiles(filenames);
     });
 
