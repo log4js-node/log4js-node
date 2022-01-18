@@ -4,6 +4,7 @@ const path = require("path");
 const sandbox = require("@log4js-node/sandboxed-module");
 const debug = require("debug")("log4js:test.configuration-validation");
 const deepFreeze = require("deep-freeze");
+const fs = require("fs");
 const log4js = require("../../lib/log4js");
 const configuration = require("../../lib/configuration");
 
