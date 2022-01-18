@@ -244,8 +244,37 @@ export interface CustomAppender {
 }
 
 export interface AppenderModule {
-  configure: Function
+  configure: (config: Config, layouts: LayoutsParam) => AppenderGenerator;
 }
+
+export type AppenderGenerator = (
+  layout: LayoutFunction,
+  timezoneOffset?: string
+) => AppenderFunction;
+
+export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
+
+// TODO: Actually add types here...
+// It's supposed to be the full config element
+export type Config = any
+
+export interface LayoutsParam {
+  basicLayout: LayoutFunction;
+  messagePassThroughLayout: LayoutFunction;
+  patternLayout: LayoutFunction;
+  colouredLayout: LayoutFunction;
+  coloredLayout: LayoutFunction;
+  dummyLayout: LayoutFunction;
+  addLayout: (name: string, serializerGenerator: LayoutFunction) => void;
+  layout: (name: string, config: PatternToken) => LayoutFunction;
+}
+
+export interface PatternToken {
+  pattern: string; // TODO type this to enforce good pattern...
+  tokens: { [tokenName: string]: () => any };
+}
+
+export type LayoutFunction = (loggingEvent: LoggingEvent) => string;
 
 export type Appender = CategoryFilterAppender
   | ConsoleAppender
