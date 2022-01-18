@@ -238,6 +238,23 @@ export interface StandardOutputAppender {
   layout?: Layout;
 }
 
+/**
+ * TCP Appender
+ *
+ * @see https://log4js-node.github.io/log4js-node/tcp.html
+ */
+export interface TCPAppender {
+  type: 'tcp';
+  // defaults to 5000
+  port?: number
+  // defaults to localhost
+  host?: string
+  // default to __LOG4JS__
+  endMsg?: string
+  // defaults to a serialized log event
+  layout?: Layout;
+}
+
 export interface CustomAppender {
   type: string | AppenderModule;
   [key: string]: any;
@@ -288,6 +305,7 @@ export type Appender = CategoryFilterAppender
   | RecordingAppender
   | StandardErrorAppender
   | StandardOutputAppender
+  | TCPAppender
   | CustomAppender;
 
 export interface Levels {
