@@ -98,10 +98,10 @@ test("../../lib/appenders/dateFile", batch => {
       options.appenders.date.pattern,
       new Date()
     );
+    const testFile = `date-file-test.${thisTime}`;
     const existingFile = path.join(
-      process.cwd(),
-      "test/tap/",
-      `date-file-test.${thisTime}`
+      __dirname,
+      testFile
     );
     fs.writeFileSync(existingFile, `this is existing data${EOL}`, "utf8");
     log4js.configure(options);
@@ -109,7 +109,7 @@ test("../../lib/appenders/dateFile", batch => {
     logger.warn("this should be written to the file with the appended date");
 
     t.teardown(() => {
-      removeFile(existingFile);
+      removeFile(testFile);
     });
 
     // wait for filesystem to catch up

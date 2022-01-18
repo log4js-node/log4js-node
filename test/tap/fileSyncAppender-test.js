@@ -42,7 +42,6 @@ test("log4js fileSyncAppender", batch => {
   batch.test("with a max file size and no backups", t => {
     const testFile = path.join(__dirname, "/fa-maxFileSize-sync-test.log");
     const logger = log4js.getLogger("max-file-size");
-
     remove(testFile);
     remove(`${testFile}.1`);
 
@@ -93,7 +92,6 @@ test("log4js fileSyncAppender", batch => {
   batch.test("with a max file size in unit mode and no backups", t => {
     const testFile = path.join(__dirname, "/fa-maxFileSize-unit-sync-test.log");
     const logger = log4js.getLogger("max-file-size-unit");
-
     remove(testFile);
     remove(`${testFile}.1`);
 
@@ -219,13 +217,20 @@ test("log4js fileSyncAppender", batch => {
   });
 
   batch.test("configure with fileSyncAppender", t => {
+    const testFile = "tmp-sync-tests.log";
+    remove(testFile);
+
+    t.tearDown(() => {
+      remove(testFile);
+    });
+
     // this config defines one file appender (to ./tmp-sync-tests.log)
     // and sets the log level for "tests" to WARN
     log4js.configure({
       appenders: {
         sync: {
           type: "fileSync",
-          filename: "tmp-sync-tests.log",
+          filename: testFile,
           layout: { type: "messagePassThrough" }
         }
       },
@@ -238,7 +243,7 @@ test("log4js fileSyncAppender", batch => {
     logger.info("this should not be written to the file");
     logger.warn("this should be written to the file");
 
-    fs.readFile("tmp-sync-tests.log", "utf8", (err, contents) => {
+    fs.readFile(testFile, "utf8", (err, contents) => {
       t.include(contents, `this should be written to the file${EOL}`);
       t.equal(contents.indexOf("this should not be written to the file"), -1);
       t.end();
@@ -246,12 +251,19 @@ test("log4js fileSyncAppender", batch => {
   });
 
   batch.test("test options", t => {
+    const testFile = "tmp-options-tests.log";
+    remove(testFile);
+
+    t.tearDown(() => {
+      remove(testFile);
+    });
+
     // using non-standard options
     log4js.configure({
       appenders: {
         sync: {
           type: "fileSync",
-          filename: "tmp-options-tests.log",
+          filename: testFile,
           layout: { type: "messagePassThrough" },
           flags: "w",
           encoding: "ascii",
@@ -265,7 +277,7 @@ test("log4js fileSyncAppender", batch => {
     const logger = log4js.getLogger();
     logger.warn("log message");
 
-    fs.readFile("tmp-options-tests.log", "ascii", (err, contents) => {
+    fs.readFile(testFile, "ascii", (err, contents) => {
       t.include(contents, `log message${EOL}`);
       t.end();
     });

@@ -7,6 +7,13 @@ const deepFreeze = require("deep-freeze");
 const log4js = require("../../lib/log4js");
 const configuration = require("../../lib/configuration");
 
+const removeFiles = async filenames => {
+  if (!Array.isArray(filenames))
+    filenames = [filenames];
+  const promises = filenames.map(filename => fs.promises.unlink(filename));
+  await Promise.allSettled(promises);
+};
+
 const testAppender = (label, result) => ({
   configure(config, layouts, findAppender) {
     debug(
@@ -247,13 +254,17 @@ test("log4js configuration validation", batch => {
   );
 
   batch.test("should not throw error if configure object is freezed", t => {
+    const testFile = "test/tap/freeze-date-file-test";
+    t.teardown(() => {
+      removeFiles(testFile);
+    });
     t.doesNotThrow(() =>
       log4js.configure(
         deepFreeze({
           appenders: {
             dateFile: {
               type: "dateFile",
-              filename: "test/tap/freeze-date-file-test",
+              filename: testFile,
               alwaysIncludePattern: false
             }
           },

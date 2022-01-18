@@ -4,10 +4,20 @@ const debug = require("debug");
 const fs = require("fs");
 const log4js = require("../../lib/log4js");
 
+const removeFiles = async filenames => {
+  if (!Array.isArray(filenames))
+    filenames = [filenames];
+  const promises = filenames.map(filename => fs.promises.unlink(filename));
+  await Promise.allSettled(promises);
+};
+
 test("multiFile appender", batch => {
   batch.test(
     "should write to multiple files based on the loggingEvent property",
     t => {
+      t.tearDown(async () => {
+        await removeFiles(["logs/A.log", "logs/B.log"]);
+      });
       log4js.configure({
         appenders: {
           multi: {
@@ -34,6 +44,9 @@ test("multiFile appender", batch => {
   batch.test(
     "should write to multiple files based on loggingEvent.context properties",
     t => {
+      t.tearDown(async () => {
+        await removeFiles(["logs/C.log", "logs/D.log"]);
+      });
       log4js.configure({
         appenders: {
           multi: {
@@ -60,6 +73,9 @@ test("multiFile appender", batch => {
   );
 
   batch.test("should close file after timeout", t => {
+    t.tearDown(async () => {
+      await removeFiles("logs/C.log");
+    });
     /* checking that the file is closed after a timeout is done by looking at the debug logs
       since detecting file locks with node.js is platform specific.
      */
@@ -104,6 +120,9 @@ test("multiFile appender", batch => {
   batch.test(
     "should fail silently if loggingEvent property has no value",
     t => {
+      t.tearDown(async () => {
+        await removeFiles("logs/E.log");
+      });
       log4js.configure({
         appenders: {
           multi: {
@@ -133,6 +152,9 @@ test("multiFile appender", batch => {
   );
 
   batch.test("should pass options to rolling file stream", t => {
+    t.tearDown(async () => {
+      await removeFiles(["logs/F.log", "logs/F.log.1", "logs/F.log.2"]);
+    });
     log4js.configure({
       appenders: {
         multi: {
@@ -164,6 +186,9 @@ test("multiFile appender", batch => {
   });
 
   batch.test("should inherit config from category hierarchy", t => {
+    t.tearDown(async () => {
+      await removeFiles("logs/test.someTest.log");
+    });
     log4js.configure({
       appenders: {
         out: { type: "stdout" },
@@ -209,6 +234,10 @@ test("multiFile appender", batch => {
       t.ok("callback is called");
       t.end();
     });
+  });
+
+  batch.tearDown(() => {
+    fs.rmdirSync("logs");
   });
 
   batch.end();

@@ -120,6 +120,9 @@ test("file appender SIGHUP handler leak", t => {
     },
     categories: { default: { appenders: ["file"], level: "info" } }
   });
+  t.teardown(async () => {
+    await removeFiles("test.log");
+  });
   t.plan(2);
   t.equal(process.listenerCount("SIGHUP"), initialListeners + 1);
   log4js.shutdown(() => {
