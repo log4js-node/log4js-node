@@ -136,3 +136,25 @@ log4js.configure({
   appenders: { thing: { type: { configure: () => {} }}},
   categories: { default: { appenders: ['thing'], level: 'debug'}}
 });
+
+log4js.configure({
+  appenders: { rec: { type: 'recording' } },
+  categories: { default: { appenders: [ 'rec'], 'level': 'debug' } }
+});
+const logger8 = log4js.getLogger();
+logger8.level = 'debug'
+logger8.debug('This will go to the recording!')
+logger8.debug('Another one')
+const recording = log4js.recording()
+const loggingEvents = recording.playback()
+if (loggingEvents.length !== 2) {
+  throw new Error(`Expected 2 recorded events, got ${loggingEvents.length}`)
+}
+if (loggingEvents[1].data[0] !== 'Another one') {
+  throw new Error(`Expected message 'Another one', got ${loggingEvents[1].data[0]}`)
+}
+recording.reset()
+const loggingEventsPostReset = recording.playback()
+if (loggingEventsPostReset.length !== 0) {
+  throw new Error(`Expected 0 recorded events after reset, got ${loggingEventsPostReset.length}`)
+}
