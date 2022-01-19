@@ -43,11 +43,9 @@ test("log4js fileSyncAppender", batch => {
     const testFile = path.join(__dirname, "/fa-maxFileSize-sync-test.log");
     const logger = log4js.getLogger("max-file-size");
     remove(testFile);
-    remove(`${testFile}.1`);
 
     t.tearDown(() => {
       remove(testFile);
-      remove(`${testFile}.1`);
     });
 
     // log file of 100 bytes maximum, no backups
@@ -77,12 +75,12 @@ test("log4js fileSyncAppender", batch => {
       });
     });
 
-    t.test("there should be two test files", assert => {
+    t.test("there should be one test files", assert => {
       fs.readdir(__dirname, (err, files) => {
         const logFiles = files.filter(file =>
           file.includes("fa-maxFileSize-sync-test.log")
         );
-        assert.equal(logFiles.length, 2);
+        assert.equal(logFiles.length, 1);
         assert.end();
       });
     });
@@ -128,12 +126,12 @@ test("log4js fileSyncAppender", batch => {
       });
     });
 
-    t.test("there should be two test files", assert => {
+    t.test("there should be one test file", assert => {
       fs.readdir(__dirname, (err, files) => {
         const logFiles = files.filter(file =>
           file.includes("fa-maxFileSize-unit-sync-test.log")
         );
-        assert.equal(logFiles.length, 2);
+        assert.equal(logFiles.length, 1);
         assert.end();
       });
     });

@@ -82,9 +82,9 @@ test("log4js fileAppender", batch => {
 
     t.tearDown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
-      await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
+      await removeFile(testFile);
     });
-    await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
+    await removeFile(testFile);
 
     // log file of 100 bytes maximum, no backups
     log4js.configure({
@@ -113,7 +113,7 @@ test("log4js fileAppender", batch => {
     const logFiles = files.filter(file =>
       file.includes("fa-maxFileSize-test.log")
     );
-    t.equal(logFiles.length, 2, "should be 2 files");
+    t.equal(logFiles.length, 1, "should be 1 file");
     t.end();
   });
 
@@ -158,7 +158,7 @@ test("log4js fileAppender", batch => {
     const logFiles = files.filter(file =>
       file.includes("fa-maxFileSize-unit-test.log")
     );
-    t.equal(logFiles.length, 2, "should be 2 files");
+    t.equal(logFiles.length, 1, "should be 1 file");
     t.end();
   });
 
