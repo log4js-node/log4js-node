@@ -1,12 +1,19 @@
 const { test } = require("tap");
-const { unlinkSync } = require("fs");
 const util = require("util");
 const path = require("path");
 const sandbox = require("@log4js-node/sandboxed-module");
 const debug = require("debug")("log4js:test.configuration-validation");
 const deepFreeze = require("deep-freeze");
+const fs = require("fs");
 const log4js = require("../../lib/log4js");
 const configuration = require("../../lib/configuration");
+
+const removeFiles = async filenames => {
+  if (!Array.isArray(filenames))
+    filenames = [filenames];
+  const promises = filenames.map(filename => fs.promises.unlink(filename));
+  await Promise.allSettled(promises);
+};
 
 const testAppender = (label, result) => ({
   configure(config, layouts, findAppender) {
@@ -248,21 +255,17 @@ test("log4js configuration validation", batch => {
   );
 
   batch.test("should not throw error if configure object is freezed", t => {
-    const filename = "test/tap/freeze-date-file-test"
+    const testFile = "test/tap/freeze-date-file-test";
     t.tearDown(() => {
-      try {
-        unlinkSync(filename);
-      } catch (_) {
-        // doesn't really matter if it failed
-      }
+      removeFiles(testFile);
     });
     t.doesNotThrow(() =>
       log4js.configure(
         deepFreeze({
           appenders: {
             dateFile: {
-              filename,
               type: "dateFile",
+              filename: testFile,
               alwaysIncludePattern: false
             }
           },

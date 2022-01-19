@@ -50,6 +50,11 @@ test("log4js fileAppender", batch => {
     const testFile = path.join(__dirname, "fa-default-test.log");
     await removeFile(testFile);
 
+    t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
+      await removeFile(testFile);
+    });
+
     log4js.configure({
       appenders: { test: { type: "file", filename: testFile } },
       categories: { default: { appenders: ["test"], level: "trace" } }
@@ -76,6 +81,7 @@ test("log4js fileAppender", batch => {
     const logger = log4js.getLogger("max-file-size");
 
     t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
     await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
@@ -116,6 +122,7 @@ test("log4js fileAppender", batch => {
     const logger = log4js.getLogger("max-file-size-unit");
 
     t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
     await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
@@ -168,6 +175,7 @@ test("log4js fileAppender", batch => {
     ]);
 
     t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([
         removeFile(testFile),
         removeFile(`${testFile}.1`),
@@ -227,6 +235,7 @@ test("log4js fileAppender", batch => {
     ]);
 
     t.tearDown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([
         removeFile(testFile),
         removeFile(`${testFile}.1.gz`),

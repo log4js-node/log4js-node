@@ -25,7 +25,7 @@ test("../../lib/appenders/dateFile", batch => {
     const logger = log4js.getLogger("default-settings");
 
     logger.info("This should be in the file.");
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-appender-default.log");
     });
 
@@ -72,7 +72,7 @@ test("../../lib/appenders/dateFile", batch => {
       );
     });
 
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-file-test.log");
     });
   });
@@ -98,18 +98,18 @@ test("../../lib/appenders/dateFile", batch => {
       options.appenders.date.pattern,
       new Date()
     );
+    const testFile = `date-file-test.${thisTime}`;
     const existingFile = path.join(
-      process.cwd(),
-      "test/tap/",
-      `date-file-test.${thisTime}`
+      __dirname,
+      testFile
     );
     fs.writeFileSync(existingFile, `this is existing data${EOL}`, "utf8");
     log4js.configure(options);
     const logger = log4js.getLogger("tests");
     logger.warn("this should be written to the file with the appended date");
 
-    t.teardown(() => {
-      removeFile(existingFile);
+    t.tearDown(() => {
+      removeFile(testFile);
     });
 
     // wait for filesystem to catch up
@@ -140,7 +140,7 @@ test("../../lib/appenders/dateFile", batch => {
     logger.info("1");
     logger.info("2");
     logger.info("3");
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-appender-flush.log");
     });
 
