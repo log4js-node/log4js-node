@@ -1,5 +1,70 @@
 # log4js-node changelog
 
+## 6.4.0
+
+- [security: default file permission to be 0o600 instead of 0o644](https://github.com/log4js-node/log4js-node/pull/1141) - thanks [ranjit-git](https://www.huntr.dev/users/ranjit-git) and [@peteriman](https://github.com/peteriman)
+  - [chore(docs): updated fileSync.md and misc comments](https://github.com/log4js-node/log4js-node/pull/1148) - thanks [@peteriman](https://github.com/peteriman)
+- [feat: Added warnings when log() is used with invalid levels before fallbacking to INFO](https://github.com/log4js-node/log4js-node/pull/1062) - thanks [@abernh](https://github.com/abernh)
+- [feat: exposed Recording](https://github.com/log4js-node/log4js-node/pull/1103) - thanks [@polo-language](https://github.com/polo-language)
+- [bug: Fixed file descriptor leak if repeated configure()](https://github.com/log4js-node/log4js-node/pull/1113) - thanks [@peteriman](https://github.com/peteriman)
+- [bug: Fixed MaxListenersExceededWarning from NodeJS](https://github.com/log4js-node/log4js-node/pull/1110) - thanks [@peteriman](https://github.com/peteriman)
+  - [test: added assertion for increase of SIGHUP listeners on log4js.configure()](https://github.com/log4js-node/log4js-node/pull/1142) - thanks [@peteriman](https://github.com/peteriman)
+- [bug: Fixed missing TCP appender with Webpack and Typescript](https://github.com/log4js-node/log4js-node/pull/1028) - thanks [@techmunk](https://github.com/techmunk)
+- [bug: Fixed dateFile appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/1097) - thanks [@4eb0da](https://github.com/4eb0da)
+  - [refactor: using writer.writable instead of alive for checking](https://github.com/log4js-node/log4js-node/pull/1144) - thanks [@peteriman](https://github.com/peteriman)
+- [bug: Fixed TCP appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/1089) - thanks [@jhonatanTeixeira](https://github.com/jhonatanTeixeira)
+- [bug: Fixed Multiprocess appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/529) - thanks [@harlentan](https://github.com/harlentan)
+- [test: update fakeFS.read as graceful-fs uses it](https://github.com/log4js-node/log4js-node/pull/1127) - thanks [@peteriman](https://github.com/peteriman)
+- [test: update fakeFS.realpath as fs-extra uses it](https://github.com/log4js-node/log4js-node/pull/1128) - thanks [@peteriman](https://github.com/peteriman)
+- test: added tap.tearDown() to clean up test files
+  - [#1143](https://github.com/log4js-node/log4js-node/pull/1143) - thanks [@peteriman](https://github.com/peteriman)
+  - [#1022](https://github.com/log4js-node/log4js-node/pull/1022) - thanks [@abetomo](https://github.com/abetomo)
+- [type: improved @types for AppenderModule](https://github.com/log4js-node/log4js-node/pull/1079) - thanks [@nicobao](https://github.com/nicobao)
+- [type: Updated fileSync appender types](https://github.com/log4js-node/log4js-node/pull/1116) - thanks [@peteriman](https://github.com/peteriman)
+- [type: Removed erroneous type in file appender](https://github.com/log4js-node/log4js-node/pull/1031) - thanks [@vdmtrv](https://github.com/vdmtrv)
+- [type: Updated Logger.log type](https://github.com/log4js-node/log4js-node/pull/1115) - thanks [@ZLundqvist](https://github.com/ZLundqvist)
+- [type: Updated Logger.\_log type](https://github.com/log4js-node/log4js-node/pull/1117) - thanks [@peteriman](https://github.com/peteriman)
+- [type: Updated Logger.level type](https://github.com/log4js-node/log4js-node/pull/1118) - thanks [@peteriman](https://github.com/peteriman)
+- [type: Updated Levels.getLevel type](https://github.com/log4js-node/log4js-node/pull/1072) - thanks [@saulzhong](https://github.com/saulzhong)
+- [chore(deps): bump streamroller from 3.0.1 to 3.0.2](https://github.com/log4js-node/log4js-node/pull/1147) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): bump date-format from 4.0.2 to 4.0.3](https://github.com/log4js-node/log4js-node/pull/1146) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps-dev): bump eslint from from 8.6.0 to 8.7.0](https://github.com/log4js-node/log4js-node/pull/1145) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps-dev): bump nyc from 14.1.1 to 15.1.0](https://github.com/log4js-node/log4js-node/pull/1140) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps-dev): bump eslint from 5.16.0 to 8.6.0](https://github.com/log4js-node/log4js-node/pull/1138) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): bump flatted from 2.0.2 to 3.2.4](https://github.com/log4js-node/log4js-node/pull/1137) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps-dev): bump fs-extra from 8.1.0 to 10.0.0](https://github.com/log4js-node/log4js-node/pull/1136) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): bump streamroller from 2.2.4 to 3.0.1](https://github.com/log4js-node/log4js-node/pull/1135) - thanks [@peteriman](https://github.com/peteriman)
+  - [feat: allows for zero backups](https://github.com/log4js-node/log4js-node/pull/1151) - thanks [@peteriman](https://github.com/peteriman)
+  - [api: migrated from daysToKeep to numBackups due to streamroller@^3.0.0](https://github.com/log4js-node/log4js-node/pull/1149) - thanks [@peteriman](https://github.com/peteriman)
+  - [bug: compressed file ignores dateFile appender "mode"](https://github.com/log4js-node/streamroller/pull/65) - thanks [@rnd-debug](https://github.com/rnd-debug)
+  - issue: addresses additional separator in filename ([#1039](https://github.com/log4js-node/log4js-node/issues/1039)) - details: [streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
+  - issue: addresses daysToKeep naming confusion ([#1035](https://github.com/log4js-node/log4js-node/issues/1035), [#1080](https://github.com/log4js-node/log4js-node/issues/1080))  - details: [streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
+- [chore(deps): bump date-format from 3.0.0 to 4.0.2](https://github.com/log4js-node/log4js-node/pull/1134) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): Updated dependencies](https://github.com/log4js-node/log4js-node/pull/1130) - thanks [@peteriman](https://github.com/peteriman)
+  - eslint-config-prettier from 6.15.0 to 8.3.0
+  - eslint-plugin-prettier from 3.4.1 to 4.0.0
+  - husky from 3.1.0 to 7.0.4
+  - prettier from 1.19.0 to 2.5.1
+  - typescript from 3.9.10 to 4.5.4 
+- [chore(deps-dev): bump eslint-config-prettier from 6.15.0 to 8.3.0](https://github.com/log4js-node/log4js-node/pull/1129) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): Updated dependencies](https://github.com/log4js-node/log4js-node/pull/1121) - thanks [@peteriman](https://github.com/peteriman)
+  - codecov from 3.6.1 to 3.8.3
+  - eslint-config-prettier from 6.5.0 to 6.15.0
+  - eslint-import-resolver-node from 0.3.2 to 0.3.6
+  - eslint-plugin-import" from 2.18.2 to 2.25.4
+  - eslint-plugin-prettier from 3.1.1 to 3.4.1
+  - husky from 3.0.9 to 3.1.0
+  - prettier from 1.18.2 to 1.19.1
+  - typescript from 3.7.2 to 3.9.10
+- [chore(deps): bump path-parse from 1.0.6 to 1.0.7](https://github.com/log4js-node/log4js-node/pull/1120) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump glob-parent from 5.1.1 to 5.1.2](https://github.com/log4js-node/log4js-node/pull/1084) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump hosted-git-info from 2.7.1 to 2.8.9](https://github.com/log4js-node/log4js-node/pull/1076) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump lodash from 4.17.14 to 4.17.21](https://github.com/log4js-node/log4js-node/pull/1075) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump y18n from 4.0.0 to 4.0.1](https://github.com/log4js-node/log4js-node/pull/1070) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump node-fetch from 2.6.0 to 2.6.1](https://github.com/log4js-node/log4js-node/pull/1047) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps): bump yargs-parser from 13.1.1 to 13.1.2](https://github.com/log4js-node/log4js-node/pull/1045) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps-dev): bump codecov from 3.6.5 to 3.7.1](https://github.com/log4js-node/log4js-node/pull/1033) - thanks [@Dependabot](https://github.com/dependabot)
+
 ## 6.3.0
 
 - [Add option to file appender to remove ANSI colours](https://github.com/log4js-node/log4js-node/pull/1001) - thanks [@BlueCocoa](https://github.com/BlueCocoa)
