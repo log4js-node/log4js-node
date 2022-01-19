@@ -178,7 +178,7 @@ export interface DateFileAppender {
   pattern?: string;
   // default “utf-8”
   encoding?: string;
-  // default 0644
+  // default 0600
   mode?: number;
   // default ‘a’
   flags?: string;
