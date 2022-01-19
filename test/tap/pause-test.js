@@ -77,11 +77,16 @@ tap.test("Drain event test", batch => {
         logger.info("This is a test for emitting drain event in date file logger");
     }
     t.end();
-
   });
 
-  batch.tearDown(() => {
-    fs.rmdirSync("logs");
+  batch.tearDown(async () => {
+    try {
+      const files = fs.readdirSync("logs");
+      await removeFiles(files.map(filename => `logs/${filename}`));
+      fs.rmdirSync("logs");
+    } catch (e) {
+      // doesn't matter
+    }
   });
 
   batch.end();

@@ -236,8 +236,14 @@ test("multiFile appender", batch => {
     });
   });
 
-  batch.tearDown(() => {
-    fs.rmdirSync("logs");
+  batch.tearDown(async () => {
+    try {
+      const files = fs.readdirSync("logs");
+      await removeFiles(files.map(filename => `logs/${filename}`));
+      fs.rmdirSync("logs");
+    } catch (e) {
+      // doesn't matter
+    }
   });
 
   batch.end();
