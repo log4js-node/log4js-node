@@ -189,7 +189,7 @@ export interface DateFileAppender {
   // keep the file extension when rotating logs
   keepFileExt?: boolean;
   // if this value is greater than zero, then files older than that many days will be deleted during log rolling.(default 0)
-  daysToKeep?: number;
+  numBackups?: number;
 }
 
 export interface LogLevelFilterAppender {
