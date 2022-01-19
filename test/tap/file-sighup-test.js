@@ -38,7 +38,7 @@ test("file appender single SIGHUP handler", t => {
   const log4js = require("../../lib/log4js");
   log4js.configure(config);
 
-  t.teardown(async () => {
+  t.tearDown(async () => {
     log4js.shutdown();
 
     const filenames = Object.values(config.appenders).map(appender => appender.filename);
@@ -120,7 +120,7 @@ test("file appender SIGHUP handler leak", t => {
     },
     categories: { default: { appenders: ["file"], level: "info" } }
   });
-  t.teardown(async () => {
+  t.tearDown(async () => {
     await removeFiles("test.log");
   });
   t.plan(2);

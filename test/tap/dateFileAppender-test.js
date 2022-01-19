@@ -25,7 +25,7 @@ test("../../lib/appenders/dateFile", batch => {
     const logger = log4js.getLogger("default-settings");
 
     logger.info("This should be in the file.");
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-appender-default.log");
     });
 
@@ -72,7 +72,7 @@ test("../../lib/appenders/dateFile", batch => {
       );
     });
 
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-file-test.log");
     });
   });
@@ -108,7 +108,7 @@ test("../../lib/appenders/dateFile", batch => {
     const logger = log4js.getLogger("tests");
     logger.warn("this should be written to the file with the appended date");
 
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile(testFile);
     });
 
@@ -140,7 +140,7 @@ test("../../lib/appenders/dateFile", batch => {
     logger.info("1");
     logger.info("2");
     logger.info("3");
-    t.teardown(() => {
+    t.tearDown(() => {
       removeFile("date-appender-flush.log");
     });
 
