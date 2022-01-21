@@ -263,13 +263,8 @@ export interface CustomAppender {
 }
 
 export interface AppenderModule {
-  configure: (config: Config, layouts: LayoutsParam) => AppenderGenerator;
+  configure: (config: Config, layouts: LayoutsParam) => AppenderFunction;
 }
-
-export type AppenderGenerator = (
-  layout: LayoutFunction,
-  timezoneOffset?: string
-) => AppenderFunction;
 
 export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
 
@@ -321,7 +316,7 @@ export interface Levels {
   FATAL: Level;
   OFF: Level;
   levels: Level[];
-  getLevel(level: Level | string, defaultLevel: Level): Level;
+  getLevel(level: Level | string, defaultLevel?: Level): Level;
   addLevels(customLevels: object): void;
 }
 

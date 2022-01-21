@@ -133,7 +133,7 @@ log4js.connectLogger(logger2, {
 
 //support for passing in an appender module
 log4js.configure({
-  appenders: { thing: { type: { configure: () => {} }}},
+  appenders: { thing: { type: { configure: () => () => {} }}},
   categories: { default: { appenders: ['thing'], level: 'debug'}}
 });
 
