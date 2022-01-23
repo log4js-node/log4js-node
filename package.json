@@ -5,7 +5,9 @@
   "homepage": "https://log4js-node.github.io/log4js-node/",
   "files": [
     "lib",
-    "types"
+    "types",
+    "CHANGELOG.md",
+    "SECURITY.md"
   ],
   "keywords": [
     "logging",
