@@ -1,5 +1,16 @@
 # log4js-node changelog
 
+## 6.4.1
+
+- [bug: Fixed to startup multiprocess even when no direct appenders](https://github.com/log4js-node/log4js-node/pull/1162) - thanks [@nicojs](https://github.com/nicojs)
+  - [refactor: fixed eslint warnings](https://github.com/log4js-node/log4js-node/pull/1165) - thanks [@peteriman](https://github.com/peteriman)
+- [improvement: additional alias for date patterns](https://github.com/log4js-node/log4js-node/pull/1163) - thanks [@peteriman](https://github.com/peteriman)
+- [improvement: added emitWarning for deprecation](https://github.com/log4js-node/log4js-node/pull/1164) - thanks [@peteriman](https://github.com/peteriman)
+- [type: Fixed wrong types from 6.4.0 regression](https://github.com/log4js-node/log4js-node/pull/1158) - thanks [@glasser](https://github.com/glasser)
+- [chore(docs): changed author to contributors in package.json](https://github.com/log4js-node/log4js-node/pull/1153) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): bump node-fetch from 2.6.6 to 2.6.7](https://github.com/log4js-node/log4js-node/pull/1167) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps-dev): bump typescript from 4.5.4 to 4.5.5](https://github.com/log4js-node/log4js-node/pull/1166) - thanks [@peteriman](https://github.com/peteriman)
+
 ## 6.4.0
 
 - [security: default file permission to be 0o600 instead of 0o644](https://github.com/log4js-node/log4js-node/pull/1141) - thanks [ranjit-git](https://www.huntr.dev/users/ranjit-git) and [@peteriman](https://github.com/peteriman)
