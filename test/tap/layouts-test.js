@@ -412,23 +412,21 @@ test("log4js layouts", batch => {
         "2010-12-05T14:18:30.045"
       );
 
-      // Commenting this test out, because it does not work in travis
-      // for reasons I do not understand.
-      // testPattern(
-      //   assert,
-      //   layout,
-      //   event,
-      //   tokens,
-      //   "%d{ISO8601_WITH_TZ_OFFSET}",
-      //   "2010-12-05T03:18:30.045+1000"
-      // );
+      testPattern(
+        assert,
+        layout,
+        event,
+        tokens,
+        "%d{ISO8601_WITH_TZ_OFFSET}",
+        "2010-12-05T14:18:30.045+10:00"
+      );
 
       testPattern(
         assert,
         layout,
         event,
         tokens,
-        "%d{ABSOLUTE}",
+        "%d{ABSOLUTE}", // deprecated
         "14:18:30.045"
       );
       testPattern(
@@ -436,9 +434,27 @@ test("log4js layouts", batch => {
         layout,
         event,
         tokens,
-        "%d{DATE}",
+        "%d{ABSOLUTETIME}",
+        "14:18:30.045"
+      );
+
+      testPattern(
+        assert,
+        layout,
+        event,
+        tokens,
+        "%d{DATE}", // deprecated
         "05 12 2010 14:18:30.045"
       );
+      testPattern(
+        assert,
+        layout,
+        event,
+        tokens,
+        "%d{DATETIME}",
+        "05 12 2010 14:18:30.045"
+      );
+
       testPattern(
         assert,
         layout,
@@ -617,7 +633,15 @@ test("log4js layouts", batch => {
         layout,
         event,
         tokens,
-        "%m%n %c{2} at %d{ABSOLUTE} cheese %p%n",
+        "%m%n %c{2} at %d{ABSOLUTE} cheese %p%n", // deprecated
+        `this is a test${EOL} of.tests at 14:18:30.045 cheese DEBUG${EOL}`
+      );
+      testPattern(
+        assert,
+        layout,
+        event,
+        tokens,
+        "%m%n %c{2} at %d{ABSOLUTETIME} cheese %p%n",
         `this is a test${EOL} of.tests at 14:18:30.045 cheese DEBUG${EOL}`
       );
       assert.end();
