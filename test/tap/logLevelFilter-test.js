@@ -58,7 +58,7 @@ test("log4js logLevelFilter", batch => {
     remove(`${__dirname}/logLevelFilter-warnings.log`);
     remove(`${__dirname}/logLevelFilter-debugs.log`);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(`${__dirname}/logLevelFilter.log`);
       remove(`${__dirname}/logLevelFilter-warnings.log`);
       remove(`${__dirname}/logLevelFilter-debugs.log`);

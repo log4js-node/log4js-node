@@ -24,7 +24,7 @@ test("log4js fileAppender", batch => {
     const logger = log4js.getLogger("default-settings");
     await removeFile(testFile);
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFile);
     });
@@ -50,7 +50,7 @@ test("log4js fileAppender", batch => {
     const testFile = path.join(__dirname, "fa-default-test.log");
     await removeFile(testFile);
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFile);
     });
@@ -80,7 +80,7 @@ test("log4js fileAppender", batch => {
     const testFile = path.join(__dirname, "fa-maxFileSize-test.log");
     const logger = log4js.getLogger("max-file-size");
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFile);
     });
@@ -121,7 +121,7 @@ test("log4js fileAppender", batch => {
     const testFile = path.join(__dirname, "fa-maxFileSize-unit-test.log");
     const logger = log4js.getLogger("max-file-size-unit");
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
@@ -174,7 +174,7 @@ test("log4js fileAppender", batch => {
       removeFile(`${testFile}.2`)
     ]);
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([
         removeFile(testFile),
@@ -234,7 +234,7 @@ test("log4js fileAppender", batch => {
       removeFile(`${testFile}.2.gz`)
     ]);
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([
         removeFile(testFile),
@@ -350,7 +350,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFilePlain);
     await removeFile(testFileAsIs);
 
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFilePlain);
       await removeFile(testFileAsIs);

@@ -12,7 +12,7 @@ const removeFiles = async filenames => {
 tap.test("Drain event test", batch => {
 
   batch.test("Should emit pause event and resume when logging in a file with high frequency", t => {
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await removeFiles("logs/drain.log");
     });
     // Generate logger with 5k of highWaterMark config
@@ -47,7 +47,7 @@ tap.test("Drain event test", batch => {
 
 
   batch.test("Should emit pause event and resume when logging in a date file with high frequency", (t) => {
-    t.tearDown(async () => {
+    t.teardown(async () => {
       await removeFiles("logs/date-file-drain.log");
     });
     // Generate date file logger with 5kb of highWaterMark config
@@ -79,7 +79,7 @@ tap.test("Drain event test", batch => {
     t.end();
   });
 
-  batch.tearDown(async () => {
+  batch.teardown(async () => {
     try {
       const files = fs.readdirSync("logs");
       await removeFiles(files.map(filename => `logs/${filename}`));

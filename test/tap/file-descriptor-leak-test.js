@@ -67,7 +67,7 @@ if (process.platform !== "win32") {
       }, 250);
     });
 
-    batch.tearDown(async () => {
+    batch.teardown(async () => {
       log4js.shutdown();
 
       const filenames = Object.values(config.appenders).map(appender => appender.filename);

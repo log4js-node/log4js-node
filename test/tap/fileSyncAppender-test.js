@@ -18,7 +18,7 @@ test("log4js fileSyncAppender", batch => {
     const logger = log4js.getLogger("default-settings");
     remove(testFile);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
     });
 
@@ -44,7 +44,7 @@ test("log4js fileSyncAppender", batch => {
     const logger = log4js.getLogger("max-file-size");
     remove(testFile);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
     });
 
@@ -93,7 +93,7 @@ test("log4js fileSyncAppender", batch => {
     remove(testFile);
     remove(`${testFile}.1`);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
       remove(`${testFile}.1`);
     });
@@ -148,7 +148,7 @@ test("log4js fileSyncAppender", batch => {
     remove(`${testFile}.1`);
     remove(`${testFile}.2`);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
       remove(`${testFile}.1`);
       remove(`${testFile}.2`);
@@ -218,7 +218,7 @@ test("log4js fileSyncAppender", batch => {
     const testFile = "tmp-sync-tests.log";
     remove(testFile);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
     });
 
@@ -252,7 +252,7 @@ test("log4js fileSyncAppender", batch => {
     const testFile = "tmp-options-tests.log";
     remove(testFile);
 
-    t.tearDown(() => {
+    t.teardown(() => {
       remove(testFile);
     });
 
