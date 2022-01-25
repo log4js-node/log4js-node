@@ -1,3 +1,4 @@
+const childProcess = require("child_process");
 const { test } = require("tap");
 const flatted = require("flatted");
 const sandbox = require("@log4js-node/sandboxed-module");
@@ -49,7 +50,7 @@ function makeFakeNet() {
   };
 }
 
-test("Multiprocess Appender", batch => {
+test("Multiprocess Appender", async batch => {
   batch.beforeEach(done => {
     recording.erase();
     done();
@@ -369,6 +370,37 @@ test("Multiprocess Appender", batch => {
     });
     t.end();
   });
+
+  await batch.test('e2e test', async (assert) => {
+    const log4js = sandbox.require('../../lib/log4js', {
+      requires: {
+        './appenders/recording': recording,
+      },
+    });
+    log4js.configure({
+      appenders: {
+        recording: { type: 'recording' },
+        master: { type: 'multiprocess', mode: 'master', appender: 'recording', loggerPort: 5001 },
+      },
+      categories: { default: { appenders: ['recording'], level: 'trace' } },
+    });
+    const child = childProcess.fork(
+      require.resolve('../multiprocess-worker.js'),
+      ['start-multiprocess-worker', '5001'],
+      { stdio: 'inherit' }
+    );
+    const actualMsg = await new Promise((res, rej) => {
+      child.on('message', res);
+      child.on('error', rej);
+    });
+
+    const logEvents = recording.replay();
+    assert.equal(actualMsg, 'worker is done');
+    assert.equal(logEvents.length, 1);
+    assert.equal(logEvents[0].data[0], 'Logging from worker');
+    assert.end();
+  });
+
 
   batch.end();
 });
