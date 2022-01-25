@@ -134,7 +134,7 @@ test("log4js logLevelFilter", batch => {
             "utf8",
             (err, contents) => {
               const messages = contents.trim().split(EOL);
-              assert.deepEqual(messages, ["error", "warn"]);
+              assert.same(messages, ["error", "warn"]);
               assert.end();
             }
           );
@@ -148,7 +148,7 @@ test("log4js logLevelFilter", batch => {
             "utf8",
             (err, contents) => {
               const messages = contents.trim().split(EOL);
-              assert.deepEqual(messages, ["debug", "debug", "trace"]);
+              assert.same(messages, ["debug", "debug", "trace"]);
               assert.end();
             }
           );

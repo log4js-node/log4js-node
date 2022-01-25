@@ -22,12 +22,12 @@ test("log4js", batch => {
 
     const configuredAppenders = deepCopyMap(appenders);
     const configuredCategories = deepCopyMap(categories);
-    t.notEqual(
+    t.not(
       stringifyMap(configuredAppenders), 
       stringifyMap(initialAppenders), 
       "appenders should be different from initial state"
     );
-    t.notEqual(
+    t.not(
       stringifyMap(configuredCategories), 
       stringifyMap(initialCategories), 
       "categories should be different from initial state"
