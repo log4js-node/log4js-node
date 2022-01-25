@@ -34,8 +34,8 @@ test("multiFile appender", batch => {
       loggerA.info("I am in logger A");
       loggerB.info("I am in logger B");
       log4js.shutdown(() => {
-        t.contains(fs.readFileSync("logs/A.log", "utf-8"), "I am in logger A");
-        t.contains(fs.readFileSync("logs/B.log", "utf-8"), "I am in logger B");
+        t.match(fs.readFileSync("logs/A.log", "utf-8"), "I am in logger A");
+        t.match(fs.readFileSync("logs/B.log", "utf-8"), "I am in logger B");
         t.end();
       });
     }
@@ -65,8 +65,8 @@ test("multiFile appender", batch => {
       loggerC.info("I am in logger C");
       loggerD.info("I am in logger D");
       log4js.shutdown(() => {
-        t.contains(fs.readFileSync("logs/C.log", "utf-8"), "I am in logger C");
-        t.contains(fs.readFileSync("logs/D.log", "utf-8"), "I am in logger D");
+        t.match(fs.readFileSync("logs/C.log", "utf-8"), "I am in logger C");
+        t.match(fs.readFileSync("logs/D.log", "utf-8"), "I am in logger D");
         t.end();
       });
     }
@@ -105,7 +105,7 @@ test("multiFile appender", batch => {
     loggerC.addContext("label", "C");
     loggerC.info("I am in logger C");
     setTimeout(() => {
-      t.contains(
+      t.match(
         debugLogs[debugLogs.length - 1],
         "C not used for > 20 ms => close"
       );
@@ -143,7 +143,7 @@ test("multiFile appender", batch => {
       loggerE.info("I am also not in logger E");
       log4js.shutdown(() => {
         const contents = fs.readFileSync("logs/E.log", "utf-8");
-        t.contains(contents, "I am in logger E");
+        t.match(contents, "I am in logger E");
         t.notMatch(contents, "I am not in logger E");
         t.notMatch(contents, "I am also not in logger E");
         t.end();
@@ -176,11 +176,11 @@ test("multiFile appender", batch => {
     loggerF.info("I am in logger F");
     log4js.shutdown(() => {
       let contents = fs.readFileSync("logs/F.log", "utf-8");
-      t.contains(contents, "I am in logger F");
+      t.match(contents, "I am in logger F");
       contents = fs.readFileSync("logs/F.log.1", "utf-8");
-      t.contains(contents, "I am also in logger F");
+      t.match(contents, "I am also in logger F");
       contents = fs.readFileSync("logs/F.log.2", "utf-8");
-      t.contains(contents, "Being in logger F is the best");
+      t.match(contents, "Being in logger F is the best");
       t.end();
     });
   });
@@ -209,7 +209,7 @@ test("multiFile appender", batch => {
     testLogger.debug("This should go to the file");
     log4js.shutdown(() => {
       const contents = fs.readFileSync("logs/test.someTest.log", "utf-8");
-      t.contains(contents, "This should go to the file");
+      t.match(contents, "This should go to the file");
       t.end();
     });
   });

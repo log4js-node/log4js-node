@@ -30,7 +30,7 @@ test("log4js fileSyncAppender", batch => {
     logger.info("This should be in the file.");
 
     fs.readFile(testFile, "utf8", (err, fileContents) => {
-      t.include(fileContents, `This should be in the file.${EOL}`);
+      t.match(fileContents, `This should be in the file.${EOL}`);
       t.match(
         fileContents,
         /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
@@ -66,7 +66,7 @@ test("log4js fileSyncAppender", batch => {
 
     t.test("log file should only contain the second message", assert => {
       fs.readFile(testFile, "utf8", (err, fileContents) => {
-        assert.include(fileContents, `This is the second log message.${EOL}`);
+        assert.match(fileContents, `This is the second log message.${EOL}`);
         assert.equal(
           fileContents.indexOf("This is the first log message."),
           -1
@@ -192,21 +192,21 @@ test("log4js fileSyncAppender", batch => {
           path.join(__dirname, logFiles[0]),
           "utf8",
           (e, contents) => {
-            assert.include(contents, "This is the fourth log message.");
+            assert.match(contents, "This is the fourth log message.");
           }
         );
         fs.readFile(
           path.join(__dirname, logFiles[1]),
           "utf8",
           (e, contents) => {
-            assert.include(contents, "This is the third log message.");
+            assert.match(contents, "This is the third log message.");
           }
         );
         fs.readFile(
           path.join(__dirname, logFiles[2]),
           "utf8",
           (e, contents) => {
-            assert.include(contents, "This is the second log message.");
+            assert.match(contents, "This is the second log message.");
           }
         );
       });
@@ -242,7 +242,7 @@ test("log4js fileSyncAppender", batch => {
     logger.warn("this should be written to the file");
 
     fs.readFile(testFile, "utf8", (err, contents) => {
-      t.include(contents, `this should be written to the file${EOL}`);
+      t.match(contents, `this should be written to the file${EOL}`);
       t.equal(contents.indexOf("this should not be written to the file"), -1);
       t.end();
     });
@@ -276,7 +276,7 @@ test("log4js fileSyncAppender", batch => {
     logger.warn("log message");
 
     fs.readFile(testFile, "ascii", (err, contents) => {
-      t.include(contents, `log message${EOL}`);
+      t.match(contents, `log message${EOL}`);
       t.end();
     });
   });

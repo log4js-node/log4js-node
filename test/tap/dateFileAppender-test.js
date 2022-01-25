@@ -31,7 +31,7 @@ test("../../lib/appenders/dateFile", batch => {
 
     setTimeout(() => {
       fs.readFile(testFile, "utf8", (err, contents) => {
-        t.include(contents, "This should be in the file");
+        t.match(contents, "This should be in the file");
         t.match(
           contents,
           /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
@@ -62,7 +62,7 @@ test("../../lib/appenders/dateFile", batch => {
         path.join(__dirname, "date-file-test.log"),
         "utf8",
         (err, contents) => {
-          t.include(contents, `this should be written to the file${EOL}`);
+          t.match(contents, `this should be written to the file${EOL}`);
           t.equal(
             contents.indexOf("this should not be written to the file"),
             -1
@@ -115,12 +115,12 @@ test("../../lib/appenders/dateFile", batch => {
     // wait for filesystem to catch up
     log4js.shutdown(() => {
       fs.readFile(existingFile, "utf8", (err, contents) => {
-        t.include(
+        t.match(
           contents,
           "this is existing data",
           "should not overwrite the file on open (issue #132)"
         );
-        t.include(
+        t.match(
           contents,
           "this should be written to the file with the appended date"
         );
