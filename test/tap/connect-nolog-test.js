@@ -57,9 +57,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: "\\.gif" });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.messages = [];
-      done();
     });
 
     t.test("check unmatch url request", assert => {
@@ -105,9 +104,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: "\\.gif|\\.jpe?g" });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.messages = [];
-      done();
     });
 
     t.test("check unmatch url request (png)", assert => {
@@ -167,9 +165,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: ["\\.gif", "\\.jpe?g"] });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.messages = [];
-      done();
     });
 
     t.test("check unmatch url request (png)", assert => {
@@ -229,9 +226,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: /\.gif|\.jpe?g/ });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.messages = [];
-      done();
     });
 
     t.test("check unmatch url request (png)", assert => {
@@ -291,9 +287,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: [/\.gif/, /\.jpe?g/] });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.messages = [];
-      done();
     });
 
     t.test("check unmatch url request (png)", assert => {
