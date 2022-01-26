@@ -10,7 +10,7 @@ let dependencies;
 let fileRead;
 
 test("log4js configure", batch => {
-  batch.beforeEach(done => {
+  batch.beforeEach(() => {
     fileRead = 0;
 
     fakeFS = {
@@ -55,8 +55,6 @@ test("log4js configure", batch => {
         fs: fakeFS
       }
     };
-
-    done();
   });
 
   batch.test(

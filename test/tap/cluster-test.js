@@ -42,13 +42,13 @@ if (cluster.isMaster) {
         t.equal(logEvents[1].pid, workerPid);
         // serialising errors with stacks intact
         t.type(logEvents[1].data[1], "Error");
-        t.contains(logEvents[1].data[1].stack, "Error: oh dear");
+        t.match(logEvents[1].data[1].stack, "Error: oh dear");
         // serialising circular references in objects
         t.type(logEvents[1].data[2], "object");
         t.type(logEvents[1].data[2].me, "object");
         // serialising errors with custom properties
         t.type(logEvents[1].data[3], "Error");
-        t.contains(logEvents[1].data[3].stack, "Error: wtf");
+        t.match(logEvents[1].data[3].stack, "Error: wtf");
         t.equal(logEvents[1].data[3].alert, "chartreuse");
         // serialising things that are not errors, but look a bit like them
         t.type(logEvents[1].data[4], "object");

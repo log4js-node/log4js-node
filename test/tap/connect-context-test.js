@@ -66,9 +66,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, { context: true });
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.contexts = [];
-      done();
     });
 
     t.test("response should be included in context", assert => {
@@ -95,9 +94,8 @@ test("log4js connect logger", batch => {
     const ml = new MockLogger();
     const cl = clm(ml, {});
 
-    t.beforeEach(done => {
+    t.beforeEach(() => {
       ml.contexts = [];
-      done();
     });
 
     t.test("response should not be included in context", assert => {

@@ -38,7 +38,7 @@ test("log4js fileAppender", batch => {
 
     await sleep(100);
     const fileContents = await fs.readFile(testFile, "utf8");
-    t.include(fileContents, `This should be in the file.${EOL}`);
+    t.match(fileContents, `This should be in the file.${EOL}`);
     t.match(
       fileContents,
       /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
@@ -107,7 +107,7 @@ test("log4js fileAppender", batch => {
     // wait for the file system to catch up
     await sleep(100);
     const fileContents = await fs.readFile(testFile, "utf8");
-    t.include(fileContents, "This is the second log message.");
+    t.match(fileContents, "This is the second log message.");
     t.equal(fileContents.indexOf("This is the first log message."), -1);
     const files = await fs.readdir(__dirname);
     const logFiles = files.filter(file =>
@@ -213,11 +213,11 @@ test("log4js fileAppender", batch => {
       "fa-maxFileSize-with-backups-test.log.2"
     ]);
     let contents = await fs.readFile(path.join(__dirname, logFiles[0]), "utf8");
-    t.include(contents, "This is the fourth log message.");
+    t.match(contents, "This is the fourth log message.");
     contents = await fs.readFile(path.join(__dirname, logFiles[1]), "utf8");
-    t.include(contents, "This is the third log message.");
+    t.match(contents, "This is the third log message.");
     contents = await fs.readFile(path.join(__dirname, logFiles[2]), "utf8");
-    t.include(contents, "This is the second log message.");
+    t.match(contents, "This is the second log message.");
 
     t.end();
   });
@@ -275,16 +275,16 @@ test("log4js fileAppender", batch => {
       "fa-maxFileSize-with-backups-compressed-test.log.2.gz"
     ]);
     let contents = await fs.readFile(path.join(__dirname, logFiles[0]), "utf8");
-    t.include(contents, "This is the fourth log message.");
+    t.match(contents, "This is the fourth log message.");
 
     contents = await gunzip(
       await fs.readFile(path.join(__dirname, logFiles[1]))
     );
-    t.include(contents.toString("utf8"), "This is the third log message.");
+    t.match(contents.toString("utf8"), "This is the third log message.");
     contents = await gunzip(
       await fs.readFile(path.join(__dirname, logFiles[2]))
     );
-    t.include(contents.toString("utf8"), "This is the second log message.");
+    t.match(contents.toString("utf8"), "This is the second log message.");
     t.end();
   });
 
@@ -369,14 +369,14 @@ test("log4js fileAppender", batch => {
 
     await sleep(100);
     let fileContents = await fs.readFile(testFilePlain, "utf8");
-    t.include(fileContents, `This should be in the file. Color should be plain.${EOL}`);
+    t.match(fileContents, `This should be in the file. Color should be plain.${EOL}`);
     t.match(
       fileContents,
       /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
     );
     
     fileContents = await fs.readFile(testFileAsIs, "utf8");
-    t.include(fileContents, "This should be in the file.",
+    t.match(fileContents, "This should be in the file.",
       `\x1b[33mColor\x1b[0m \x1b[93;41mshould\x1b[0m be \x1b[38;5;8mplain\x1b[0m.${EOL}`);
     t.match(
       fileContents,

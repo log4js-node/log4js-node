@@ -114,10 +114,10 @@ test("log4js connect logger", batch => {
       assert.type(messages, "Array");
       assert.equal(messages.length, 1);
       assert.ok(levels.INFO.isEqualTo(messages[0].level));
-      assert.include(messages[0].message, "GET");
-      assert.include(messages[0].message, "http://url");
-      assert.include(messages[0].message, "my.remote.addr");
-      assert.include(messages[0].message, "200");
+      assert.match(messages[0].message, "GET");
+      assert.match(messages[0].message, "http://url");
+      assert.match(messages[0].message, "my.remote.addr");
+      assert.match(messages[0].message, "200");
       assert.end();
     });
 

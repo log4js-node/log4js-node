@@ -316,6 +316,10 @@ test("log4js configuration validation", batch => {
       sandboxConfig.requires[
         `${path.join(mainPath, "../../node_modules/nyc/bin/cheese")}`
       ] = testAppender("correct", result);
+      // in tap v15, the main path is at root of log4js (run `DEBUG=log4js:appenders npm test > /dev/null` to check)
+      sandboxConfig.requires[
+        `${path.join(mainPath, "../../cheese")}`
+      ] = testAppender("correct", result);
       // in node v6, there's an extra layer of node modules for some reason, so add this one to work around it
       sandboxConfig.requires[
         `${path.join(

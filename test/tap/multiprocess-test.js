@@ -51,9 +51,8 @@ function makeFakeNet() {
 }
 
 test("Multiprocess Appender", async batch => {
-  batch.beforeEach(done => {
+  batch.beforeEach(() => {
     recording.erase();
-    done();
   });
 
   batch.test("worker", t => {
@@ -96,7 +95,7 @@ test("Multiprocess Appender", async batch => {
     t.test(
       "should buffer messages written before socket is connected",
       assert => {
-        assert.include(net.data[0], "before connect");
+        assert.match(net.data[0], "before connect");
         assert.end();
       }
     );
@@ -104,9 +103,9 @@ test("Multiprocess Appender", async batch => {
     t.test(
       "should write log messages to socket as flatted strings with a terminator string",
       assert => {
-        assert.include(net.data[0], "before connect");
+        assert.match(net.data[0], "before connect");
         assert.equal(net.data[1], "__LOG4JS__");
-        assert.include(net.data[2], "after connect");
+        assert.match(net.data[2], "after connect");
         assert.equal(net.data[3], "__LOG4JS__");
         assert.equal(net.encoding, "utf8");
         assert.end();
@@ -114,9 +113,9 @@ test("Multiprocess Appender", async batch => {
     );
 
     t.test("should attempt to re-open the socket on error", assert => {
-      assert.include(net.data[4], "after error, before connect");
+      assert.match(net.data[4], "after error, before connect");
       assert.equal(net.data[5], "__LOG4JS__");
-      assert.include(net.data[6], "after error, after connect");
+      assert.match(net.data[6], "after error, after connect");
       assert.equal(net.data[7], "__LOG4JS__");
       assert.equal(net.createConnectionCalled, 2);
       assert.end();
@@ -163,11 +162,11 @@ test("Multiprocess Appender", async batch => {
 
     t.test("should attempt to re-open the socket", assert => {
       // skipping the __LOG4JS__ separators
-      assert.include(net.data[0], "before connect");
-      assert.include(net.data[2], "after connect");
-      assert.include(net.data[4], "after timeout, before close");
-      assert.include(net.data[6], "after close, before connect");
-      assert.include(net.data[8], "after close, after connect");
+      assert.match(net.data[0], "before connect");
+      assert.match(net.data[2], "after connect");
+      assert.match(net.data[4], "after timeout, before close");
+      assert.match(net.data[6], "after close, before connect");
+      assert.match(net.data[8], "after close, after connect");
       assert.equal(net.createConnectionCalled, 2);
       assert.end();
     });

@@ -46,7 +46,7 @@ if (cluster.isMaster) {
       t.equal(workerEvents[0].categoryName, "worker");
       t.equal(workerEvents[0].data[0], "this is worker");
       t.type(workerEvents[0].data[1], "Error");
-      t.contains(workerEvents[0].data[1].stack, "Error: oh dear");
+      t.match(workerEvents[0].data[1].stack, "Error: oh dear");
       t.end();
     });
     batch.end();
