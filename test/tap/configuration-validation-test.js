@@ -256,7 +256,7 @@ test("log4js configuration validation", batch => {
 
   batch.test("should not throw error if configure object is freezed", t => {
     const testFile = "test/tap/freeze-date-file-test";
-    t.tearDown(() => {
+    t.teardown(() => {
       removeFiles(testFile);
     });
     t.doesNotThrow(() =>

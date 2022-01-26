@@ -23,10 +23,10 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childLevel = categories.getLevelForCategory(childCategoryName);
 
     t.ok(childAppenders);
-    t.isEqual(childAppenders.length, 2, "inherited 2 appenders");
+    t.equal(childAppenders.length, 2, "inherited 2 appenders");
     t.ok(childAppenders.some(a => a.label === "stdout1"), "inherited stdout1");
     t.ok(childAppenders.some(a => a.label === "stdout2"), "inherited stdout2");
-    t.isEqual(childLevel.levelStr, "DEBUG", "child level overrides parent");
+    t.equal(childLevel.levelStr, "DEBUG", "child level overrides parent");
     t.end();
   });
 
@@ -54,12 +54,12 @@ test("log4js category inherit all appenders from direct parent", batch => {
       );
       const child1Level = categories.getLevelForCategory(child1CategoryName);
 
-      t.isEqual(child1Appenders.length, 1, "inherited 1 appender");
+      t.equal(child1Appenders.length, 1, "inherited 1 appender");
       t.ok(
         child1Appenders.some(a => a.label === "stdout1"),
         "inherited stdout1"
       );
-      t.isEqual(child1Level.levelStr, "DEBUG", "child level overrides parent");
+      t.equal(child1Level.levelStr, "DEBUG", "child level overrides parent");
 
       const child2CategoryName = "catA.catB.cat2";
       const child2Appenders = categories.appendersForCategory(
@@ -68,7 +68,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
       const child2Level = categories.getLevelForCategory(child2CategoryName);
 
       t.ok(child2Appenders);
-      t.isEqual(
+      t.equal(
         child2Appenders.length,
         2,
         "inherited 1 appenders, plus its original"
@@ -78,7 +78,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
         "inherited stdout1"
       );
       t.ok(child2Appenders.some(a => a.label === "stdout2"), "kept stdout2");
-      t.isEqual(child2Level.levelStr, "INFO", "inherited parent level");
+      t.equal(child2Level.levelStr, "INFO", "inherited parent level");
 
       t.end();
     }
@@ -104,7 +104,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childAppenders = categories.appendersForCategory(childCategoryName);
 
     t.ok(childAppenders);
-    t.isEqual(childAppenders.length, 2, "inherited 2 appenders");
+    t.equal(childAppenders.length, 2, "inherited 2 appenders");
     t.ok(childAppenders.some(a => a.label === "stdout1"), "inherited stdout1");
     t.ok(childAppenders.some(a => a.label === "stdout1"), "inherited stdout1");
 
@@ -114,7 +114,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     );
 
     t.ok(firstParentAppenders);
-    t.isEqual(firstParentAppenders.length, 2, "ended up with 2 appenders");
+    t.equal(firstParentAppenders.length, 2, "ended up with 2 appenders");
     t.ok(
       firstParentAppenders.some(a => a.label === "stdout1"),
       "inherited stdout1"
@@ -146,7 +146,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
       const childAppenders = categories.appendersForCategory(childCategoryName);
 
       t.ok(childAppenders);
-      t.isEqual(childAppenders.length, 1, "inherited 1 appenders");
+      t.equal(childAppenders.length, 1, "inherited 1 appenders");
       t.ok(
         childAppenders.some(a => a.label === "stdout1"),
         "inherited stdout1"
@@ -158,7 +158,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
       );
 
       t.ok(firstParentAppenders, "catA.catB got created implicitily");
-      t.isEqual(
+      t.equal(
         firstParentAppenders.length,
         1,
         "created with 1 inherited appender"
@@ -191,7 +191,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childAppenders = categories.appendersForCategory(childCategoryName);
 
     t.ok(childAppenders);
-    t.isEqual(childAppenders.length, 1);
+    t.equal(childAppenders.length, 1);
     t.ok(childAppenders.some(a => a.label === "stdout2"));
 
     t.end();
@@ -218,7 +218,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
       const childAppenders = categories.appendersForCategory(childCategoryName);
 
       t.ok(childAppenders);
-      t.isEqual(childAppenders.length, 2, "inherited 1 appender");
+      t.equal(childAppenders.length, 2, "inherited 1 appender");
       t.ok(
         childAppenders.some(a => a.label === "stdout1"),
         "still have stdout1"
@@ -250,7 +250,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childAppenders = categories.appendersForCategory(childCategoryName);
 
     t.ok(childAppenders);
-    t.isEqual(childAppenders.length, 1, "inherited no appender");
+    t.equal(childAppenders.length, 1, "inherited no appender");
     t.ok(childAppenders.some(a => a.label === "stdout2"), "kept stdout2");
 
     t.end();
@@ -276,7 +276,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childAppenders = categories.appendersForCategory(childCategoryName);
 
     t.ok(childAppenders);
-    t.isEqual(childAppenders.length, 1, "inherited 1 appender");
+    t.equal(childAppenders.length, 1, "inherited 1 appender");
     t.ok(childAppenders.some(a => a.label === "stdout2"), "inherited stdout2");
 
     const firstParentCategoryName = "catA.catB";
@@ -285,7 +285,7 @@ test("log4js category inherit all appenders from direct parent", batch => {
     );
 
     t.ok(firstParentAppenders);
-    t.isEqual(firstParentAppenders.length, 1, "did not inherit new appenders");
+    t.equal(firstParentAppenders.length, 1, "did not inherit new appenders");
     t.ok(firstParentAppenders.some(a => a.label === "stdout2"), "kept stdout2");
 
     t.end();
@@ -310,14 +310,14 @@ test("log4js category inherit all appenders from direct parent", batch => {
     const childCategoryName = "catA.catB.catC";
     const childLevel = categories.getLevelForCategory(childCategoryName);
 
-    t.isEqual(childLevel.levelStr, "INFO", "inherited level");
+    t.equal(childLevel.levelStr, "INFO", "inherited level");
 
     const firstParentCategoryName = "catA.catB";
     const firstParentLevel = categories.getLevelForCategory(
       firstParentCategoryName
     );
 
-    t.isEqual(
+    t.equal(
       firstParentLevel.levelStr,
       "INFO",
       "generate parent inherited level from base"
