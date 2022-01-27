@@ -338,10 +338,10 @@ export interface Recording {
 }
 
 export class Logger {
-  new(dispatch: Function, name: string): Logger;
+  constructor(name: string);
 
-	readonly category: string;
-	level: Level | string;
+  readonly category: string;
+  level: Level | string;
 
   log(level: Level | string, ...args: any[]): void;
 
