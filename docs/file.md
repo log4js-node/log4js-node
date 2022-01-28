@@ -15,8 +15,8 @@ Any other configuration parameters will be passed to the underlying [streamrolle
 * `mode`- `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
 * `flags` - `string` (default 'a' - [node.js file flags](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_system_flags)) 
 * `compress` - `boolean` (default false) - compress the backup files using gzip (backup files will have `.gz` extension)
-* `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.2017-05-30.log` instead of `file.log.2017-05-30`).
-* `fileNameSep` - `string` (default '.') - the filename separator when rolling. e.g.: abc.log`.`2013-08-30 or abc`.`2013-08-30.log (keepFileExt)
+* `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`).
+* `fileNameSep` - `string` (default '.') - the filename separator when rolling. e.g.: abc.log`.`1 or abc`.`1.log (keepFileExt)
 
 Note that, from version 4.x of log4js onwards, the file appender can take any of the options for the [dateFile appender](dateFile.md) as well. So you could roll files by both date and size.
 
