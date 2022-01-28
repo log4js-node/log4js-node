@@ -27,7 +27,7 @@ log4js.configure({
 const logger = log4js.getLogger();
 logger.debug('I will be logged in logs/default.log');
 const otherLogger = log4js.getLogger('cheese');
-logger.info('Cheese is cheddar - this will be logged in logs/cheese.log');
+otherLogger.info('Cheese is cheddar - this will be logged in logs/cheese.log');
 ```
 
 This example will result in two log files (`logs/default.log` and `logs/cheese.log`) containing the log messages.
