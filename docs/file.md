@@ -7,15 +7,16 @@ The file appender writes log events to a file. It supports an optional maximum f
 * `type` - `"file"`
 * `filename` - `string` - the path of the file where you want your logs written.
 * `maxLogSize` - `integer` (optional) - the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
-* `backups` - `integer` (optional, default value = 5) - the number of old log files to keep during log rolling.
+* `backups` - `integer` (optional, default to 5) - the number of old log files to keep during log rolling.
 * `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
 
 Any other configuration parameters will be passed to the underlying [streamroller](https://github.com/nomiddlename/streamroller) implementation (see also node.js core file streams):
 * `encoding` - `string` (default "utf-8")
 * `mode`- `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
-* `flags` - `string` (default 'a')
-* `compress` - `boolean` (default false) - compress the backup files during rolling (backup files will have `.gz` extension)
-* `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`)
+* `flags` - `string` (default 'a' - [node.js file flags](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_system_flags)) 
+* `compress` - `boolean` (default false) - compress the backup files using gzip (backup files will have `.gz` extension)
+* `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.2017-05-30.log` instead of `file.log.2017-05-30`).
+* `fileNameSep` - `string` (default '.') - the filename separator when rolling. e.g.: abc.log`.`2013-08-30 or abc`.`2013-08-30.log (keepFileExt)
 
 Note that, from version 4.x of log4js onwards, the file appender can take any of the options for the [dateFile appender](dateFile.md) as well. So you could roll files by both date and size.
 
