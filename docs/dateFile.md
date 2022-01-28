@@ -14,10 +14,10 @@ Any other configuration parameters will be passed to the underlying [streamrolle
 * `mode`- `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
 * `flags` - `string` (default 'a' - [node.js file flags](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_system_flags)) 
 * `compress` - `boolean` (default false) - compress the backup files using gzip (backup files will have `.gz` extension)
-* `alwaysIncludePattern` - `boolean` (default false) - include the pattern in the name of the current log file.
-* `numBackups` - `integer` (default 1) - the number of old files that matches the pattern to keep (excluding the hot file).
 * `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.2017-05-30.log` instead of `file.log.2017-05-30`).
 * `fileNameSep` - `string` (default '.') - the filename separator when rolling. e.g.: abc.log`.`2013-08-30 or abc`.`2013-08-30.log (keepFileExt)
+* `alwaysIncludePattern` - `boolean` (default false) - include the pattern in the name of the current log file.
+* `numBackups` - `integer` (default 1) - the number of old files that matches the pattern to keep (excluding the hot file).
 
 The `pattern` is used to determine when the current log file should be renamed and a new log file created. For example, with a filename of 'cheese.log', and the default pattern of `.yyyy-MM-dd` - on startup this will result in a file called `cheese.log` being created and written to until the next write after midnight. When this happens, `cheese.log` will be renamed to `cheese.log.2017-04-30` and a new `cheese.log` file created. The appender uses the [date-format](https://github.com/nomiddlename/date-format) library to parse the `pattern`, and any of the valid formats can be used. Also note that there is no timer controlling the log rolling - changes in the pattern are determined on every log write. If no writes occur, then no log rolling will happen. If your application logs infrequently this could result in no log file being written for a particular time period.
 
