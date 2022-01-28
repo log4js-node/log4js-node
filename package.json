@@ -34,7 +34,7 @@
   },
   "scripts": {
     "pretest": "eslint \"lib/**/*.js\" \"test/**/*.js\"",
-    "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
+    "test": "tap \"test/tap/**/*.js\" --cov",
     "typings": "tsc -p types/tsconfig.json",
     "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
   },
