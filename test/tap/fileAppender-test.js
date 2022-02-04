@@ -117,6 +117,27 @@ test("log4js fileAppender", batch => {
     t.end();
   });
 
+  batch.test("with a max file size in wrong unit mode", async t => {
+    const invalidUnit = "1Z";
+    const expectedError = new Error(`maxLogSize: "${invalidUnit}" is invalid`);
+    t.throws(
+      () => 
+        log4js.configure({
+          appenders: {
+            file: {
+              type: "file",
+              maxLogSize: invalidUnit
+            }
+          },
+          categories: {
+            default: { appenders: ["file"], level: "debug" }
+          }
+        }),
+      expectedError
+    );
+    t.end();
+  });
+
   batch.test("with a max file size in unit mode and no backups", async t => {
     const testFile = path.join(__dirname, "fa-maxFileSize-unit-test.log");
     const logger = log4js.getLogger("max-file-size-unit");
