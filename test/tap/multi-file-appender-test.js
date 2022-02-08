@@ -89,6 +89,7 @@ test("multiFile appender", batch => {
       }
     };
     debug.enable("log4js:multiFile");
+    const timeoutMs = 20;
     log4js.configure({
       appenders: {
         multi: {
@@ -96,7 +97,7 @@ test("multiFile appender", batch => {
           base: "logs/",
           property: "label",
           extension: ".log",
-          timeout: 20
+          timeout: timeoutMs
         }
       },
       categories: { default: { appenders: ["multi"], level: "info" } }
@@ -107,14 +108,131 @@ test("multiFile appender", batch => {
     setTimeout(() => {
       t.match(
         debugLogs[debugLogs.length - 1],
-        "C not used for > 20 ms => close"
+        `C not used for > ${timeoutMs} ms => close`,
+        "(timeout1) should have closed"
       );
       if (!debugWasEnabled) {
         debug.disable("log4js:multiFile");
       }
       process.stderr.write = originalWrite;
       t.end();
-    }, 50);
+    }, timeoutMs*1 + 30); // add a 30 ms delay
+  });
+
+  batch.test("should close file after extended timeout", t => {
+    t.teardown(async () => {
+      await removeFiles("logs/D.log");
+    });
+    /* checking that the file is closed after a timeout is done by looking at the debug logs
+      since detecting file locks with node.js is platform specific.
+     */
+    const debugWasEnabled = debug.enabled("log4js:multiFile");
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    debug.enable("log4js:multiFile");
+    const timeoutMs = 100;
+    log4js.configure({
+      appenders: {
+        multi: {
+          type: "multiFile",
+          base: "logs/",
+          property: "label",
+          extension: ".log",
+          timeout: timeoutMs
+        }
+      },
+      categories: { default: { appenders: ["multi"], level: "info" } }
+    });
+    const loggerD = log4js.getLogger("cheese");
+    loggerD.addContext("label", "D");
+    loggerD.info("I am in logger D");
+    setTimeout(() => {
+      loggerD.info("extending activity!");
+      t.match(
+        debugLogs[debugLogs.length - 1],
+        "D extending activity",
+        "should have extended"
+      );
+    }, timeoutMs/2);
+    setTimeout(() => {
+      t.notOk(
+        debugLogs.some(s => s.indexOf(`D not used for > ${timeoutMs} ms => close`) !== -1),
+        "(timeout1) should not have closed"
+      );
+    }, timeoutMs*1 + 30); // add a 30 ms delay
+    setTimeout(() => {
+      t.match(
+        debugLogs[debugLogs.length - 1],
+        `D not used for > ${timeoutMs} ms => close`,
+        "(timeout2) should have closed"
+      );
+      if (!debugWasEnabled) {
+        debug.disable("log4js:multiFile");
+      }
+      process.stderr.write = originalWrite;
+      t.end();
+    }, timeoutMs*2 + 30); // add a 30 ms delay
+  });
+
+  batch.test("should clear interval for active timers on shutdown", t => {
+    t.teardown(async () => {
+      await removeFiles("logs/D.log");
+    });
+    /* checking that the file is closed after a timeout is done by looking at the debug logs
+      since detecting file locks with node.js is platform specific.
+     */
+    const debugWasEnabled = debug.enabled("log4js:multiFile");
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    debug.enable("log4js:multiFile");
+    const timeoutMs = 100;
+    log4js.configure({
+      appenders: {
+        multi: {
+          type: "multiFile",
+          base: "logs/",
+          property: "label",
+          extension: ".log",
+          timeout: timeoutMs
+        }
+      },
+      categories: { default: { appenders: ["multi"], level: "info" } }
+    });
+    const loggerD = log4js.getLogger("cheese");
+    loggerD.addContext("label", "D");
+    loggerD.info("I am in logger D");
+    log4js.shutdown(() => {
+      t.notOk(
+        debugLogs.some(s => s.indexOf(`D not used for > ${timeoutMs} ms => close`) !== -1),
+        "should not have closed"
+      );
+      t.ok(
+        debugLogs.some(s => s.indexOf("clearing timer for  D") !== -1),
+        "should have cleared timers"
+      );
+      t.match(
+        debugLogs[debugLogs.length - 1],
+        "calling shutdown for  D",
+        "should have called shutdown"
+      );
+      if (!debugWasEnabled) {
+        debug.disable("log4js:multiFile");
+      }
+      process.stderr.write = originalWrite;
+      t.end();
+    });
   });
 
   batch.test(
