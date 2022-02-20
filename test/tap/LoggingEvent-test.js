@@ -5,7 +5,7 @@ const levels = require("../../lib/levels");
 
 test("LoggingEvent", batch => {
   batch.test("should serialise to flatted", t => {
-    const event = new LoggingEvent("cheese", levels.DEBUG, ["log message"], {
+    const event = new LoggingEvent("cheese", levels.DEBUG, ["log message", parseInt("abc", 10), 1/0, -1/0, undefined], {
       user: "bob"
     });
     // set the event date to a known value
@@ -14,8 +14,12 @@ test("LoggingEvent", batch => {
     t.equal(rehydratedEvent.startTime, "2018-02-04T18:30:23.010Z");
     t.equal(rehydratedEvent.categoryName, "cheese");
     t.equal(rehydratedEvent.level.levelStr, "DEBUG");
-    t.equal(rehydratedEvent.data.length, 1);
+    t.equal(rehydratedEvent.data.length, 5);
     t.equal(rehydratedEvent.data[0], "log message");
+    t.equal(rehydratedEvent.data[1], "NaN");
+    t.equal(rehydratedEvent.data[2], "Infinity");
+    t.equal(rehydratedEvent.data[3], "-Infinity");
+    t.equal(rehydratedEvent.data[4], "undefined");
     t.equal(rehydratedEvent.context.user, "bob");
     t.end();
   });
