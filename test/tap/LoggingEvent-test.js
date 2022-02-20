@@ -5,7 +5,7 @@ const levels = require("../../lib/levels");
 
 test("LoggingEvent", batch => {
   batch.test("should serialise to flatted", t => {
-    const event = new LoggingEvent("cheese", levels.DEBUG, ["log message", parseInt("abc"), 1/0, -1/0, undefined], {
+    const event = new LoggingEvent("cheese", levels.DEBUG, ["log message", parseInt("abc", 10), 1/0, -1/0, undefined], {
       user: "bob"
     });
     // set the event date to a known value
