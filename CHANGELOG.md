@@ -1,5 +1,32 @@
 # log4js-node changelog
 
+## 6.4.2
+
+- [bug: fixed fileSync appender to create directory recursively](https://github.com/log4js-node/log4js-node/pull/1191) - thanks [@peteriman](https://github.com/peteriman)
+- [bug: fixed serialise() for NaN, Infinity, -Infinity and undefined](https://github.com/log4js-node/log4js-node/pull/1188) - thanks [@peteriman](https://github.com/peteriman)
+- [bug: fixed connectLogger not logging on close](https://github.com/log4js-node/log4js-node/pull/1179) - thanks [@peteriman](https://github.com/peteriman)
+- [improvement: defensive coding](https://github.com/log4js-node/log4js-node/pull/1183) - thanks [@peteriman](https://github.com/peteriman)
+- [type: fixed Logger constructor](https://github.com/log4js-node/log4js-node/pull/1177) - thanks [@peteriman](https://github.com/peteriman)
+- [test: improve test coverage](https://github.com/log4js-node/log4js-node/pull/1184) - thanks [@peteriman](https://github.com/peteriman)
+- [test: refactor and replaced tap deprecation in preparation for tap v15](https://github.com/log4js-node/log4js-node/pull/1172) - thanks [@peteriman](https://github.com/peteriman)
+- [test: added e2e test for multiprocess Appender](https://github.com/log4js-node/log4js-node/pull/1170) - thanks [@nicojs](https://github.com/nicojs)
+- [chore(docs): updated file appender docs](https://github.com/log4js-node/log4js-node/pull/1182) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated dateFile appender docs](https://github.com/log4js-node/log4js-node/pull/1181) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): corrected typo in sample code for multiFile appender](https://github.com/log4js-node/log4js-node/pull/1180) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): updated deps-dev](https://github.com/log4js-node/log4js-node/pull/1194) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(deps): bump date-format from 4.0.3 to 4.0.4
+  - chore(deps): bump streamroller from 3.0.2 to 3.0.4
+    - issue: addresses compatibility issue with directory creation for NodeJS < 10.12.0 ([#1189](https://github.com/log4js-node/log4js-node/issues/1189)) - details: [streamroller@3.0.3 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
+  - chore(deps-dev): bump eslint from 8.8.0 to 8.10.0
+  - chore(deps-dev): bump eslint-config-prettier from 8.3.0 to 8.4.0
+  - chore(deps-dev): bump fs-extra from 10.0.0 to 10.0.1
+  - chore(deps-dev): bump typescript from 4.5.5 to 4.6.2
+- [chore(deps): updated deps-dev](https://github.com/log4js-node/log4js-node/pull/1185) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(deps): bump flatted from 3.2.4 to 3.2.5
+  - chore(deps-dev): bump eslint from 8.7.0 to 8.8.0
+- [chore(deps): updated package-lock.json](https://github.com/log4js-node/log4js-node/pull/1174) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps-dev): bump tap from 14.10.7 to 15.1.6](https://github.com/log4js-node/log4js-node/pull/1173) - thanks [@peteriman](https://github.com/peteriman)
+
 ## 6.4.1
 
 - [bug: Fixed to startup multiprocess even when no direct appenders](https://github.com/log4js-node/log4js-node/pull/1162) - thanks [@nicojs](https://github.com/nicojs)
@@ -24,7 +51,7 @@
 - [bug: Fixed dateFile appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/1097) - thanks [@4eb0da](https://github.com/4eb0da)
   - [refactor: using writer.writable instead of alive for checking](https://github.com/log4js-node/log4js-node/pull/1144) - thanks [@peteriman](https://github.com/peteriman)
 - [bug: Fixed TCP appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/1089) - thanks [@jhonatanTeixeira](https://github.com/jhonatanTeixeira)
-- [bug: Fixed Multiprocess appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/529) - thanks [@harlentan](https://github.com/harlentan)
+- [bug: Fixed multiprocess appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/529) - thanks [@harlentan](https://github.com/harlentan)
 - [test: update fakeFS.read as graceful-fs uses it](https://github.com/log4js-node/log4js-node/pull/1127) - thanks [@peteriman](https://github.com/peteriman)
 - [test: update fakeFS.realpath as fs-extra uses it](https://github.com/log4js-node/log4js-node/pull/1128) - thanks [@peteriman](https://github.com/peteriman)
 - test: added tap.tearDown() to clean up test files
