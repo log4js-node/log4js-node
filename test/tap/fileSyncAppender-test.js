@@ -2,6 +2,7 @@ const { test } = require("tap");
 const fs = require("fs");
 const path = require("path");
 const EOL = require("os").EOL || "\n";
+const sandbox = require("@log4js-node/sandboxed-module");
 const log4js = require("../../lib/log4js");
 
 function remove(filename) {
@@ -246,6 +247,197 @@ test("log4js fileSyncAppender", batch => {
       t.equal(contents.indexOf("this should not be written to the file"), -1);
       t.end();
     });
+  });
+
+  batch.test("configure with non-existent multi-directory (recursive, nodejs >= 10.12.0)", t => {
+    const testFile = "tmpA/tmpB/tmpC/tmp-sync-tests-recursive.log";
+    remove(testFile);
+
+    t.teardown(() => {
+      remove(testFile);
+      try {
+        fs.rmdirSync("tmpA/tmpB/tmpC");
+        fs.rmdirSync("tmpA/tmpB");
+        fs.rmdirSync("tmpA");
+      } catch (e) {
+        // doesn't matter
+      }
+    });
+
+    log4js.configure({
+      appenders: {
+        sync: {
+          type: "fileSync",
+          filename: testFile,
+          layout: { type: "messagePassThrough" }
+        }
+      },
+      categories: {
+        default: { appenders: ["sync"], level: "debug" }
+      }
+    });
+    const logger = log4js.getLogger();
+    logger.info("this should be written to the file");
+
+    fs.readFile(testFile, "utf8", (err, contents) => {
+      t.match(contents, `this should be written to the file${EOL}`);
+      t.end();
+    });
+  });
+
+  batch.test("configure with non-existent multi-directory (non-recursive, nodejs < 10.12.0)", t => {
+    const testFile = "tmpA/tmpB/tmpC/tmp-sync-tests-non-recursive.log";
+    remove(testFile);
+
+    t.teardown(() => {
+      remove(testFile);
+      try {
+        fs.rmdirSync("tmpA/tmpB/tmpC");
+        fs.rmdirSync("tmpA/tmpB");
+        fs.rmdirSync("tmpA");
+      } catch (e) {
+        // doesn't matter
+      }
+    });
+
+    const sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        fs: {
+          ...fs,
+          mkdirSync(dirPath, options) {
+            return fs.mkdirSync(dirPath, { ...options, ...{ recursive: false } });
+          }
+        }
+      }
+    });
+    sandboxedLog4js.configure({
+      appenders: {
+        sync: {
+          type: "fileSync",
+          filename: testFile,
+          layout: { type: "messagePassThrough" }
+        }
+      },
+      categories: {
+        default: { appenders: ["sync"], level: "debug" }
+      }
+    });
+    const logger = sandboxedLog4js.getLogger();
+    logger.info("this should be written to the file");
+
+    fs.readFile(testFile, "utf8", (err, contents) => {
+      t.match(contents, `this should be written to the file${EOL}`);
+      t.end();
+    });
+  });
+
+  batch.test("configure with non-existent multi-directory (error handling)", t => {
+    const testFile = "tmpA/tmpB/tmpC/tmp-sync-tests-error-handling.log";
+    remove(testFile);
+
+    t.teardown(() => {
+      remove(testFile);
+      try {
+        fs.rmdirSync("tmpA/tmpB/tmpC");
+        fs.rmdirSync("tmpA/tmpB");
+        fs.rmdirSync("tmpA");
+      } catch (e) {
+        // doesn't matter
+      }
+    });
+
+    const errorEPERM = new Error("EPERM");
+    errorEPERM.code = "EPERM";
+
+    let sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        fs: {
+          ...fs,
+          mkdirSync() {
+            throw errorEPERM ;
+          }
+        }
+      }
+    });
+    t.throws(
+      () => 
+        sandboxedLog4js.configure({
+          appenders: {
+            sync: {
+              type: "fileSync",
+              filename: testFile,
+              layout: { type: "messagePassThrough" }
+            }
+          },
+          categories: {
+            default: { appenders: ["sync"], level: "debug" }
+          }
+        }),
+      errorEPERM 
+    );
+
+    const errorEROFS = new Error("EROFS");
+    errorEROFS.code = "EROFS";
+
+    sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        fs: {
+          ...fs,
+          mkdirSync() {
+            throw errorEROFS;
+          },
+          statSync() {
+            return { isDirectory() { return false; } };
+          }
+        }
+      }
+    });
+    t.throws(
+      () => 
+        sandboxedLog4js.configure({
+          appenders: {
+            sync: {
+              type: "fileSync",
+              filename: testFile,
+              layout: { type: "messagePassThrough" }
+            }
+          },
+          categories: {
+            default: { appenders: ["sync"], level: "debug" }
+          }
+        }),
+      errorEROFS
+    );
+
+    fs.mkdirSync("tmpA/tmpB/tmpC", { recursive: true });
+
+    sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        fs: {
+          ...fs,
+          mkdirSync() {
+            throw errorEROFS;
+          }
+        }
+      }
+    });
+    t.doesNotThrow(
+      () => 
+        sandboxedLog4js.configure({
+          appenders: {
+            sync: {
+              type: "fileSync",
+              filename: testFile,
+              layout: { type: "messagePassThrough" }
+            }
+          },
+          categories: {
+            default: { appenders: ["sync"], level: "debug" }
+          }
+        })
+    );
+
+    t.end();
   });
 
   batch.test("test options", t => {
