@@ -13,6 +13,8 @@ test("default settings", t => {
             output.push(evt);
           };
         },
+        shutdown() {
+        },
         configure() {
           return this.appender();
         }
