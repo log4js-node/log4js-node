@@ -46,6 +46,27 @@ test("log4js fileAppender", batch => {
     t.end();
   });
 
+  batch.test("should give error if invalid filename", async t => {
+    const file = "";
+    const expectedError = new Error(`Invalid filename: ${file}`);
+    t.throws(
+      () => 
+        log4js.configure({
+          appenders: {
+            file: {
+              type: "file",
+              filename: file
+            }
+          },
+          categories: {
+            default: { appenders: ["file"], level: "debug" }
+          }
+        }),
+      expectedError
+    );
+    t.end();
+  });
+
   batch.test("should flush logs on shutdown", async t => {
     const testFile = path.join(__dirname, "fa-default-test.log");
     await removeFile(testFile);
