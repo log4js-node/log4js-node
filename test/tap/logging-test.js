@@ -154,6 +154,8 @@ test("log4js", batch => {
         "should invoke appender shutdowns"
       );
       logger.info("this should not go to the appenders");
+      logger.log("info", "this should not go to the appenders");
+      logger._log(require("../../lib/levels").INFO, ["this should not go to the appenders"]);
       t.notOk(events.event);
       t.end();
     });
