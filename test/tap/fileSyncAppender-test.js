@@ -40,6 +40,27 @@ test("log4js fileSyncAppender", batch => {
     });
   });
 
+  batch.test("should give error if invalid filename", async t => {
+    const file = "";
+    const expectedError = new Error(`Invalid filename: ${file}`);
+    t.throws(
+      () => 
+        log4js.configure({
+          appenders: {
+            file: {
+              type: "fileSync",
+              filename: file
+            }
+          },
+          categories: {
+            default: { appenders: ["file"], level: "debug" }
+          }
+        }),
+      expectedError
+    );
+    t.end();
+  });
+
   batch.test("with a max file size and no backups", t => {
     const testFile = path.join(__dirname, "/fa-maxFileSize-sync-test.log");
     const logger = log4js.getLogger("max-file-size");
