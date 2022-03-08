@@ -75,6 +75,7 @@ test("multiFile appender", batch => {
 
   batch.test("should close file after timeout", t => {
     t.teardown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await removeFiles("logs/C.log");
     });
     /* checking that the file is closed after a timeout is done by looking at the debug logs
@@ -122,6 +123,7 @@ test("multiFile appender", batch => {
 
   batch.test("should close file safely after timeout", t => {
     t.teardown(async () => {
+      await new Promise(resolve => sandboxedLog4js.shutdown(resolve)); // eslint-disable-line no-use-before-define
       await removeFiles("logs/C.log");
     });
     const error = new Error("fileAppender shutdown error");
@@ -193,6 +195,7 @@ test("multiFile appender", batch => {
 
   batch.test("should close file after extended timeout", t => {
     t.teardown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await removeFiles("logs/D.log");
     });
     /* checking that the file is closed after a timeout is done by looking at the debug logs
