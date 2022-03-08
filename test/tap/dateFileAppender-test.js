@@ -188,5 +188,60 @@ test("../../lib/appenders/dateFile", batch => {
     t.end();
   });
 
+  batch.test("when underlying stream errors", t => {
+    let consoleArgs;
+    let errorHandler;
+
+    const DateRollingFileStream = class {
+      end() {
+        this.ended = true;
+      }
+
+      on(evt, cb) {
+        if (evt === "error") {
+          this.errored = true;
+          errorHandler = cb;
+        }
+      }
+
+      write() {
+        this.written = true;
+        return true;
+      }
+    };
+    const dateFileAppender = sandbox.require("../../lib/appenders/dateFile", {
+      globals: {
+        console: {
+          error(...args) {
+            consoleArgs = args;
+          }
+        }
+      },
+      requires: {
+        streamroller: {
+          DateRollingFileStream
+        }
+      }
+    });
+
+    dateFileAppender.configure(
+      { filename: "test1.log", maxLogSize: 100 },
+      { basicLayout() {} }
+    );
+    errorHandler({ error: "aargh" });
+
+    t.test("should log the error to console.error", assert => {
+      assert.ok(consoleArgs);
+      assert.equal(
+        consoleArgs[0],
+        "log4js.dateFileAppender - Writing to file %s, error happened "
+      );
+      assert.equal(consoleArgs[1], "test1.log");
+      assert.equal(consoleArgs[2].error, "aargh");
+      assert.end();
+    });
+    t.end();
+  });
+
   batch.end();
 });
