@@ -40,6 +40,42 @@ test("log4js fileSyncAppender", batch => {
     });
   });
 
+  batch.test("with existing file", t => {
+    const testFile = path.join(__dirname, "/fa-existing-file-sync-test.log");
+    const logger = log4js.getLogger("default-settings");
+    remove(testFile);
+
+    t.teardown(() => {
+      remove(testFile);
+    });
+
+    log4js.configure({
+      appenders: { sync: { type: "fileSync", filename: testFile } },
+      categories: { default: { appenders: ["sync"], level: "debug" } }
+    });
+
+    logger.info("This should be in the file.");
+
+    log4js.shutdown(() => {
+      log4js.configure({
+        appenders: { sync: { type: "fileSync", filename: testFile } },
+        categories: { default: { appenders: ["sync"], level: "debug" } }
+      });
+
+      logger.info("This should also be in the file.");
+
+      fs.readFile(testFile, "utf8", (err, fileContents) => {
+        t.match(fileContents, `This should be in the file.${EOL}`);
+        t.match(fileContents, `This should also be in the file.${EOL}`);
+        t.match(
+          fileContents,
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
+        );
+        t.end();
+      });
+    });
+  });
+
   batch.test("should give error if invalid filename", async t => {
     const file = "";
     const expectedError = new Error(`Invalid filename: ${file}`);
