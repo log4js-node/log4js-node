@@ -6,8 +6,8 @@ The sync file appender writes log events to a file, the only difference to the n
 
 * `type` - `"fileSync"`
 * `filename` - `string` - the path of the file where you want your logs written.
-* `maxLogSize` - `integer` (optional) - the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
-* `backups` - `integer` (optional, default value = 5) - the number of old log files to keep during log rolling.
+* `maxLogSize` - `integer` (optional) - the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
+* `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling.
 * `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
 
 Any other configuration parameters will be passed to the underlying node.js core stream implementation:
