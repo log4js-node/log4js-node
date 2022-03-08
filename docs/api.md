@@ -34,7 +34,7 @@ This function takes a single optional string argument to denote the category to 
 * `clearContext()` - removes all context pairs from the logger.
 * `setParseCallStackFunction(function)` - Allow to override the default way to parse the callstack data for the layout pattern, a generic javascript Error object is passed to the function. Must return an object with properties : `functionName` / `fileName` / `lineNumber` / `columnNumber` / `callStack`. Can for example be used if all of your log call are made from one "debug" class and you would to "erase" this class from the callstack to only show the function which called your "debug" class.
 
-The `Logger` object has the following property:
+The `Logger` object has the following properties:
 * `level` - where `level` is a log4js level or a string that matches a level (e.g. 'info', 'INFO', etc). This allows overriding the configured level for this logger. Changing this value applies to all loggers of the same category.
 * `useCallStack` - where `useCallStack` is a boolean to indicate if log events for this category use the call stack to generate line numbers and file names in the event. This allows overriding the configured useCallStack for this logger. Changing this value applies to all loggers of the same category.
 
