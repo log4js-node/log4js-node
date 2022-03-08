@@ -61,6 +61,28 @@ test("log4js fileSyncAppender", batch => {
     t.end();
   });
 
+  batch.test("should give error if invalid maxLogSize", async t => {
+    const maxLogSize = -1;
+    const expectedError = new Error(`maxLogSize (${maxLogSize}) should be > 0`);
+    t.throws(
+      () => 
+        log4js.configure({
+          appenders: {
+            file: {
+              type: "fileSync",
+              filename: path.join(__dirname, "fa-invalidMaxFileSize-sync-test.log"),
+              maxLogSize: -1
+            }
+          },
+          categories: {
+            default: { appenders: ["file"], level: "debug" }
+          }
+        }),
+      expectedError
+    );
+    t.end();
+  });
+
   batch.test("with a max file size and no backups", t => {
     const testFile = path.join(__dirname, "/fa-maxFileSize-sync-test.log");
     const logger = log4js.getLogger("max-file-size");
