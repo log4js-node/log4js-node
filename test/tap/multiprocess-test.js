@@ -79,7 +79,7 @@ test("Multiprocess Appender", async batch => {
     logger.info("before connect");
     fakeNet.cbs.connect();
     logger.info("after connect");
-    fakeNet.cbs.close(true);
+    fakeNet.cbs.close();
     logger.info("after error, before connect");
     fakeNet.cbs.connect();
     logger.info("after error, after connect");
@@ -165,6 +165,45 @@ test("Multiprocess Appender", async batch => {
       assert.match(net.data[0], "before connect");
       assert.match(net.data[2], "after connect");
       assert.match(net.data[4], "after timeout, before close");
+      assert.match(net.data[6], "after close, before connect");
+      assert.match(net.data[8], "after close, after connect");
+      assert.equal(net.createConnectionCalled, 2);
+      assert.end();
+    });
+    t.end();
+  });
+
+  batch.test("worker with error", t => {
+    const fakeNet = makeFakeNet();
+
+    const log4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        net: fakeNet
+      }
+    });
+    log4js.configure({
+      appenders: { worker: { type: "multiprocess", mode: "worker" } },
+      categories: { default: { appenders: ["worker"], level: "trace" } }
+    });
+
+    const logger = log4js.getLogger();
+    logger.info("before connect");
+    fakeNet.cbs.connect();
+    logger.info("after connect");
+    fakeNet.cbs.error();
+    logger.info("after error, before close");
+    fakeNet.cbs.close();
+    logger.info("after close, before connect");
+    fakeNet.cbs.connect();
+    logger.info("after close, after connect");
+
+    const net = fakeNet;
+
+    t.test("should attempt to re-open the socket", assert => {
+      // skipping the __LOG4JS__ separators
+      assert.match(net.data[0], "before connect");
+      assert.match(net.data[2], "after connect");
+      assert.match(net.data[4], "after error, before close");
       assert.match(net.data[6], "after close, before connect");
       assert.match(net.data[8], "after close, after connect");
       assert.equal(net.createConnectionCalled, 2);

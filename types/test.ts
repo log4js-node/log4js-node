@@ -139,7 +139,7 @@ log4js.configure({
 
 log4js.configure({
   appenders: { rec: { type: 'recording' } },
-  categories: { default: { appenders: [ 'rec'], 'level': 'debug' } }
+  categories: { default: { appenders: ['rec'], 'level': 'debug' } }
 });
 const logger8 = log4js.getLogger();
 logger8.level = 'debug'
@@ -149,6 +149,9 @@ const recording = log4js.recording()
 const loggingEvents = recording.playback()
 if (loggingEvents.length !== 2) {
   throw new Error(`Expected 2 recorded events, got ${loggingEvents.length}`)
+}
+if (loggingEvents[0].data[0] !== 'This will go to the recording!') {
+  throw new Error(`Expected message 'This will go to the recording!', got ${loggingEvents[0].data[0]}`)
 }
 if (loggingEvents[1].data[0] !== 'Another one') {
   throw new Error(`Expected message 'Another one', got ${loggingEvents[1].data[0]}`)

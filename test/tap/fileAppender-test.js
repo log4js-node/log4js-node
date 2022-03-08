@@ -69,6 +69,7 @@ test("log4js fileAppender", batch => {
 
   batch.test("should flush logs on shutdown", async t => {
     const testFile = path.join(__dirname, "fa-default-test.log");
+    const logger = log4js.getLogger("default-settings");
     await removeFile(testFile);
 
     t.teardown(async () => {
@@ -80,7 +81,6 @@ test("log4js fileAppender", batch => {
       appenders: { test: { type: "file", filename: testFile } },
       categories: { default: { appenders: ["test"], level: "trace" } }
     });
-    const logger = log4js.getLogger("default-settings");
 
     logger.info("1");
     logger.info("2");
@@ -100,12 +100,12 @@ test("log4js fileAppender", batch => {
   batch.test("with a max file size and no backups", async t => {
     const testFile = path.join(__dirname, "fa-maxFileSize-test.log");
     const logger = log4js.getLogger("max-file-size");
+    await removeFile(testFile);
 
     t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await removeFile(testFile);
     });
-    await removeFile(testFile);
 
     // log file of 100 bytes maximum, no backups
     log4js.configure({
@@ -162,12 +162,12 @@ test("log4js fileAppender", batch => {
   batch.test("with a max file size in unit mode and no backups", async t => {
     const testFile = path.join(__dirname, "fa-maxFileSize-unit-test.log");
     const logger = log4js.getLogger("max-file-size-unit");
+    await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
 
     t.teardown(async () => {
       await new Promise(resolve => log4js.shutdown(resolve));
       await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
-    await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
 
     // log file of 1K = 1024 bytes maximum, no backups
     log4js.configure({

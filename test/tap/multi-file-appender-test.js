@@ -2,6 +2,7 @@ const process = require("process");
 const { test } = require("tap");
 const debug = require("debug");
 const fs = require("fs");
+const sandbox = require("@log4js-node/sandboxed-module");
 const log4js = require("../../lib/log4js");
 
 const removeFiles = async filenames => {
@@ -74,6 +75,7 @@ test("multiFile appender", batch => {
 
   batch.test("should close file after timeout", t => {
     t.teardown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await removeFiles("logs/C.log");
     });
     /* checking that the file is closed after a timeout is done by looking at the debug logs
@@ -119,8 +121,81 @@ test("multiFile appender", batch => {
     }, timeoutMs*1 + 30); // add a 30 ms delay
   });
 
+  batch.test("should close file safely after timeout", t => {
+    t.teardown(async () => {
+      await new Promise(resolve => sandboxedLog4js.shutdown(resolve)); // eslint-disable-line no-use-before-define
+      await removeFiles("logs/C.log");
+    });
+    const error = new Error("fileAppender shutdown error");
+    const sandboxedLog4js = sandbox.require("../../lib/log4js", {
+      requires: {
+        "./appenders/file": {
+          configure(config, layouts) {
+            const fileAppender = require("../../lib/appenders/file").configure(config, layouts);
+            const originalShutdown = fileAppender.shutdown;
+            fileAppender.shutdown = function (complete) {
+              const onCallback = function() {
+                complete(error);
+              };
+              originalShutdown(onCallback);
+            };
+            return fileAppender;
+          }
+        },
+        debug
+      }
+    });
+    /* checking that the file is closed after a timeout is done by looking at the debug logs
+      since detecting file locks with node.js is platform specific.
+     */
+    const debugWasEnabled = debug.enabled("log4js:multiFile");
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    debug.enable("log4js:multiFile");
+    const timeoutMs = 20;
+    sandboxedLog4js.configure({
+      appenders: {
+        multi: {
+          type: "multiFile",
+          base: "logs/",
+          property: "label",
+          extension: ".log",
+          timeout: timeoutMs
+        }
+      },
+      categories: { default: { appenders: ["multi"], level: "info" } }
+    });
+    const loggerC = sandboxedLog4js.getLogger("cheese");
+    loggerC.addContext("label", "C");
+    loggerC.info("I am in logger C");
+    setTimeout(() => {
+      t.match(
+        debugLogs[debugLogs.length - 2],
+        `C not used for > ${timeoutMs} ms => close`,
+        "(timeout1) should have closed"
+      );
+      t.match(
+        debugLogs[debugLogs.length - 1],
+        `ignore error on file shutdown: ${error.message}`,
+        "safely shutdown"
+      );
+      if (!debugWasEnabled) {
+        debug.disable("log4js:multiFile");
+      }
+      process.stderr.write = originalWrite;
+      t.end();
+    }, timeoutMs*1 + 30); // add a 30 ms delay
+  });
+
   batch.test("should close file after extended timeout", t => {
     t.teardown(async () => {
+      await new Promise(resolve => log4js.shutdown(resolve));
       await removeFiles("logs/D.log");
     });
     /* checking that the file is closed after a timeout is done by looking at the debug logs
