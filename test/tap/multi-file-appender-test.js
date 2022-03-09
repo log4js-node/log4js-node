@@ -91,7 +91,7 @@ test("multiFile appender", batch => {
       }
     };
     debug.enable("log4js:multiFile");
-    const timeoutMs = 20;
+    const timeoutMs = 25;
     log4js.configure({
       appenders: {
         multi: {
@@ -118,7 +118,7 @@ test("multiFile appender", batch => {
       }
       process.stderr.write = originalWrite;
       t.end();
-    }, timeoutMs*1 + 30); // add a 30 ms delay
+    }, timeoutMs*1 + 50); // add a 50 ms delay
   });
 
   batch.test("should close file safely after timeout", t => {
@@ -158,7 +158,7 @@ test("multiFile appender", batch => {
       }
     };
     debug.enable("log4js:multiFile");
-    const timeoutMs = 20;
+    const timeoutMs = 25;
     sandboxedLog4js.configure({
       appenders: {
         multi: {
@@ -190,7 +190,7 @@ test("multiFile appender", batch => {
       }
       process.stderr.write = originalWrite;
       t.end();
-    }, timeoutMs*1 + 30); // add a 30 ms delay
+    }, timeoutMs*1 + 50); // add a 50 ms delay
   });
 
   batch.test("should close file after extended timeout", t => {
@@ -240,7 +240,7 @@ test("multiFile appender", batch => {
         debugLogs.some(s => s.indexOf(`D not used for > ${timeoutMs} ms => close`) !== -1),
         "(timeout1) should not have closed"
       );
-    }, timeoutMs*1 + 30); // add a 30 ms delay
+    }, timeoutMs*1 + 50); // add a 50 ms delay
     setTimeout(() => {
       t.match(
         debugLogs[debugLogs.length - 1],
@@ -252,7 +252,7 @@ test("multiFile appender", batch => {
       }
       process.stderr.write = originalWrite;
       t.end();
-    }, timeoutMs*2 + 30); // add a 30 ms delay
+    }, timeoutMs*2 + 50); // add a 50 ms delay
   });
 
   batch.test("should clear interval for active timers on shutdown", t => {
