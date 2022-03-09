@@ -13,6 +13,7 @@ tap.test("Drain event test", batch => {
 
   batch.test("Should emit pause event and resume when logging in a file with high frequency", t => {
     t.teardown(async () => {
+      process.off("log4js:pause", process.listeners("log4js:pause")[process.listeners("log4js:pause").length - 1]);
       await removeFiles("logs/drain.log");
     });
     // Generate logger with 5k of highWaterMark config
@@ -31,8 +32,11 @@ tap.test("Drain event test", batch => {
     process.on("log4js:pause", value => {
       if (value) {
         paused = true;
+        t.ok(value, "log4js:pause, true");
       } else {
         resumed = true;
+        t.ok(!value, "log4js:pause, false");
+        t.end();
       }
     });
 
@@ -42,12 +46,12 @@ tap.test("Drain event test", batch => {
         logger.info("This is a test for emitting drain event");
       }
     }
-    t.end();
   });
 
 
   batch.test("Should emit pause event and resume when logging in a date file with high frequency", (t) => {
     t.teardown(async () => {
+      process.off("log4js:pause", process.listeners("log4js:pause")[process.listeners("log4js:pause").length - 1]);
       await removeFiles("logs/date-file-drain.log");
     });
     // Generate date file logger with 5kb of highWaterMark config
@@ -66,8 +70,11 @@ tap.test("Drain event test", batch => {
     process.on("log4js:pause", value => {
       if (value) {
         paused = true;
+        t.ok(value, "log4js:pause, true");
       } else {
         resumed = true;
+        t.ok(!value, "log4js:pause, false");
+        t.end();
       }
     });
 
@@ -76,7 +83,6 @@ tap.test("Drain event test", batch => {
       if (!paused)
         logger.info("This is a test for emitting drain event in date file logger");
     }
-    t.end();
   });
 
   batch.teardown(async () => {
