@@ -330,6 +330,56 @@ test("log4js fileAppender", batch => {
     t.end();
   });
 
+  batch.test("handling of writer.writable", t => {
+    const output = [];
+    let writable = true;
+
+    const RollingFileStream = class {
+      write(loggingEvent) {
+        output.push(loggingEvent);
+        this.written = true;
+        return true;
+      }
+
+      on() { // eslint-disable-line class-methods-use-this
+      }
+
+      get writable() { // eslint-disable-line class-methods-use-this
+        return writable;
+      }
+    };
+    const fileAppender = sandbox.require("../../lib/appenders/file", {
+      requires: {
+        streamroller: {
+          RollingFileStream
+        }
+      }
+    });
+
+    const appender = fileAppender.configure(
+      { filename: "test1.log", maxLogSize: 100 },
+      { basicLayout(loggingEvent) { return loggingEvent.data; } }
+    );
+
+    t.test("should log when writer.writable=true", assert => {
+      writable = true;
+      appender({data: "something to log"});
+      assert.ok(output.length, 1);
+      assert.match(output[output.length - 1], "something to log");
+      assert.end();
+    });
+
+    t.test("should not log when writer.writable=false", assert => {
+      writable = false;
+      appender({data: "this should not be logged"});
+      assert.ok(output.length, 1);
+      assert.notMatch(output[output.length - 1], "this should not be logged");
+      assert.end();
+    });
+
+    t.end();
+  });
+
   batch.test("when underlying stream errors", t => {
     let consoleArgs;
     let errorHandler;
@@ -384,7 +434,7 @@ test("log4js fileAppender", batch => {
     });
     t.end();
   });
-  
+
   batch.test("with removeColor fileAppender settings", async t => {
     const testFilePlain = path.join(__dirname, "fa-removeColor-test.log");
     const testFileAsIs = path.join(__dirname, "fa-asIs-test.log");
