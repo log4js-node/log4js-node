@@ -5,6 +5,7 @@ const callsites = require("callsites");
 const levels = require("../../lib/levels");
 
 const events = [];
+const messages = [];
 const Logger = sandbox.require("../../lib/logger", {
   requires: {
     "./levels": levels,
@@ -14,6 +15,14 @@ const Logger = sandbox.require("../../lib/logger", {
       send: evt => {
         debug("fake clustering got event:", evt);
         events.push(evt);
+      }
+    }
+  },
+  globals: {
+    console: {
+      ...console,
+      error(msg) {
+        messages.push(msg);
       }
     }
   }
@@ -218,6 +227,23 @@ test("../../lib/logger", batch => {
       t.end();
     }
   );
+
+  batch.test("parseCallStack function coverage", t => {
+    const logger = new Logger("stack");
+    logger.useCallStack = true;
+
+    let results;
+
+    results = logger.parseCallStack(new Error());
+    t.ok(results);
+    t.equal(messages.length, 0, "should not have error");
+
+    results = logger.parseCallStack("");
+    t.notOk(results);
+    t.equal(messages.length, 1, "should have error");
+
+    t.end();
+  });
 
   batch.test("should correctly change the parseCallStack function", t => {
     const logger = new Logger("stack");

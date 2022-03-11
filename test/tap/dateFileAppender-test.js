@@ -166,7 +166,7 @@ test("../../lib/appenders/dateFile", batch => {
         fakeStreamroller.options = options;
       }
 
-      on() { } // eslint-disable-line 
+      on() { } // eslint-disable-line class-methods-use-this
     }
     fakeStreamroller.DateRollingFileStream = DateRollingFileStream;
     const dateFileAppenderModule = sandbox.require(
@@ -185,6 +185,56 @@ test("../../lib/appenders/dateFile", batch => {
     );
 
     t.equal(fakeStreamroller.options.maxSize, 100);
+    t.end();
+  });
+
+  batch.test("handling of writer.writable", t => {
+    const output = [];
+    let writable = true;
+
+    const DateRollingFileStream = class {
+      write(loggingEvent) {
+        output.push(loggingEvent);
+        this.written = true;
+        return true;
+      }
+
+      on() { // eslint-disable-line class-methods-use-this
+      }
+
+      get writable() { // eslint-disable-line class-methods-use-this
+        return writable;
+      }
+    };
+    const dateFileAppender = sandbox.require("../../lib/appenders/dateFile", {
+      requires: {
+        streamroller: {
+          DateRollingFileStream
+        }
+      }
+    });
+
+    const appender = dateFileAppender.configure(
+      { filename: "test1.log", maxLogSize: 100 },
+      { basicLayout(loggingEvent) { return loggingEvent.data; } }
+    );
+
+    t.test("should log when writer.writable=true", assert => {
+      writable = true;
+      appender({data: "something to log"});
+      assert.ok(output.length, 1);
+      assert.match(output[output.length - 1], "something to log");
+      assert.end();
+    });
+
+    t.test("should not log when writer.writable=false", assert => {
+      writable = false;
+      appender({data: "this should not be logged"});
+      assert.ok(output.length, 1);
+      assert.notMatch(output[output.length - 1], "this should not be logged");
+      assert.end();
+    });
+
     t.end();
   });
 
