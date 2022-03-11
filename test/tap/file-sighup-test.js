@@ -60,7 +60,7 @@ test("file appender SIGHUP", t => {
   let closeCalled = 0;
   let openCalled = 0;
 
-  const appender = sandbox
+  sandbox
     .require("../../lib/appenders/file", {
       requires: {
         streamroller: {
@@ -99,12 +99,10 @@ test("file appender SIGHUP", t => {
       }
     );
 
-  appender("something to log");
   process.emit("SIGHUP", "SIGHUP", 1);
 
   t.plan(2);
   setTimeout(() => {
-    appender("something to log after sighup");
     t.equal(openCalled, 2, "open should be called twice");
     t.equal(closeCalled, 1, "close should be called once");
     t.end();
