@@ -11,6 +11,7 @@
     "indent": 2,
     "func-names": 0,
     "max-len": [1, 120, 2],
+    "no-cond-assign": ["error", "except-parens"],
     "no-use-before-define": ["warn"],
     "no-param-reassign": 0,
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
