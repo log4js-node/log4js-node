@@ -1,4 +1,5 @@
-# log4js-node [![Build Status](https://secure.travis-ci.org/log4js-node/log4js-node.png?branch=master)](http://travis-ci.org/log4js-node/log4js-node) [![codecov](https://codecov.io/gh/log4js-node/log4js-node/branch/master/graph/badge.svg)](https://codecov.io/gh/log4js-node/log4js-node)
+log4js-node [![CodeQL](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml) [![Node.js CI](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml)
+===========
 
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
 
