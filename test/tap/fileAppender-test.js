@@ -1,3 +1,5 @@
+/* eslint max-classes-per-file: ["error", 2] */
+
 const { test } = require("tap");
 const fs = require("fs-extra");
 const path = require("path");
@@ -25,7 +27,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFile);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await removeFile(testFile);
     });
 
@@ -73,7 +75,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFile);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await removeFile(testFile);
     });
 
@@ -86,7 +88,7 @@ test("log4js fileAppender", batch => {
     logger.info("2");
     logger.info("3");
 
-    await new Promise(resolve => log4js.shutdown(resolve));
+    await new Promise(resolve => { log4js.shutdown(resolve); });
     const fileContents = await fs.readFile(testFile, "utf8");
     // 3 lines of output, plus the trailing newline.
     t.equal(fileContents.split(EOL).length, 4);
@@ -103,7 +105,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFile);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await removeFile(testFile);
     });
 
@@ -165,7 +167,7 @@ test("log4js fileAppender", batch => {
     await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await Promise.all([removeFile(testFile), removeFile(`${testFile}.1`)]);
     });
 
@@ -217,7 +219,7 @@ test("log4js fileAppender", batch => {
     ]);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await Promise.all([
         removeFile(testFile),
         removeFile(`${testFile}.1`),
@@ -277,7 +279,7 @@ test("log4js fileAppender", batch => {
     ]);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await Promise.all([
         removeFile(testFile),
         removeFile(`${testFile}.1.gz`),
@@ -443,7 +445,7 @@ test("log4js fileAppender", batch => {
     await removeFile(testFileAsIs);
 
     t.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
       await removeFile(testFilePlain);
       await removeFile(testFileAsIs);
     });

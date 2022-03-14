@@ -1,3 +1,5 @@
+/* eslint max-classes-per-file: ["error", 3] */
+
 const { test } = require("tap");
 const path = require("path");
 const fs = require("fs");

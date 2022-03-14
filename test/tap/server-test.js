@@ -100,10 +100,8 @@ test("TCP Server", batch => {
       // give the socket a chance to start up
       setTimeout(() => {
         const socket = net.connect(5000, () => {
-          const syncWrite = (dataArray = [], finalCallback) => {
-            if (dataArray === null) {
-              dataArray = [];
-            } else if (!Array.isArray(dataArray)) {
+          const syncWrite = (dataArray, finalCallback) => {
+            if (!Array.isArray(dataArray)) {
               dataArray = [dataArray];
             }
             if (typeof finalCallback !== "function") {
