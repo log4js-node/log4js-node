@@ -1,3 +1,5 @@
+/* eslint max-classes-per-file: ["error", 2] */
+
 const { test } = require("tap");
 const EE = require("events").EventEmitter;
 const levels = require("../../lib/levels");
@@ -10,7 +12,7 @@ class MockLogger {
   }
 
   log() {
-    this.contexts.push(Object.assign({}, this.context));
+    this.contexts.push(Object.assign({}, this.context)); // eslint-disable-line prefer-object-spread
   }
 
   isLevelEnabled(level) {

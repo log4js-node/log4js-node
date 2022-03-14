@@ -1,3 +1,5 @@
+/* eslint max-classes-per-file: ["error", 2] */
+
 const { test } = require("tap");
 const EE = require("events").EventEmitter;
 const levels = require("../../lib/levels");

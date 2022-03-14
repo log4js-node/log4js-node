@@ -68,7 +68,7 @@ if (process.platform !== "win32") {
     });
 
     batch.teardown(async () => {
-      await new Promise(resolve => log4js.shutdown(resolve));
+      await new Promise(resolve => { log4js.shutdown(resolve); });
 
       const filenames = Object.values(config.appenders).map(appender => appender.filename);
       await removeFiles(filenames);

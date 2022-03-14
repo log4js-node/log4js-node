@@ -39,7 +39,7 @@ test("file appender single SIGHUP handler", t => {
   log4js.configure(config);
 
   t.teardown(async () => {
-    await new Promise(resolve => log4js.shutdown(resolve));
+    await new Promise(resolve => { log4js.shutdown(resolve); });
 
     const filenames = Object.values(config.appenders).map(appender => appender.filename);
     await removeFiles(filenames);
