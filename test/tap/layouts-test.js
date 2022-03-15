@@ -1,4 +1,5 @@
 const { test } = require("tap");
+const debug = require("debug");
 const os = require("os");
 const path = require("path");
 
@@ -245,6 +246,40 @@ test("log4js layouts", batch => {
   });
 
   batch.test("patternLayout", t => {
+    const originalListener = process.listeners("warning")[process.listeners("warning").length - 1];
+    const warningListener = error => {
+      if (error.name === "DeprecationWarning") {
+        if (error.code.startsWith("log4js-node-DEP0003") || error.code.startsWith("log4js-node-DEP0004")) {
+          return;
+        }
+      }
+      originalListener(error);
+    };
+    process.off("warning", originalListener);
+    process.on("warning", warningListener);
+
+    const debugWasEnabled = debug.enabled("log4js:layouts");
+    const debugLogs = [];
+    const originalWrite = process.stderr.write;
+    process.stderr.write = (string, encoding, fd) => {
+      debugLogs.push(string);
+      if (debugWasEnabled) {
+        originalWrite.apply(process.stderr, [string, encoding, fd]);
+      }
+    };
+    const originalNamespace = debug.disable();
+    debug.enable(`${originalNamespace}, log4js:layouts`);
+
+    batch.teardown(async () => {
+      // next event loop so that past warnings will not be printed
+      setImmediate(() => {
+        process.off("warning", warningListener);
+        process.on("warning", originalListener);
+      });
+      process.stderr.write = originalWrite;
+      debug.enable(originalNamespace);
+    });
+
     const tokens = {
       testString: "testStringToken",
       testFunction() {
@@ -421,6 +456,7 @@ test("log4js layouts", batch => {
         "2010-12-05T14:18:30.045+10:00"
       );
 
+      const DEP0003 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0003") > -1).length;    
       testPattern(
         assert,
         layout,
@@ -428,6 +464,11 @@ test("log4js layouts", batch => {
         tokens,
         "%d{ABSOLUTE}", // deprecated
         "14:18:30.045"
+      );
+      assert.equal(
+        debugLogs.filter((e) => e.indexOf("log4js-node-DEP0003") > -1).length,
+        DEP0003 + 1,
+        "deprecation log4js-node-DEP0003 emitted"
       );
       testPattern(
         assert,
@@ -438,6 +479,7 @@ test("log4js layouts", batch => {
         "14:18:30.045"
       );
 
+      const DEP0004 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0004") > -1).length;    
       testPattern(
         assert,
         layout,
@@ -445,6 +487,11 @@ test("log4js layouts", batch => {
         tokens,
         "%d{DATE}", // deprecated
         "05 12 2010 14:18:30.045"
+      );
+      assert.equal(
+        debugLogs.filter((e) => e.indexOf("log4js-node-DEP0004") > -1).length,
+        DEP0004 + 1,
+        "deprecation log4js-node-DEP0004 emitted"
       );
       testPattern(
         assert,
