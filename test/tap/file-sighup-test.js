@@ -14,11 +14,15 @@ test("file appender single SIGHUP handler", t => {
   const initialListeners = process.listenerCount("SIGHUP");
 
   let warning;
+  const originalListener = process.listeners("warning")[process.listeners("warning").length - 1];
   const warningListener = error => {
     if (error.type === "SIGHUP" && error.name === "MaxListenersExceededWarning") {
       warning = error;
+      return;
     }
+    originalListener(error);
   };
+  process.off("warning", originalListener);
   process.on("warning", warningListener);
 
   const config = {
@@ -39,21 +43,25 @@ test("file appender single SIGHUP handler", t => {
   log4js.configure(config);
 
   t.teardown(async () => {
+    // next event loop so that past warnings will not be printed
+    setImmediate(() => {
+      process.off("warning", warningListener);
+      process.on("warning", originalListener);
+    });
+
     await new Promise(resolve => { log4js.shutdown(resolve); });
 
     const filenames = Object.values(config.appenders).map(appender => appender.filename);
     await removeFiles(filenames);
-
-    process.off("warning", warningListener);
   });
 
   t.plan(2);
-  // put in a timeout 0 to allow event emitter/listener to happen
-  setTimeout(() => {
+  // next event loop to allow event emitter/listener to happen
+  setImmediate(() => {
     t.notOk(warning, "should not have MaxListenersExceededWarning for SIGHUP");
     t.equal(process.listenerCount("SIGHUP") - initialListeners, 1, "should be 1 SIGHUP listener");
     t.end();
-  }, 0);
+  });
 });
 
 test("file appender SIGHUP", t => {
