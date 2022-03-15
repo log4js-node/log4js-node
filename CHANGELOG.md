@@ -1,5 +1,31 @@
 # log4js-node changelog
 
+## 6.4.3
+
+- chore(test): 100% test coverage - thanks [@peteriman](https://github.com/peteriman)
+  - Part 1 of 3: https://github.com/log4js-node/log4js-node/pull/1200
+  - Part 2 of 3: https://github.com/log4js-node/log4js-node/pull/1204
+  - Part 3 of 3: https://github.com/log4js-node/log4js-node/pull/1205
+  - [chore(test): improved test cases](https://github.com/log4js-node/log4js-node/pull/1211)
+- [chore(validation): added filename validation](https://github.com/log4js-node/log4js-node/pull/1201) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(improvement): do not initialise default appenders as it will be done again by configure()](https://github.com/log4js-node/log4js-node/pull/1210) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(improvement): defensive coding for cluster=null if require('cluster') fails in try-catch ](https://github.com/log4js-node/log4js-node/pull/1199) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(improvement): removed redundant logic in tcp-serverAppender](https://github.com/log4js-node/log4js-node/pull/1198) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(improvement): removed redundant logic in multiprocessAppender](https://github.com/log4js-node/log4js-node/pull/1197) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated README.md with badges](https://github.com/log4js-node/log4js-node/pull/1209) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): added docs for istanbul ignore](https://github.com/log4js-node/log4js-node/pull/1208) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated logger api docs](https://github.com/log4js-node/log4js-node/pull/1203) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated file and fileSync appender docs](https://github.com/log4js-node/log4js-node/pull/1202) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(lint): improve eslint rules](https://github.com/log4js-node/log4js-node/pull/1206) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1207) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dev): bump eslint from 8.10.0 to 8.11.0
+  - chore(dev): bump eslint-config-airbnb-base from 13.2.0 to 15.0.0
+  - chore(dev): bump eslint-config-prettier from 8.4.0 to 8.5.0
+  - chore(dev): bump tap from 15.1.6 to 16.0.0
+  - chore(dep): bump date-format from 4.0.4 to 4.0.5
+  - chore(dep): bump streamroller from 3.0.4 to 3.0.5
+  - chore(dep): updated package-lock.json
+
 ## 6.4.2
 
 - [bug: fixed fileSync appender to create directory recursively](https://github.com/log4js-node/log4js-node/pull/1191) - thanks [@peteriman](https://github.com/peteriman)
