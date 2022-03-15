@@ -48,12 +48,12 @@ test("file appender single SIGHUP handler", t => {
   });
 
   t.plan(2);
-  // put in a timeout 0 to allow event emitter/listener to happen
-  setTimeout(() => {
+  // next event loop to allow event emitter/listener to happen
+  setImmediate(() => {
     t.notOk(warning, "should not have MaxListenersExceededWarning for SIGHUP");
     t.equal(process.listenerCount("SIGHUP") - initialListeners, 1, "should be 1 SIGHUP listener");
     t.end();
-  }, 0);
+  });
 });
 
 test("file appender SIGHUP", t => {
