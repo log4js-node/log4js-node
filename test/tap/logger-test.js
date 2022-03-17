@@ -3,12 +3,14 @@ const debug = require("debug")("log4js:test.logger");
 const sandbox = require("@log4js-node/sandboxed-module");
 const callsites = require("callsites");
 const levels = require("../../lib/levels");
+const categories = require("../../lib/categories");
 
 const events = [];
 const messages = [];
 const Logger = sandbox.require("../../lib/logger", {
   requires: {
     "./levels": levels,
+    "./categories": categories,
     "./clustering": {
       isMaster: () => true,
       onlyOnMaster: fn => fn(),
@@ -268,6 +270,44 @@ test("../../lib/logger", batch => {
     t.equal(events[0].lineNumber, 15);
     t.equal(events[0].columnNumber, 25);
     t.equal(events[0].callStack, "test callstack");
+
+    t.end();
+  });
+
+  batch.test("creating/cloning of category", t => {
+    const defaultLogger = new Logger("default");
+    defaultLogger.level = "trace";
+    defaultLogger.useCallStack = true;
+
+    t.test("category should be cloned from parent/default if does not exist", assert => {
+      const originalLength = categories.size;
+
+      const logger = new Logger("cheese1");
+      assert.equal(categories.size, originalLength + 1, "category should be cloned");
+      assert.equal(logger.level, levels.TRACE, "should inherit level=TRACE from default-category");
+      assert.equal(logger.useCallStack, true, "should inherit useCallStack=true from default-category");
+      assert.end();
+    });
+
+    t.test("changing level should not impact default-category or useCallStack", assert => {
+      const logger = new Logger("cheese2");
+      logger.level = "debug";
+      assert.equal(logger.level, levels.DEBUG, "should be changed to level=DEBUG");
+      assert.equal(defaultLogger.level, levels.TRACE, "default-category should remain as level=TRACE");
+      assert.equal(logger.useCallStack, true, "should remain as useCallStack=true");
+      assert.equal(defaultLogger.useCallStack, true, "default-category should remain as useCallStack=true");
+      assert.end();
+    });
+
+    t.test("changing useCallStack should not impact default-category or level", assert => {
+      const logger = new Logger("cheese3");
+      logger.useCallStack = false;
+      assert.equal(logger.useCallStack, false, "should be changed to useCallStack=false");
+      assert.equal(defaultLogger.useCallStack, true, "default-category should remain as useCallStack=true");
+      assert.equal(logger.level, levels.TRACE, "should remain as level=TRACE");
+      assert.equal(defaultLogger.level, levels.TRACE, "default-category should remain as level=TRACE");
+      assert.end();
+    });
 
     t.end();
   });
