@@ -27,6 +27,7 @@ The following appenders are included with log4js. Some require extra dependencie
 * [logLevelFilter](logLevelFilter.md)
 * [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
+* [noLogFilter](noLogFilter.md)
 * [recording](recording.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)
