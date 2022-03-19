@@ -54,7 +54,7 @@ This layout is the same as `basic`, except that the timestamp, level and categor
 ## Message Pass-Through
 * `type` - `messagePassThrough`
 
-This layout just formats the log event data, and does not output a timestamp, level or category. It is typically used in appenders that serialise the events using a specific format (e.g. [gelf](gelf.md)).
+This layout just formats the log event data, and does not output a timestamp, level or category. It is typically used in appenders that serialise the events using a specific format (e.g. [gelf](https://github.com/log4js-node/gelf)).
 
 ## Example
 ```javascript
