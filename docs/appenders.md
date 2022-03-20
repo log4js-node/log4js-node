@@ -17,7 +17,7 @@ This defines two appenders named 'out' and 'app'. 'out' uses the [stdout](stdout
 
 ## Core Appenders
 
-The following appenders are included with log4js. Some require extra dependencies that are not included as part of log4js (the [smtp](smtp.md) appender needs [nodemailer](https://www.npmjs.org/packages/nodemailer) for example), and these will be noted in the docs for that appender. If you don't use those appenders, then you don't need the extra dependencies.
+The following appenders are included with log4js. Some require extra dependencies that are not included as part of log4js (the [smtp](https://github.com/log4js-node/smtp) appender needs [nodemailer](https://www.npmjs.com/package/nodemailer) for example), and these will be noted in the docs for that appender. If you don't use those appenders, then you don't need the extra dependencies.
 
 * [categoryFilter](categoryFilter.md)
 * [console](console.md)
@@ -27,6 +27,7 @@ The following appenders are included with log4js. Some require extra dependencie
 * [logLevelFilter](logLevelFilter.md)
 * [multiFile](multiFile.md)
 * [multiprocess](multiprocess.md)
+* [noLogFilter](noLogFilter.md)
 * [recording](recording.md)
 * [stderr](stderr.md)
 * [stdout](stdout.md)

@@ -57,7 +57,7 @@ The `logFaces` appender was split into two versions to make testing easier and t
 Some appenders used to define their own `exit` listeners, and it was never clear whose responsibility it was to clean up resources. Now log4js does not define any `exit` listeners. Instead your application should register an `exit` listener, and call `log4js.shutdown` to be sure that all log messages get written before your application terminates.
 
 ## New Features
-* MDC contexts - you can now add key-value pairs to a logger (for grouping all log messages from a particular user, for example). Support for these values exists in the [pattern layout](layouts.md), the [logFaces appenders](logFaces-UDP.md), and the [multi-file appender](multiFile.md).
+* MDC contexts - you can now add key-value pairs to a logger (for grouping all log messages from a particular user, for example). Support for these values exists in the [pattern layout](layouts.md), the logFaces ([UDP](https://github.com/log4js-node/logFaces-UDP) and [HTTP](https://github.com/log4js-node/logFaces-HTTP)) appender, and the [multi-file appender](multiFile.md).
 * Automatic cluster support - log4js now handles clusters transparently
 * Custom levels - you can define your own log levels in the configuration object, including the colours
 * Improved performance - several changes have been made to improve performance, especially for the file appenders.
