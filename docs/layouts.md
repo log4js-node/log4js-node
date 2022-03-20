@@ -2,7 +2,7 @@
 
 Layouts are functions used by appenders to format log events for output. They take a log event as an argument and return a string. Log4js comes with several appenders built-in, and provides ways to create your own if these are not suitable.
 
-For most use cases you will not need to configure layouts - there are some appenders which do not need layouts defined (for example, [logFaces-UDP](logFaces-UDP.md)); all the appenders that use layouts will have a sensible default defined.
+For most use cases you will not need to configure layouts - there are some appenders which do not need layouts defined (for example, [logFaces-UDP](https://github.com/log4js-node/logFaces-UDP)); all the appenders that use layouts will have a sensible default defined.
 
 ## Configuration
 
@@ -75,7 +75,7 @@ Cheese is too ripe! Cheese was: gouda
 
 * `type` - `dummy`
 
-This layout only outputs the first value in the log event's data. It was added for the [logstashUDP](logstashUDP.md) appender, and I'm not sure there's much use for it outside that.
+This layout only outputs the first value in the log event's data. It was added for the [logstashUDP](https://github.com/log4js-node/logstashUDP) appender, and I'm not sure there's much use for it outside that.
 
 ## Example
 ```javascript
