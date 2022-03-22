@@ -6,6 +6,12 @@
 - [chore(docs): updated docs for broken links and inaccessible pages](https://github.com/log4js-node/log4js-node/pull/1219) - thanks [@peteriman](https://github.com/peteriman)
 - [chore(docs): broken link to gelf appender](https://github.com/log4js-node/log4js-node/pull/1218) - thanks [@mattalexx](https://github.com/mattalexx)
 - [chore(docs): updated docs for appenders module loading](https://github.com/log4js-node/log4js-node/pull/985) - thanks [@leonimurilo](https://github.com/leonimurilo)
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1221) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dep): bump streamroller from 3.0.5 to 3.0.6
+  - chore(dep): bump debug from 4.3.3 to 4.3.4
+  - chore(dep): bump date-format from 4.0.5 to 4.0.6
+  - chore(dev): bump prettier from 2.5.1 to 2.6.0
+  - updated package-lock.json
 
 ## 6.4.3
 
