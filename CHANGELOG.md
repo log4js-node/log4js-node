@@ -1,4 +1,11 @@
-# log4js-node changelog
+# log4js-node Changelog
+
+## 6.4.4
+
+- [chore(fix): set logger.level on runtime will no longer wrongly reset useCallStack](https://github.com/log4js-node/log4js-node/pull/1217)  - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated docs for broken links and inaccessible pages](https://github.com/log4js-node/log4js-node/pull/1219) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): broken link to gelf appender](https://github.com/log4js-node/log4js-node/pull/1218) - thanks [@mattalexx](https://github.com/mattalexx)
+- [chore(docs): updated docs for appenders module loading](https://github.com/log4js-node/log4js-node/pull/985) - thanks [@leonimurilo](https://github.com/leonimurilo)
 
 ## 6.4.3
 
