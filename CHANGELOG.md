@@ -77,7 +77,9 @@
 - [chore(deps): bump node-fetch from 2.6.6 to 2.6.7](https://github.com/log4js-node/log4js-node/pull/1167) - thanks [@Dependabot](https://github.com/dependabot)
 - [chore(deps-dev): bump typescript from 4.5.4 to 4.5.5](https://github.com/log4js-node/log4js-node/pull/1166) - thanks [@peteriman](https://github.com/peteriman)
 
-## 6.4.0
+## 6.4.0 - BREAKING CHANGE 💥
+New default file permissions may cause external applications unable to read logs.
+A manual code/configuration change is required.
 
 - [security: default file permission to be 0o600 instead of 0o644](https://github.com/log4js-node/log4js-node/pull/1141) - thanks [ranjit-git](https://www.huntr.dev/users/ranjit-git) and [@peteriman](https://github.com/peteriman)
   - [chore(docs): updated fileSync.md and misc comments](https://github.com/log4js-node/log4js-node/pull/1148) - thanks [@peteriman](https://github.com/peteriman)
