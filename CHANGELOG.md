@@ -79,7 +79,7 @@
 
 ## 6.4.0 - BREAKING CHANGE 💥
 New default file permissions may cause external applications unable to read logs.
-A manual code/configuration change is required.
+A [manual code/configuration change](https://github.com/log4js-node/log4js-node/pull/1141#issuecomment-1076224470) is required.
 
 - [security: default file permission to be 0o600 instead of 0o644](https://github.com/log4js-node/log4js-node/pull/1141) - thanks [ranjit-git](https://www.huntr.dev/users/ranjit-git) and [@peteriman](https://github.com/peteriman)
   - [chore(docs): updated fileSync.md and misc comments](https://github.com/log4js-node/log4js-node/pull/1148) - thanks [@peteriman](https://github.com/peteriman)
