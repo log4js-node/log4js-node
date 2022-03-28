@@ -302,8 +302,8 @@ test("Multiprocess Appender", async batch => {
           data: ["an error message"]
         })}__LOG4JS__`
       );
-      net.cbs.data(logString.substring(0, 10));
-      net.cbs.data(logString.substring(10));
+      net.cbs.data(logString.slice(0, 10));
+      net.cbs.data(logString.slice(10));
       net.cbs.data(logString + logString + logString);
       net.cbs.end(
         `${flatted.stringify({

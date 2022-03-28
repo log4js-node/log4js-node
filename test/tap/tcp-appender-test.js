@@ -306,11 +306,12 @@ test("TCP Appender", batch => {
       fakeNet.cbs.drain();
       assert.equal(fakeNet.data.length, previousLength + 1);
       const raw = fakeNet.data[fakeNet.data.length - 1];
+      const offset = raw.indexOf('__LOG4JS__');
       assert.ok(
-        flatted.parse(raw.substring(0, raw.indexOf('__LOG4JS__'))).data[0].stack,
+        flatted.parse(raw.slice(0, offset !== -1 ? offset : 0)).data[0].stack,
         `Expected:\n\n${fakeNet.data[6]}\n\n to have a 'data[0].stack' property`
       );
-      const actual = flatted.parse(raw.substring(0, raw.indexOf('__LOG4JS__'))).data[0].stack;
+      const actual = flatted.parse(raw.slice(0, offset !== -1 ? offset : 0)).data[0].stack;
       assert.match(actual, /^Error: Error test/);
       assert.end();
     });

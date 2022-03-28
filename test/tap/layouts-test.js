@@ -456,7 +456,7 @@ test("log4js layouts", batch => {
         "2010-12-05T14:18:30.045+10:00"
       );
 
-      const DEP0003 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0003") > -1).length;    
+      const DEP0003 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0003") > -1).length;
       testPattern(
         assert,
         layout,
@@ -479,7 +479,7 @@ test("log4js layouts", batch => {
         "14:18:30.045"
       );
 
-      const DEP0004 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0004") > -1).length;    
+      const DEP0004 = debugLogs.filter((e) => e.indexOf("log4js-node-DEP0004") > -1).length;
       testPattern(
         assert,
         layout,
@@ -585,7 +585,7 @@ test("log4js layouts", batch => {
     });
 
     t.test("%f should accept truncation and padding", assert => {
-      testPattern(assert, layout, event, tokens, "%.5f", fileName.substring(0, 5));
+      testPattern(assert, layout, event, tokens, "%.5f", fileName.slice(0, 5));
       testPattern(assert, layout, event, tokens, "%20f{1}", "     layouts-test.js");
       testPattern(assert, layout, event, tokens, "%30.30f{2}", `           ${  path.join("tap","layouts-test.js")}`);
       testPattern(assert, layout, event, tokens, "%10.-5f{1}", "     st.js");
