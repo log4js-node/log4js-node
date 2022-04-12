@@ -32,7 +32,13 @@ test("LoggingEvent", batch => {
         levelStr: "INFO"
       },
       data: ["some log message", { x: 1 }],
-      context: { thing: "otherThing" }
+      context: { thing: "otherThing" },
+      pid: "1234",
+      functionName: "bound",
+      fileName: "domain.js",
+      lineNumber: 421,
+      columnNumber: 15,
+      callStack: "at bound (domain.js:421:15)\n"
     });
     const event = LoggingEvent.deserialise(dehydratedEvent);
     t.type(event, LoggingEvent);
@@ -42,6 +48,12 @@ test("LoggingEvent", batch => {
     t.equal(event.data[0], "some log message");
     t.equal(event.data[1].x, 1);
     t.equal(event.context.thing, "otherThing");
+    t.equal(event.pid, "1234");
+    t.equal(event.functionName, "bound");
+    t.equal(event.fileName, "domain.js");
+    t.equal(event.lineNumber, 421);
+    t.equal(event.columnNumber, 15);
+    t.equal(event.callStack, "at bound (domain.js:421:15)\n");
     t.end();
   });
 
