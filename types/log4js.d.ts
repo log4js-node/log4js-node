@@ -66,6 +66,11 @@ export interface LoggingEvent {
     workerId: number;
     worker: number;
   };
+  functionName?: string;
+  fileName?: string;
+  lineNumber?: number;
+  columnNumber?: number;
+  callStack?: string;
 }
 
 export type Token = ((logEvent: LoggingEvent) => string) | string;
