@@ -43,7 +43,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "date-format": "^4.0.6",
+    "date-format": "^4.0.7",
     "debug": "^4.3.4",
     "flatted": "^3.2.5",
     "rfdc": "^1.3.0",
