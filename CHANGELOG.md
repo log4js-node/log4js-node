@@ -1,5 +1,24 @@
 # log4js-node Changelog
 
+## 6.4.5
+
+- [chore(fix): deserialise for enableCallStack features: filename, lineNumber, columnNumber, callStack](https://github.com/log4js-node/log4js-node/pull/1230) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(fix): fileDepth for ESM](https://github.com/log4js-node/log4js-node/pull/1224) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(refactor): replace deprecated String.prototype.substr()](https://github.com/log4js-node/log4js-node/pull/1223) - thanks [@CommanderRoot](https://github.com/CommanderRoot)
+- [chore(types): LogEvent types](https://github.com/log4js-node/log4js-node/pull/1231) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(docs): updated typescript usage](https://github.com/log4js-node/log4js-node/pull/1229) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1232) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dep): bump date-format from 4.0.6 to 4.0.7
+  - chore(dep): bump streamroller from 3.0.6 to 3.0.7
+  - updated package-lock.json
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1228) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dev): bump eslint from 8.11.0 to 8.13.0
+  - chore(dev): bump eslint-plugin-import from 2.25.4 to 2.26.0
+  - chore(dev): bump tap from 16.0.0 to 16.0.1
+  - chore(dev): bump typescript from 4.6.2 to 4.6.3
+  - updated package-lock.json
+- [chore(deps): bump minimist from 1.2.5 to 1.2.6](https://github.com/log4js-node/log4js-node/pull/1227) - thanks [@Dependabot](https://github.com/dependabot)
+
 ## 6.4.4
 
 - [chore(fix): set logger.level on runtime will no longer wrongly reset useCallStack](https://github.com/log4js-node/log4js-node/pull/1217)  - thanks [@peteriman](https://github.com/peteriman)
