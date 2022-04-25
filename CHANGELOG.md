@@ -1,5 +1,17 @@
 # log4js-node Changelog
 
+## 6.4.6
+
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1236) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dev): bump eslint from 8.13.0 to 8.14.0
+  - chore(dep): bump date-format from 4.0.7 to 4.0.9
+  - chore(dep): bump streamroller from 3.0.7 to 3.0.8
+    - resolved [#1216](https://github.com/log4js-node/log4js-node/issues/1216) where promise rejection is not handled ([streamroller@3.0.8 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md))
+  - updated package-lock.json
+- [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1234) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(dep): bump fs-extra from 10.0.1 to 10.1.0
+  - updated package-lock.json
+
 ## 6.4.5
 
 - [chore(fix): deserialise for enableCallStack features: filename, lineNumber, columnNumber, callStack](https://github.com/log4js-node/log4js-node/pull/1230) - thanks [@peteriman](https://github.com/peteriman)
@@ -10,6 +22,7 @@
 - [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1232) - thanks [@peteriman](https://github.com/peteriman)
   - chore(dep): bump date-format from 4.0.6 to 4.0.7
   - chore(dep): bump streamroller from 3.0.6 to 3.0.7
+    - resolved [#1225](https://github.com/log4js-node/log4js-node/issues/1225) where fs-extra throws error when fs.realpath.native is undefined ([streamroller@3.0.7 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md))
   - updated package-lock.json
 - [chore(dep): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1228) - thanks [@peteriman](https://github.com/peteriman)
   - chore(dev): bump eslint from 8.11.0 to 8.13.0
@@ -74,7 +87,7 @@
 - [chore(deps): updated deps-dev](https://github.com/log4js-node/log4js-node/pull/1194) - thanks [@peteriman](https://github.com/peteriman)
   - chore(deps): bump date-format from 4.0.3 to 4.0.4
   - chore(deps): bump streamroller from 3.0.2 to 3.0.4
-    - issue: addresses compatibility issue with directory creation for NodeJS < 10.12.0 ([#1189](https://github.com/log4js-node/log4js-node/issues/1189)) - details: [streamroller@3.0.3 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
+    - resolved [#1189](https://github.com/log4js-node/log4js-node/issues/1189) for an compatibility issue with directory creation for NodeJS < 10.12.0 ([streamroller@3.0.3 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md))
   - chore(deps-dev): bump eslint from 8.8.0 to 8.10.0
   - chore(deps-dev): bump eslint-config-prettier from 8.3.0 to 8.4.0
   - chore(deps-dev): bump fs-extra from 10.0.0 to 10.0.1
@@ -135,8 +148,8 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
   - [feat: allows for zero backups](https://github.com/log4js-node/log4js-node/pull/1151) - thanks [@peteriman](https://github.com/peteriman)
   - [api: migrated from daysToKeep to numBackups due to streamroller@^3.0.0](https://github.com/log4js-node/log4js-node/pull/1149) - thanks [@peteriman](https://github.com/peteriman)
   - [bug: compressed file ignores dateFile appender "mode"](https://github.com/log4js-node/streamroller/pull/65) - thanks [@rnd-debug](https://github.com/rnd-debug)
-  - issue: addresses additional separator in filename ([#1039](https://github.com/log4js-node/log4js-node/issues/1039)) - details: [streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
-  - issue: addresses daysToKeep naming confusion ([#1035](https://github.com/log4js-node/log4js-node/issues/1035), [#1080](https://github.com/log4js-node/log4js-node/issues/1080))  - details: [streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md)
+  - resolved [#1039](https://github.com/log4js-node/log4js-node/issues/1039) where there is an additional separator in filename ([streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md))
+  - resolved [#1035](https://github.com/log4js-node/log4js-node/issues/1035), [#1080](https://github.com/log4js-node/log4js-node/issues/1080) for daysToKeep naming confusion ([streamroller@3.0.0 changelog](https://github.com/log4js-node/streamroller/blob/master/CHANGELOG.md))
 - [chore(deps): bump date-format from 3.0.0 to 4.0.2](https://github.com/log4js-node/log4js-node/pull/1134) - thanks [@peteriman](https://github.com/peteriman)
 - [chore(deps): Updated dependencies](https://github.com/log4js-node/log4js-node/pull/1130) - thanks [@peteriman](https://github.com/peteriman)
   - eslint-config-prettier from 6.15.0 to 8.3.0
