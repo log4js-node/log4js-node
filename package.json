@@ -61,7 +61,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "fs-extra": "^10.1.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "nyc": "^15.1.0",
     "prettier": "^2.6.0",
     "proxyquire": "^2.1.3",
