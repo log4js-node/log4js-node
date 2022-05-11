@@ -149,6 +149,8 @@ export interface FileAppender {
   compress?: boolean;
   // (defaults to false) preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`).
   keepFileExt?: boolean;
+  // (defaults to .) the filename separator when rolling. e.g.: abc.log`.`1 or abc`.`1.log (keepFileExt)
+  fileNameSep?: string;
 }
 
 export interface SyncfileAppender {
@@ -198,6 +200,8 @@ export interface DateFileAppender {
   compress?: boolean;
   // (defaults to false) preserve the file extension when rotating log files (`file.log` becomes `file.2017-05-30.log` instead of `file.log.2017-05-30`).
   keepFileExt?: boolean;
+  // (defaults to .) the filename separator when rolling. e.g.: abc.log`.`2013-08-30 or abc`.`2013-08-30.log (keepFileExt)
+  fileNameSep?: string;
   // (defaults to false) include the pattern in the name of the current log file.
   alwaysIncludePattern?: boolean;
   // (defaults to 1) the number of old files that matches the pattern to keep (excluding the hot file).
