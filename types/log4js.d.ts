@@ -27,7 +27,7 @@ export const levels: Levels;
 
 export function shutdown(cb?: (error: Error) => void): void | null;
 
-export interface BaseLayout {
+export interface BasicLayout {
   type: 'basic';
 }
 
@@ -88,7 +88,7 @@ export interface CustomLayout {
   type: string;
 }
 
-export type Layout = BaseLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout | CustomLayout;
+export type Layout = BasicLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout | CustomLayout;
 
 /**
  * Category Filter
@@ -125,7 +125,7 @@ export interface NoLogFilterAppender {
  */
 export interface ConsoleAppender {
   type: 'console';
-  // defaults to colouredLayout
+  // (defaults to ColoredLayout)
   layout?: Layout;
 }
 
@@ -135,9 +135,9 @@ export interface FileAppender {
   filename: string;
   // (defaults to MAX_SAFE_INTEGER) the maximum size (in bytes) for the log file.
   maxLogSize?: number | string;
-  // (defaults to 5) the number of old log files to keep.
+  // (defaults to 5) the number of old log files to keep (excluding the hot file).
   backups?: number;
-  // (defaults to basic layout)
+  // (defaults to BasicLayout)
   layout?: Layout;
   // (defaults to utf-8)
   encoding?: string;
@@ -157,9 +157,9 @@ export interface SyncfileAppender {
   filename: string;
   // (defaults to undefined) the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
   maxLogSize?: number | string;
-  // (defaults to 5) the number of old log files to keep.
+  // (defaults to 5) the number of old log files to keep (excluding the hot file).
   backups?: number;
-  // (defaults to basic layout)
+  // (defaults to BasicLayout)
   layout?: Layout;
   // (defaults to utf-8)
   encoding?: string;
@@ -186,7 +186,7 @@ export interface DateFileAppender {
    *  - O    : timezone (capital letter o)
    */
   pattern?: string;
-  // (defaults to basic layout)
+  // (defaults to BasicLayout)
   layout?: Layout;
   // (defaults to utf-8)
   encoding?: string;
@@ -210,7 +210,7 @@ export interface LogLevelFilterAppender {
   appender: string;
   // the minimum level of event to allow through the filter
   level: string;
-  // (defaults to FATAL) - the maximum level of event to allow through the filter
+  // (defaults to FATAL) the maximum level of event to allow through the filter
   maxLevel?: string;
 }
 
@@ -228,11 +228,11 @@ export interface MultiprocessAppender {
   type: 'multiprocess';
   // controls whether the appender listens for log events sent over the network, or is responsible for serialising events and sending them to a server.
   mode: 'master' | 'worker';
-  // (only needed if mode == master)- the name of the appender to send the log events to
+  // (only needed if mode == master) the name of the appender to send the log events to
   appender?: string;
-  // (defaults to 5000) - the port to listen on, or send to
+  // (defaults to 5000) the port to listen on, or send to
   loggerPort?: number;
-  // (defaults to localhost) - the host/IP address to listen on, or send to
+  // (defaults to localhost) the host/IP address to listen on, or send to
   loggerHost?: string;
 }
 
@@ -242,13 +242,13 @@ export interface RecordingAppender {
 
 export interface StandardErrorAppender {
   type: 'stderr';
-  // (defaults to colouredLayout)
+  // (defaults to ColoredLayout)
   layout?: Layout;
 }
 
 export interface StandardOutputAppender {
   type: 'stdout';
-  // (defaults to colouredLayout)
+  // (defaults to ColoredLayout)
   layout?: Layout;
 }
 
@@ -259,13 +259,13 @@ export interface StandardOutputAppender {
  */
 export interface TCPAppender {
   type: 'tcp';
-  // defaults to 5000
+  // (defaults to 5000)
   port?: number
-  // defaults to localhost
+  // (defaults to localhost)
   host?: string
-  // default to __LOG4JS__
+  // (defaults to __LOG4JS__)
   endMsg?: string
-  // defaults to a serialized log event
+  // (defaults to a serialized log event)
   layout?: Layout;
 }
 
