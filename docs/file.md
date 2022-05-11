@@ -7,7 +7,7 @@ The file appender writes log events to a file. It supports an optional maximum f
 * `type` - `"file"`
 * `filename` - `string` - the path of the file where you want your logs written.
 * `maxLogSize` - `integer` (optional, defaults to MAX_SAFE_INTEGER) - the maximum size (in bytes) for the log file.
-* `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling.
+* `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling (excluding the hot file).
 * `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
 
 Any other configuration parameters will be passed to the underlying [streamroller](https://github.com/nomiddlename/streamroller) implementation (see also node.js core file streams):

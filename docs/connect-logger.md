@@ -50,7 +50,7 @@ app.use(log4js.connectLogger(logger, {
 
 When you request of POST, you want to log the request body parameter like JSON.
 The log format function is very useful.
-Please use log format function instead “tokens” property for use express's request or response.
+Please use log format function instead "tokens" property for use express's request or response.
 
 
 ```javascript
