@@ -133,32 +133,39 @@ export interface FileAppender {
   type: 'file';
   // the path of the file where you want your logs written.
   filename: string;
-  // the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
+  // (defaults to MAX_SAFE_INTEGER) the maximum size (in bytes) for the log file.
   maxLogSize?: number | string;
-  // (default value = 5) - the number of old log files to keep during log rolling.
+  // (defaults to 5) the number of old log files to keep.
   backups?: number;
-  // defaults to basic layout
+  // (defaults to basic layout)
   layout?: Layout;
-  compress?: boolean; // compress the backups
-  // keep the file extension when rotating logs
-  keepFileExt?: boolean;
+  // (defaults to utf-8)
   encoding?: string;
+  // (defaults to 0o600)
   mode?: number;
+  // (defaults to a)
   flags?: string;
+  // (defaults to false) compress the backup files using gzip (backup files will have .gz extension)
+  compress?: boolean;
+  // (defaults to false) preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`).
+  keepFileExt?: boolean;
 }
 
 export interface SyncfileAppender {
   type: 'fileSync';
   // the path of the file where you want your logs written.
   filename: string;
-  // the maximum size (in bytes) for the log file. If not specified, then no log rolling will happen.
+  // (defaults to undefined) the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
   maxLogSize?: number | string;
-  // (default value = 5) - the number of old log files to keep during log rolling.
+  // (defaults to 5) the number of old log files to keep.
   backups?: number;
-  // defaults to basic layout
+  // (defaults to basic layout)
   layout?: Layout;
+  // (defaults to utf-8)
   encoding?: string;
+  // (defaults to 0o600)
   mode?: number;
+  // (defaults to a)
   flags?: string;
 }
 
@@ -166,9 +173,7 @@ export interface DateFileAppender {
   type: 'dateFile';
   // the path of the file where you want your logs written.
   filename: string;
-  // defaults to basic layout
-  layout?: Layout;
-  // defaults to .yyyy-MM-dd - the pattern to use to determine when to roll the logs.
+  // (defaults to yyyy-MM-dd) the pattern to use to determine when to roll the logs.
   /**
    * The following strings are recognised in the pattern:
    *  - yyyy : the full year, use yy for just the last two digits
@@ -181,19 +186,21 @@ export interface DateFileAppender {
    *  - O    : timezone (capital letter o)
    */
   pattern?: string;
-  // default “utf-8”
+  // (defaults to basic layout)
+  layout?: Layout;
+  // (defaults to utf-8)
   encoding?: string;
-  // default 0600
+  // (defaults to 0o600)
   mode?: number;
-  // default ‘a’
+  // (defaults to a)
   flags?: string;
-  // compress the backup files during rolling (backup files will have .gz extension)(default false)
+  // (defaults to false) compress the backup files using gzip (backup files will have .gz extension)
   compress?: boolean;
-  // include the pattern in the name of the current log file as well as the backups.(default false)
-  alwaysIncludePattern?: boolean;
-  // keep the file extension when rotating logs
+  // (defaults to false) preserve the file extension when rotating log files (`file.log` becomes `file.2017-05-30.log` instead of `file.log.2017-05-30`).
   keepFileExt?: boolean;
-  // if this value is greater than zero, then files older than that many days will be deleted during log rolling.(default 0)
+  // (defaults to false) include the pattern in the name of the current log file.
+  alwaysIncludePattern?: boolean;
+  // (defaults to 1) the number of old files that matches the pattern to keep (excluding the hot file).
   numBackups?: number;
 }
 
