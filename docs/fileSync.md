@@ -12,7 +12,7 @@ The sync file appender writes log events to a file, the only difference to the n
 
 Any other configuration parameters will be passed to the underlying node.js core stream implementation:
 * `encoding` - `string` (default "utf-8")
-* `mode`- `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
+* `mode` - `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
 * `flags` - `string` (default 'a')
 
 ## Example

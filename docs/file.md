@@ -12,7 +12,7 @@ The file appender writes log events to a file. It supports an optional maximum f
 
 Any other configuration parameters will be passed to the underlying [streamroller](https://github.com/nomiddlename/streamroller) implementation (see also node.js core file streams):
 * `encoding` - `string` (default "utf-8")
-* `mode`- `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
+* `mode` - `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
 * `flags` - `string` (default 'a' - [node.js file flags](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_system_flags)) 
 * `compress` - `boolean` (default false) - compress the backup files using gzip (backup files will have `.gz` extension)
 * `keepFileExt` - `boolean` (default false) - preserve the file extension when rotating log files (`file.log` becomes `file.1.log` instead of `file.log.1`).
