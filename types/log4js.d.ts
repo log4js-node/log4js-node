@@ -133,7 +133,7 @@ export interface FileAppender {
   type: 'file';
   // the path of the file where you want your logs written.
   filename: string;
-  // (defaults to MAX_SAFE_INTEGER) the maximum size (in bytes) for the log file.
+  // (defaults to undefined) the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
   maxLogSize?: number | string;
   // (defaults to 5) the number of old log files to keep (excluding the hot file).
   backups?: number;
