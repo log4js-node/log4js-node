@@ -6,8 +6,8 @@ The file appender writes log events to a file. It supports an optional maximum f
 
 * `type` - `"file"`
 * `filename` - `string` - the path of the file where you want your logs written.
-* `maxLogSize` - `integer` (optional, defaults to MAX_SAFE_INTEGER) - the maximum size (in bytes) for the log file.
-                                                                      `maxLogSize` can also accept `string` with the size suffixes: ***K***, ***M***, ***G*** such as `1K`, `1M`, `1G`.
+* `maxLogSize` - `integer` (optional, defaults to undefined) - the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
+                                                               `maxLogSize` can also accept `string` with the size suffixes: ***K***, ***M***, ***G*** such as `1K`, `1M`, `1G`.
 * `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling (excluding the hot file).
 * `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
 
