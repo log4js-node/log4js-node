@@ -50,7 +50,6 @@ test("log4js fileAppender", batch => {
 
   batch.test("should give error if invalid filename", async t => {
     const file = "";
-    const expectedError = new Error(`Invalid filename: ${file}`);
     t.throws(
       () => 
         log4js.configure({
@@ -64,7 +63,23 @@ test("log4js fileAppender", batch => {
             default: { appenders: ["file"], level: "debug" }
           }
         }),
-      expectedError
+      new Error(`Invalid filename: ${file}`)
+    );
+    const dir = `.${path.sep}`;
+    t.throws(
+      () => 
+        log4js.configure({
+          appenders: {
+            file: {
+              type: "file",
+              filename: dir
+            }
+          },
+          categories: {
+            default: { appenders: ["file"], level: "debug" }
+          }
+        }),
+      new Error(`Filename is a directory: ${dir}`)
     );
     t.end();
   });
