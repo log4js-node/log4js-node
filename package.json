@@ -94,7 +94,7 @@
     }
   },
   "tap": {
-    "check-coverage": false
+    "check-coverage": true
   },
   "nyc": {
     "all": true,
