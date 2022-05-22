@@ -1,5 +1,18 @@
 # log4js-node Changelog
 
+## 6.5.0
+
+- [feat: logger.log() to be synonym of logger.info()](https://github.com/log4js-node/log4js-node/pull/1254) - thanks [@peteriman](https://github.com/peteriman)
+- [feat: tilde expansion for filename](https://github.com/log4js-node/log4js-node/pull/1252) - thanks [@peteriman](https://github.com/peteriman)
+- [fix: better file validation](https://github.com/log4js-node/log4js-node/pull/1251) - thanks [@peteriman](https://github.com/peteriman)
+- [fix: fallback for logger.log outputs nothing](https://github.com/log4js-node/log4js-node/pull/1247) - thanks [@peteriman](https://github.com/peteriman)
+- [docs: updated fileAppender maxLogSize documentation](https://github.com/log4js-node/log4js-node/pull/1248) - thanks [@peteriman](https://github.com/peteriman)
+- [ci: enforced 100% test coverage tests](https://github.com/log4js-node/log4js-node/pull/1253) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1256) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(deps-dev): bump eslint from 8.15.0 to 8.16.0
+  - chore(deps): bump streamroller from 3.0.9 to 3.1.0
+  - chore(deps): updated package-lock.json
+
 ## 6.4.7
 
 - [fix: dateFileAppender unable to use units in maxLogSize](https://github.com/log4js-node/log4js-node/pull/1243) - thanks [@peteriman](https://github.com/peteriman)
@@ -132,6 +145,8 @@
 New default file permissions may cause external applications unable to read logs.
 A [manual code/configuration change](https://github.com/log4js-node/log4js-node/pull/1141#issuecomment-1076224470) is required.
 
+- [feat: added warnings when log() is used with invalid levels before fallbacking to INFO](https://github.com/log4js-node/log4js-node/pull/1062) - thanks [@abernh](https://github.com/abernh)
+- [feat: exposed Recording](https://github.com/log4js-node/log4js-node/pull/1103) - thanks [@polo-language](https://github.com/polo-language)
 - [fix: default file permission to be 0o600 instead of 0o644](https://github.com/log4js-node/log4js-node/pull/1141) - thanks [ranjit-git](https://www.huntr.dev/users/ranjit-git) and [@peteriman](https://github.com/peteriman)
   - [docs: updated fileSync.md and misc comments](https://github.com/log4js-node/log4js-node/pull/1148) - thanks [@peteriman](https://github.com/peteriman)
 - [fix: file descriptor leak if repeated configure()](https://github.com/log4js-node/log4js-node/pull/1113) - thanks [@peteriman](https://github.com/peteriman)
@@ -142,8 +157,6 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
   - [refactor: using writer.writable instead of alive for checking](https://github.com/log4js-node/log4js-node/pull/1144) - thanks [@peteriman](https://github.com/peteriman)
 - [fix: TCP appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/1089) - thanks [@jhonatanTeixeira](https://github.com/jhonatanTeixeira)
 - [fix: multiprocess appender exiting NodeJS on error](https://github.com/log4js-node/log4js-node/pull/529) - thanks [@harlentan](https://github.com/harlentan)
-- [feat: added warnings when log() is used with invalid levels before fallbacking to INFO](https://github.com/log4js-node/log4js-node/pull/1062) - thanks [@abernh](https://github.com/abernh)
-- [feat: exposed Recording](https://github.com/log4js-node/log4js-node/pull/1103) - thanks [@polo-language](https://github.com/polo-language)
 - [test: update fakeFS.read as graceful-fs uses it](https://github.com/log4js-node/log4js-node/pull/1127) - thanks [@peteriman](https://github.com/peteriman)
 - [test: update fakeFS.realpath as fs-extra uses it](https://github.com/log4js-node/log4js-node/pull/1128) - thanks [@peteriman](https://github.com/peteriman)
 - test: added tap.tearDown() to clean up test files
