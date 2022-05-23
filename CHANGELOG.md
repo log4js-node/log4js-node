@@ -1,5 +1,12 @@
 # log4js-node Changelog
 
+## 6.5.1
+
+- [fix: fs.appendFileSync should use flag instead of flags](https://github.com/log4js-node/log4js-node/pull/1257) - thanks [@peteriman](https://github.com/peteriman)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1258) - thanks [@peteriman](https://github.com/peteriman)
+  - chore(deps): bump streamroller from 3.1.0 to 3.1.1
+  - chore(deps): updated package-lock.json
+
 ## 6.5.0
 
 - [feat: logger.log() to be synonym of logger.info()](https://github.com/log4js-node/log4js-node/pull/1254) - thanks [@peteriman](https://github.com/peteriman)
