@@ -71,6 +71,7 @@ export interface LoggingEvent {
   lineNumber?: number;
   columnNumber?: number;
   callStack?: string;
+  serialise(): string;
 }
 
 export type Token = ((logEvent: LoggingEvent) => string) | string;
