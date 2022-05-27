@@ -1,5 +1,9 @@
 # log4js-node Changelog
 
+## 6.5.2
+
+- [fix(types): add LogEvent.serialise](https://github.com/log4js-node/log4js-node/pull/1260) - thanks [@marrowleaves](https://github.com/marrowleaves)
+
 ## 6.5.1
 
 - [fix: fs.appendFileSync should use flag instead of flags](https://github.com/log4js-node/log4js-node/pull/1257) - thanks [@peteriman](https://github.com/peteriman)
