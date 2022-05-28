@@ -234,35 +234,32 @@ test("../../lib/logger", batch => {
 
     // fallback behavior
     logger.log("LEVEL_DOES_NOT_EXIST", "Event 1");
-    logger.log(log4js.levels.getLevel("LEVEL_DOES_NOT_EXIST"), "Event 2", "2 Text");
 
     // synonym behavior
+    logger.log(log4js.levels.getLevel("LEVEL_DOES_NOT_EXIST"), "Event 2", "2 Text");
     logger.log("Event 3");
     logger.log("Event 4", "4 Text");
 
     const events = recording.replay();
 
     t.equal(events[0].level.toString(), "WARN", "should log warning");
-    t.equal(events[0].data[0], "log4js:logger.log: invalid value for log-level as first parameter given:");
+    t.equal(events[0].data[0], "log4js:logger.log: valid log-level not found as first parameter given:");
     t.equal(events[0].data[1], "LEVEL_DOES_NOT_EXIST");
     t.equal(events[1].level.toString(), "INFO", "should fall back to INFO");
     t.equal(events[1].data[0], "[LEVEL_DOES_NOT_EXIST]");
     t.equal(events[1].data[1], "Event 1");
 
-    t.equal(events[2].level.toString(), "WARN", "should log warning");
-    t.equal(events[2].data[0], "log4js:logger.log: invalid value for log-level as first parameter given:");
-    t.equal(events[2].data[1], undefined);
-    t.equal(events[3].level.toString(), "INFO", "should fall back to INFO");
-    t.equal(events[3].data[0], "[undefined]");
-    t.equal(events[3].data[1], "Event 2");
-    t.equal(events[3].data[2], "2 Text");
+    t.equal(events[2].level.toString(), "INFO", "LOG is synonym of INFO");
+    t.equal(events[2].data[0], undefined);
+    t.equal(events[2].data[1], "Event 2");
+    t.equal(events[2].data[2], "2 Text");
+
+    t.equal(events[3].level.toString(), "INFO", "LOG is synonym of INFO");
+    t.equal(events[3].data[0], "Event 3");
 
     t.equal(events[4].level.toString(), "INFO", "LOG is synonym of INFO");
-    t.equal(events[4].data[0], "Event 3");
-
-    t.equal(events[5].level.toString(), "INFO", "LOG is synonym of INFO");
-    t.equal(events[5].data[0], "Event 4");
-    t.equal(events[5].data[1], "4 Text");
+    t.equal(events[4].data[0], "Event 4");
+    t.equal(events[4].data[1], "4 Text");
 
     t.end();
   });
