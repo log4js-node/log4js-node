@@ -243,14 +243,14 @@ test("../../lib/logger", batch => {
     const events = recording.replay();
 
     t.equal(events[0].level.toString(), "WARN", "should log warning");
-    t.equal(events[0].data[0], "log4js:logger.log: invalid value for log-level as first parameter given:");
+    t.equal(events[0].data[0], "log4js:logger.log: valid log-level not found as first parameter given:");
     t.equal(events[0].data[1], "LEVEL_DOES_NOT_EXIST");
     t.equal(events[1].level.toString(), "INFO", "should fall back to INFO");
     t.equal(events[1].data[0], "[LEVEL_DOES_NOT_EXIST]");
     t.equal(events[1].data[1], "Event 1");
 
     t.equal(events[2].level.toString(), "WARN", "should log warning");
-    t.equal(events[2].data[0], "log4js:logger.log: invalid value for log-level as first parameter given:");
+    t.equal(events[2].data[0], "log4js:logger.log: valid log-level not found as first parameter given:");
     t.equal(events[2].data[1], undefined);
     t.equal(events[3].level.toString(), "INFO", "should fall back to INFO");
     t.equal(events[3].data[0], "[undefined]");
