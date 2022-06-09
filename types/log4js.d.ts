@@ -1,13 +1,21 @@
 // Type definitions for log4js
 
-type Format = string | ((req: any, res: any, formatter: ((str: string) => string)) => string);
+type Format =
+  | string
+  | ((req: any, res: any, formatter: (str: string) => string) => string);
 
 export interface Log4js {
   getLogger(category?: string): Logger;
   configure(filename: string): Log4js;
   configure(config: Configuration): Log4js;
-  addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => string): void;
-  connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; }): any;  // express.Handler;
+  addLayout(
+    name: string,
+    config: (a: any) => (logEvent: LoggingEvent) => string
+  ): void;
+  connectLogger(
+    logger: Logger,
+    options: { format?: Format; level?: string; nolog?: any }
+  ): any; // express.Handler;
   levels: Levels;
   shutdown(cb: (error: Error) => void): void | null;
 }
@@ -17,9 +25,21 @@ export function getLogger(category?: string): Logger;
 export function configure(filename: string): Log4js;
 export function configure(config: Configuration): Log4js;
 
-export function addLayout(name: string, config: (a: any) => (logEvent: LoggingEvent) => any): void;
+export function addLayout(
+  name: string,
+  config: (a: any) => (logEvent: LoggingEvent) => any
+): void;
 
-export function connectLogger(logger: Logger, options: { format?: Format; level?: string; nolog?: any; statusRules?: any[], context?: boolean }): any; // express.Handler;
+export function connectLogger(
+  logger: Logger,
+  options: {
+    format?: Format;
+    level?: string;
+    nolog?: any;
+    statusRules?: any[];
+    context?: boolean;
+  }
+): any; // express.Handler;
 
 export function recording(): Recording;
 
@@ -56,9 +76,9 @@ export interface Level {
 }
 
 export interface LoggingEvent {
-  categoryName: string;  // name of category
-  level: Level;  // level of message
-  data: any[];  // objects to log
+  categoryName: string; // name of category
+  level: Level; // level of message
+  data: any[]; // objects to log
   startTime: Date;
   pid: number;
   context: any;
@@ -89,7 +109,13 @@ export interface CustomLayout {
   type: string;
 }
 
-export type Layout = BasicLayout | ColoredLayout | MessagePassThroughLayout | DummyLayout | PatternLayout | CustomLayout;
+export type Layout =
+  | BasicLayout
+  | ColoredLayout
+  | MessagePassThroughLayout
+  | DummyLayout
+  | PatternLayout
+  | CustomLayout;
 
 /**
  * Category Filter
@@ -97,7 +123,7 @@ export type Layout = BasicLayout | ColoredLayout | MessagePassThroughLayout | Du
  * @see https://log4js-node.github.io/log4js-node/categoryFilter.html
  */
 export interface CategoryFilterAppender {
-  type: "categoryFilter";
+  type: 'categoryFilter';
   // the category (or categories if you provide an array of values) that will be excluded from the appender.
   exclude?: string | string[];
   // the name of the appender to filter. see https://log4js-node.github.io/log4js-node/layouts.html
@@ -110,7 +136,7 @@ export interface CategoryFilterAppender {
  * @see https://log4js-node.github.io/log4js-node/noLogFilter.html
  */
 export interface NoLogFilterAppender {
-  type: "noLogFilter";
+  type: 'noLogFilter';
   // the regular expression (or the regular expressions if you provide an array of values)
   // will be used for evaluating the events to pass to the appender.
   // The events, which will match the regular expression, will be excluded and so not logged.
@@ -265,11 +291,11 @@ export interface StandardOutputAppender {
 export interface TCPAppender {
   type: 'tcp';
   // (defaults to 5000)
-  port?: number
+  port?: number;
   // (defaults to localhost)
-  host?: string
+  host?: string;
   // (defaults to __LOG4JS__)
-  endMsg?: string
+  endMsg?: string;
   // (defaults to a serialized log event)
   layout?: Layout;
 }
@@ -277,6 +303,35 @@ export interface TCPAppender {
 export interface CustomAppender {
   type: string | AppenderModule;
   [key: string]: any;
+}
+
+/**
+ * Mapping of all Appenders to allow for declaration merging
+ * @example
+ * declare module 'log4js' {
+ *   interface Appenders {
+ *     StorageTestAppender: {
+ *       type: 'storageTest';
+ *       storageMedium: 'dvd' | 'usb' | 'hdd';
+ *     };
+ *   }
+ * }
+ */
+export interface Appenders {
+  CategoryFilterAppender: CategoryFilterAppender;
+  ConsoleAppender: ConsoleAppender;
+  FileAppender: FileAppender;
+  SyncfileAppender: SyncfileAppender;
+  DateFileAppender: DateFileAppender;
+  LogLevelFilterAppender: LogLevelFilterAppender;
+  NoLogFilterAppender: NoLogFilterAppender;
+  MultiFileAppender: MultiFileAppender;
+  MultiprocessAppender: MultiprocessAppender;
+  RecordingAppender: RecordingAppender;
+  StandardErrorAppender: StandardErrorAppender;
+  StandardOutputAppender: StandardOutputAppender;
+  TCPAppender: TCPAppender;
+  CustomAppender: CustomAppender;
 }
 
 export interface AppenderModule {
@@ -287,7 +342,7 @@ export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
 
 // TODO: Actually add types here...
 // It's supposed to be the full config element
-export type Config = any
+export type Config = any;
 
 export interface LayoutsParam {
   basicLayout: LayoutFunction;
@@ -307,20 +362,7 @@ export interface PatternToken {
 
 export type LayoutFunction = (loggingEvent: LoggingEvent) => string;
 
-export type Appender = CategoryFilterAppender
-  | ConsoleAppender
-  | FileAppender
-  | SyncfileAppender
-  | DateFileAppender
-  | LogLevelFilterAppender
-  | NoLogFilterAppender
-  | MultiFileAppender
-  | MultiprocessAppender
-  | RecordingAppender
-  | StandardErrorAppender
-  | StandardOutputAppender
-  | TCPAppender
-  | CustomAppender;
+export type Appender = Appenders[keyof Appenders];
 
 export interface Levels {
   ALL: Level;
@@ -338,8 +380,14 @@ export interface Levels {
 }
 
 export interface Configuration {
-  appenders: { [name: string]: Appender; };
-  categories: { [name: string]: { appenders: string[]; level: string; enableCallStack?: boolean; } };
+  appenders: { [name: string]: Appender };
+  categories: {
+    [name: string]: {
+      appenders: string[];
+      level: string;
+      enableCallStack?: boolean;
+    };
+  };
   pm2?: boolean;
   pm2InstanceVar?: string;
   levels?: Levels;
@@ -347,11 +395,11 @@ export interface Configuration {
 }
 
 export interface Recording {
-  configure(loggingEvent: LoggingEvent): void
-  replay(): LoggingEvent[]
-  playback(): LoggingEvent[]
-  reset(): void
-  erase(): void
+  configure(loggingEvent: LoggingEvent): void;
+  replay(): LoggingEvent[];
+  playback(): LoggingEvent[];
+  reset(): void;
+  erase(): void;
 }
 
 export class Logger {
