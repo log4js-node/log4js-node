@@ -5,7 +5,7 @@
   "homepage": "https://log4js-node.github.io/log4js-node/",
   "files": [
     "lib",
-    "types",
+    "types/*.d.ts",
     "CHANGELOG.md",
     "SECURITY.md"
   ],
