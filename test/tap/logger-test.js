@@ -5,8 +5,16 @@ const callsites = require('callsites');
 const levels = require('../../lib/levels');
 const categories = require('../../lib/categories');
 
+/** @type {import('../../types/log4js').LoggingEvent[]} */
 const events = [];
+/** @type {string[]} */
 const messages = [];
+
+/**
+ * @typedef {import('../../types/log4js').Logger} LoggerClass
+ */
+
+/** @type {{new (): LoggerClass}} */
 const Logger = sandbox.require('../../lib/logger', {
   requires: {
     './levels': levels,
@@ -147,6 +155,14 @@ test('../../lib/logger', (batch) => {
 
       t.equal(logger.useCallStack, false);
 
+      logger.debug('test no callStack');
+      let event = events.shift();
+      t.notMatch(event, { functionName: String });
+      t.notMatch(event, { fileName: String });
+      t.notMatch(event, { lineNumber: Number });
+      t.notMatch(event, { columnNumber: Number });
+      t.notMatch(event, { callStack: String });
+
       logger.useCallStack = false;
       t.equal(logger.useCallStack, false);
 
@@ -167,6 +183,15 @@ test('../../lib/logger', (batch) => {
 
       logger.useCallStack = true;
       t.equal(logger.useCallStack, true);
+      logger.debug('test with callStack');
+      event = events.shift();
+      t.match(event, {
+        functionName: String,
+        fileName: String,
+        lineNumber: Number,
+        columnNumber: Number,
+        callStack: String,
+      });
       t.end();
     }
   );
@@ -250,6 +275,9 @@ test('../../lib/logger', (batch) => {
     t.notOk(results);
     t.equal(messages.length, 1, 'should have error');
 
+    results = logger.parseCallStack(new Error(), 100);
+    t.equal(results, null);
+
     t.end();
   });
 
@@ -309,6 +337,11 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should correctly change the parseCallStack function', (t) => {
     const logger = new Logger('stack');
+    logger.level = 'debug';
+    logger.useCallStack = true;
+
+    logger.info('test defaultParseCallStack');
+    const initialEvent = events.shift();
     const parseFunction = function () {
       return {
         functionName: 'test function name',
@@ -318,8 +351,6 @@ test('../../lib/logger', (batch) => {
         callStack: 'test callstack',
       };
     };
-    logger.level = 'debug';
-    logger.useCallStack = true;
     logger.setParseCallStackFunction(parseFunction);
 
     t.equal(logger.parseCallStack, parseFunction);
@@ -331,8 +362,82 @@ test('../../lib/logger', (batch) => {
     t.equal(events[0].columnNumber, 25);
     t.equal(events[0].callStack, 'test callstack');
 
+    events.shift();
+
+    logger.setParseCallStackFunction(undefined);
+    logger.info('test restoredDefaultParseCallStack');
+
+    t.equal(events[0].functionName, initialEvent.functionName);
+    t.equal(events[0].fileName, initialEvent.fileName);
+    t.equal(events[0].columnNumber, initialEvent.columnNumber);
+
+    t.throws(() => logger.setParseCallStackFunction('not a function'));
+
     t.end();
   });
+
+  batch.test('should correctly change the stack levels to skip', (t) => {
+    const logger = new Logger('stack');
+    logger.level = 'debug';
+    logger.useCallStack = true;
+
+    t.equal(
+      logger.callStackLinesToSkip,
+      0,
+      'initial callStackLinesToSkip changed'
+    );
+
+    logger.info('get initial stack');
+    const initialEvent = events.shift();
+    const newStackSkip = 1;
+    logger.callStackLinesToSkip = newStackSkip;
+    t.equal(logger.callStackLinesToSkip, newStackSkip);
+    logger.info('test stack skip');
+    const event = events.shift();
+    t.not(event.functionName, initialEvent.functionName);
+    t.not(event.fileName, initialEvent.fileName);
+    t.equal(
+      event.callStack,
+      initialEvent.callStack.split('\n').slice(newStackSkip).join('\n')
+    );
+
+    t.throws(() => {
+      logger.callStackLinesToSkip = -1;
+    });
+    t.throws(() => {
+      logger.callStackLinesToSkip = '2';
+    });
+    t.end();
+  });
+
+  batch.test(
+    "should run parseCallStack against the first data value if it' an error",
+    (t) => {
+      const logger = new Logger('stack');
+      logger.level = 'debug';
+      logger.useCallStack = true;
+
+      const error = new Error();
+
+      logger.info(error);
+      const event = events.shift();
+
+      logger.info(error);
+
+      t.match(event, events.shift());
+
+      logger.callStackLinesToSkip = 1;
+      logger.info(error);
+      const event2 = events.shift();
+
+      t.equal(
+        event2.callStack,
+        event.callStack.split('\n').slice(1).join('\n')
+      );
+
+      t.end();
+    }
+  );
 
   batch.test('creating/cloning of category', (t) => {
     const defaultLogger = new Logger('default');
