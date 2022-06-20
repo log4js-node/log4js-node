@@ -5,17 +5,21 @@ If you're running log4js in an application that uses [node's core cluster](https
 This can cause problems in some rare circumstances, if you're experiencing weird logging problems, then use the `disableClustering: true` option in your log4js configuration to have every process behave as if it were the master process. Be careful if you're logging to files.
 
 ## I'm using PM2, but I'm not getting any logs!
+
 To get log4js working with [PM2](http://pm2.keymetrics.io), you'll need to install the [pm2-intercom](https://www.npmjs.com/package/pm2-intercom) module.
+
 ```bash
 pm2 install pm2-intercom
 ```
+
 Then add the value `pm2: true` to your log4js configuration. If you're also using `node-config`, then you'll probably have renamed your `NODE_APP_INSTANCE` environment variable. If so, you'll also need to add `pm2InstanceVar: '<NEW_APP_INSTANCE_ID>'` where `<NEW_APP_INSTANCE_ID>` should be replaced with the new name you gave the instance environment variable.
+
 ```javascript
 log4js.configure({
-  appenders: { out: { type: 'stdout'}},
-  categories: { default: { appenders: ['out'], level: 'info'}},
+  appenders: { out: { type: "stdout" } },
+  categories: { default: { appenders: ["out"], level: "info" } },
   pm2: true,
-  pm2InstanceVar: 'INSTANCE_ID'
+  pm2InstanceVar: "INSTANCE_ID",
 });
 ```
 

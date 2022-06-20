@@ -5,7 +5,7 @@ if (process.argv.indexOf('start-multiprocess-worker') >= 0) {
     appenders: {
       multi: { type: 'multiprocess', mode: 'worker', loggerPort: port },
     },
-    categories: { default: { appenders: ['multi'], level: 'debug' } }
+    categories: { default: { appenders: ['multi'], level: 'debug' } },
   });
   log4js.getLogger('worker').info('Logging from worker');
   log4js.shutdown(() => {

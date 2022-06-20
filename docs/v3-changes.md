@@ -3,18 +3,19 @@
 log4js no longer supports node versions less than 6.
 
 The following appenders have been removed from the core, and moved to their own projects:
-* [gelf](https://github.com/log4js-node/gelf)
-* [hipchat](https://github.com/log4js-node/hipchat)
-* [logFaces-HTTP](https://github.com/log4js-node/logFaces-HTTP)
-* [logFaces-UDP](https://github.com/log4js-node/logFaces-UDP)
-* [loggly](https://github.com/log4js-node/loggly)
-* [logstashHTTP](https://github.com/log4js-node/logstashHTTP)
-* [logstashUDP](https://github.com/log4js-node/logstashUDP)
-* [mailgun](https://github.com/log4js-node/mailgun)
-* [rabbitmq](https://github.com/log4js-node/rabbitmq)
-* [redis](https://github.com/log4js-node/redis)
-* [slack](https://github.com/log4js-node/slack)
-* [smtp](https://github.com/log4js-node/smtp)
+
+- [gelf](https://github.com/log4js-node/gelf)
+- [hipchat](https://github.com/log4js-node/hipchat)
+- [logFaces-HTTP](https://github.com/log4js-node/logFaces-HTTP)
+- [logFaces-UDP](https://github.com/log4js-node/logFaces-UDP)
+- [loggly](https://github.com/log4js-node/loggly)
+- [logstashHTTP](https://github.com/log4js-node/logstashHTTP)
+- [logstashUDP](https://github.com/log4js-node/logstashUDP)
+- [mailgun](https://github.com/log4js-node/mailgun)
+- [rabbitmq](https://github.com/log4js-node/rabbitmq)
+- [redis](https://github.com/log4js-node/redis)
+- [slack](https://github.com/log4js-node/slack)
+- [smtp](https://github.com/log4js-node/smtp)
 
 If you were using them, you'll need to `npm i @log4js-node/<appender>`.
 

@@ -8,14 +8,16 @@ log4js.configure({
         type: 'pattern',
         pattern: '%[%r (%x{pid}) %p %c -%] %m%n',
         tokens: {
-          pid: function () { return process.pid; }
-        }
-      }
-    }
+          pid: function () {
+            return process.pid;
+          },
+        },
+      },
+    },
   },
   categories: {
-    default: { appenders: ['out'], level: 'info' }
-  }
+    default: { appenders: ['out'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('app');

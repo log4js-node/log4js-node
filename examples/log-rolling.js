@@ -3,18 +3,18 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     console: {
-      type: 'console'
+      type: 'console',
     },
     file: {
       type: 'file',
       filename: 'tmp-test.log',
       maxLogSize: 1024,
-      backups: 3
-    }
+      backups: 3,
+    },
   },
   categories: {
-    default: { appenders: ['console', 'file'], level: 'info' }
-  }
+    default: { appenders: ['console', 'file'], level: 'info' },
+  },
 });
 const log = log4js.getLogger('test');
 

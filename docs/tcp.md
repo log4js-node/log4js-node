@@ -4,21 +4,23 @@ The TCP appender sends log events to a master server over TCP sockets. It can be
 
 ## Configuration
 
-* `type` - `tcp`
-* `port` - `integer` (optional, defaults to `5000`) - the port to send to
-* `host` - `string` (optional, defaults to `localhost`) - the host/IP address to send to
-* `endMsg` - `string` (optional, defaults to `__LOG4JS__`) - the delimiter that marks the end of a log message
-* `layout` - `object` (optional, defaults to a serialized log event) - see [layouts](layouts.md)
+- `type` - `tcp`
+- `port` - `integer` (optional, defaults to `5000`) - the port to send to
+- `host` - `string` (optional, defaults to `localhost`) - the host/IP address to send to
+- `endMsg` - `string` (optional, defaults to `__LOG4JS__`) - the delimiter that marks the end of a log message
+- `layout` - `object` (optional, defaults to a serialized log event) - see [layouts](layouts.md)
 
 ## Example
+
 ```javascript
 log4js.configure({
   appenders: {
-    network: { type: 'tcp', host: 'log.server' }
+    network: { type: "tcp", host: "log.server" },
   },
   categories: {
-    default: { appenders: ['network'], level: 'error' }
-  }
+    default: { appenders: ["network"], level: "error" },
+  },
 });
 ```
+
 This will send all error messages to `log.server:5000`.

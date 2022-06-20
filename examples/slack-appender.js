@@ -9,12 +9,12 @@ log4js.configure({
       channel_id: '#CHANNEL',
       username: 'USERNAME',
       format: 'text',
-      icon_url: 'ICON_URL'
-    }
+      icon_url: 'ICON_URL',
+    },
   },
   categories: {
-    default: { appenders: ['slack'], level: 'info' }
-  }
+    default: { appenders: ['slack'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('slack');

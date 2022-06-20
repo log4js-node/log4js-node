@@ -4,20 +4,22 @@ Strictly speaking, this is not an appender - but it is configured as one. The TC
 
 ## Configuration
 
-* `type` - `tcp-server`
-* `port` - `integer` (optional, defaults to `5000`) - the port to listen on
-* `host` - `string` (optional, defaults to `localhost`) - the host/IP address to listen on
+- `type` - `tcp-server`
+- `port` - `integer` (optional, defaults to `5000`) - the port to listen on
+- `host` - `string` (optional, defaults to `localhost`) - the host/IP address to listen on
 
 ## Example (master)
+
 ```javascript
 log4js.configure({
   appenders: {
-    file: { type: 'file', filename: 'all-the-logs.log' },
-    server: { type: 'tcp-server', host: '0.0.0.0' }
+    file: { type: "file", filename: "all-the-logs.log" },
+    server: { type: "tcp-server", host: "0.0.0.0" },
   },
   categories: {
-    default: { appenders: ['file'], level: 'info' }
-  }
+    default: { appenders: ["file"], level: "info" },
+  },
 });
 ```
+
 This creates a log server listening on port 5000, on all IP addresses the host has assigned to it. Note that the appender is not included in the appenders listed for the categories. All events received on the socket will be forwarded to the other appenders, as if they had originated on the same server.

@@ -1,4 +1,4 @@
-# Working with webpack 
+# Working with webpack
 
 Log4js uses dynamic require for loading appenders. Webpack doesn't know at build time which appender will be used at runtime so a small workaround is necessary.
 
@@ -10,4 +10,3 @@ Configuration.prototype.loadAppenderModule = function(type) {
 	return stdout;
 };
 ```
-

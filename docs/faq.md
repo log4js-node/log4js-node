@@ -3,23 +3,27 @@
 ## I want errors to go to a special file, but still want everything written to another file - how do I do that?
 
 You'll need to use the [logLevelFilter](logLevelFilter.md). Here's an example configuration:
+
 ```javascript
 log4js.configure({
   appenders: {
-    everything: { type: 'file', filename: 'all-the-logs.log' },
-    emergencies: {  type: 'file', filename: 'oh-no-not-again.log' },
-    'just-errors': { type: 'logLevelFilter', appender: 'emergencies', level: 'error' }
+    everything: { type: "file", filename: "all-the-logs.log" },
+    emergencies: { type: "file", filename: "oh-no-not-again.log" },
+    "just-errors": {
+      type: "logLevelFilter",
+      appender: "emergencies",
+      level: "error",
+    },
   },
   categories: {
-    default: { appenders: ['just-errors', 'everything'], level: 'debug' }
-  }
+    default: { appenders: ["just-errors", "everything"], level: "debug" },
+  },
 });
 
 const logger = log4js.getLogger();
-logger.debug('This goes to all-the-logs.log');
-logger.info('As does this.');
-logger.error('This goes to all-the-logs.log and oh-no-not-again.log');
-
+logger.debug("This goes to all-the-logs.log");
+logger.info("As does this.");
+logger.error("This goes to all-the-logs.log and oh-no-not-again.log");
 ```
 
 ## I want to reload the configuration when I change my config file - how do I do that?
@@ -29,6 +33,7 @@ Previous versions of log4js used to watch for changes in the configuration file 
 ## What happened to `replaceConsole` - it doesn't work any more?
 
 I removed `replaceConsole` - it caused a few weird errors, and I wasn't entirely comfortable with messing around with a core part of node. If you still want to do this, then code like this should do the trick:
+
 ```javascript
 log4js.configure(...); // set up your categories and appenders
 const logger = log4js.getLogger('console');
@@ -46,25 +51,29 @@ Nodemailer version 4.0.1 (the not-deprecated version) requires a node version >=
 ## I want line numbers in my logs!
 
 You need to enable call stack for the category, and use pattern layout to output the values. e.g.
+
 ```javascript
-const log4js = require('log4js');
+const log4js = require("log4js");
 log4js.configure({
   appenders: {
     out: {
-      type: 'stdout',
+      type: "stdout",
       layout: {
-        type: 'pattern', pattern: '%d %p %c %f:%l %m%n'
-      }
-    }
+        type: "pattern",
+        pattern: "%d %p %c %f:%l %m%n",
+      },
+    },
   },
   categories: {
-    default: { appenders: ['out'], level: 'info', enableCallStack: true }
-  }
+    default: { appenders: ["out"], level: "info", enableCallStack: true },
+  },
 });
-const logger = log4js.getLogger('thing');
-logger.info('this should give me a line number now');
+const logger = log4js.getLogger("thing");
+logger.info("this should give me a line number now");
 ```
+
 Would output something like this:
+
 ```bash
 2019-05-22T08:41:07.312 INFO thing index.js:16 this should give me a line number now
 ```

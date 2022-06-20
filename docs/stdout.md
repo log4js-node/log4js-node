@@ -4,13 +4,14 @@ This appender writes all log events to the standard output stream. It is the def
 
 # Configuration
 
-* `type` - `stdout`
-* `layout` - `object` (optional, defaults to colouredLayout) - see [layouts](layouts.md)
+- `type` - `stdout`
+- `layout` - `object` (optional, defaults to colouredLayout) - see [layouts](layouts.md)
 
 # Example
+
 ```javascript
 log4js.configure({
-  appenders: { 'out': { type: 'stdout' } },
-  categories: { default: { appenders: ['out'], level: 'info' } }
+  appenders: { out: { type: "stdout" } },
+  categories: { default: { appenders: ["out"], level: "info" } },
 });
 ```

@@ -3,7 +3,7 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     console: {
-      type: 'console'
+      type: 'console',
     },
     logstash: {
       url: 'http://172.17.0.5:9200/_bulk',
@@ -13,13 +13,13 @@ log4js.configure({
       application: 'logstash-log4js',
       layout: {
         type: 'pattern',
-        pattern: '%m'
-      }
-    }
+        pattern: '%m',
+      },
+    },
   },
   categories: {
-    default: { appenders: ['console', 'logstash'], level: 'info' }
-  }
+    default: { appenders: ['console', 'logstash'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('myLogger');

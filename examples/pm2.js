@@ -4,13 +4,13 @@ const log4js = require('../lib/log4js');
 // `pm2 install pm2-intercom`
 log4js.configure({
   appenders: {
-    out: { type: 'file', filename: 'pm2logs.log' }
+    out: { type: 'file', filename: 'pm2logs.log' },
   },
   categories: {
-    default: { appenders: ['out'], level: 'info' }
+    default: { appenders: ['out'], level: 'info' },
   },
   pm2: true,
-  pm2InstanceVar: 'INSTANCE_ID'
+  pm2InstanceVar: 'INSTANCE_ID',
 });
 const logger = log4js.getLogger('app');
 logger.info("I'm forever blowing bubbles ", process.env.INSTANCE_ID);

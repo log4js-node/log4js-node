@@ -6,7 +6,7 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     out: {
-      type: 'console'
+      type: 'console',
     },
     mail: {
       type: '@log4js-node/smtp',
@@ -19,16 +19,16 @@ log4js.configure({
         port: 465,
         auth: {
           user: 'someone@gmail',
-          pass: '********************'
+          pass: '********************',
         },
-        debug: true
-      }
-    }
+        debug: true,
+      },
+    },
   },
   categories: {
     default: { appenders: ['out'], level: 'info' },
-    mailer: { appenders: ['mail'], level: 'info' }
-  }
+    mailer: { appenders: ['mail'], level: 'info' },
+  },
 });
 const log = log4js.getLogger('test');
 const logmailer = log4js.getLogger('mailer');

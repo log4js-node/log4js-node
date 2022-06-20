@@ -4,45 +4,53 @@ The sync file appender writes log events to a file, the only difference to the n
 
 ## Configuration
 
-* `type` - `"fileSync"`
-* `filename` - `string` - the path of the file where you want your logs written.
-* `maxLogSize` - `integer` (optional, defaults to undefined) - the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
-                                                               `maxLogSize` can also accept `string` with the size suffixes: ***K***, ***M***, ***G*** such as `1K`, `1M`, `1G`.
-* `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling (excluding the hot file).
-* `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
+- `type` - `"fileSync"`
+- `filename` - `string` - the path of the file where you want your logs written.
+- `maxLogSize` - `integer` (optional, defaults to undefined) - the maximum size (in bytes) for the log file. If not specified or 0, then no log rolling will happen.
+  `maxLogSize` can also accept `string` with the size suffixes: **_K_**, **_M_**, **_G_** such as `1K`, `1M`, `1G`.
+- `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling (excluding the hot file).
+- `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
 
 Any other configuration parameters will be passed to the underlying node.js core stream implementation:
-* `encoding` - `string` (default "utf-8")
-* `mode` - `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
-* `flags` - `string` (default 'a')
+
+- `encoding` - `string` (default "utf-8")
+- `mode` - `integer` (default 0o600 - [node.js file modes](https://nodejs.org/dist/latest-v12.x/docs/api/fs.html#fs_file_modes))
+- `flags` - `string` (default 'a')
 
 ## Example
 
 ```javascript
 log4js.configure({
   appenders: {
-    everything: { type: 'fileSync', filename: 'all-the-logs.log' }
+    everything: { type: "fileSync", filename: "all-the-logs.log" },
   },
   categories: {
-    default: { appenders: [ 'everything' ], level: 'debug' }
-  }
+    default: { appenders: ["everything"], level: "debug" },
+  },
 });
 
 const logger = log4js.getLogger();
-logger.debug('I will be logged in all-the-logs.log');
+logger.debug("I will be logged in all-the-logs.log");
 ```
 
 This example will result in a single log file (`all-the-logs.log`) containing the log messages.
 
 ## Example with log rolling
+
 ```javascript
 log4js.configure({
   appenders: {
-    everything: { type: 'file', filename: 'all-the-logs.log', maxLogSize: 10458760, backups: 3 }
+    everything: {
+      type: "file",
+      filename: "all-the-logs.log",
+      maxLogSize: 10458760,
+      backups: 3,
+    },
   },
   categories: {
-    default: { appenders: [ 'everything' ], level: 'debug'}
-  }
+    default: { appenders: ["everything"], level: "debug" },
+  },
 });
 ```
+
 This will result in one current log file (`all-the-logs.log`). When that reaches 10Mb in size, it will be renamed and compressed to `all-the-logs.log.1.gz` and a new file opened called `all-the-logs.log`. When `all-the-logs.log` reaches 10Mb again, then `all-the-logs.log.1.gz` will be renamed to `all-the-logs.log.2.gz`, and so on.
