@@ -33,7 +33,8 @@
     "node": ">=8.0"
   },
   "scripts": {
-    "pretest": "eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "pretest": "prettier --check . && eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "prettier:fix": "prettier --write .",
     "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
     "typings": "tsc -p types/tsconfig.json",
     "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
