@@ -358,10 +358,12 @@ test("log4js fileAppender", batch => {
         return true;
       }
 
-      on() { // eslint-disable-line class-methods-use-this
+      // eslint-disable-next-line class-methods-use-this
+      on() {
       }
 
-      get writable() { // eslint-disable-line class-methods-use-this
+      // eslint-disable-next-line class-methods-use-this
+      get writable() {
         return writable;
       }
     };
