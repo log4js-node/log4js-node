@@ -14,26 +14,27 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     console: {
-      type: 'console'
+      type: 'console',
     },
     logstash: {
       host: '127.0.0.1',
       port: 10001,
       type: 'logstashUDP',
       logType: 'myAppType', // Optional, defaults to 'category'
-      fields: {             // Optional, will be added to the 'fields' object in logstash
+      fields: {
+        // Optional, will be added to the 'fields' object in logstash
         field1: 'value1',
-        field2: 'value2'
+        field2: 'value2',
       },
       layout: {
         type: 'pattern',
-        pattern: '%m'
-      }
-    }
+        pattern: '%m',
+      },
+    },
   },
   categories: {
-    default: { appenders: ['console', 'logstash'], level: 'info' }
-  }
+    default: { appenders: ['console', 'logstash'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('myLogger');

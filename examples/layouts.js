@@ -2,11 +2,11 @@ const log4js = require('../lib/log4js');
 
 log4js.configure({
   appenders: {
-    out: { type: 'stdout', layout: { type: 'messagePassThrough' } }
+    out: { type: 'stdout', layout: { type: 'messagePassThrough' } },
   },
   categories: {
-    default: { appenders: ['out'], level: 'info' }
-  }
+    default: { appenders: ['out'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('thing');

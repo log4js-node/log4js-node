@@ -1,5 +1,4 @@
-log4js-node [![CodeQL](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml) [![Node.js CI](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml)
-===========
+# log4js-node [![CodeQL](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/codeql-analysis.yml) [![Node.js CI](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/log4js-node/log4js-node/actions/workflows/node.js.yml)
 
 [![NPM](https://nodei.co/npm/log4js.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/log4js/)
 
@@ -67,7 +66,7 @@ See example.js for a full example, but here's a snippet (also in `examples/fromr
 const log4js = require("log4js");
 log4js.configure({
   appenders: { cheese: { type: "file", filename: "cheese.log" } },
-  categories: { default: { appenders: ["cheese"], level: "error" } }
+  categories: { default: { appenders: ["cheese"], level: "error" } },
 });
 
 const logger = log4js.getLogger("cheese");
@@ -102,7 +101,7 @@ There's also [an example application](https://github.com/log4js-node/log4js-exam
 import log4js from "log4js";
 log4js.configure({
   appenders: { cheese: { type: "file", filename: "cheese.log" } },
-  categories: { default: { appenders: ["cheese"], level: "error" } }
+  categories: { default: { appenders: ["cheese"], level: "error" } },
 });
 
 const logger = log4js.getLogger();

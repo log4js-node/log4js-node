@@ -1,12 +1,12 @@
 /* eslint max-classes-per-file: ["error", 3] */
 
-const { test } = require("tap");
-const path = require("path");
-const fs = require("fs");
-const EOL = require("os").EOL || "\n";
-const format = require("date-format");
-const sandbox = require("@log4js-node/sandboxed-module");
-const log4js = require("../../lib/log4js");
+const { test } = require('tap');
+const path = require('path');
+const fs = require('fs');
+const EOL = require('os').EOL || '\n';
+const format = require('date-format');
+const sandbox = require('@log4js-node/sandboxed-module');
+const log4js = require('../../lib/log4js');
 
 function removeFile(filename) {
   try {
@@ -16,24 +16,24 @@ function removeFile(filename) {
   }
 }
 
-test("../../lib/appenders/dateFile", batch => {
-  batch.test("with default settings", t => {
-    const testFile = path.join(__dirname, "date-appender-default.log");
+test('../../lib/appenders/dateFile', (batch) => {
+  batch.test('with default settings', (t) => {
+    const testFile = path.join(__dirname, 'date-appender-default.log');
     log4js.configure({
-      appenders: { date: { type: "dateFile", filename: testFile } },
-      categories: { default: { appenders: ["date"], level: "DEBUG" } }
+      appenders: { date: { type: 'dateFile', filename: testFile } },
+      categories: { default: { appenders: ['date'], level: 'DEBUG' } },
     });
 
-    const logger = log4js.getLogger("default-settings");
+    const logger = log4js.getLogger('default-settings');
 
-    logger.info("This should be in the file.");
+    logger.info('This should be in the file.');
     t.teardown(() => {
-      removeFile("date-appender-default.log");
+      removeFile('date-appender-default.log');
     });
 
     setTimeout(() => {
-      fs.readFile(testFile, "utf8", (err, contents) => {
-        t.match(contents, "This should be in the file");
+      fs.readFile(testFile, 'utf8', (err, contents) => {
+        t.match(contents, 'This should be in the file');
         t.match(
           contents,
           /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}] \[INFO] default-settings - /
@@ -43,30 +43,30 @@ test("../../lib/appenders/dateFile", batch => {
     }, 100);
   });
 
-  batch.test("configure with dateFileAppender", t => {
+  batch.test('configure with dateFileAppender', (t) => {
     log4js.configure({
       appenders: {
         date: {
-          type: "dateFile",
-          filename: "test/tap/date-file-test.log",
-          pattern: "-yyyy-MM-dd",
-          layout: { type: "messagePassThrough" }
-        }
+          type: 'dateFile',
+          filename: 'test/tap/date-file-test.log',
+          pattern: '-yyyy-MM-dd',
+          layout: { type: 'messagePassThrough' },
+        },
       },
-      categories: { default: { appenders: ["date"], level: "WARN" } }
+      categories: { default: { appenders: ['date'], level: 'WARN' } },
     });
-    const logger = log4js.getLogger("tests");
-    logger.info("this should not be written to the file");
-    logger.warn("this should be written to the file");
+    const logger = log4js.getLogger('tests');
+    logger.info('this should not be written to the file');
+    logger.warn('this should be written to the file');
 
     log4js.shutdown(() => {
       fs.readFile(
-        path.join(__dirname, "date-file-test.log"),
-        "utf8",
+        path.join(__dirname, 'date-file-test.log'),
+        'utf8',
         (err, contents) => {
           t.match(contents, `this should be written to the file${EOL}`);
           t.equal(
-            contents.indexOf("this should not be written to the file"),
+            contents.indexOf('this should not be written to the file'),
             -1
           );
           t.end();
@@ -75,25 +75,25 @@ test("../../lib/appenders/dateFile", batch => {
     });
 
     t.teardown(() => {
-      removeFile("date-file-test.log");
+      removeFile('date-file-test.log');
     });
   });
 
-  batch.test("configure with options.alwaysIncludePattern", t => {
+  batch.test('configure with options.alwaysIncludePattern', (t) => {
     const options = {
       appenders: {
         date: {
-          category: "tests",
-          type: "dateFile",
-          filename: "test/tap/date-file-test",
-          pattern: "yyyy-MM-dd.log",
+          category: 'tests',
+          type: 'dateFile',
+          filename: 'test/tap/date-file-test',
+          pattern: 'yyyy-MM-dd.log',
           alwaysIncludePattern: true,
           layout: {
-            type: "messagePassThrough"
-          }
-        }
+            type: 'messagePassThrough',
+          },
+        },
       },
-      categories: { default: { appenders: ["date"], level: "debug" } }
+      categories: { default: { appenders: ['date'], level: 'debug' } },
     };
 
     const thisTime = format.asString(
@@ -101,14 +101,11 @@ test("../../lib/appenders/dateFile", batch => {
       new Date()
     );
     const testFile = `date-file-test.${thisTime}`;
-    const existingFile = path.join(
-      __dirname,
-      testFile
-    );
-    fs.writeFileSync(existingFile, `this is existing data${EOL}`, "utf8");
+    const existingFile = path.join(__dirname, testFile);
+    fs.writeFileSync(existingFile, `this is existing data${EOL}`, 'utf8');
     log4js.configure(options);
-    const logger = log4js.getLogger("tests");
-    logger.warn("this should be written to the file with the appended date");
+    const logger = log4js.getLogger('tests');
+    logger.warn('this should be written to the file with the appended date');
 
     t.teardown(() => {
       removeFile(testFile);
@@ -116,38 +113,38 @@ test("../../lib/appenders/dateFile", batch => {
 
     // wait for filesystem to catch up
     log4js.shutdown(() => {
-      fs.readFile(existingFile, "utf8", (err, contents) => {
+      fs.readFile(existingFile, 'utf8', (err, contents) => {
         t.match(
           contents,
-          "this is existing data",
-          "should not overwrite the file on open (issue #132)"
+          'this is existing data',
+          'should not overwrite the file on open (issue #132)'
         );
         t.match(
           contents,
-          "this should be written to the file with the appended date"
+          'this should be written to the file with the appended date'
         );
         t.end();
       });
     });
   });
 
-  batch.test("should flush logs on shutdown", t => {
-    const testFile = path.join(__dirname, "date-appender-flush.log");
+  batch.test('should flush logs on shutdown', (t) => {
+    const testFile = path.join(__dirname, 'date-appender-flush.log');
     log4js.configure({
-      appenders: { test: { type: "dateFile", filename: testFile } },
-      categories: { default: { appenders: ["test"], level: "trace" } }
+      appenders: { test: { type: 'dateFile', filename: testFile } },
+      categories: { default: { appenders: ['test'], level: 'trace' } },
     });
-    const logger = log4js.getLogger("default-settings");
+    const logger = log4js.getLogger('default-settings');
 
-    logger.info("1");
-    logger.info("2");
-    logger.info("3");
+    logger.info('1');
+    logger.info('2');
+    logger.info('3');
     t.teardown(() => {
-      removeFile("date-appender-flush.log");
+      removeFile('date-appender-flush.log');
     });
 
     log4js.shutdown(() => {
-      fs.readFile(testFile, "utf8", (err, fileContents) => {
+      fs.readFile(testFile, 'utf8', (err, fileContents) => {
         // 3 lines of output, plus the trailing newline.
         t.equal(fileContents.split(EOL).length, 4);
         t.match(
@@ -159,7 +156,7 @@ test("../../lib/appenders/dateFile", batch => {
     });
   });
 
-  batch.test("should map maxLogSize to maxSize", t => {
+  batch.test('should map maxLogSize to maxSize', (t) => {
     const fakeStreamroller = {};
     class DateRollingFileStream {
       constructor(filename, pattern, options) {
@@ -168,20 +165,20 @@ test("../../lib/appenders/dateFile", batch => {
         fakeStreamroller.options = options;
       }
 
-      on() { } // eslint-disable-line class-methods-use-this
+      on() {} // eslint-disable-line class-methods-use-this
     }
     fakeStreamroller.DateRollingFileStream = DateRollingFileStream;
     const dateFileAppenderModule = sandbox.require(
-      "../../lib/appenders/dateFile",
+      '../../lib/appenders/dateFile',
       {
-        requires: { streamroller: fakeStreamroller }
+        requires: { streamroller: fakeStreamroller },
       }
     );
     dateFileAppenderModule.configure(
       {
-        filename: "cheese.log",
-        pattern: "yyyy",
-        maxLogSize: 100
+        filename: 'cheese.log',
+        pattern: 'yyyy',
+        maxLogSize: 100,
       },
       { basicLayout: () => {} }
     );
@@ -190,7 +187,7 @@ test("../../lib/appenders/dateFile", batch => {
     t.end();
   });
 
-  batch.test("handling of writer.writable", t => {
+  batch.test('handling of writer.writable', (t) => {
     const output = [];
     let writable = true;
 
@@ -201,46 +198,51 @@ test("../../lib/appenders/dateFile", batch => {
         return true;
       }
 
-      on() { // eslint-disable-line class-methods-use-this
-      }
+      // eslint-disable-next-line class-methods-use-this
+      on() {}
 
-      get writable() { // eslint-disable-line class-methods-use-this
+      // eslint-disable-next-line class-methods-use-this
+      get writable() {
         return writable;
       }
     };
-    const dateFileAppender = sandbox.require("../../lib/appenders/dateFile", {
+    const dateFileAppender = sandbox.require('../../lib/appenders/dateFile', {
       requires: {
         streamroller: {
-          DateRollingFileStream
-        }
-      }
+          DateRollingFileStream,
+        },
+      },
     });
 
     const appender = dateFileAppender.configure(
-      { filename: "test1.log", maxLogSize: 100 },
-      { basicLayout(loggingEvent) { return loggingEvent.data; } }
+      { filename: 'test1.log', maxLogSize: 100 },
+      {
+        basicLayout(loggingEvent) {
+          return loggingEvent.data;
+        },
+      }
     );
 
-    t.test("should log when writer.writable=true", assert => {
+    t.test('should log when writer.writable=true', (assert) => {
       writable = true;
-      appender({data: "something to log"});
+      appender({ data: 'something to log' });
       assert.ok(output.length, 1);
-      assert.match(output[output.length - 1], "something to log");
+      assert.match(output[output.length - 1], 'something to log');
       assert.end();
     });
 
-    t.test("should not log when writer.writable=false", assert => {
+    t.test('should not log when writer.writable=false', (assert) => {
       writable = false;
-      appender({data: "this should not be logged"});
+      appender({ data: 'this should not be logged' });
       assert.ok(output.length, 1);
-      assert.notMatch(output[output.length - 1], "this should not be logged");
+      assert.notMatch(output[output.length - 1], 'this should not be logged');
       assert.end();
     });
 
     t.end();
   });
 
-  batch.test("when underlying stream errors", t => {
+  batch.test('when underlying stream errors', (t) => {
     let consoleArgs;
     let errorHandler;
 
@@ -250,7 +252,7 @@ test("../../lib/appenders/dateFile", batch => {
       }
 
       on(evt, cb) {
-        if (evt === "error") {
+        if (evt === 'error') {
           this.errored = true;
           errorHandler = cb;
         }
@@ -261,35 +263,35 @@ test("../../lib/appenders/dateFile", batch => {
         return true;
       }
     };
-    const dateFileAppender = sandbox.require("../../lib/appenders/dateFile", {
+    const dateFileAppender = sandbox.require('../../lib/appenders/dateFile', {
       globals: {
         console: {
           error(...args) {
             consoleArgs = args;
-          }
-        }
+          },
+        },
       },
       requires: {
         streamroller: {
-          DateRollingFileStream
-        }
-      }
+          DateRollingFileStream,
+        },
+      },
     });
 
     dateFileAppender.configure(
-      { filename: "test1.log", maxLogSize: 100 },
+      { filename: 'test1.log', maxLogSize: 100 },
       { basicLayout() {} }
     );
-    errorHandler({ error: "aargh" });
+    errorHandler({ error: 'aargh' });
 
-    t.test("should log the error to console.error", assert => {
+    t.test('should log the error to console.error', (assert) => {
       assert.ok(consoleArgs);
       assert.equal(
         consoleArgs[0],
-        "log4js.dateFileAppender - Writing to file %s, error happened "
+        'log4js.dateFileAppender - Writing to file %s, error happened '
       );
-      assert.equal(consoleArgs[1], "test1.log");
-      assert.equal(consoleArgs[2].error, "aargh");
+      assert.equal(consoleArgs[1], 'test1.log');
+      assert.equal(consoleArgs[2].error, 'aargh');
       assert.end();
     });
     t.end();

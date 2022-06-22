@@ -11,12 +11,12 @@ if (cluster.isMaster) {
       master: {
         type: 'multiprocess',
         mode: 'master',
-        appender: 'console'
-      }
+        appender: 'console',
+      },
     },
     categories: {
-      default: { appenders: ['console'], level: 'info' }
-    }
+      default: { appenders: ['console'], level: 'info' },
+    },
   });
 
   console.info('Master creating %d workers', numCPUs);
@@ -30,11 +30,11 @@ if (cluster.isMaster) {
 } else {
   log4js.configure({
     appenders: {
-      worker: { type: 'multiprocess', mode: 'worker' }
+      worker: { type: 'multiprocess', mode: 'worker' },
     },
     categories: {
-      default: { appenders: ['worker'], level: 'info' }
-    }
+      default: { appenders: ['worker'], level: 'info' },
+    },
   });
   const logger = log4js.getLogger('example-socket');
 

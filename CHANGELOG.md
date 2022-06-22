@@ -76,7 +76,7 @@
 
 ## 6.4.4
 
-- [fix: set logger.level on runtime will no longer wrongly reset useCallStack](https://github.com/log4js-node/log4js-node/pull/1217)  - thanks [@peteriman](https://github.com/peteriman)
+- [fix: set logger.level on runtime will no longer wrongly reset useCallStack](https://github.com/log4js-node/log4js-node/pull/1217) - thanks [@peteriman](https://github.com/peteriman)
 - [docs: updated docs for broken links and inaccessible pages](https://github.com/log4js-node/log4js-node/pull/1219) - thanks [@peteriman](https://github.com/peteriman)
 - [docs: broken link to gelf appender](https://github.com/log4js-node/log4js-node/pull/1218) - thanks [@mattalexx](https://github.com/mattalexx)
 - [docs: updated docs for appenders module loading](https://github.com/log4js-node/log4js-node/pull/985) - thanks [@leonimurilo](https://github.com/leonimurilo)
@@ -88,7 +88,6 @@
   - chore(deps): updated package-lock.json
 
 ## 6.4.3
-
 
 - [fix: added filename validation](https://github.com/log4js-node/log4js-node/pull/1201) - thanks [@peteriman](https://github.com/peteriman)
 - [refactor: do not initialise default appenders as it will be done again by configure()](https://github.com/log4js-node/log4js-node/pull/1210) - thanks [@peteriman](https://github.com/peteriman)
@@ -153,6 +152,7 @@
 - [chore(deps-dev): bump typescript from 4.5.4 to 4.5.5](https://github.com/log4js-node/log4js-node/pull/1166) - thanks [@peteriman](https://github.com/peteriman)
 
 ## 6.4.0 - BREAKING CHANGE 💥
+
 New default file permissions may cause external applications unable to read logs.
 A [manual code/configuration change](https://github.com/log4js-node/log4js-node/pull/1141#issuecomment-1076224470) is required.
 
@@ -199,7 +199,7 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
   - chore(deps-dev): bump eslint-plugin-prettier from 3.4.1 to 4.0.0
   - chore(deps-dev): bump husky from 3.1.0 to 7.0.4
   - chore(deps-dev): bump prettier from 1.19.0 to 2.5.1
-  - chore(deps-dev): bump typescript from 3.9.10 to 4.5.4 
+  - chore(deps-dev): bump typescript from 3.9.10 to 4.5.4
 - [chore(deps-dev): bump eslint-config-prettier from 6.15.0 to 8.3.0](https://github.com/log4js-node/log4js-node/pull/1129) - thanks [@peteriman](https://github.com/peteriman)
 - [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1121) - thanks [@peteriman](https://github.com/peteriman)
   - chore(deps-dev): bump codecov from 3.6.1 to 3.8.3

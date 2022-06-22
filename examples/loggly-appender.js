@@ -6,19 +6,19 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     console: {
-      type: 'console'
+      type: 'console',
     },
     loggly: {
       type: 'loggly',
       token: '12345678901234567890',
       subdomain: 'your-subdomain',
-      tags: ['test']
-    }
+      tags: ['test'],
+    },
   },
   categories: {
     default: { appenders: ['console'], level: 'info' },
-    loggly: { appenders: ['loggly'], level: 'info' }
-  }
+    loggly: { appenders: ['loggly'], level: 'info' },
+  },
 });
 
 const logger = log4js.getLogger('loggly');

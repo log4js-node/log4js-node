@@ -4,10 +4,10 @@ The log level filter allows you to restrict the log events that an appender will
 
 ## Configuration
 
-* `type` - `logLevelFilter`
-* `appender` - `string` - the name of an appender, defined in the same configuration, that you want to filter
-* `level` - `string` - the minimum level of event to allow through the filter
-* `maxLevel` - `string` (optional, defaults to `FATAL`) - the maximum level of event to allow through the filter
+- `type` - `logLevelFilter`
+- `appender` - `string` - the name of an appender, defined in the same configuration, that you want to filter
+- `level` - `string` - the minimum level of event to allow through the filter
+- `maxLevel` - `string` (optional, defaults to `FATAL`) - the maximum level of event to allow through the filter
 
 If an event's level is greater than or equal to `level` and less than or equal to `maxLevel` then it will be sent to the appender.
 
@@ -25,4 +25,5 @@ log4js.configure({
   }
 });
 ```
+
 Log events of `debug`, `info`, `error`, and `fatal` will go to `all-the-logs.log`. Events of `error` and `fatal` will also go to `panic-now.log`.

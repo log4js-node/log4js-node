@@ -1,5 +1,4 @@
-CHANGES
-=======
+# CHANGES
 
 - no exit listeners defined for appenders by default. users should call log4js.shutdown in their exit listeners.
 - context added to loggers (only logstash uses it so far)

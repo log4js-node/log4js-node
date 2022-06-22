@@ -5,13 +5,13 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     out: {
-      type: 'console'
+      type: 'console',
     },
     file: {
       type: 'dateFile',
       filename: 'logs/log.txt',
       pattern: 'yyyyMMdd',
-      alwaysIncludePattern: false
+      alwaysIncludePattern: false,
     },
     mq: {
       type: '@log4js-node/rabbitmq',
@@ -25,15 +25,15 @@ log4js.configure({
       durable: true,
       layout: {
         type: 'pattern',
-        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
-      }
-    }
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m',
+      },
+    },
   },
   categories: {
     default: { appenders: ['out'], level: 'info' },
     dateFile: { appenders: ['file'], level: 'info' },
-    rabbitmq: { appenders: ['mq'], level: 'info' }
-  }
+    rabbitmq: { appenders: ['mq'], level: 'info' },
+  },
 });
 
 const log = log4js.getLogger('console');
