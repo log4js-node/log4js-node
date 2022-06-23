@@ -410,34 +410,39 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
-  batch.test(
-    "should run parseCallStack against the first data value if it' an error",
-    (t) => {
-      const logger = new Logger('stack');
-      logger.level = 'debug';
-      logger.useCallStack = true;
+  batch.test('should utilize the first Error data value', (t) => {
+    const logger = new Logger('stack');
+    logger.level = 'debug';
+    logger.useCallStack = true;
 
-      const error = new Error();
+    const error = new Error();
 
-      logger.info(error);
-      const event = events.shift();
+    logger.info(error);
+    const event = events.shift();
+    t.equal(event.error, error);
 
-      logger.info(error);
+    logger.info(error);
 
-      t.match(event, events.shift());
+    t.match(event, events.shift());
 
-      logger.callStackLinesToSkip = 1;
-      logger.info(error);
-      const event2 = events.shift();
+    logger.callStackLinesToSkip = 1;
+    logger.info(error);
+    const event2 = events.shift();
 
-      t.equal(
-        event2.callStack,
-        event.callStack.split('\n').slice(1).join('\n')
-      );
+    t.equal(event2.callStack, event.callStack.split('\n').slice(1).join('\n'));
+    logger.callStackLinesToSkip = 0;
+    logger.info('hi', error);
+    const event3 = events.shift();
+    t.equal(event3.callStack, event.callStack);
+    t.equal(event3.error, error);
 
-      t.end();
-    }
-  );
+    logger.info('hi', error, new Error());
+    const event4 = events.shift();
+    t.equal(event4.callStack, event.callStack);
+    t.equal(event4.error, error);
+
+    t.end();
+  });
 
   batch.test('creating/cloning of category', (t) => {
     const defaultLogger = new Logger('default');
