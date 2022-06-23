@@ -152,5 +152,33 @@ test('LoggingEvent', (batch) => {
     t.end();
   });
 
+  batch.test('Should correctly serialize and deserialize', (t) => {
+    const error = new Error('test');
+    const location = {
+      fileName: __filename,
+      lineNumber: 123,
+      columnNumber: 52,
+      callStack: error.stack,
+      className: 'Foo',
+      functionName: 'test',
+      functionAlias: 'baz',
+      callerName: 'Foo.test [as baz]',
+    };
+    const event = new LoggingEvent(
+      'cheese',
+      levels.DEBUG,
+      [error, 'log message'],
+      {
+        user: 'bob',
+      },
+      location,
+      error
+    );
+    const event2 = LoggingEvent.deserialise(event.serialise());
+    t.match(event2, event);
+
+    t.end();
+  });
+
   batch.end();
 });

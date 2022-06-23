@@ -98,6 +98,10 @@ export interface LoggingEvent extends Partial<CallStack> {
     workerId: number;
     worker: number;
   };
+  /**
+   * The first Error object in the data if there is one
+   */
+  error?: Error;
   serialise(): string;
 }
 
