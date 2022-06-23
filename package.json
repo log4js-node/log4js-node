@@ -36,8 +36,7 @@
     "pretest": "prettier --check . && eslint \"lib/**/*.js\" \"test/**/*.js\"",
     "prettier:fix": "prettier --write .",
     "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
-    "typings": "tsc -p types/tsconfig.json",
-    "codecov": "tap \"test/tap/**/*.js\" --cov --coverage-report=lcov && codecov"
+    "typings": "tsc -p types/tsconfig.json"
   },
   "directories": {
     "test": "test",
@@ -53,7 +52,6 @@
   "devDependencies": {
     "@log4js-node/sandboxed-module": "^2.2.1",
     "callsites": "^3.1.0",
-    "codecov": "^3.8.3",
     "deep-freeze": "0.0.1",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
