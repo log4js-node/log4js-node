@@ -2,7 +2,7 @@
 
 ## 6.5.2
 
-- [fix(types): add LogEvent.serialise](https://github.com/log4js-node/log4js-node/pull/1260) - thanks [@marrowleaves](https://github.com/marrowleaves)
+- [type: add LogEvent.serialise](https://github.com/log4js-node/log4js-node/pull/1260) - thanks [@marrowleaves](https://github.com/marrowleaves)
 
 ## 6.5.1
 
