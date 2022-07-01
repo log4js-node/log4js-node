@@ -402,8 +402,8 @@ export interface Recording {
   erase(): void;
 }
 
-export class Logger {
-  constructor(name: string);
+export interface Logger {
+  new (name: string): Logger;
 
   readonly category: string;
   level: Level | string;
