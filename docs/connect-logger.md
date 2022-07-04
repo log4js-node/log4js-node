@@ -30,7 +30,7 @@ The log4js.connectLogger supports the passing of an options object that can be u
 
 - log level
 - log format string or function (the same as the connect/express logger)
-- nolog expressions (represented as a string, regexp, or array)
+- nolog expressions (represented as a string, regexp, array, or function(req, res))
 - status code rulesets
 
 For example:
@@ -97,7 +97,7 @@ app.use(
 );
 ```
 
-The log4js.connectLogger also supports a nolog option where you can specify a string, regexp, or array to omit certain log messages. Example of 1.2 below.
+The log4js.connectLogger also supports a nolog option where you can specify a string, regexp, array, or function(req, res) to omit certain log messages. Example of 1.2 below.
 
 ```javascript
 app.use(
@@ -105,6 +105,18 @@ app.use(
     level: "auto",
     format: ":method :url",
     nolog: "\\.gif|\\.jpg$",
+  })
+);
+```
+
+or
+
+```javascript
+app.use(
+  log4js.connectLogger(logger, {
+    level: "auto",
+    format: ":method :url",
+    nolog: (req, res) => res.statusCode < 400,
   })
 );
 ```

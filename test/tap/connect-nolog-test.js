@@ -346,5 +346,43 @@ test('log4js connect logger', (batch) => {
     t.end();
   });
 
+  batch.test('nolog function', (t) => {
+    const ml = new MockLogger();
+    const cl = clm(ml, { nolog: (_req, res) => res.statusCode < 400 });
+
+    t.beforeEach(() => {
+      ml.messages = [];
+    });
+
+    t.test('check unmatch function return (statusCode < 400)', (assert) => {
+      const { messages } = ml;
+      const req = new MockRequest('my.remote.addr', 'GET', 'http://url/log');
+      const res = new MockResponse(500);
+      cl(req, res, () => {});
+      res.end('chunk', 'encoding');
+
+      assert.equal(messages.length, 1);
+      assert.ok(levels.INFO.isEqualTo(messages[0].level));
+      assert.match(messages[0].message, 'GET');
+      assert.match(messages[0].message, 'http://url');
+      assert.match(messages[0].message, 'my.remote.addr');
+      assert.match(messages[0].message, '500');
+      assert.end();
+    });
+
+    t.test('check match function return (statusCode >= 400)', (assert) => {
+      const { messages } = ml;
+      const req = new MockRequest('my.remote.addr', 'GET', 'http://url/nolog');
+      const res = new MockResponse(200);
+      cl(req, res, () => {});
+      res.end('chunk', 'encoding');
+
+      assert.equal(messages.length, 0);
+      assert.end();
+    });
+
+    t.end();
+  });
+
   batch.end();
 });
