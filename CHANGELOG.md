@@ -1,5 +1,20 @@
 # log4js-node Changelog
 
+## 6.6.0
+
+- [feat: adding function(req, res) support to connectLogger nolog](https://github.com/log4js-node/log4js-node/pull/1279) - thanks [@eyoboue](https://github.com/eyoboue)
+- [fix: ability to load CJS appenders (through .cjs extension) for ESM packages](https://github.com/log4js-node/log4js-node/pull/1280) - thanks [@lamweili](https://github.com/lamweili)
+- [type: consistent typing for Logger](https://github.com/log4js-node/log4js-node/pull/1276) - thanks [@taozi0818](https://github.com/taozi0818)
+- [type: Make Appender Type extensible from other modules and the user](https://github.com/log4js-node/log4js-node/pull/1267) - thanks [@ZachHaber](https://github.com/ZachHaber)
+- [refactor: clearer logic for invalid level and LOG synonym](https://github.com/log4js-node/log4js-node/pull/1264) - thanks [@lamweili](https://github.com/lamweili)
+- [style: ran prettier and requires prettier for ci](https://github.com/log4js-node/log4js-node/pull/1271) - thanks [@ZachHaber](https://github.com/ZachHaber)
+- [docs: renamed peteriman to lamweili in changelog](https://github.com/log4js-node/log4js-node/pull/1272) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: replaced validate-commit-msg, fixed husky config, removed codecov](https://github.com/log4js-node/log4js-node/pull/1274) - thanks [@ZachHaber](https://github.com/ZachHaber)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1266) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps-dev): bump typescript from 4.6.4 to 4.7.2
+  - chore(deps): bump date-format from 4.0.10 to 4.0.11
+  - chore(deps): updated package-lock.json
+
 ## 6.5.2
 
 - [type: add LogEvent.serialise](https://github.com/log4js-node/log4js-node/pull/1260) - thanks [@marrowleaves](https://github.com/marrowleaves)
