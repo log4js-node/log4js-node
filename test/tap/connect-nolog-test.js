@@ -348,7 +348,10 @@ test('log4js connect logger', (batch) => {
 
   batch.test('nolog function', (t) => {
     const ml = new MockLogger();
-    const cl = clm(ml, { nolog: (_req, res) => res.statusCode < 400 });
+    const cl = clm(ml, {
+      nolog: (_req, res) =>
+        res.getHeader('content-type') === 'image/png' || res.statusCode < 400,
+    });
 
     t.beforeEach(() => {
       ml.messages = [];
@@ -380,6 +383,27 @@ test('log4js connect logger', (batch) => {
       assert.equal(messages.length, 0);
       assert.end();
     });
+
+    t.test(
+      'check match function server response content-type header',
+      (assert) => {
+        const { messages } = ml;
+        const req = new MockRequest(
+          'my.remote.addr',
+          'GET',
+          'http://url/nolog'
+        );
+        const res = new MockResponse(500);
+        res.on('finish', () => {
+          res.setHeader('content-type', 'image/png');
+        });
+        cl(req, res, () => {});
+        res.end('chunk', 'encoding');
+
+        assert.equal(messages.length, 0);
+        assert.end();
+      }
+    );
 
     t.end();
   });
