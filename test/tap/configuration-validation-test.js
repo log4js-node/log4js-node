@@ -274,7 +274,9 @@ test('log4js configuration validation', (batch) => {
         })
       )
     );
-    t.end();
+    log4js.shutdown(() => {
+      t.end();
+    });
   });
 
   batch.test('should load appenders from core first', (t) => {
