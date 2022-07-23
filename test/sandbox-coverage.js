@@ -31,3 +31,6 @@ Promise.allSettled =
           }))
       )
     ));
+
+// polyfill for Node.js <10
+process.off = process.off || process.removeListener;
