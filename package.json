@@ -34,8 +34,8 @@
   },
   "scripts": {
     "prepare": "is-ci || husky install",
-    "pretest": "prettier --check . && eslint \"lib/**/*.js\" \"test/**/*.js\"",
-    "prettier:fix": "prettier --write .",
+    "pretest": "prettier --check \"**/*.*\" && eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "prettier:fix": "prettier --write \"**/*.*\"",
     "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
     "typings": "tsc -p types/tsconfig.json"
   },
@@ -73,6 +73,16 @@
   },
   "browser": {
     "os": false
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "overrides": [
+      {
+        "files": ["*.cjs"],
+        "options": { "parser": "typescript" }
+      }
+    ]
   },
   "tap": {
     "check-coverage": true
