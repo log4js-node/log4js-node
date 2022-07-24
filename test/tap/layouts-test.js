@@ -121,7 +121,7 @@ test('log4js layouts', (batch) => {
           },
         },
       }),
-      /at (Test\.batch\.test(\.t)?|Test\.<anonymous>)\s+\((.*)test[\\/]tap[\\/]layouts-test\.js:\d+:\d+\)/,
+      /at (Test\.batch\.test\.t|Test\.<anonymous>)\s+\((.*)test[\\/]tap[\\/]layouts-test\.js:\d+:\d+\)/,
       'regexp did not return a match - should print the stacks of a passed error objects'
     );
 

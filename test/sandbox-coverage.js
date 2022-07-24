@@ -13,24 +13,3 @@ sandbox.configure({
     },
   },
 });
-
-// polyfill for Node.js <12
-Promise.allSettled =
-  Promise.allSettled ||
-  ((promises) =>
-    Promise.all(
-      promises.map((p) =>
-        p
-          .then((value) => ({
-            status: 'fulfilled',
-            value,
-          }))
-          .catch((reason) => ({
-            status: 'rejected',
-            reason,
-          }))
-      )
-    ));
-
-// polyfill for Node.js <10
-process.off = process.off || process.removeListener;
