@@ -6,8 +6,9 @@ const recording = require('../../lib/appenders/recording');
  * test a simple regexp
  */
 test('log4js noLogFilter', (batch) => {
-  batch.beforeEach(() => {
+  batch.beforeEach((done) => {
     recording.reset();
+    done();
   });
 
   batch.test(

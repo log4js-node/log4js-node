@@ -8,12 +8,14 @@ let log4js;
 let recording;
 
 test('log4js appender dependencies', (batch) => {
-  batch.beforeEach(() => {
+  batch.beforeEach((done) => {
     log4js = require('../../lib/log4js');
     recording = require('../../lib/appenders/recording');
+    done();
   });
-  batch.afterEach(() => {
+  batch.afterEach((done) => {
     recording.erase();
+    done();
   });
   batch.test('in order', (t) => {
     const config = {

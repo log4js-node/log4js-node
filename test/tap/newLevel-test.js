@@ -3,8 +3,9 @@ const log4js = require('../../lib/log4js');
 const recording = require('../../lib/appenders/recording');
 
 test('../../lib/logger', (batch) => {
-  batch.beforeEach(() => {
+  batch.beforeEach((done) => {
     recording.reset();
+    done();
   });
 
   batch.test('creating a new log level', (t) => {

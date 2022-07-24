@@ -59,8 +59,9 @@ test('log4js connect logger', (batch) => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: '\\.gif' });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch url request', (assert) => {
@@ -106,8 +107,9 @@ test('log4js connect logger', (batch) => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: '\\.gif|\\.jpe?g' });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -167,8 +169,9 @@ test('log4js connect logger', (batch) => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: ['\\.gif', '\\.jpe?g'] });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -228,8 +231,9 @@ test('log4js connect logger', (batch) => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: /\.gif|\.jpe?g/ });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -289,8 +293,9 @@ test('log4js connect logger', (batch) => {
     const ml = new MockLogger();
     const cl = clm(ml, { nolog: [/\.gif/, /\.jpe?g/] });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -353,8 +358,9 @@ test('log4js connect logger', (batch) => {
         res.getHeader('content-type') === 'image/png' || res.statusCode < 400,
     });
 
-    t.beforeEach(() => {
+    t.beforeEach((done) => {
       ml.messages = [];
+      done();
     });
 
     t.test('check unmatch function return (statusCode < 400)', (assert) => {

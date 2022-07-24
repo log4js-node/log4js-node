@@ -35,9 +35,10 @@ const testConfig = {
 };
 
 test('../../lib/logger', (batch) => {
-  batch.beforeEach(() => {
+  batch.beforeEach((done) => {
     events.length = 0;
     testConfig.level = levels.TRACE;
+    done();
   });
 
   batch.test('constructor with no parameters', (t) => {
