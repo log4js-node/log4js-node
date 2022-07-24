@@ -151,7 +151,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is an intermediate log message.');
     logger.info('This is the second log message.');
     // wait for the file system to catch up
-    await sleep(100);
+    await sleep(250);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, 'This is the second log message.');
     t.equal(fileContents.indexOf('This is the first log message.'), -1);

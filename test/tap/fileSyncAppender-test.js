@@ -524,7 +524,9 @@ test('log4js fileSyncAppender', (batch) => {
         errorEROFS
       );
 
-      fs.mkdirSync('tmpA/tmpB/tmpC', { recursive: true });
+      fs.mkdirSync('tmpA');
+      fs.mkdirSync('tmpA/tmpB');
+      fs.mkdirSync('tmpA/tmpB/tmpC');
 
       sandboxedLog4js = sandbox.require('../../lib/log4js', {
         requires: {
