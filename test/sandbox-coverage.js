@@ -34,3 +34,13 @@ Promise.allSettled =
 
 // polyfill for Node.js <10
 process.off = process.off || process.removeListener;
+
+// polyfill for Node.js <10
+const fs = require('fs'); // eslint-disable-line import/newline-after-import
+fs.promises = fs.promises || {};
+fs.promises.unlink =
+  fs.promises.unlink ||
+  ((...args) =>
+    new Promise((resolve, reject) => {
+      fs.unlink(...args, (err) => (err ? reject(err) : resolve()));
+    }));
