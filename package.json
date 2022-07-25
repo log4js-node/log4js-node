@@ -34,9 +34,9 @@
   },
   "scripts": {
     "prepare": "is-ci || husky install",
-    "pretest": "prettier --check . && eslint \"lib/**/*.js\" \"test/**/*.js\"",
-    "prettier:fix": "prettier --write .",
-    "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
+    "pretest": "prettier --check \"**/*.*\" && eslint \"lib/**/*.js\" \"test/**/*.js\"",
+    "prettier:fix": "prettier --write \"**/*.*\"",
+    "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --timeout=45",
     "typings": "tsc -p types/tsconfig.json"
   },
   "directories": {
@@ -56,23 +56,42 @@
     "@log4js-node/sandboxed-module": "^2.2.1",
     "callsites": "^3.1.0",
     "deep-freeze": "0.0.1",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "fs-extra": "^10.1.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "fs-extra": "^8.1.0",
     "husky": "^8.0.1",
     "is-ci": "^3.0.1",
     "nyc": "^15.1.0",
-    "prettier": "^2.7.1",
+    "prettier": "^1.19.1",
     "proxyquire": "^2.1.3",
-    "tap": "^16.3.0",
+    "tap": "^14.11.0",
     "typescript": "^4.7.4"
+  },
+  "overrides": {
+    "tap@^14.11.0": {
+      "nyc": "^15.1.0"
+    }
   },
   "browser": {
     "os": false
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "arrowParens": "always",
+    "overrides": [
+      {
+        "files": [
+          "*.cjs"
+        ],
+        "options": {
+          "parser": "typescript"
+        }
+      }
+    ]
   },
   "tap": {
     "check-coverage": true

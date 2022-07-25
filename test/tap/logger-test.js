@@ -35,9 +35,12 @@ const testConfig = {
 };
 
 test('../../lib/logger', (batch) => {
-  batch.beforeEach(() => {
+  batch.beforeEach((done) => {
     events.length = 0;
     testConfig.level = levels.TRACE;
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test('constructor with no parameters', (t) => {
@@ -252,7 +255,7 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should correctly change the parseCallStack function', (t) => {
     const logger = new Logger('stack');
-    const parseFunction = function () {
+    const parseFunction = function() {
       return {
         functionName: 'test function name',
         fileName: 'test file name',

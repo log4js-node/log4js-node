@@ -161,7 +161,7 @@ log4js.configure({
         type: "pattern",
         pattern: "%d %p %c %x{user} %m%n",
         tokens: {
-          user: function (logEvent) {
+          user: function(logEvent) {
             return AuthLibrary.currentUser();
           },
         },
@@ -219,8 +219,8 @@ This example can also be found in examples/custom-layout.js.
 ```javascript
 const log4js = require("log4js");
 
-log4js.addLayout("json", function (config) {
-  return function (logEvent) {
+log4js.addLayout("json", function(config) {
+  return function(logEvent) {
     return JSON.stringify(logEvent) + config.separator;
   };
 });

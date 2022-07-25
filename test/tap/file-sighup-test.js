@@ -13,8 +13,9 @@ test('file appender single SIGHUP handler', (t) => {
   const initialListeners = process.listenerCount('SIGHUP');
 
   let warning;
-  const originalListener =
-    process.listeners('warning')[process.listeners('warning').length - 1];
+  const originalListener = process.listeners('warning')[
+    process.listeners('warning').length - 1
+  ];
   const warningListener = (error) => {
     if (
       error.type === 'SIGHUP' &&
