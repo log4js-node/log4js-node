@@ -55,8 +55,9 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
       log4js.configure(config);
 
       const child1CategoryName = 'catA.catB.cat1';
-      const child1Appenders =
-        categories.appendersForCategory(child1CategoryName);
+      const child1Appenders = categories.appendersForCategory(
+        child1CategoryName
+      );
       const child1Level = categories.getLevelForCategory(child1CategoryName);
 
       t.equal(child1Appenders.length, 1, 'inherited 1 appender');
@@ -67,8 +68,9 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
       t.equal(child1Level.levelStr, 'DEBUG', 'child level overrides parent');
 
       const child2CategoryName = 'catA.catB.cat2';
-      const child2Appenders =
-        categories.appendersForCategory(child2CategoryName);
+      const child2Appenders = categories.appendersForCategory(
+        child2CategoryName
+      );
       const child2Level = categories.getLevelForCategory(child2CategoryName);
 
       t.ok(child2Appenders);
@@ -122,8 +124,9 @@ test('log4js category inherit all appenders from direct parent', (batch) => {
     );
 
     const firstParentName = 'catA.catB';
-    const firstParentAppenders =
-      categories.appendersForCategory(firstParentName);
+    const firstParentAppenders = categories.appendersForCategory(
+      firstParentName
+    );
 
     t.ok(firstParentAppenders);
     t.equal(firstParentAppenders.length, 2, 'ended up with 2 appenders');

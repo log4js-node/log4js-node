@@ -255,7 +255,7 @@ test('../../lib/logger', (batch) => {
 
   batch.test('should correctly change the parseCallStack function', (t) => {
     const logger = new Logger('stack');
-    const parseFunction = function () {
+    const parseFunction = function() {
       return {
         functionName: 'test function name',
         fileName: 'test file name',
