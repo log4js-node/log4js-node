@@ -71,6 +71,11 @@
     "tap": "^14.11.0",
     "typescript": "^4.7.4"
   },
+  "overrides": {
+    "tap@^14.11.0": {
+      "nyc": "^15.1.0"
+    }
+  },
   "browser": {
     "os": false
   },
