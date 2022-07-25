@@ -40,7 +40,7 @@ test('log4js fileAppender', (batch) => {
 
     logger.info('This should be in the file.');
 
-    await sleep(100);
+    await sleep(250);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, `This should be in the file.${EOL}`);
     t.match(
@@ -219,7 +219,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the second log message.');
 
     // wait for the file system to catch up
-    await sleep(100);
+    await sleep(250);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, 'This is the second log message.');
     t.notMatch(fileContents, 'These are the log messages for the first file.');
@@ -272,7 +272,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the third log message.');
     logger.info('This is the fourth log message.');
     // give the system a chance to open the stream
-    await sleep(200);
+    await sleep(250);
     const files = await fs.readdir(__dirname);
     const logFiles = files
       .sort()
@@ -334,7 +334,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the third log message.');
     logger.info('This is the fourth log message.');
     // give the system a chance to open the stream
-    await sleep(1000);
+    await sleep(250);
     const files = await fs.readdir(__dirname);
     const logFiles = files
       .sort()
@@ -503,7 +503,7 @@ test('log4js fileAppender', (batch) => {
       []
     );
 
-    await sleep(100);
+    await sleep(250);
     let fileContents = await fs.readFile(testFilePlain, 'utf8');
     t.match(
       fileContents,
