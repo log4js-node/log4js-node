@@ -249,8 +249,9 @@ test('log4js layouts', (batch) => {
   });
 
   batch.test('patternLayout', (t) => {
-    const originalListener =
-      process.listeners('warning')[process.listeners('warning').length - 1];
+    const originalListener = process.listeners('warning')[
+      process.listeners('warning').length - 1
+    ];
     const warningListener = (error) => {
       if (error.name === 'DeprecationWarning') {
         if (
@@ -923,7 +924,7 @@ test('log4js layouts', (batch) => {
     t.test('should be able to add a layout', (assert) => {
       layouts.addLayout('test_layout', (config) => {
         assert.equal(config, 'test_config');
-        return function (logEvent) {
+        return function(logEvent) {
           return `TEST LAYOUT >${logEvent.data}`;
         };
       });

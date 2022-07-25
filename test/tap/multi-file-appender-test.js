@@ -134,8 +134,8 @@ test('multiFile appender', (batch) => {
               layouts
             );
             const originalShutdown = fileAppender.shutdown;
-            fileAppender.shutdown = function (complete) {
-              const onCallback = function () {
+            fileAppender.shutdown = function(complete) {
+              const onCallback = function() {
                 complete(error);
               };
               originalShutdown(onCallback);

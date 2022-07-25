@@ -121,7 +121,7 @@ test('log4js', (batch) => {
               return null;
             }
 
-            thing.shutdown = function (cb) {
+            thing.shutdown = function(cb) {
               events.shutdownCalled.push(true);
               cb();
             };
@@ -196,7 +196,7 @@ test('log4js', (batch) => {
         './file': {
           configure(configuration) {
             appenderConfig = configuration;
-            return function () {};
+            return function() {};
           },
         },
       },
@@ -220,7 +220,7 @@ test('log4js', (batch) => {
     const fakeStdoutAppender = {
       configure() {
         this.required = true;
-        return function (evt) {
+        return function(evt) {
           fakeStdoutAppender.evt = evt;
         };
       },

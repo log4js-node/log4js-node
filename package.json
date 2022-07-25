@@ -79,8 +79,12 @@
     "arrowParens": "always",
     "overrides": [
       {
-        "files": ["*.cjs"],
-        "options": { "parser": "typescript" }
+        "files": [
+          "*.cjs"
+        ],
+        "options": {
+          "parser": "typescript"
+        }
       }
     ]
   },
