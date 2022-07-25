@@ -36,7 +36,7 @@
     "prepare": "is-ci || husky install",
     "pretest": "prettier --check \"**/*.*\" && eslint \"lib/**/*.js\" \"test/**/*.js\"",
     "prettier:fix": "prettier --write \"**/*.*\"",
-    "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
+    "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --timeout=45",
     "typings": "tsc -p types/tsconfig.json"
   },
   "directories": {
@@ -68,8 +68,13 @@
     "nyc": "^15.1.0",
     "prettier": "^1.19.1",
     "proxyquire": "^2.1.3",
-    "tap": "^16.3.0",
+    "tap": "^14.11.0",
     "typescript": "^4.7.4"
+  },
+  "overrides": {
+    "tap@^14.11.0": {
+      "nyc": "^15.1.0"
+    }
   },
   "browser": {
     "os": false
