@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [10.x, 12.x, 14.x, 16.x, 18.x]
         os: [ubuntu-latest, windows-latest]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
@@ -31,4 +31,6 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
     - run: npm run typings
-    
+    - run: npm audit
+      env:
+        NODE_ENV: production
