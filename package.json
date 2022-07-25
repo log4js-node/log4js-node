@@ -36,7 +36,7 @@
     "prepare": "is-ci || husky install",
     "pretest": "prettier --check . && eslint \"lib/**/*.js\" \"test/**/*.js\"",
     "prettier:fix": "prettier --write .",
-    "test": "tap \"test/tap/**/*.js\" --cov --timeout=45",
+    "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --timeout=45",
     "typings": "tsc -p types/tsconfig.json"
   },
   "directories": {
