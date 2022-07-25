@@ -61,7 +61,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch url request', (assert) => {
@@ -109,7 +111,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -171,7 +175,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -233,7 +239,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -295,7 +303,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch url request (png)', (assert) => {
@@ -360,7 +370,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.messages = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('check unmatch function return (statusCode < 400)', (assert) => {

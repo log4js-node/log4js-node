@@ -11,11 +11,15 @@ test('log4js appender dependencies', (batch) => {
   batch.beforeEach((done) => {
     log4js = require('../../lib/log4js');
     recording = require('../../lib/appenders/recording');
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
   batch.afterEach((done) => {
     recording.erase();
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
   batch.test('in order', (t) => {
     const config = {

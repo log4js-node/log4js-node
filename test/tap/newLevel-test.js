@@ -5,7 +5,9 @@ const recording = require('../../lib/appenders/recording');
 test('../../lib/logger', (batch) => {
   batch.beforeEach((done) => {
     recording.reset();
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test('creating a new log level', (t) => {

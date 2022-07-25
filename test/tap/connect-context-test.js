@@ -70,7 +70,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.contexts = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('response should be included in context', (assert) => {
@@ -99,7 +101,9 @@ test('log4js connect logger', (batch) => {
 
     t.beforeEach((done) => {
       ml.contexts = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
     t.test('response should not be included in context', (assert) => {

@@ -56,7 +56,9 @@ test('log4js configure', (batch) => {
       },
     };
 
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test(

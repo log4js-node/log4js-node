@@ -53,7 +53,9 @@ function makeFakeNet() {
 test('Multiprocess Appender', async (batch) => {
   batch.beforeEach((done) => {
     recording.erase();
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test('worker', (t) => {

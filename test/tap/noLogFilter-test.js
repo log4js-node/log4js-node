@@ -8,7 +8,9 @@ const recording = require('../../lib/appenders/recording');
 test('log4js noLogFilter', (batch) => {
   batch.beforeEach((done) => {
     recording.reset();
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test(

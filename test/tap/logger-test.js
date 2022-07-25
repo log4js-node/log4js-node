@@ -38,7 +38,9 @@ test('../../lib/logger', (batch) => {
   batch.beforeEach((done) => {
     events.length = 0;
     testConfig.level = levels.TRACE;
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test('constructor with no parameters', (t) => {

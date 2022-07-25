@@ -5,7 +5,9 @@ const recording = require('../../lib/appenders/recording');
 test('log4js categoryFilter', (batch) => {
   batch.beforeEach((done) => {
     recording.reset();
-    done();
+    if (typeof done === 'function') {
+      done();
+    }
   });
 
   batch.test('appender should exclude categories', (t) => {
