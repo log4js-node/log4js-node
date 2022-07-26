@@ -335,7 +335,12 @@ export interface Appenders {
 }
 
 export interface AppenderModule {
-  configure: (config: Config, layouts: LayoutsParam) => AppenderFunction;
+  configure: (
+    config?: Config,
+    layouts?: LayoutsParam,
+    findAppender?: () => AppenderFunction,
+    levels?: Levels
+  ) => AppenderFunction;
 }
 
 export type AppenderFunction = (loggingEvent: LoggingEvent) => void;
