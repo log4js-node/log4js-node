@@ -7,6 +7,8 @@ const sandbox = require('@log4js-node/sandboxed-module');
 const zlib = require('zlib');
 const util = require('util');
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 const sleep = util.promisify(setTimeout);
 const gunzip = util.promisify(zlib.gunzip);
 const EOL = require('os').EOL || '\n';
@@ -40,7 +42,7 @@ test('log4js fileAppender', (batch) => {
 
     logger.info('This should be in the file.');
 
-    await sleep(250);
+    await sleep(osDelay);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, `This should be in the file.${EOL}`);
     t.match(
@@ -151,7 +153,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is an intermediate log message.');
     logger.info('This is the second log message.');
     // wait for the file system to catch up
-    await sleep(250);
+    await sleep(osDelay * 2);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, 'This is the second log message.');
     t.equal(fileContents.indexOf('This is the first log message.'), -1);
@@ -219,7 +221,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the second log message.');
 
     // wait for the file system to catch up
-    await sleep(250);
+    await sleep(osDelay);
     const fileContents = await fs.readFile(testFile, 'utf8');
     t.match(fileContents, 'This is the second log message.');
     t.notMatch(fileContents, 'These are the log messages for the first file.');
@@ -272,7 +274,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the third log message.');
     logger.info('This is the fourth log message.');
     // give the system a chance to open the stream
-    await sleep(250);
+    await sleep(osDelay);
     const files = await fs.readdir(__dirname);
     const logFiles = files
       .sort()
@@ -334,7 +336,7 @@ test('log4js fileAppender', (batch) => {
     logger.info('This is the third log message.');
     logger.info('This is the fourth log message.');
     // give the system a chance to open the stream
-    await sleep(250);
+    await sleep(osDelay);
     const files = await fs.readdir(__dirname);
     const logFiles = files
       .sort()
@@ -503,7 +505,7 @@ test('log4js fileAppender', (batch) => {
       []
     );
 
-    await sleep(250);
+    await sleep(osDelay);
     let fileContents = await fs.readFile(testFilePlain, 'utf8');
     t.match(
       fileContents,

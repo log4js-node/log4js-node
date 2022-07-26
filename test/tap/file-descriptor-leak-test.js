@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const log4js = require('../../lib/log4js');
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 const removeFiles = async (filenames) => {
   if (!Array.isArray(filenames)) filenames = [filenames];
   const promises = filenames.map((filename) => fs.promises.unlink(filename));
@@ -46,7 +48,7 @@ if (process.platform !== 'win32') {
             `file descriptor count should increase by ${numOfAppenders} after 1st configure() call`
           );
           t.end();
-        }, 250);
+        }, osDelay);
       }
     );
 
@@ -65,7 +67,7 @@ if (process.platform !== 'win32') {
             `file descriptor count should be identical after repeated configure() calls`
           );
           t.end();
-        }, 250);
+        }, osDelay);
       }
     );
 
@@ -82,7 +84,7 @@ if (process.platform !== 'win32') {
             `file descriptor count should be back to initial`
           );
           t.end();
-        }, 250);
+        }, osDelay);
       }
     );
 
