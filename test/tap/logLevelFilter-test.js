@@ -4,6 +4,8 @@ const os = require('os');
 
 const EOL = os.EOL || '\n';
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 function remove(filename) {
   try {
     fs.unlinkSync(filename);
@@ -155,7 +157,7 @@ test('log4js logLevelFilter', (batch) => {
         }
       );
       t.end();
-    }, 500);
+    }, osDelay);
   });
 
   batch.end();

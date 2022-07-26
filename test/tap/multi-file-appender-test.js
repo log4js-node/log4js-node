@@ -226,7 +226,7 @@ test('multiFile appender', (batch) => {
       debug.enable(originalNamespace);
     });
 
-    const timeoutMs = 100;
+    const timeoutMs = 200;
     log4js.configure({
       appenders: {
         multi: {

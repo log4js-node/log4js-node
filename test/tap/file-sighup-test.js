@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const sandbox = require('@log4js-node/sandboxed-module');
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 const removeFiles = async (filenames) => {
   if (!Array.isArray(filenames)) filenames = [filenames];
   const promises = filenames.map((filename) => fs.promises.unlink(filename));
@@ -129,7 +131,7 @@ test('file appender SIGHUP', (t) => {
     t.equal(openCalled, 2, 'open should be called twice');
     t.equal(closeCalled, 1, 'close should be called once');
     t.end();
-  }, 100);
+  }, osDelay);
 });
 
 test('file appender SIGHUP handler leak', (t) => {

@@ -8,6 +8,8 @@ const format = require('date-format');
 const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 function removeFile(filename) {
   try {
     fs.unlinkSync(path.join(__dirname, filename));
@@ -40,7 +42,7 @@ test('../../lib/appenders/dateFile', (batch) => {
         );
         t.end();
       });
-    }, 100);
+    }, osDelay);
   });
 
   batch.test('configure with dateFileAppender', (t) => {
