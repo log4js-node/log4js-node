@@ -1,5 +1,30 @@
 # log4js-node Changelog
 
+## 6.6.1
+
+- [fix: connectlogger nolog function](https://github.com/log4js-node/log4js-node/pull/1285) - thanks [@eyoboue](https://github.com/eyoboue)
+- [type: corrected AppenderModule interface and Recording interface](https://github.com/log4js-node/log4js-node/pull/1304) - thanks [@lamweili](https://github.com/lamweili)
+- test: extended timeout interval for OS operations - thanks [@lamweili](https://github.com/lamweili)
+  - test: [#1306](https://github.com/log4js-node/log4js-node/pull/1306)
+  - test: [#1297](https://github.com/log4js-node/log4js-node/pull/1297)
+- [test: support older Node.js versions](https://github.com/log4js-node/log4js-node/pull/1295) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: added tests for Node.js 8.x](https://github.com/log4js-node/log4js-node/pull/1303) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: added tests for Node.js 10.x, 18.x](https://github.com/log4js-node/log4js-node/pull/1301) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: updated codeql from v1 to v2](https://github.com/log4js-node/log4js-node/pull/1302) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps-dev): downgraded nyc from 15.1.0 to 14.1.1](https://github.com/log4js-node/log4js-node/pull/1305) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1296) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps): bump date-format from 4.0.11 to 4.0.13
+  - chore(deps): bump flatted from 3.2.5 to 3.2.6
+  - chore(deps): bump streamroller from 3.1.1 to 3.1.2
+  - chore(deps-dev): bump @commitlint/cli from 17.0.2 to 17.0.3
+  - chore(deps-dev): bump @commitlint/config-conventional from 17.0.2 to 17.0.3
+  - [chore(deps-dev): bump eslint from 8.16.0 to 8.20.0](https://github.com/log4js-node/log4js-node/pull/1300)
+  - chore(deps-dev): bump eslint-plugin-prettier from 4.0.0 to 4.2.1
+  - chore(deps-dev): bump prettier from 2.6.0 to 2.7.1
+  - chore(deps-dev): bump tap from 16.2.0 to 16.3.0
+  - chore(deps-dev): bump typescript from 4.7.2 to 4.7.4
+  - chore(deps): updated package-lock.json
+
 ## 6.6.0
 
 - [feat: adding function(req, res) support to connectLogger nolog](https://github.com/log4js-node/log4js-node/pull/1279) - thanks [@eyoboue](https://github.com/eyoboue)
@@ -110,9 +135,9 @@
 - [refactor: removed redundant logic in tcp-serverAppender](https://github.com/log4js-node/log4js-node/pull/1198) - thanks [@lamweili](https://github.com/lamweili)
 - [refactor: removed redundant logic in multiprocessAppender](https://github.com/log4js-node/log4js-node/pull/1197) - thanks [@lamweili](https://github.com/lamweili)
 - test: 100% test coverage - thanks [@lamweili](https://github.com/lamweili)
-  - test: part 1 of 3: https://github.com/log4js-node/log4js-node/pull/1200
-  - test: part 2 of 3: https://github.com/log4js-node/log4js-node/pull/1204
-  - test: part 3 of 3: https://github.com/log4js-node/log4js-node/pull/1205
+  - test: part 1 of 3: [#1200](https://github.com/log4js-node/log4js-node/pull/1200)
+  - test: part 2 of 3: [#1204](https://github.com/log4js-node/log4js-node/pull/1204)
+  - test: part 3 of 3: [#1205](https://github.com/log4js-node/log4js-node/pull/1205)
   - [test: improved test cases](https://github.com/log4js-node/log4js-node/pull/1211)
 - [docs: updated README.md with badges](https://github.com/log4js-node/log4js-node/pull/1209) - thanks [@lamweili](https://github.com/lamweili)
 - [docs: added docs for istanbul ignore](https://github.com/log4js-node/log4js-node/pull/1208) - thanks [@lamweili](https://github.com/lamweili)
