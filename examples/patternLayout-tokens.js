@@ -8,7 +8,7 @@ log4js.configure({
         type: 'pattern',
         pattern: '%[%r (%x{pid}) %p %c -%] %m%n',
         tokens: {
-          pid: function () {
+          pid: function() {
             return process.pid;
           },
         },
