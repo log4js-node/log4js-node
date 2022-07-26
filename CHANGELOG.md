@@ -11,6 +11,8 @@
 - [ci: added tests for Node.js 8.x](https://github.com/log4js-node/log4js-node/pull/1303) - thanks [@lamweili](https://github.com/lamweili)
 - [ci: added tests for Node.js 10.x, 18.x](https://github.com/log4js-node/log4js-node/pull/1301) - thanks [@lamweili](https://github.com/lamweili)
 - [ci: updated codeql from v1 to v2](https://github.com/log4js-node/log4js-node/pull/1302) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps-dev): bump lodash from 4.17.19 to 4.17.21](https://github.com/log4js-node/log4js-node/pull/1309) - thanks [@Dependabot](https://github.com/dependabot)
+- [chore(deps-dev): bump path-parse from 1.0.6 to 1.0.7](https://github.com/log4js-node/log4js-node/pull/1308) - thanks [@Dependabot](https://github.com/dependabot)
 - [chore(deps-dev): downgraded nyc from 15.1.0 to 14.1.1](https://github.com/log4js-node/log4js-node/pull/1305) - thanks [@lamweili](https://github.com/lamweili)
 - [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1296) - thanks [@lamweili](https://github.com/lamweili)
   - chore(deps): bump date-format from 4.0.11 to 4.0.13
