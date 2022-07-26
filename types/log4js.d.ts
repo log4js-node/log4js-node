@@ -400,7 +400,7 @@ export interface Configuration {
 }
 
 export interface Recording {
-  configure(loggingEvent: LoggingEvent): void;
+  configure(): AppenderFunction;
   replay(): LoggingEvent[];
   playback(): LoggingEvent[];
   reset(): void;
