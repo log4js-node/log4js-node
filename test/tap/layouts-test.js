@@ -300,10 +300,13 @@ test('log4js layouts', (batch) => {
 
     // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
     const callStack =
-      '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
+      '    at Foo.bar [as baz] (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
     const fileName = path.normalize('/log4js-node/test/tap/layouts-test.js');
     const lineNumber = 1;
     const columnNumber = 14;
+    const className = 'Foo';
+    const functionName = 'bar';
+    const functionAlias = 'baz';
     const event = {
       data: ['this is a test'],
       startTime: new Date('2010-12-05 14:18:30.045'),
@@ -321,6 +324,9 @@ test('log4js layouts', (batch) => {
       fileName,
       lineNumber,
       columnNumber,
+      className,
+      functionName,
+      functionAlias,
     };
     event.startTime.getTimezoneOffset = () => -600;
 
@@ -885,6 +891,48 @@ test('log4js layouts', (batch) => {
       testPattern(assert, layout, event, {}, '%X', 'null');
       assert.end();
     });
+
+    t.test('%M should output function name', (assert) => {
+      testPattern(assert, layout, event, tokens, '%M', functionName);
+      assert.end();
+    });
+
+    t.test(
+      '%M should output empty string when functionName not exist',
+      (assert) => {
+        delete event.functionName;
+        testPattern(assert, layout, event, tokens, '%M', '');
+        assert.end();
+      }
+    );
+
+    t.test('%C should output class name', (assert) => {
+      testPattern(assert, layout, event, tokens, '%C', className);
+      assert.end();
+    });
+
+    t.test(
+      '%C should output empty string when className not exist',
+      (assert) => {
+        delete event.className;
+        testPattern(assert, layout, event, tokens, '%C', '');
+        assert.end();
+      }
+    );
+
+    t.test('%A should output function alias', (assert) => {
+      testPattern(assert, layout, event, tokens, '%A', functionAlias);
+      assert.end();
+    });
+
+    t.test(
+      '%A should output empty string when functionAlias not exist',
+      (assert) => {
+        delete event.functionAlias;
+        testPattern(assert, layout, event, tokens, '%A', '');
+        assert.end();
+      }
+    );
 
     t.end();
   });
