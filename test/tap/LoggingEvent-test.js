@@ -107,6 +107,7 @@ test('LoggingEvent', (batch) => {
     const functionName = 'foo';
     const className = '';
     const functionAlias = '';
+    const callerName = 'foo';
     const location = {
       functionName,
       fileName,
@@ -115,6 +116,7 @@ test('LoggingEvent', (batch) => {
       callStack,
       className,
       functionAlias,
+      callerName,
     };
     const event = new LoggingEvent(
       'cheese',
@@ -130,15 +132,7 @@ test('LoggingEvent', (batch) => {
     t.equal(event.callStack, callStack);
     t.equal(event.className, '');
     t.equal(event.functionAlias, '');
-
-    const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], {
-      user: 'bob',
-    });
-    t.equal(event2.functionName, undefined);
-    t.equal(event2.fileName, undefined);
-    t.equal(event2.lineNumber, undefined);
-    t.equal(event2.columnNumber, undefined);
-    t.equal(event2.callStack, undefined);
+    t.equal(event.callerName, callerName);
     t.end();
   });
 
@@ -152,6 +146,7 @@ test('LoggingEvent', (batch) => {
     const functionName = 'foo';
     const functionAlias = 'bar';
     const className = '';
+    const callerName = 'foo [as bar]';
     const location = {
       functionName,
       fileName,
@@ -160,6 +155,7 @@ test('LoggingEvent', (batch) => {
       callStack,
       className,
       functionAlias,
+      callerName,
     };
     const event = new LoggingEvent(
       'cheese',
@@ -175,16 +171,7 @@ test('LoggingEvent', (batch) => {
     t.equal(event.callStack, callStack);
     t.equal(event.className, '');
     t.equal(event.functionAlias, functionAlias);
-
-    const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], {
-      user: 'bob',
-    });
-    t.equal(event2.functionName, undefined);
-    t.equal(event2.fileName, undefined);
-    t.equal(event2.lineNumber, undefined);
-    t.equal(event2.columnNumber, undefined);
-    t.equal(event2.callStack, undefined);
-    t.equal(event2.functionAlias, undefined);
+    t.equal(event.callerName, callerName);
     t.end();
   });
 
@@ -198,6 +185,7 @@ test('LoggingEvent', (batch) => {
     const className = 'Foo';
     const functionName = 'bar';
     const functionAlias = '';
+    const callerName = 'Foo.bar';
     const location = {
       functionName,
       fileName,
@@ -206,6 +194,7 @@ test('LoggingEvent', (batch) => {
       callStack,
       className,
       functionAlias,
+      callerName,
     };
     const event = new LoggingEvent(
       'cheese',
@@ -220,17 +209,8 @@ test('LoggingEvent', (batch) => {
     t.equal(event.columnNumber, columnNumber);
     t.equal(event.callStack, callStack);
     t.equal(event.className, className);
+    t.equal(event.callerName, callerName);
     t.equal(event.functionAlias, '');
-
-    const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], {
-      user: 'bob',
-    });
-    t.equal(event2.functionName, undefined);
-    t.equal(event2.fileName, undefined);
-    t.equal(event2.lineNumber, undefined);
-    t.equal(event2.columnNumber, undefined);
-    t.equal(event2.callStack, undefined);
-    t.equal(event2.className, undefined);
     t.end();
   });
 
@@ -244,6 +224,7 @@ test('LoggingEvent', (batch) => {
     const className = 'Foo';
     const functionName = 'bar';
     const functionAlias = 'baz';
+    const callerName = 'Foo.bar [as baz]';
     const location = {
       functionName,
       fileName,
@@ -252,6 +233,7 @@ test('LoggingEvent', (batch) => {
       callStack,
       className,
       functionAlias,
+      callerName,
     };
     const event = new LoggingEvent(
       'cheese',
@@ -267,7 +249,11 @@ test('LoggingEvent', (batch) => {
     t.equal(event.callStack, callStack);
     t.equal(event.className, className);
     t.equal(event.functionAlias, functionAlias);
+    t.equal(event.callerName, callerName);
+    t.end();
+  });
 
+  batch.test('Should not contain names if location not provided', (t) => {
     const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], {
       user: 'bob',
     });
@@ -278,6 +264,7 @@ test('LoggingEvent', (batch) => {
     t.equal(event2.callStack, undefined);
     t.equal(event2.className, undefined);
     t.equal(event2.functionAlias, undefined);
+    t.equal(event2.callerName, undefined);
     t.end();
   });
 

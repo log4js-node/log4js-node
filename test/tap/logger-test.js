@@ -266,6 +266,7 @@ test('../../lib/logger', (batch) => {
     t.equal(results.className, 'Foo');
     t.equal(results.functionName, 'bar');
     t.equal(results.functionAlias, 'baz');
+    t.equal(results.callerName, 'Foo.bar [as baz]');
 
     const callStack2 =
       '    at bar [as baz] (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
@@ -274,6 +275,7 @@ test('../../lib/logger', (batch) => {
     t.equal(results.className, '');
     t.equal(results.functionName, 'bar');
     t.equal(results.functionAlias, 'baz');
+    t.equal(results.callerName, 'bar [as baz]');
 
     const callStack3 =
       '    at bar (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
@@ -282,6 +284,7 @@ test('../../lib/logger', (batch) => {
     t.equal(results.className, '');
     t.equal(results.functionName, 'bar');
     t.equal(results.functionAlias, '');
+    t.equal(results.callerName, 'bar');
 
     const callStack4 =
       '    at repl:1:14\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
@@ -290,6 +293,7 @@ test('../../lib/logger', (batch) => {
     t.equal(results.className, '');
     t.equal(results.functionName, '');
     t.equal(results.functionAlias, '');
+    t.equal(results.callerName, '');
 
     t.end();
   });

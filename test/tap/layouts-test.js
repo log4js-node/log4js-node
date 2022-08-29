@@ -307,6 +307,7 @@ test('log4js layouts', (batch) => {
     const className = 'Foo';
     const functionName = 'bar';
     const functionAlias = 'baz';
+    const callerName = 'Foo.bar [as baz]';
     const event = {
       data: ['this is a test'],
       startTime: new Date('2010-12-05 14:18:30.045'),
@@ -327,6 +328,7 @@ test('log4js layouts', (batch) => {
       className,
       functionName,
       functionAlias,
+      callerName,
     };
     event.startTime.getTimezoneOffset = () => -600;
 
@@ -930,6 +932,20 @@ test('log4js layouts', (batch) => {
       (assert) => {
         delete event.functionAlias;
         testPattern(assert, layout, event, tokens, '%A', '');
+        assert.end();
+      }
+    );
+
+    t.test('%F should output fully qualified caller name', (assert) => {
+      testPattern(assert, layout, event, tokens, '%F', callerName);
+      assert.end();
+    });
+
+    t.test(
+      '%F should output empty string when callerName not exist',
+      (assert) => {
+        delete event.callerName;
+        testPattern(assert, layout, event, tokens, '%F', '');
         assert.end();
       }
     );
