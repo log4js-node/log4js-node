@@ -74,12 +74,12 @@ test('LoggingEvent', (batch) => {
     const functionAlias = '';
     const callerName = '';
     const location = {
-      functionName,
       fileName,
       lineNumber,
       columnNumber,
       callStack,
       className,
+      functionName,
       functionAlias,
       callerName,
     };
@@ -90,12 +90,12 @@ test('LoggingEvent', (batch) => {
       { user: 'bob' },
       location
     );
-    t.equal(event.functionName, functionName);
     t.equal(event.fileName, fileName);
     t.equal(event.lineNumber, lineNumber);
     t.equal(event.columnNumber, columnNumber);
     t.equal(event.callStack, callStack);
     t.equal(event.className, className);
+    t.equal(event.functionName, functionName);
     t.equal(event.functionAlias, functionAlias);
     t.equal(event.callerName, callerName);
 
@@ -106,8 +106,8 @@ test('LoggingEvent', (batch) => {
     t.equal(event2.lineNumber, undefined);
     t.equal(event2.columnNumber, undefined);
     t.equal(event2.callStack, undefined);
-    t.equal(event2.functionName, undefined);
     t.equal(event2.className, undefined);
+    t.equal(event2.functionName, undefined);
     t.equal(event2.functionAlias, undefined);
     t.equal(event2.callerName, undefined);
     t.end();
@@ -125,12 +125,12 @@ test('LoggingEvent', (batch) => {
     const functionAlias = 'baz';
     const callerName = 'Foo.bar [as baz]';
     const location = {
-      functionName,
       fileName,
       lineNumber,
       columnNumber,
       callStack,
       className,
+      functionName,
       functionAlias,
       callerName,
     };
@@ -141,12 +141,12 @@ test('LoggingEvent', (batch) => {
       { user: 'bob' },
       location
     );
-    t.equal(event.functionName, functionName);
     t.equal(event.fileName, fileName);
     t.equal(event.lineNumber, lineNumber);
     t.equal(event.columnNumber, columnNumber);
     t.equal(event.callStack, callStack);
     t.equal(event.className, className);
+    t.equal(event.functionName, functionName);
     t.equal(event.functionAlias, functionAlias);
     t.equal(event.callerName, callerName);
     t.end();
