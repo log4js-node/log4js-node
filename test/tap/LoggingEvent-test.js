@@ -69,11 +69,19 @@ test('LoggingEvent', (batch) => {
     const fileName = '/log4js-node/test/tap/layouts-test.js';
     const lineNumber = 1;
     const columnNumber = 14;
+    const className = '';
+    const functionName = '';
+    const functionAlias = '';
+    const callerName = '';
     const location = {
+      functionName,
       fileName,
       lineNumber,
       columnNumber,
       callStack,
+      className,
+      functionAlias,
+      callerName,
     };
     const event = new LoggingEvent(
       'cheese',
@@ -82,10 +90,14 @@ test('LoggingEvent', (batch) => {
       { user: 'bob' },
       location
     );
+    t.equal(event.functionName, functionName);
     t.equal(event.fileName, fileName);
     t.equal(event.lineNumber, lineNumber);
     t.equal(event.columnNumber, columnNumber);
     t.equal(event.callStack, callStack);
+    t.equal(event.className, className);
+    t.equal(event.functionAlias, functionAlias);
+    t.equal(event.callerName, callerName);
 
     const event2 = new LoggingEvent('cheese', levels.DEBUG, ['log message'], {
       user: 'bob',
@@ -94,6 +106,49 @@ test('LoggingEvent', (batch) => {
     t.equal(event2.lineNumber, undefined);
     t.equal(event2.columnNumber, undefined);
     t.equal(event2.callStack, undefined);
+    t.equal(event2.functionName, undefined);
+    t.equal(event2.className, undefined);
+    t.equal(event2.functionAlias, undefined);
+    t.equal(event2.callerName, undefined);
+    t.end();
+  });
+
+  batch.test('Should contain class, method and alias names', (t) => {
+    // console.log([Error('123').stack.split('\n').slice(1).join('\n')])
+    const callStack =
+      '    at Foo.bar [as baz] (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)\n    at REPLServer.defaultEval (repl.js:240:29)\n    at bound (domain.js:301:14)\n    at REPLServer.runBound [as eval] (domain.js:314:12)\n    at REPLServer.onLine (repl.js:468:10)\n    at emitOne (events.js:121:20)\n    at REPLServer.emit (events.js:211:7)\n    at REPLServer.Interface._onLine (readline.js:280:10)\n    at REPLServer.Interface._line (readline.js:629:8)'; // eslint-disable-line max-len
+    const fileName = '/log4js-node/test/tap/layouts-test.js';
+    const lineNumber = 1;
+    const columnNumber = 14;
+    const className = 'Foo';
+    const functionName = 'bar';
+    const functionAlias = 'baz';
+    const callerName = 'Foo.bar [as baz]';
+    const location = {
+      functionName,
+      fileName,
+      lineNumber,
+      columnNumber,
+      callStack,
+      className,
+      functionAlias,
+      callerName,
+    };
+    const event = new LoggingEvent(
+      'cheese',
+      levels.DEBUG,
+      ['log message'],
+      { user: 'bob' },
+      location
+    );
+    t.equal(event.functionName, functionName);
+    t.equal(event.fileName, fileName);
+    t.equal(event.lineNumber, lineNumber);
+    t.equal(event.columnNumber, columnNumber);
+    t.equal(event.callStack, callStack);
+    t.equal(event.className, className);
+    t.equal(event.functionAlias, functionAlias);
+    t.equal(event.callerName, callerName);
     t.end();
   });
 
