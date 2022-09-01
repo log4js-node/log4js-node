@@ -106,7 +106,7 @@ test('LoggingEvent', (batch) => {
     t.equal(event2.lineNumber, undefined);
     t.equal(event2.columnNumber, undefined);
     t.equal(event2.callStack, undefined);
-    t.equal(event.functionName, undefined);
+    t.equal(event2.functionName, undefined);
     t.equal(event2.className, undefined);
     t.equal(event2.functionAlias, undefined);
     t.equal(event2.callerName, undefined);
