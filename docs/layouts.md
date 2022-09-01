@@ -146,6 +146,7 @@ Fields can be any of:
 - `%M` function or method name (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 - `%C` class name (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 - `%A` function or method name alias (requires `enableCallStack: true` on the category, see [configuration object](api.md))
+- `%F` fully qualified caller name (requires `enableCallStack: true` on the category, see [configuration object](api.md))
 - `%x{<tokenname>}` add dynamic tokens to your log. Tokens are specified in the tokens parameter.
 - `%X{<tokenname>}` add values from the Logger context. Tokens are keys into the context values.
 - `%[` start a coloured block (colour will be taken from the log level, similar to `colouredLayout`)
