@@ -17,7 +17,7 @@ export interface Log4js {
     options: { format?: Format; level?: string; nolog?: any }
   ): any; // express.Handler;
   levels: Levels;
-  shutdown(cb: (error: Error) => void): void | null;
+  shutdown(cb?: (error: Error | undefined) => void): null;
 }
 
 export function getLogger(category?: string): Logger;
@@ -45,7 +45,7 @@ export function recording(): Recording;
 
 export const levels: Levels;
 
-export function shutdown(cb?: (error: Error) => void): void | null;
+export function shutdown(cb?: (error: Error | undefined) => void): null;
 
 export interface BasicLayout {
   type: 'basic';
