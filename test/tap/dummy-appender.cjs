@@ -1,6 +1,7 @@
 // Dummy appender for test purposes; set config.label to identify instances in a test
 
-function createDummyAppender() { // This is the function that generates an appender function
+function createDummyAppender() {
+  // This is the function that generates an appender function
   // This is the appender function itself
   return (/* loggingEvent */) => {
     // do nothing

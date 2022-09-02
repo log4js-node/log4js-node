@@ -11,12 +11,12 @@ const app = express();
 log4js.configure({
   appenders: {
     console: { type: 'console' },
-    file: { type: 'file', filename: 'logs/log4jsconnect.log' }
+    file: { type: 'file', filename: 'logs/log4jsconnect.log' },
   },
   categories: {
     default: { appenders: ['console'], level: 'debug' },
-    log4jslog: { appenders: ['file'], level: 'debug' }
-  }
+    log4jslog: { appenders: ['file'], level: 'debug' },
+  },
 });
 
 // define logger

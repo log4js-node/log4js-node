@@ -5,13 +5,13 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     cheeseLogs: { type: 'file', filename: 'cheese.log' },
-    console: { type: 'console' }
+    console: { type: 'console' },
   },
   categories: {
     cheese: { appenders: ['cheeseLogs'], level: 'error' },
     another: { appenders: ['console'], level: 'trace' },
-    default: { appenders: ['console', 'cheeseLogs'], level: 'trace' }
-  }
+    default: { appenders: ['console', 'cheeseLogs'], level: 'trace' },
+  },
 });
 
 // a custom logger outside of the log4js/lib/appenders directory can be accessed like so
@@ -25,7 +25,10 @@ const logger = log4js.getLogger('cheese');
 const otherLogger = log4js.getLogger();
 
 // this will get coloured output on console, and appear in cheese.log
-otherLogger.error('AAArgh! Something went wrong', { some: 'otherObject', useful_for: 'debug purposes' });
+otherLogger.error('AAArgh! Something went wrong', {
+  some: 'otherObject',
+  useful_for: 'debug purposes',
+});
 otherLogger.log('This should appear as info output');
 
 // these will not appear (logging level beneath error)

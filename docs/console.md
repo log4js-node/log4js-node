@@ -4,15 +4,16 @@ This appender uses node's console object to write log events. It can also be use
 
 # Configuration
 
-* `type` - `console`
-* `layout` - `object` (optional, defaults to colouredLayout) - see [layouts](layouts.md)
+- `type` - `console`
+- `layout` - `object` (optional, defaults to colouredLayout) - see [layouts](layouts.md)
 
 Note that all log events are output using `console.log` regardless of the event's level (so `ERROR` events will not be logged using `console.error`).
 
 # Example
+
 ```javascript
 log4js.configure({
-  appenders: { console: { type: 'console' } },
-  categories: { default: { appenders: [ 'console' ], level: 'info' } }
+  appenders: { console: { type: "console" } },
+  categories: { default: { appenders: ["console"], level: "info" } },
 });
 ```

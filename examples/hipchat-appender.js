@@ -10,13 +10,15 @@ log4js.configure({
   appenders: {
     hipchat: {
       type: 'hipchat',
-      hipchat_token: process.env.HIPCHAT_TOKEN || '< User token with Notification Privileges >',
-      hipchat_room: process.env.HIPCHAT_ROOM || '< Room ID or Name >'
-    }
+      hipchat_token:
+        process.env.HIPCHAT_TOKEN ||
+        '< User token with Notification Privileges >',
+      hipchat_room: process.env.HIPCHAT_ROOM || '< Room ID or Name >',
+    },
   },
   categories: {
-    default: { appenders: ['hipchat'], level: 'trace' }
-  }
+    default: { appenders: ['hipchat'], level: 'trace' },
+  },
 });
 
 const logger = log4js.getLogger('hipchat');
@@ -27,7 +29,6 @@ logger.trace('Test Trace Message');
 logger.fatal('Test Fatal Message');
 logger.error('Test Error Message');
 
-
 // alternative configuration demonstrating callback + custom layout
 // /////////////////////////////////////////////////////////////////
 
@@ -37,20 +38,22 @@ log4js.configure({
   appenders: {
     hipchat: {
       type: 'hipchat',
-      hipchat_token: process.env.HIPCHAT_TOKEN || '< User token with Notification Privileges >',
+      hipchat_token:
+        process.env.HIPCHAT_TOKEN ||
+        '< User token with Notification Privileges >',
       hipchat_room: process.env.HIPCHAT_ROOM || '< Room ID or Name >',
       hipchat_from: 'Mr. Semantics',
       hipchat_notify: false,
-      hipchat_response_callback: function (err, response, body) {
+      hipchat_response_callback: function(err, response, body) {
         if (err || response.statusCode > 300) {
           throw new Error('hipchat-notifier failed');
         }
         console.log('mr semantics callback success');
       },
-      layout: { type: 'basic' }
-    }
+      layout: { type: 'basic' },
+    },
   },
-  categories: { default: { appenders: ['hipchat'], level: 'trace' } }
+  categories: { default: { appenders: ['hipchat'], level: 'trace' } },
 });
 
 logger.info('Test customLayout from Mr. Semantics');

@@ -5,9 +5,9 @@ const log4js = require('../lib/log4js');
 
 log4js.configure({
   appenders: {
-    out: { type: 'stdout' }
+    out: { type: 'stdout' },
   },
-  categories: { default: { appenders: ['out'], level: 'debug' } }
+  categories: { default: { appenders: ['out'], level: 'debug' } },
 });
 
 let logger;

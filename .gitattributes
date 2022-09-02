@@ -8,13 +8,21 @@
 # for example, after the build script is run)
 .*      text eol=lf
 *.css   text eol=lf
+*.scss  text eol=lf
 *.html  text eol=lf
 *.js    text eol=lf
+*.cjs   text eol=lf
+*.mjs   text eol=lf
+*.ts    text eol=lf
+*.cts   text eol=lf
+*.mts   text eol=lf
 *.json  text eol=lf
 *.md    text eol=lf
 *.sh    text eol=lf
 *.txt   text eol=lf
 *.xml   text eol=lf
+*.yml   text eol=lf
+.husky/* text eol=lf
 
 # Exclude the `.htaccess` file from GitHub's language statistics
 # https://github.com/github/linguist#using-gitattributes

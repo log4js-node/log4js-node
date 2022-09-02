@@ -1,6 +1,8 @@
-const { test } = require("tap");
-const EE = require("events").EventEmitter;
-const levels = require("../../lib/levels");
+/* eslint max-classes-per-file: ["error", 2] */
+
+const { test } = require('tap');
+const EE = require('events').EventEmitter;
+const levels = require('../../lib/levels');
 
 class MockLogger {
   constructor() {
@@ -10,7 +12,7 @@ class MockLogger {
   }
 
   log() {
-    this.contexts.push(Object.assign({}, this.context));
+    this.contexts.push(Object.assign({}, this.context)); // eslint-disable-line prefer-object-spread
   }
 
   isLevelEnabled(level) {
@@ -30,8 +32,8 @@ function MockRequest(remoteAddr, method, originalUrl) {
   this.socket = { remoteAddress: remoteAddr };
   this.originalUrl = originalUrl;
   this.method = method;
-  this.httpVersionMajor = "5";
-  this.httpVersionMinor = "0";
+  this.httpVersionMajor = '5';
+  this.httpVersionMinor = '0';
   this.headers = {};
 }
 
@@ -43,7 +45,7 @@ class MockResponse extends EE {
   }
 
   end() {
-    this.emit("finish");
+    this.emit('finish');
   }
 
   setHeader(key, value) {
@@ -59,30 +61,32 @@ class MockResponse extends EE {
   }
 }
 
-test("log4js connect logger", batch => {
-  const clm = require("../../lib/connect-logger");
+test('log4js connect logger', (batch) => {
+  const clm = require('../../lib/connect-logger');
 
-  batch.test("with context config", t => {
+  batch.test('with context config', (t) => {
     const ml = new MockLogger();
     const cl = clm(ml, { context: true });
 
-    t.beforeEach(done => {
+    t.beforeEach((done) => {
       ml.contexts = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
-    t.test("response should be included in context", assert => {
+    t.test('response should be included in context', (assert) => {
       const { contexts } = ml;
       const req = new MockRequest(
-        "my.remote.addr",
-        "GET",
-        "http://url/hoge.png"
+        'my.remote.addr',
+        'GET',
+        'http://url/hoge.png'
       ); // not gif
       const res = new MockResponse(200);
       cl(req, res, () => {});
-      res.end("chunk", "encoding");
+      res.end('chunk', 'encoding');
 
-      assert.type(contexts, "Array");
+      assert.type(contexts, 'Array');
       assert.equal(contexts.length, 1);
       assert.type(contexts[0].res, MockResponse);
       assert.end();
@@ -91,27 +95,29 @@ test("log4js connect logger", batch => {
     t.end();
   });
 
-  batch.test("without context config", t => {
+  batch.test('without context config', (t) => {
     const ml = new MockLogger();
     const cl = clm(ml, {});
 
-    t.beforeEach(done => {
+    t.beforeEach((done) => {
       ml.contexts = [];
-      done();
+      if (typeof done === 'function') {
+        done();
+      }
     });
 
-    t.test("response should not be included in context", assert => {
+    t.test('response should not be included in context', (assert) => {
       const { contexts } = ml;
       const req = new MockRequest(
-        "my.remote.addr",
-        "GET",
-        "http://url/hoge.png"
+        'my.remote.addr',
+        'GET',
+        'http://url/hoge.png'
       ); // not gif
       const res = new MockResponse(200);
       cl(req, res, () => {});
-      res.end("chunk", "encoding");
+      res.end('chunk', 'encoding');
 
-      assert.type(contexts, "Array");
+      assert.type(contexts, 'Array');
       assert.equal(contexts.length, 1);
       assert.type(contexts[0].res, undefined);
       assert.end();

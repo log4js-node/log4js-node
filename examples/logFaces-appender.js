@@ -12,13 +12,14 @@ log4js.configure({
       application: 'MY-NODEJS', // (optional) name of the application (domain)
       remoteHost: 'localhost', // (optional) logFaces server host or IP address
       port: 55201, // (optional) logFaces UDP receiver port (must use JSON format)
-      layout: { // (optional) the layout to use for messages
+      layout: {
+        // (optional) the layout to use for messages
         type: 'pattern',
-        pattern: '%m'
-      }
-    }
+        pattern: '%m',
+      },
+    },
   },
-  categories: { default: { appenders: ['logFaces'], level: 'info' } }
+  categories: { default: { appenders: ['logFaces'], level: 'info' } },
 });
 
 const logger = log4js.getLogger('myLogger');

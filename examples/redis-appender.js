@@ -5,13 +5,13 @@ const log4js = require('../lib/log4js');
 log4js.configure({
   appenders: {
     out: {
-      type: 'console'
+      type: 'console',
     },
     file: {
       type: 'dateFile',
       filename: 'logs/log.txt',
       pattern: 'yyyyMMdd',
-      alwaysIncludePattern: false
+      alwaysIncludePattern: false,
     },
     db: {
       type: '@log4js-node/redis',
@@ -21,15 +21,15 @@ log4js.configure({
       channel: 'q_log',
       layout: {
         type: 'pattern',
-        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m'
-      }
-    }
+        pattern: '%d{yyyy-MM-dd hh:mm:ss:SSS}#%p#%m',
+      },
+    },
   },
   categories: {
     default: { appenders: ['out'], level: 'info' },
     dateFile: { appenders: ['file'], level: 'info' },
-    redis: { appenders: ['db'], level: 'info' }
-  }
+    redis: { appenders: ['db'], level: 'info' },
+  },
 });
 
 const log = log4js.getLogger('console');
