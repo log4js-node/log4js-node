@@ -5,6 +5,8 @@ const fs = require('fs');
 const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
 
+const osDelay = process.platform === 'win32' ? 400 : 200;
+
 const removeFiles = async (filenames) => {
   if (!Array.isArray(filenames)) filenames = [filenames];
   const promises = filenames.map((filename) => fs.promises.unlink(filename));
@@ -97,7 +99,7 @@ test('multiFile appender', (batch) => {
       debug.enable(originalNamespace);
     });
 
-    const timeoutMs = 25;
+    const timeoutMs = 50;
     log4js.configure({
       appenders: {
         multi: {
@@ -120,7 +122,7 @@ test('multiFile appender', (batch) => {
         '(timeout1) should have closed'
       );
       t.end();
-    }, timeoutMs * 1 + 50); // add a 50 ms delay
+    }, timeoutMs * 1 + osDelay);
   });
 
   batch.test('should close file safely after timeout', (t) => {
@@ -170,7 +172,7 @@ test('multiFile appender', (batch) => {
       debug.enable(originalNamespace);
     });
 
-    const timeoutMs = 25;
+    const timeoutMs = 50;
     sandboxedLog4js.configure({
       appenders: {
         multi: {
@@ -198,7 +200,7 @@ test('multiFile appender', (batch) => {
         'safely shutdown'
       );
       t.end();
-    }, timeoutMs * 1 + 50); // add a 50 ms delay
+    }, timeoutMs * 1 + osDelay);
   });
 
   batch.test('should close file after extended timeout', (t) => {
@@ -226,7 +228,7 @@ test('multiFile appender', (batch) => {
       debug.enable(originalNamespace);
     });
 
-    const timeoutMs = 200;
+    const timeoutMs = 1000;
     log4js.configure({
       appenders: {
         multi: {
@@ -257,7 +259,7 @@ test('multiFile appender', (batch) => {
         ),
         '(timeout1) should not have closed'
       );
-    }, timeoutMs * 1 + 50); // add a 50 ms delay
+    }, timeoutMs * 1 + osDelay);
     setTimeout(() => {
       t.match(
         debugLogs[debugLogs.length - 1],
@@ -265,7 +267,7 @@ test('multiFile appender', (batch) => {
         '(timeout2) should have closed'
       );
       t.end();
-    }, timeoutMs * 2 + 50); // add a 50 ms delay
+    }, timeoutMs * 2 + osDelay);
   });
 
   batch.test('should clear interval for active timers on shutdown', (t) => {
