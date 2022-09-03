@@ -42,7 +42,7 @@ The `Logger` object has the following properties:
 - `level` - where `level` is a log4js level or a string that matches a level (e.g. 'info', 'INFO', etc). This allows overriding the configured level for this logger. Changing this value applies to all loggers of the same category.
 - `useCallStack` - where `useCallStack` is a boolean to indicate if log events for this category use the call stack to generate line numbers and file names in the event. This allows overriding the configured useCallStack for this logger. Changing this value applies to all loggers of the same category.
 
-## Shutdown - `log4js.shutdown(cb)`
+## Shutdown - `log4js.shutdown([callback])`
 
 `shutdown` accepts a callback that will be called when log4js has closed all appenders and finished writing log events. Use this when your programme exits to make sure all your logs are written to files, sockets are closed, etc.
 
