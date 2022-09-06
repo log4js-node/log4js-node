@@ -39,7 +39,7 @@ Then your v2 config should be something like this:
 }}
 ```
 
-The functions to define the configuration programmatically have been remove (`addAppender`, `loadAppender`, etc). All configuration should now be done through the single `configure` function, passing in a filename or object.
+The functions to define the configuration programmatically have been removed (`addAppender`, `loadAppender`, etc). All configuration should now be done through the single `configure` function, passing in a filename or object.
 
 ## Console replacement
 
