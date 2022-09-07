@@ -1,4 +1,4 @@
-# Category Filter
+# No-Log Filter
 
 The no log filter allows you to exclude the log events that an appender will record.
 The log events will be excluded depending on the regular expressions provided in the configuration.
