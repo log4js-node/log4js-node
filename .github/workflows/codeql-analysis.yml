@@ -17,8 +17,6 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
-  schedule:
-    - cron: '15 11 * * 3'
 
 jobs:
   analyze:
@@ -70,3 +68,5 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:${{matrix.language}}"
