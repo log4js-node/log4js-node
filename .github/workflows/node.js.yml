@@ -8,6 +8,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch: {}
 
 jobs:
   build:
@@ -31,6 +32,3 @@ jobs:
     - run: npm run build --if-present
     - run: npm test
     - run: npm run typings
-    - run: npm audit
-      env:
-        NODE_ENV: production
