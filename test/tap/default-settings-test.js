@@ -3,9 +3,8 @@ const debug = require('debug');
 const sandbox = require('@log4js-node/sandboxed-module');
 
 test('default settings', (batch) => {
-  const originalListener = process.listeners('warning')[
-    process.listeners('warning').length - 1
-  ];
+  const originalListener =
+    process.listeners('warning')[process.listeners('warning').length - 1];
   const warningListener = (error) => {
     if (error.name === 'DeprecationWarning') {
       if (
@@ -49,7 +48,7 @@ test('default settings', (batch) => {
         name: 'stdout',
         appender() {
           // deprecated
-          return function(evt) {
+          return function (evt) {
             output.push(evt);
           };
         },

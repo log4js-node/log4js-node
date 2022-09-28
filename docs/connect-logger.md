@@ -20,7 +20,7 @@ log4js.configure({
 var logger = log4js.getLogger("cheese");
 var app = express();
 app.use(log4js.connectLogger(logger, { level: "info" }));
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.send("hello world");
 });
 app.listen(5000);
