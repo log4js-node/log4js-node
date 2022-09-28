@@ -8,10 +8,10 @@ class MockLogger {
   constructor() {
     this.level = levels.TRACE;
     this.messages = [];
-    this.log = function(level, message) {
+    this.log = function (level, message) {
       this.messages.push({ level, message });
     };
-    this.isLevelEnabled = function(level) {
+    this.isLevelEnabled = function (level) {
       return level.isGreaterThanOrEqualTo(this.level);
     };
   }

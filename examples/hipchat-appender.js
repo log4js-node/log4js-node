@@ -44,7 +44,7 @@ log4js.configure({
       hipchat_room: process.env.HIPCHAT_ROOM || '< Room ID or Name >',
       hipchat_from: 'Mr. Semantics',
       hipchat_notify: false,
-      hipchat_response_callback: function(err, response, body) {
+      hipchat_response_callback: function (err, response, body) {
         if (err || response.statusCode > 300) {
           throw new Error('hipchat-notifier failed');
         }

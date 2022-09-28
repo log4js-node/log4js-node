@@ -181,7 +181,7 @@ test('TCP Appender', (batch) => {
     log4js.addLayout(
       'json',
       () =>
-        function(logEvent) {
+        function (logEvent) {
           return JSON.stringify({
             time: logEvent.startTime,
             message: logEvent.data[0],
