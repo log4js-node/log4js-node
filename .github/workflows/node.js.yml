@@ -60,6 +60,13 @@ jobs:
           echo "::set-output name=install::npm ci"
         fi
 
+    - name: Disable prettier on older Node.js (8.x, 10.x, 12.x)
+      run: |
+        sed -i '/"prettier": "prettier/d' package.json
+        echo Removed
+        sed -n '/"prettier": "prettier/p' package.json
+      if: contains(fromJson('["8.x", "10.x", "12.x"]'), matrix.node-version)
+
     - name: Install downgraded modules ${{ matrix.npm-i }}
       run: |
         npm install --save-dev ${{ matrix.npm-i }}
