@@ -26,13 +26,16 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         include:
           - node-version: 8.x
-            npm-i: "@commitlint/cli@9.x @commitlint/config-conventional@9.x eslint@6.x eslint-config-airbnb-base@14.x eslint-config-prettier@6.x fs-extra@8.x husky@6.x"
+            npm-i: "eslint@6.x eslint-config-airbnb-base@14.x eslint-config-prettier@6.x eslint-plugin-prettier@3.x fs-extra@8.x nyc@14.x tap@14.x"
 
           - node-version: 10.x
-            npm-i: "@commitlint/cli@12.x @commitlint/config-conventional@12.x eslint@7.x fs-extra@9.x husky@6.x"
+            npm-i: "eslint@7.x fs-extra@9.x nyc@14.x tap@14.x"
 
           - node-version: 12.x
-            npm-i: "@commitlint/cli@16.x @commitlint/config-conventional@16.x husky@7.x"
+            npm-i: "nyc@14.x tap@14.x"
+
+          - node-version: 14.x
+            npm-i: "nyc@14.x tap@14.x"
 
     steps:
     - uses: actions/checkout@v3
