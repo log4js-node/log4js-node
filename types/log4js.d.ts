@@ -74,8 +74,20 @@ export interface Level {
   level: number;
   levelStr: string;
 }
-
-export interface LoggingEvent {
+/**
+ * A parsed CallStack from an `Error.stack` trace
+ */
+export interface CallStack {
+  functionName: string;
+  fileName: string;
+  lineNumber: number;
+  columnNumber: number;
+  /**
+   * The stack string after the skipped lines
+   */
+  callStack: string;
+}
+export interface LoggingEvent extends Partial<CallStack> {
   categoryName: string; // name of category
   level: Level; // level of message
   data: any[]; // objects to log
@@ -86,11 +98,10 @@ export interface LoggingEvent {
     workerId: number;
     worker: number;
   };
-  functionName?: string;
-  fileName?: string;
-  lineNumber?: number;
-  columnNumber?: number;
-  callStack?: string;
+  /**
+   * The first Error object in the data if there is one
+   */
+  error?: Error;
   serialise(): string;
 }
 
@@ -432,7 +443,21 @@ export interface Logger {
 
   clearContext(): void;
 
-  setParseCallStackFunction(parseFunction: Function): void;
+  /**
+   * Replace the basic parse function with a new custom one
+   * - Note that linesToSkip will be based on the origin of the Error object in addition to the callStackLinesToSkip (at least 1)
+   * @param parseFunction the new parseFunction. Use `undefined` to reset to the base implementation
+   */
+  setParseCallStackFunction(
+    parseFunction: (error: Error, linesToSkip: number) => CallStack | undefined
+  ): void;
+
+  /**
+   * Adjust the value of linesToSkip when the parseFunction is called.
+   *
+   * Cannot be less than 0.
+   */
+  callStackLinesToSkip: number;
 
   trace(message: any, ...args: any[]): void;
 
