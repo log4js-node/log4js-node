@@ -110,7 +110,7 @@ test('log4js logLevelFilter', (batch) => {
     logger.trace('trace');
     // wait for the file system to catch up
     setTimeout(() => {
-      t.test('tmp-tests.log should contain all log messages', (assert) => {
+      t.test('logLevelFilter.log should contain all log messages', (assert) => {
         fs.readFile(
           `${__dirname}/logLevelFilter.log`,
           'utf8',
@@ -129,7 +129,7 @@ test('log4js logLevelFilter', (batch) => {
         );
       });
       t.test(
-        'tmp-tests-warnings.log should contain only error and warning logs',
+        'logLevelFilter-warnings.log should contain only error and warning logs',
         (assert) => {
           fs.readFile(
             `${__dirname}/logLevelFilter-warnings.log`,
@@ -143,7 +143,7 @@ test('log4js logLevelFilter', (batch) => {
         }
       );
       t.test(
-        'tmp-tests-debugs.log should contain only trace and debug logs',
+        'logLevelFilter-debugs.log should contain only trace and debug logs',
         (assert) => {
           fs.readFile(
             `${__dirname}/logLevelFilter-debugs.log`,
