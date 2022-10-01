@@ -8,7 +8,17 @@ test('LoggingEvent', (batch) => {
     const event = new LoggingEvent(
       'cheese',
       levels.DEBUG,
-      ['log message', parseInt('abc', 10), 1 / 0, -1 / 0, undefined],
+      [
+        'log message',
+        Number('abc'),
+        'NaN',
+        1 / 0,
+        'Infinity',
+        -1 / 0,
+        '-Infinity',
+        undefined,
+        'undefined',
+      ],
       {
         user: 'bob',
       }
@@ -19,12 +29,16 @@ test('LoggingEvent', (batch) => {
     t.equal(rehydratedEvent.startTime, '2018-02-04T18:30:23.010Z');
     t.equal(rehydratedEvent.categoryName, 'cheese');
     t.equal(rehydratedEvent.level.levelStr, 'DEBUG');
-    t.equal(rehydratedEvent.data.length, 5);
+    t.equal(rehydratedEvent.data.length, 9);
     t.equal(rehydratedEvent.data[0], 'log message');
-    t.equal(rehydratedEvent.data[1], 'NaN');
-    t.equal(rehydratedEvent.data[2], 'Infinity');
-    t.equal(rehydratedEvent.data[3], '-Infinity');
-    t.equal(rehydratedEvent.data[4], 'undefined');
+    t.equal(rehydratedEvent.data[1], '__LOG4JS_NaN__');
+    t.equal(rehydratedEvent.data[2], 'NaN');
+    t.equal(rehydratedEvent.data[3], '__LOG4JS_Infinity__');
+    t.equal(rehydratedEvent.data[4], 'Infinity');
+    t.equal(rehydratedEvent.data[5], '__LOG4JS_-Infinity__');
+    t.equal(rehydratedEvent.data[6], '-Infinity');
+    t.equal(rehydratedEvent.data[7], '__LOG4JS_undefined__');
+    t.equal(rehydratedEvent.data[8], 'undefined');
     t.equal(rehydratedEvent.context.user, 'bob');
     t.end();
   });
@@ -36,7 +50,18 @@ test('LoggingEvent', (batch) => {
       level: {
         levelStr: 'INFO',
       },
-      data: ['some log message', { x: 1 }],
+      data: [
+        'some log message',
+        { x: 1 },
+        '__LOG4JS_NaN__',
+        'NaN',
+        '__LOG4JS_Infinity__',
+        'Infinity',
+        '__LOG4JS_-Infinity__',
+        '-Infinity',
+        '__LOG4JS_undefined__',
+        'undefined',
+      ],
       context: { thing: 'otherThing' },
       pid: '1234',
       functionName: 'bound',
@@ -50,8 +75,17 @@ test('LoggingEvent', (batch) => {
     t.same(event.startTime, new Date(Date.UTC(2018, 1, 4, 10, 25, 23, 10)));
     t.equal(event.categoryName, 'biscuits');
     t.same(event.level, levels.INFO);
+    t.equal(event.data.length, 10);
     t.equal(event.data[0], 'some log message');
     t.equal(event.data[1].x, 1);
+    t.ok(Number.isNaN(event.data[2]));
+    t.equal(event.data[3], 'NaN');
+    t.equal(event.data[4], 1 / 0);
+    t.equal(event.data[5], 'Infinity');
+    t.equal(event.data[6], -1 / 0);
+    t.equal(event.data[7], '-Infinity');
+    t.equal(event.data[8], undefined);
+    t.equal(event.data[9], 'undefined');
     t.equal(event.context.thing, 'otherThing');
     t.equal(event.pid, '1234');
     t.equal(event.functionName, 'bound');
@@ -167,7 +201,18 @@ test('LoggingEvent', (batch) => {
     const event = new LoggingEvent(
       'cheese',
       levels.DEBUG,
-      [error, 'log message'],
+      [
+        error,
+        'log message',
+        Number('abc'),
+        'NaN',
+        1 / 0,
+        'Infinity',
+        -1 / 0,
+        '-Infinity',
+        undefined,
+        'undefined',
+      ],
       {
         user: 'bob',
       },
