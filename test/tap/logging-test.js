@@ -4,6 +4,12 @@ const util = require('util');
 const recording = require('../../lib/appenders/recording');
 
 test('log4js', (batch) => {
+  batch.test('should throw error for invalid callback to shutdown', (t) => {
+    const log4js = require('../../lib/log4js');
+    t.throws(() => log4js.shutdown([]));
+    t.end();
+  });
+
   batch.test(
     'shutdown should return appenders and categories back to initial state',
     (t) => {
