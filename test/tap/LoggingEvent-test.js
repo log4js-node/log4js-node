@@ -4,6 +4,21 @@ const LoggingEvent = require('../../lib/LoggingEvent');
 const levels = require('../../lib/levels');
 
 test('LoggingEvent', (batch) => {
+  batch.test('should throw error for invalid location', (t) => {
+    t.throws(
+      () =>
+        new LoggingEvent(
+          'cheese',
+          levels.DEBUG,
+          ['log message'],
+          undefined,
+          []
+        ),
+      'Invalid location type passed to LoggingEvent constructor'
+    );
+    t.end();
+  });
+
   batch.test('should serialise to flatted', (t) => {
     const event = new LoggingEvent(
       'cheese',
