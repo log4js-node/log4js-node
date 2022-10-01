@@ -371,7 +371,10 @@ test('../../lib/logger', (batch) => {
     t.equal(events[0].fileName, initialEvent.fileName);
     t.equal(events[0].columnNumber, initialEvent.columnNumber);
 
-    t.throws(() => logger.setParseCallStackFunction('not a function'));
+    t.throws(
+      () => logger.setParseCallStackFunction('not a function'),
+      'Invalid type passed to setParseCallStackFunction'
+    );
 
     t.end();
   });
