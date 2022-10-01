@@ -1,5 +1,42 @@
 # log4js-node Changelog
 
+## 6.7.0
+
+- [feat(log4js): if cb is passed to shutdown(), it must be a function or it will throw error immediately](https://github.com/log4js-node/log4js-node/pull/1334) - thanks [@lamweili](https://github.com/lamweili)
+- [feat: patternLayout function name, class name and function alias](https://github.com/log4js-node/log4js-node/pull/1316) - thanks [@l0ner](https://github.com/l0ner)
+  - [refactor(#1316): code flow and readability (%C:class, %M:function, %A:alias, %F:full - in order)](https://github.com/log4js-node/log4js-node/pull/1317) - thanks [@lamweili](https://github.com/lamweili)
+- [feat: add ability to use passed in Errors for callstacks and adjust how deeply you want to look for information](https://github.com/log4js-node/log4js-node/pull/1269) - thanks [@ZachHaber](https://github.com/ZachHaber)
+- [fix(LoggingEvent): serde for NaN, Infinity, -Infinity, undefined](https://github.com/log4js-node/log4js-node/pull/1332) - thanks [@lamweili](https://github.com/lamweili)
+- [fix: make shutdown return value consistent](https://github.com/log4js-node/log4js-node/pull/1082) - thanks [@richardhinkamp](https://github.com/richardhinkamp)
+  - [refactor(#1082): removed return value for `log4js.shutdown()`](https://github.com/log4js-node/log4js-node/pull/1319) - thanks [@lamweili](https://github.com/lamweili)
+- [test: adjusted timeout interval for OS operations](https://github.com/log4js-node/log4js-node/pull/1318) - thanks [@lamweili](https://github.com/lamweili)
+- [refactor(LoggingEvent): loop through location keys instead of hard-coding one-by-one](https://github.com/log4js-node/log4js-node/pull/1333) - thanks [@lamweili](https://github.com/lamweili)
+- [docs(noLogFilter): fix heading (`Category Filter` --> `No-Log Filter`)](https://github.com/log4js-node/log4js-node/pull/1322) - thanks [@gkalpak](https://github.com/gkalpak)
+- [docs(migration-guide): fix typo (`have been remove` --> `have been removed`)](https://github.com/log4js-node/log4js-node/pull/1321) - thanks [@gkalpak](https://github.com/gkalpak)
+- [docs: added quotes for `just-errors` JSON property key ](https://github.com/log4js-node/log4js-node/pull/1312) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: skip prettier on older Node.js (8.x, 10.x, 12.x)](https://github.com/log4js-node/log4js-node/pull/1328) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: manually downgrade dev dependencies for older versions](https://github.com/log4js-node/log4js-node/pull/1326) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: removed scheduled job from codeql and separated npm audit](https://github.com/log4js-node/log4js-node/pull/1325) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps): bump typescript from 4.8.3 to 4.8.4](https://github.com/log4js-node/log4js-node/pull/1330) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps-dev): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1329) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps-dev): bump nyc from 14.1.1 to 15.1.0
+  - chore(deps-dev): bump tap from 14.11.0 to 16.3.0
+  - chore(deps-dev): bump eslint-plugin-prettier from 3.4.1 to 4.2.1
+  - chore(deps-dev): bump prettier from 1.19.1 to 2.7.1
+  - chore(deps-dev): updated package-lock.json
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1327) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps-dev): bump @commitlint/cli from 17.0.3 to 17.1.2
+  - chore(deps-dev): bump @commitlint/config-conventional from 17.0.3 to 17.1.0
+  - chore(deps-dev): bump eslint from 6.8.0 to 8.24.0
+  - chore(deps-dev): bump eslint-config-airbnb-base from 14.2.1 to 15.0.0
+  - chore(deps-dev): bump eslint-config-prettier from 6.15.0 to 8.5.0
+  - chore(deps-dev): bump fs-extra from 8.1.0 to 10.1.0
+  - chore(deps-dev): bump typescript from 4.7.4 to 4.8.3
+  - chore(deps): bump date-format from 4.0.13 to 4.0.14
+  - chore(deps): bump flatted from 3.2.6 to 3.2.7
+  - chore(deps): bump streamroller from 3.1.2 to 3.1.3
+  - chore(deps): updated package-lock.json
+
 ## 6.6.1
 
 - [fix: connectlogger nolog function](https://github.com/log4js-node/log4js-node/pull/1285) - thanks [@eyoboue](https://github.com/eyoboue)
