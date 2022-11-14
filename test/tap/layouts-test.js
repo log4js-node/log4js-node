@@ -375,6 +375,122 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
+    t.test('%m should apply util.format on data', (assert) => {
+      const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+      eventWithSeveralDataEntry.data = [
+        'This %s a %s like other ones',
+        "isn't",
+        'test',
+      ];
+      testPattern(
+        assert,
+        layout,
+        eventWithSeveralDataEntry,
+        tokens,
+        '%m',
+        "This isn't a test like other ones"
+      );
+      assert.end();
+    });
+
+    t.test(
+      '%m{P}, with P been an integer, shoud only consider data.slice( P )',
+      (assert) => {
+        const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+        eventWithSeveralDataEntry.data = [
+          'This %s a %s like other ones',
+          "isn't",
+          'test',
+        ];
+        testPattern(
+          assert,
+          layout,
+          eventWithSeveralDataEntry,
+          tokens,
+          '%m{1}',
+          "isn't test"
+        );
+        assert.end();
+      }
+    );
+
+    t.test('%m{0, 1} should behave like a dummy layout', (assert) => {
+      const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+      eventWithSeveralDataEntry.data = [
+        'This %s a %s like other ones',
+        "isn't",
+        'test',
+      ];
+      testPattern(
+        assert,
+        layout,
+        eventWithSeveralDataEntry,
+        tokens,
+        '%m{0, 1}',
+        'This %s a %s like other ones'
+      );
+      assert.end();
+    });
+
+    t.test('%m{1, 2} shoud only consider data.slice( 1, 2 )', (assert) => {
+      const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+      eventWithSeveralDataEntry.data = [
+        'This %s a %s like other ones',
+        "isn't",
+        'test',
+      ];
+      testPattern(
+        assert,
+        layout,
+        eventWithSeveralDataEntry,
+        tokens,
+        '%m{1,2}',
+        "isn't"
+      );
+      assert.end();
+    });
+
+    t.test('%m{1, 2} shoud only consider data.slice( 1, 2 )', (assert) => {
+      const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+      eventWithSeveralDataEntry.data = [
+        'This %s a %s like other ones',
+        "isn't",
+        'test',
+      ];
+      testPattern(
+        assert,
+        layout,
+        eventWithSeveralDataEntry,
+        tokens,
+        '%m{1,2}',
+        "isn't"
+      );
+      assert.end();
+    });
+
+    t.test(
+      '%m{0, -1} should consider the whole data except the last element',
+      (assert) => {
+        const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
+        eventWithSeveralDataEntry.data = [
+          'This %s a %s like %s ones',
+          "isn't",
+          'test',
+          'other',
+          "won't be considered in call to util.format",
+        ];
+        testPattern(
+          assert,
+          layout,
+          eventWithSeveralDataEntry,
+          tokens,
+          '%m{0,-1}',
+          "This isn't a test like other ones"
+        );
+        assert.end();
+      }
+    );
+
     t.test('%n should output a new line', (assert) => {
       testPattern(assert, layout, event, tokens, '%n', EOL);
       assert.end();
