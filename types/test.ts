@@ -190,3 +190,35 @@ if (loggingEventsPostReset.length !== 0) {
     `Expected 0 recorded events after reset, got ${loggingEventsPostReset.length}`
   );
 }
+
+log4js.configure({
+  levels: {
+    VERBOSE: { value: 10500, colour: 'cyan' },
+    SILLY: { value: 4500, colour: 'blue' },
+  },
+  appenders: {
+    console: { type: 'console' },
+  },
+  categories: {
+    testApp: { appenders: ['console'], level: 'info' },
+    default: { appenders: ['console'], level: 'info' },
+  },
+});
+
+const logger9 = log4js.getLogger('testApp');
+logger9.level = 'silly';
+logger9.debug('test 123');
+
+// update Logger interface with new custom levels
+declare module './log4js' {
+  interface Logger {
+    isVerboseEnabled: boolean;
+    isSillyEnabled: boolean;
+
+    verbose(message: any, ...args: any[]): void;
+    silly(message: any, ...args: any[]): void;
+  }
+}
+
+logger9.verbose('asdf');
+logger9.silly('asdfasdfasdf');

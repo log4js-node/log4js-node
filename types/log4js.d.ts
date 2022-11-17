@@ -406,7 +406,14 @@ export interface Configuration {
   };
   pm2?: boolean;
   pm2InstanceVar?: string;
-  levels?: Levels;
+  levels?:
+    | Levels
+    | {
+        [name: string]: {
+          value: number;
+          colour: string;
+        };
+      };
   disableClustering?: boolean;
 }
 
