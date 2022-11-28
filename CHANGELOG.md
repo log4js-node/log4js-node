@@ -1,5 +1,19 @@
 # log4js-node Changelog
 
+## 6.7.1
+
+- [type: updated Configuration.levels type to allow for custom log levels](https://github.com/log4js-node/log4js-node/pull/1348) - thanks [@lamweili](https://github.com/lamweili)
+- [docs: fixed typo in `layouts.md`](https://github.com/log4js-node/log4js-node/pull/1338) - thanks [@dtslvr](https://github.com/dtslvr)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1349) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps-dev): bump @commitlint/cli from 17.1.2 to 17.3.0
+  - chore(deps-dev): bump @commitlint/config-conventional from 17.1.0 to 17.3.0
+  - chore(deps-dev): bump eslint from 8.24.0 to 8.28.0
+  - chore(deps-dev): bump husky from 8.0.1 to 8.0.2
+  - chore(deps-dev): bump prettier from 2.7.1 to 2.8.0
+  - chore(deps-dev): bump tap from 16.3.0 to 16.3.2
+  - chore(deps-dev): bump typescript from 4.8.4 to 4.9.3
+  - chore(deps-dev): updated package-lock.json
+
 ## 6.7.0
 
 - [feat(log4js): if cb is passed to shutdown(), it must be a function or it will throw error immediately](https://github.com/log4js-node/log4js-node/pull/1334) - thanks [@lamweili](https://github.com/lamweili)
