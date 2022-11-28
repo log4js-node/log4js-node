@@ -134,6 +134,8 @@ Fields can be any of:
 - `%c` log category
 - `%h` hostname
 - `%m` log data
+- `%m{l}`, where l is an integer, log data.slice(l)
+- `%m{l,u}`, where l and u are integers, log data.slice(l,u)
 - `%d` date, formatted - default is `ISO8601`, format options are: `ISO8601`, `ISO8601_WITH_TZ_OFFSET`, `ABSOLUTETIME`, `DATETIME`, or any string compatible with the [date-format](https://www.npmjs.com/package/date-format) library. e.g. `%d{DATETIME}`, `%d{yyyy/MM/dd-hh.mm.ss}`
 - `%%` % - for when you want a literal `%` in your output
 - `%n` newline
