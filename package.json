@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",
-    "@commitlint/config-conventional": "^17.1.0",
+    "@commitlint/config-conventional": "^17.3.0",
     "@log4js-node/sandboxed-module": "^2.2.1",
     "callsites": "^3.1.0",
     "deep-freeze": "0.0.1",
