@@ -53,12 +53,7 @@ jobs:
       run: |
         npm -v
         npmMajorVer=$(npm -v | cut -d. -f1)
-        echo "::set-output name=major::$npmMajorVer"
-        if [ $npmMajorVer -le 5 ]; then
-          echo "::set-output name=install::npm install"
-        else 
-          echo "::set-output name=install::npm ci"
-        fi
+        echo "major=$npmMajorVer" >> $GITHUB_OUTPUT
 
     - name: Disable prettier on older Node.js (8.x, 10.x, 12.x)
       run: |
