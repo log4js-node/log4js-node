@@ -447,24 +447,6 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
-    t.test('%m{1,2} should only consider data.slice(1, 2)', (assert) => {
-      const eventWithSeveralDataEntry = JSON.parse(JSON.stringify(event));
-      eventWithSeveralDataEntry.data = [
-        'This %s a %s like other ones',
-        "isn't",
-        'test',
-      ];
-      testPattern(
-        assert,
-        layout,
-        eventWithSeveralDataEntry,
-        tokens,
-        '%m{1,2}',
-        "isn't"
-      );
-      assert.end();
-    });
-
     t.test(
       '%m{0,-1} should consider the whole data except the last element',
       (assert) => {
