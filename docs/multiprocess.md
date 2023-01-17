@@ -10,7 +10,8 @@ The multiprocess appender sends log events to a master server over TCP sockets. 
 
 - `type` - `multiprocess`
 - `mode` - `master|worker` - controls whether the appender listens for log events sent over the network, or is responsible for serialising events and sending them to a server.
-- `appender` - `string` (only needed if `mode` == `master`)- the name of the appender to send the log events to
+- `appender` - `string | Array<String>` (only needed if `mode` == `master`)- the name of the appender to send the log events to (exists for backward compatibility)
+- `appenders` - `string | Array<String>` (only needed if `mode` == `master`)- the names of the appenders to send the log events to
 - `loggerPort` - `integer` (optional, defaults to `5000`) - the port to listen on, or send to
 - `loggerHost` - `string` (optional, defaults to `localhost`) - the host/IP address to listen on, or send to
 
@@ -23,7 +24,7 @@ log4js.configure({
     server: {
       type: "multiprocess",
       mode: "master",
-      appender: "file",
+      appenders: ["file"],
       loggerHost: "0.0.0.0",
     },
   },

@@ -9,7 +9,8 @@ You can stop to log them through a regular expression.
 
 - `type` - `"noLogFilter"`
 - `exclude` - `string | Array<string>` - the regular expression (or the regular expressions if you provide an array of values) will be used for evaluating the events to pass to the appender. The events, which will match the regular expression, will be excluded and so not logged.
-- `appender` - `string` - the name of an appender, defined in the same configuration, that you want to filter.
+- `appender` - `string | Array<String>` - the name of the appender, defined in the same configuration, that you want to filter. (exists for backward compatibility)
+- `appenders` - `string | Array<String>` - the names of the appenders, defined in the same configuration, that you want to filter.
 
 ## Example
 
@@ -20,7 +21,7 @@ log4js.configure({
     filtered: {
       type: "noLogFilter",
       exclude: "not",
-      appender: "everything",
+      appenders: ["everything"],
     },
   },
   categories: {

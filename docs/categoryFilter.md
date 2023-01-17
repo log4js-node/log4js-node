@@ -6,7 +6,8 @@ This is not strictly an appender - it wraps around another appender and stops lo
 
 - `type` - `"categoryFilter"`
 - `exclude` - `string | Array<string>` - the category (or categories if you provide an array of values) that will be excluded from the appender.
-- `appender` - `string` - the name of the appender to filter.
+- `appender` - `string | Array<String>` - the name of the appender to filter. (exists for backward compatibility)
+- `appenders` - `string | Array<String>` - the names of the appenders to filter.
 
 ## Example
 
@@ -17,7 +18,7 @@ log4js.configure({
     "no-noise": {
       type: "categoryFilter",
       exclude: "noisy.component",
-      appender: "everything",
+      appenders: ["everything"],
     },
   },
   categories: {

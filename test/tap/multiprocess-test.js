@@ -365,7 +365,7 @@ test('Multiprocess Appender', async (batch) => {
           appenders: { master: { type: 'multiprocess', mode: 'master' } },
           categories: { default: { appenders: ['master'], level: 'trace' } },
         }),
-      new Error('multiprocess master must have an "appender" defined')
+      new Error('multiprocess master appender must have an "appender" defined')
     );
     t.end();
   });

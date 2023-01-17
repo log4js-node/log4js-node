@@ -5,7 +5,8 @@ The log level filter allows you to restrict the log events that an appender will
 ## Configuration
 
 - `type` - `logLevelFilter`
-- `appender` - `string` - the name of an appender, defined in the same configuration, that you want to filter
+- `appender` - `string | Array<String>` - the name of the appender, defined in the same configuration, that you want to filter (exists for backward compatibility)
+- `appenders` - `string | Array<String>` - the names of the appenders, defined in the same configuration, that you want to filter
 - `level` - `string` - the minimum level of event to allow through the filter
 - `maxLevel` - `string` (optional, defaults to `FATAL`) - the maximum level of event to allow through the filter
 
@@ -20,7 +21,7 @@ log4js.configure({
     emergencies: { type: "file", filename: "panic-now.log" },
     "just-errors": {
       type: "logLevelFilter",
-      appender: "emergencies",
+      appenders: ["emergencies"],
       level: "error",
     },
   },
