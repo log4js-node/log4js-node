@@ -23,6 +23,7 @@ The following appenders are included with log4js. Some require extra dependencie
 
 - [categoryFilter](categoryFilter.md)
 - [console](console.md)
+- [crlfFilter](crlfFilter.md)
 - [dateFile](dateFile.md)
 - [file](file.md)
 - [fileSync](fileSync.md)
