@@ -98,7 +98,7 @@ There's also [an example application](https://github.com/log4js-node/log4js-exam
 ## TypeScript
 
 ```ts
-import log4js from "log4js";
+import * as log4js from "log4js";
 log4js.configure({
   appenders: { cheese: { type: "file", filename: "cheese.log" } },
   categories: { default: { appenders: ["cheese"], level: "error" } },
