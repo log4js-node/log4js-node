@@ -52,6 +52,40 @@ test('log4js fileAppender', (batch) => {
     t.end();
   });
 
+  batch.test('with tilde expansion in filename', async (t) => {
+    const fileName = 'tmpTilde.log';
+    const expandedPath = path.join(__dirname, fileName);
+    await removeFile(expandedPath);
+
+    const sandboxedLog4js = sandbox.require('../../lib/log4js', {
+      requires: {
+        os: {
+          homedir() {
+            return __dirname;
+          },
+        },
+      },
+    });
+
+    t.teardown(async () => {
+      await new Promise((resolve) => {
+        sandboxedLog4js.shutdown(resolve);
+      });
+      await removeFile(expandedPath);
+    });
+
+    sandboxedLog4js.configure({
+      appenders: { file: { type: 'file', filename: path.join('~', fileName) } },
+      categories: { default: { appenders: ['file'], level: 'debug' } },
+    });
+
+    t.ok(
+      fs.existsSync(expandedPath),
+      'should expand tilde to create in home directory'
+    );
+    t.end();
+  });
+
   batch.test('should give error if invalid filename', async (t) => {
     const file = '';
     t.throws(
