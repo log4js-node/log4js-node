@@ -40,6 +40,41 @@ test('log4js fileSyncAppender', (batch) => {
     });
   });
 
+  batch.test('with tilde expansion in filename', (t) => {
+    const fileName = 'tmpTilde.log';
+    const expandedPath = path.join(__dirname, fileName);
+    remove(expandedPath);
+
+    const sandboxedLog4js = sandbox.require('../../lib/log4js', {
+      requires: {
+        os: {
+          homedir() {
+            return __dirname;
+          },
+        },
+      },
+    });
+
+    t.teardown(() => {
+      log4js.shutdown(() => {
+        remove(expandedPath);
+      });
+    });
+
+    sandboxedLog4js.configure({
+      appenders: {
+        sync: { type: 'fileSync', filename: path.join('~', fileName) },
+      },
+      categories: { default: { appenders: ['sync'], level: 'debug' } },
+    });
+
+    t.ok(
+      fs.existsSync(expandedPath),
+      'should expand tilde to create in home directory'
+    );
+    t.end();
+  });
+
   batch.test('with existing file', (t) => {
     const testFile = path.join(__dirname, '/fa-existing-file-sync-test.log');
     const logger = log4js.getLogger('default-settings');
