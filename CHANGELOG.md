@@ -1,10 +1,38 @@
 # log4js-node Changelog
 
-## 6.7.1
+## [6.8.0](https://github.com/log4js-node/log4js-node/milestone/92)
+
+- [feat: added `log4js.isConfigured()` API](https://github.com/log4js-node/log4js-node/pull/1364) - thanks [@lamweili](https://github.com/lamweili)
+  - [docs: added `log4js.isConfigured()`](https://github.com/log4js-node/log4js-node/pull/1369) - thanks [@lamweili](https://github.com/lamweili)
+- [feat(layout): support a specifier on %m](https://github.com/log4js-node/log4js-node/pull/1346) - thanks [@lamweili](https://github.com/lamweili)
+- [fix: tilde expansion for windows](https://github.com/log4js-node/log4js-node/pull/1363) - thanks [@lamweili](https://github.com/lamweili)
+- [docs: updated typescript usage](https://github.com/log4js-node/log4js-node/pull/1361) - thanks [@lamweili](https://github.com/lamweili)
+- [test: improved test for fileAppender](https://github.com/log4js-node/log4js-node/pull/1365) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: generate coverage report in both text and html](https://github.com/log4js-node/log4js-node/pull/1368) - thanks [@lamweili](https://github.com/lamweili)
+- [ci: replaced deprecated github set-output](https://github.com/log4js-node/log4js-node/pull/1351) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1367) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps): bump streamroller from 3.1.3 to 3.1.5
+  - chore(deps): updated package-lock.json
+- [chore(deps-dev): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1366) - thanks [@lamweili](https://github.com/lamweili)
+  - chore(deps-dev): bump @commitlint/cli from 17.3.0 to 17.4.4
+  - chore(deps-dev): bump @commitlint/config-conventional from 17.3.0 to 17.4.4
+  - chore(deps-dev): bump eslint from 8.28.0 to 8.34.0
+  - chore(deps-dev): bump eslint-config-prettier from 8.5.0 to 8.6.0
+  - chore(deps-dev): bump eslint-import-resolver-node from 0.3.6 to 0.3.7
+  - chore(deps-dev): bump eslint-plugin-import from 2.26.0 to 2.27.5
+  - chore(deps-dev): bump fs-extra from 10.1.0 to 11.1.0
+  - chore(deps-dev): bump husky from 8.0.2 to 8.0.3
+  - chore(deps-dev): bump prettier from 2.8.0 to 2.8.4
+  - chore(deps-dev): bump tap from 16.3.2 to 16.3.4
+  - chore(deps-dev): bump typescript from 4.9.3 to 4.9.5
+  - chore(deps-dev): updated package-lock.json
+- [chore(deps-dev): bump json5 from 1.0.1 to 1.0.2](https://github.com/log4js-node/log4js-node/pull/1357) - thanks [@Dependabot](https://github.com/dependabot)
+
+## [6.7.1](https://github.com/log4js-node/log4js-node/milestone/91)
 
 - [type: updated Configuration.levels type to allow for custom log levels](https://github.com/log4js-node/log4js-node/pull/1348) - thanks [@lamweili](https://github.com/lamweili)
 - [docs: fixed typo in `layouts.md`](https://github.com/log4js-node/log4js-node/pull/1338) - thanks [@dtslvr](https://github.com/dtslvr)
-- [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1349) - thanks [@lamweili](https://github.com/lamweili)
+- [chore(deps-dev): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1349) - thanks [@lamweili](https://github.com/lamweili)
   - chore(deps-dev): bump @commitlint/cli from 17.1.2 to 17.3.0
   - chore(deps-dev): bump @commitlint/config-conventional from 17.1.0 to 17.3.0
   - chore(deps-dev): bump eslint from 8.24.0 to 8.28.0
@@ -14,7 +42,7 @@
   - chore(deps-dev): bump typescript from 4.8.4 to 4.9.3
   - chore(deps-dev): updated package-lock.json
 
-## 6.7.0
+## [6.7.0](https://github.com/log4js-node/log4js-node/milestone/90)
 
 - [feat(log4js): if cb is passed to shutdown(), it must be a function or it will throw error immediately](https://github.com/log4js-node/log4js-node/pull/1334) - thanks [@lamweili](https://github.com/lamweili)
 - [feat: patternLayout function name, class name and function alias](https://github.com/log4js-node/log4js-node/pull/1316) - thanks [@l0ner](https://github.com/l0ner)
@@ -51,7 +79,7 @@
   - chore(deps): bump streamroller from 3.1.2 to 3.1.3
   - chore(deps): updated package-lock.json
 
-## 6.6.1
+## [6.6.1](https://github.com/log4js-node/log4js-node/milestone/89)
 
 - [fix: connectlogger nolog function](https://github.com/log4js-node/log4js-node/pull/1285) - thanks [@eyoboue](https://github.com/eyoboue)
 - [type: corrected AppenderModule interface and Recording interface](https://github.com/log4js-node/log4js-node/pull/1304) - thanks [@lamweili](https://github.com/lamweili)
@@ -78,7 +106,7 @@
   - chore(deps-dev): bump typescript from 4.7.2 to 4.7.4
   - chore(deps): updated package-lock.json
 
-## 6.6.0
+## [6.6.0](https://github.com/log4js-node/log4js-node/milestone/87)
 
 - [feat: adding function(req, res) support to connectLogger nolog](https://github.com/log4js-node/log4js-node/pull/1279) - thanks [@eyoboue](https://github.com/eyoboue)
 - [fix: ability to load CJS appenders (through .cjs extension) for ESM packages](https://github.com/log4js-node/log4js-node/pull/1280) - thanks [@lamweili](https://github.com/lamweili)
@@ -93,18 +121,18 @@
   - chore(deps): bump date-format from 4.0.10 to 4.0.11
   - chore(deps): updated package-lock.json
 
-## 6.5.2
+## [6.5.2](https://github.com/log4js-node/log4js-node/milestone/86)
 
 - [type: add LogEvent.serialise](https://github.com/log4js-node/log4js-node/pull/1260) - thanks [@marrowleaves](https://github.com/marrowleaves)
 
-## 6.5.1
+## [6.5.1](https://github.com/log4js-node/log4js-node/milestone/85)
 
 - [fix: fs.appendFileSync should use flag instead of flags](https://github.com/log4js-node/log4js-node/pull/1257) - thanks [@lamweili](https://github.com/lamweili)
 - [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1258) - thanks [@lamweili](https://github.com/lamweili)
   - chore(deps): bump streamroller from 3.1.0 to 3.1.1
   - chore(deps): updated package-lock.json
 
-## 6.5.0
+## [6.5.0](https://github.com/log4js-node/log4js-node/milestone/84)
 
 - [feat: logger.log() to be synonym of logger.info()](https://github.com/log4js-node/log4js-node/pull/1254) - thanks [@lamweili](https://github.com/lamweili)
 - [feat: tilde expansion for filename](https://github.com/log4js-node/log4js-node/pull/1252) - thanks [@lamweili](https://github.com/lamweili)
@@ -117,7 +145,7 @@
   - chore(deps): bump streamroller from 3.0.9 to 3.1.0
   - chore(deps): updated package-lock.json
 
-## 6.4.7
+## [6.4.7](https://github.com/log4js-node/log4js-node/milestone/83)
 
 - [fix: dateFileAppender unable to use units in maxLogSize](https://github.com/log4js-node/log4js-node/pull/1243) - thanks [@lamweili](https://github.com/lamweili)
 - [type: added fileNameSep for FileAppender and DateFileAppender](https://github.com/log4js-node/log4js-node/pull/1241) - thanks [@lamweili](https://github.com/lamweili)
@@ -135,7 +163,7 @@
   - chore(deps-dev): bump tap from 16.0.1 to 16.1.0
   - chore(deps-dev): updated package-lock.json
 
-## 6.4.6
+## [6.4.6](https://github.com/log4js-node/log4js-node/milestone/82)
 
 - [chore(deps): updated dependencies](https://github.com/log4js-node/log4js-node/pull/1236) - thanks [@lamweili](https://github.com/lamweili)
   - chore(deps-dev): bump eslint from 8.13.0 to 8.14.0
@@ -147,7 +175,7 @@
   - chore(deps): bump fs-extra from 10.0.1 to 10.1.0
   - chore(deps): updated package-lock.json
 
-## 6.4.5
+## [6.4.5](https://github.com/log4js-node/log4js-node/milestone/81)
 
 - [fix: deserialise for enableCallStack features: filename, lineNumber, columnNumber, callStack](https://github.com/log4js-node/log4js-node/pull/1230) - thanks [@lamweili](https://github.com/lamweili)
 - [fix: fileDepth for ESM](https://github.com/log4js-node/log4js-node/pull/1224) - thanks [@lamweili](https://github.com/lamweili)
@@ -167,7 +195,7 @@
   - chore(deps-dev): updated package-lock.json
 - [chore(deps-dev): bump minimist from 1.2.5 to 1.2.6](https://github.com/log4js-node/log4js-node/pull/1227) - thanks [@Dependabot](https://github.com/dependabot)
 
-## 6.4.4
+## [6.4.4](https://github.com/log4js-node/log4js-node/milestone/80)
 
 - [fix: set logger.level on runtime will no longer wrongly reset useCallStack](https://github.com/log4js-node/log4js-node/pull/1217) - thanks [@lamweili](https://github.com/lamweili)
 - [docs: updated docs for broken links and inaccessible pages](https://github.com/log4js-node/log4js-node/pull/1219) - thanks [@lamweili](https://github.com/lamweili)
@@ -180,7 +208,7 @@
   - chore(deps-dev): bump prettier from 2.5.1 to 2.6.0
   - chore(deps): updated package-lock.json
 
-## 6.4.3
+## [6.4.3](https://github.com/log4js-node/log4js-node/milestone/79)
 
 - [fix: added filename validation](https://github.com/log4js-node/log4js-node/pull/1201) - thanks [@lamweili](https://github.com/lamweili)
 - [refactor: do not initialise default appenders as it will be done again by configure()](https://github.com/log4js-node/log4js-node/pull/1210) - thanks [@lamweili](https://github.com/lamweili)
@@ -206,7 +234,7 @@
   - chore(deps): bump streamroller from 3.0.4 to 3.0.5
   - chore(deps): updated package-lock.json
 
-## 6.4.2
+## [6.4.2](https://github.com/log4js-node/log4js-node/milestone/78)
 
 - [fix: fileSync appender to create directory recursively](https://github.com/log4js-node/log4js-node/pull/1191) - thanks [@lamweili](https://github.com/lamweili)
 - [fix: serialise() for NaN, Infinity, -Infinity and undefined](https://github.com/log4js-node/log4js-node/pull/1188) - thanks [@lamweili](https://github.com/lamweili)
@@ -233,7 +261,7 @@
 - [chore(deps): updated package-lock.json](https://github.com/log4js-node/log4js-node/pull/1174) - thanks [@lamweili](https://github.com/lamweili)
 - [chore(deps-dev): bump tap from 14.10.7 to 15.1.6](https://github.com/log4js-node/log4js-node/pull/1173) - thanks [@lamweili](https://github.com/lamweili)
 
-## 6.4.1
+## [6.4.1](https://github.com/log4js-node/log4js-node/milestone/77)
 
 - [fix: startup multiprocess even when no direct appenders](https://github.com/log4js-node/log4js-node/pull/1162) - thanks [@nicojs](https://github.com/nicojs)
   - [refactor: fixed eslint warnings](https://github.com/log4js-node/log4js-node/pull/1165) - thanks [@lamweili](https://github.com/lamweili)
@@ -244,7 +272,7 @@
 - [chore(deps): bump node-fetch from 2.6.6 to 2.6.7](https://github.com/log4js-node/log4js-node/pull/1167) - thanks [@Dependabot](https://github.com/dependabot)
 - [chore(deps-dev): bump typescript from 4.5.4 to 4.5.5](https://github.com/log4js-node/log4js-node/pull/1166) - thanks [@lamweili](https://github.com/lamweili)
 
-## 6.4.0 - BREAKING CHANGE 💥
+## [6.4.0](https://github.com/log4js-node/log4js-node/milestone/76) - BREAKING CHANGE 💥
 
 New default file permissions may cause external applications unable to read logs.
 A [manual code/configuration change](https://github.com/log4js-node/log4js-node/pull/1141#issuecomment-1076224470) is required.
@@ -312,7 +340,7 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
 - [chore(deps): bump yargs-parser from 13.1.1 to 13.1.2](https://github.com/log4js-node/log4js-node/pull/1045) - thanks [@Dependabot](https://github.com/dependabot)
 - [chore(deps-dev): bump codecov from 3.6.5 to 3.7.1](https://github.com/log4js-node/log4js-node/pull/1033) - thanks [@Dependabot](https://github.com/dependabot)
 
-## 6.3.0
+## [6.3.0](https://github.com/log4js-node/log4js-node/milestone/75)
 
 - [Add option to file appender to remove ANSI colours](https://github.com/log4js-node/log4js-node/pull/1001) - thanks [@BlueCocoa](https://github.com/BlueCocoa)
 - [Do not create appender if no categories use it](https://github.com/log4js-node/log4js-node/pull/1002) - thanks [@rnd-debug](https://github.com/rnd-debug)
@@ -324,94 +352,94 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
 - [Docs: UDP appender](https://github.com/log4js-node/log4js-node/pull/1018) - thanks [@iassasin](https://github.com/iassasin)
 - [Style: spaces and tabs](https://github.com/log4js-node/log4js-node/pull/1016) - thanks [@abetomo](https://github.com/abetomo)
 
-## 6.2.1
+## [6.2.1](https://github.com/log4js-node/log4js-node/milestone/74)
 
 - [Update streamroller to 2.2.4 to fix incorrect filename matching during log rotation](https://github.com/log4js-node/log4js-node/pull/996)
 
-## 6.2.0
+## [6.2.0](https://github.com/log4js-node/log4js-node/milestone/73)
 
 - [Add custom message end token to TCP appender](https://github.com/log4js-node/log4js-node/pull/994) - thanks [@rnd-debug](https://github.com/rnd-debug)
 - [Update acorn (dev dep of a dep)](https://github.com/log4js-node/log4js-node/pull/992) - thanks Github Robots.
 
-## 6.1.2
+## [6.1.2](https://github.com/log4js-node/log4js-node/milestone/72)
 
 - [Handle out-of-order appender loading](https://github.com/log4js-node/log4js-node/pull/986) - thanks [@mvastola](https://github.com/mvastola)
 
-## 6.1.1
+## [6.1.1](https://github.com/log4js-node/log4js-node/milestone/71)
 
 - [Add guards for undefined shutdown callback](https://github.com/log4js-node/log4js-node/pull/972) - thanks [@aaron-edwards](https://github.com/aaron-edwards)
 - [Ignore .bob files](https://github.com/log4js-node/log4js-node/pull/975) - thanks [@cesine](https://github.com/cesine)
 - [Add mark method to type definitions](https://github.com/log4js-node/log4js-node/pull/984) - thanks [@techmunk](https://github.com/techmunk)
 
-## 6.1.0
+## [6.1.0](https://github.com/log4js-node/log4js-node/milestone/70)
 
 - [Add pause event to dateFile appender](https://github.com/log4js-node/log4js-node/pull/965) - thanks [@shayantabatabaee](https://github.com/shayantabatabaee)
 - [Add pause event to file appender](https://github.com/log4js-node/log4js-node/pull/938) - thanks [@shayantabatabaee](https://github.com/shayantabatabaee)
 - [Add pause/resume event to docs](https://github.com/log4js-node/log4js-node/pull/966)
 
-## 6.0.0
+## [6.0.0](https://github.com/log4js-node/log4js-node/milestone/69)
 
 - [Update streamroller to fix unhandled promise rejection](https://github.com/log4js-node/log4js-node/pull/962)
 - [Updated date-format library](https://github.com/log4js-node/log4js-node/pull/960)
 
-## 5.3.0
+## [5.3.0](https://github.com/log4js-node/log4js-node/milestone/68)
 
 - [Padding and truncation changes](https://github.com/log4js-node/log4js-node/pull/956)
 
-## 5.2.2
+## [5.2.2](https://github.com/log4js-node/log4js-node/milestone/67)
 
 - [Update streamroller to fix overwriting old files when using date rolling](https://github.com/log4js-node/log4js-node/pull/951)
 
-## 5.2.1
+## [5.2.1](https://github.com/log4js-node/log4js-node/milestone/66)
 
 - [Update streamroller to fix numToKeep not working with dateFile pattern that is all digits](https://github.com/log4js-node/log4js-node/pull/949)
 
-## 5.2.0
+## [5.2.0](https://github.com/log4js-node/log4js-node/milestone/65)
 
 - [Update streamroller to 2.2.0 (copy and truncate when file is busy)](https://github.com/log4js-node/log4js-node/pull/948)
 
-## 5.1.0
+## [5.1.0](https://github.com/log4js-node/log4js-node/milestone/64)
 
 - [Update streamroller to 2.1.0 (windows fixes)](https://github.com/log4js-node/log4js-node/pull/933)
 
-## 5.0.0
+## [5.0.0](https://github.com/log4js-node/log4js-node/milestone/61)
 
 - [Update streamroller to 2.0.0 (remove support for node v6)](https://github.com/log4js-node/log4js-node/pull/922)
 - [Update dependencies (mostly dev deps)](https://github.com/log4js-node/log4js-node/pull/923)
 - [Fix error when cluster not available](https://github.com/log4js-node/log4js-node/pull/930)
 - [Test coverage improvements](https://github.com/log4js-node/log4js-node/pull/925)
 
-## 4.5.1
+## [4.5.1](https://github.com/log4js-node/log4js-node/milestone/63)
 
 - [Update streamroller 1.0.5 -> 1.0.6 (to fix overwriting old backup log files)](https://github.com/log4js-node/log4js-node/pull/918)
 - [Dependency update: lodash 4.17.4 (dependency of a dependency, not log4js)](https://github.com/log4js-node/log4js-node/pull/917) - thanks Github Automated Security Thing.
 - [Dependency update: lodash 4.4.0 -> 4.5.0 (dependency of a dependency, not log4js)](https://github.com/log4js-node/log4js-node/pull/915) - thanks Github Automated Security Thing.
 
-## 4.5.0
+## [4.5.0](https://github.com/log4js-node/log4js-node/milestone/62)
 
 - [Override call stack parsing](https://github.com/log4js-node/log4js-node/pull/914) - thanks [@rommni](https://github.com/rommni)
 - [patternLayout filename depth token](https://github.com/log4js-node/log4js-node/pull/913) - thanks [@rommni](https://github.com/rommni)
 
-## 4.4.0
+## [4.4.0](https://github.com/log4js-node/log4js-node/milestone/60)
 
 - [Add option to pass appender module in config](https://github.com/log4js-node/log4js-node/pull/833) - thanks [@kaxelson](https://github.com/kaxelson)
 - [Added docs for passing appender module](https://github.com/log4js-node/log4js-node/pull/904)
 - [Updated dependencies](https://github.com/log4js-node/log4js-node/pull/900)
 
-## 4.3.2
+## [4.3.2](https://github.com/log4js-node/log4js-node/milestone/59)
 
 - [Types for enableCallStack](https://github.com/log4js-node/log4js-node/pull/897) - thanks [@citrusjunoss](https://github.com/citrusjunoss)
 
-## 4.3.1
+## [4.3.1](https://github.com/log4js-node/log4js-node/milestone/58)
 
 - [Fix for maxLogSize in dateFile appender](https://github.com/log4js-node/log4js-node/pull/889)
 
-## 4.3.0
+## [4.3.0](https://github.com/log4js-node/log4js-node/milestone/57)
 
 - [Feature: line number support](https://github.com/log4js-node/log4js-node/pull/879) - thanks [@victor0801x](https://github.com/victor0801x)
 - [Fix for missing core appenders in webpack](https://github.com/log4js-node/log4js-node/pull/882)
 
-## 4.2.0
+## [4.2.0](https://github.com/log4js-node/log4js-node/milestone/56)
 
 - [Feature: add appender and level inheritance](https://github.com/log4js-node/log4js-node/pull/863) - thanks [@pharapiak](https://github.com/pharapiak)
 - [Feature: add response to context for connectLogger](https://github.com/log4js-node/log4js-node/pull/862) - thanks [@leak4mk0](https://github.com/leak4mk0)
@@ -420,14 +448,14 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
 - [Typescript fixes for connect logger context](https://github.com/log4js-node/log4js-node/pull/876) - thanks [@leak4mk0](https://github.com/leak4mk0)
 - [Upgrade to streamroller-1.0.5 to fix log rotation bug](https://github.com/log4js-node/log4js-node/pull/878)
 
-## 4.1.1
+## [4.1.1](https://github.com/log4js-node/log4js-node/milestone/55)
 
 - [Various test fixes for node v12](https://github.com/log4js-node/log4js-node/pull/870)
 - [Fix layout problem in node v12](https://github.com/log4js-node/log4js-node/pull/860) - thanks [@bjornstar](https://github.com/bjornstar)
 - [Add missing types for addLevels](https://github.com/log4js-node/log4js-node/pull/867) - thanks [@Ivkaa](https://github.com/Ivkaa)
 - [Allow any return type for layout function](https://github.com/log4js-node/log4js-node/pull/845) - thanks [@xinbenlv](https://github.com/xinbenlv)
 
-## 4.1.0
+## [4.1.0](https://github.com/log4js-node/log4js-node/milestone/54)
 
 - Updated streamroller to 1.0.4, to fix a bug where the inital size of an existing file was ignored when appending
 - [Updated streamroller to 1.0.3](https://github.com/log4js-node/log4js-node/pull/841), to fix a crash bug if the date pattern was all digits.
@@ -435,4 +463,4 @@ A [manual code/configuration change](https://github.com/log4js-node/log4js-node/
 
 ## Previous versions
 
-Change information for older versions can be found by looking at the milestones in github.
+Change information for older versions can be found by looking at the [milestones](https://github.com/log4js-node/log4js-node/milestones) in github.
