@@ -68,7 +68,10 @@ test('log4js configure', (batch) => {
 
       const log4js = sandbox.require('../../lib/log4js', dependencies);
 
+      t.notOk(log4js.isConfigured(), 'should not have configured');
       log4js.getLogger('test-logger');
+      t.ok(log4js.isConfigured(), 'should be configured');
+
       t.equal(fileRead, 1, 'should load the specified local config file');
 
       delete process.env.LOG4JS_CONFIG;

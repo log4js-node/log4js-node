@@ -8,6 +8,7 @@ export interface Log4js {
   getLogger(category?: string): Logger;
   configure(filename: string): Log4js;
   configure(config: Configuration): Log4js;
+  isConfigured(): boolean;
   addLayout(
     name: string,
     config: (a: any) => (logEvent: LoggingEvent) => string
@@ -24,6 +25,7 @@ export function getLogger(category?: string): Logger;
 
 export function configure(filename: string): Log4js;
 export function configure(config: Configuration): Log4js;
+export function isConfigured(): boolean;
 
 export function addLayout(
   name: string,
