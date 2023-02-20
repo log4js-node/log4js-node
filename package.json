@@ -37,7 +37,7 @@
     "pretest": "npm run prettier --if-present && eslint \"lib/**/*.js\" \"test/**/*.js\"",
     "prettier": "prettier --check \"**/*.*\"",
     "prettier:fix": "prettier --write \"**/*.*\"",
-    "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --timeout=45",
+    "test": "tap \"test/tap/**/*.js\" --cov --reporter=classic --coverage-report=text --coverage-report=html --timeout=45",
     "typings": "tsc -p types/tsconfig.json"
   },
   "directories": {
