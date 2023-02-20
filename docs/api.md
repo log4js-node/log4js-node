@@ -26,6 +26,10 @@ Properties:
 - `pm2InstanceVar` (string) (optional, defaults to 'NODE_APP_INSTANCE') - set this if you're using pm2 and have changed the default name of the NODE_APP_INSTANCE variable.
 - `disableClustering` (boolean) (optional) - set this to true if you liked the way log4js used to just ignore clustered environments, or you're having trouble with PM2 logging. Each worker process will do its own logging. Be careful with this if you're logging to files, weirdness can occur.
 
+## configured - `log4js.isConfigured()`
+
+`isConfigured` method call returns a boolean on whether `log4js.configure()` was successfully called previously. Implicit `log4js.configure()` call by `log4js.getLogger()` is will also affect this value.
+
 ## Loggers - `log4js.getLogger([category])`
 
 This function takes a single optional string argument to denote the category to be used for log events on this logger. If no category is specified, the events will be routed to the appender for the `default` category. The function returns a `Logger` object which has its level set to the level specified for that category in the config and implements the following functions:
