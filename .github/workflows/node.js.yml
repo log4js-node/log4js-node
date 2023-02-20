@@ -32,7 +32,7 @@ jobs:
             npm-i: "eslint@7.x fs-extra@9.x nyc@14.x tap@14.x"
 
           - node-version: 12.x
-            npm-i: "nyc@14.x tap@14.x"
+            npm-i: "fs-extra@10.x nyc@14.x tap@14.x"
 
           - node-version: 14.x
             npm-i: "nyc@14.x tap@14.x"
