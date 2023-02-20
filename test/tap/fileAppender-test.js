@@ -435,16 +435,18 @@ test('log4js fileAppender', (batch) => {
 
     t.test('should log when writer.writable=true', (assert) => {
       writable = true;
+      assert.ok(output.length === 0);
       appender({ data: 'something to log' });
-      assert.ok(output.length, 1);
+      assert.ok(output.length === 1);
       assert.match(output[output.length - 1], 'something to log');
       assert.end();
     });
 
     t.test('should not log when writer.writable=false', (assert) => {
       writable = false;
+      assert.ok(output.length === 1);
       appender({ data: 'this should not be logged' });
-      assert.ok(output.length, 1);
+      assert.ok(output.length === 1);
       assert.notMatch(output[output.length - 1], 'this should not be logged');
       assert.end();
     });
