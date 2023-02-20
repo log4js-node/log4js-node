@@ -1,6 +1,9 @@
 import * as log4js from './log4js';
 
+console.log(log4js.isConfigured());
 log4js.configure('./filename');
+console.log(log4js.isConfigured());
+
 const logger1 = log4js.getLogger();
 logger1.level = 'debug';
 logger1.debug('Some debug messages');
