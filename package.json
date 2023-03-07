@@ -73,7 +73,13 @@
     "typescript": "^4.9.5"
   },
   "browser": {
-    "os": false
+    "os": false,
+    "streamroller": false,
+    "./lib/clustering.js": "./lib/clusteringBrowser.js",
+    "./lib/appenders/dateFile.js": "./lib/appenders/ignoreBrowser.js",
+    "./lib/appenders/file.js": "./lib/appenders/ignoreBrowser.js",
+    "./lib/appenders/fileSync.js": "./lib/appenders/ignoreBrowser.js",
+    "./lib/appenders/multiFile.js": "./lib/appenders/ignoreBrowser.js"
   },
   "prettier": {
     "trailingComma": "es5",
