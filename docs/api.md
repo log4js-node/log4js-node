@@ -32,6 +32,8 @@ Properties:
 
 ## Loggers - `log4js.getLogger([category])`
 
+To support the minimalist usage, this function will implicitly call `log4js.configure()` with the [default configurations](https://github.com/log4js-node/log4js-node/blob/faebee0e8235cf00227ca88642eeff3471fc407c/lib/log4js.js#L158-L163) if it hasn't been configured before.
+
 This function takes a single optional string argument to denote the category to be used for log events on this logger. If no category is specified, the events will be routed to the appender for the `default` category. The function returns a `Logger` object which has its level set to the level specified for that category in the config and implements the following functions:
 
 - `<level>(args...)` - where `<level>` can be any of the lower case names of the levels (including any custom levels defined). For example: `logger.info('some info')` will dispatch a log event with a level of info. If you're using the basic, coloured or message pass-through [layouts](layouts.md), the logged string will have its formatting (placeholders like `%s`, `%d`, etc) delegated to [util.format](https://nodejs.org/api/util.html#util_util_format_format_args).
