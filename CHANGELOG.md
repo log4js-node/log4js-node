@@ -1,5 +1,11 @@
 # log4js-node Changelog
 
+## [6.9.0](https://github.com/log4js-node/log4js-node/milestone/93)
+
+- [feat: support for idempotent logging on browser](https://github.com/log4js-node/log4js-node/pull/1374) - thanks [@aellerton](https://github.com/aellerton)
+  - addresses [#968](https://github.com/log4js-node/log4js-node/issues/968), [#1270](https://github.com/log4js-node/log4js-node/issues/1270), [#1288](https://github.com/log4js-node/log4js-node/issues/1288), [#1372](https://github.com/log4js-node/log4js-node/issues/1372)
+- [docs: added that `log4js.getLogger()` may call `log4js.configure()`](https://github.com/log4js-node/log4js-node/pull/1375) - thanks [@lamweili](https://github.com/lamweili)
+
 ## [6.8.0](https://github.com/log4js-node/log4js-node/milestone/92)
 
 - [feat: added `log4js.isConfigured()` API](https://github.com/log4js-node/log4js-node/pull/1364) - thanks [@lamweili](https://github.com/lamweili)
