@@ -1,5 +1,10 @@
 # log4js-node Changelog
 
+## [6.9.1](https://github.com/log4js-node/log4js-node/milestone/94)
+
+- [fix(7922e82): regex for stacktrace](https://github.com/log4js-node/log4js-node/pull/1378) - thanks [@lamweili](https://github.com/lamweili)
+  - addresses [#1377](https://github.com/log4js-node/log4js-node/issues/1377) which has a regression since [6.8.0](https://github.com/log4js-node/log4js-node/milestone/92) from [#1363](https://github.com/log4js-node/log4js-node/pull/1363) at commit [7922e82](https://github.com/log4js-node/log4js-node/commit/7922e8257806811666c1d4cf6774b4426276ea16)
+
 ## [6.9.0](https://github.com/log4js-node/log4js-node/milestone/93)
 
 - [feat: support for idempotent logging on browser](https://github.com/log4js-node/log4js-node/pull/1374) - thanks [@aellerton](https://github.com/aellerton)
