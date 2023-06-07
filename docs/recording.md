@@ -5,6 +5,7 @@ This appender stores the log events in memory. It is mainly useful for testing (
 ## Configuration
 
 - `type` - `recording`
+- `maxLength` - `integer` (optional, defaults to undefined) - the maximum array length for the recording. If not specified, the array will grow until cleared
 
 There is no other configuration for this appender.
 
