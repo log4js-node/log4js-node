@@ -58,6 +58,7 @@ class MockResponse extends EE {
 
   writeHead(code /* , headers */) {
     this.statusCode = code;
+    return this;
   }
 }
 
