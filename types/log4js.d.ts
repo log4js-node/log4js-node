@@ -191,6 +191,8 @@ export interface FileAppender {
   keepFileExt?: boolean;
   // (defaults to .) the filename separator when rolling. e.g.: abc.log`.`1 or abc`.`1.log (keepFileExt)
   fileNameSep?: string;
+  // (defaults to false) remove embedded ANSI color sequence
+  removeColor?: boolean;
 }
 
 export interface SyncfileAppender {
