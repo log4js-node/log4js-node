@@ -1,5 +1,7 @@
 // Type definitions for log4js
 
+import * as express from "express";
+
 type Format =
   | string
   | ((req: any, res: any, formatter: (str: string) => string) => string);
@@ -16,7 +18,7 @@ export interface Log4js {
   connectLogger(
     logger: Logger,
     options: { format?: Format; level?: string; nolog?: any }
-  ): any; // express.Handler;
+  ): express.Handler;
   levels: Levels;
   shutdown(cb?: (error?: Error) => void): void;
 }
@@ -41,7 +43,7 @@ export function connectLogger(
     statusRules?: any[];
     context?: boolean;
   }
-): any; // express.Handler;
+): express.Handler
 
 export function recording(): Recording;
 
