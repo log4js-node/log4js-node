@@ -10,6 +10,7 @@ The file appender writes log events to a file. It supports an optional maximum f
   `maxLogSize` can also accept `string` with the size suffixes: **_K_**, **_M_**, **_G_** such as `1K`, `1M`, `1G`.
 - `backups` - `integer` (optional, defaults to 5) - the number of old log files to keep during log rolling (excluding the hot file).
 - `layout` - (optional, defaults to basic layout) - see [layouts](layouts.md)
+- `removeColor` - `boolean` (optional, defaults to false) - remove embedded ANSI color sequence
 
 Any other configuration parameters will be passed to the underlying [streamroller](https://github.com/nomiddlename/streamroller) implementation (see also node.js core file streams):
 
