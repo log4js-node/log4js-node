@@ -1,6 +1,6 @@
 // Type definitions for log4js
 
-import * as express from "express";
+import type * as express from "express";
 
 type Format =
   | string
