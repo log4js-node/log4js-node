@@ -43,7 +43,7 @@ export function connectLogger(
     statusRules?: any[];
     context?: boolean;
   }
-): express.Handler
+): express.Handler;
 
 export function recording(): Recording;
 
