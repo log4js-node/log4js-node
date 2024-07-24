@@ -20,6 +20,8 @@ test('LoggingEvent', (batch) => {
   });
 
   batch.test('should serialise to flatted', (t) => {
+    const nullPrototype = Object.create(null);
+    nullPrototype.hello = 'world';
     const event = new LoggingEvent(
       'cheese',
       levels.DEBUG,
@@ -33,6 +35,7 @@ test('LoggingEvent', (batch) => {
         '-Infinity',
         undefined,
         'undefined',
+        nullPrototype,
       ],
       {
         user: 'bob',
@@ -44,7 +47,7 @@ test('LoggingEvent', (batch) => {
     t.equal(rehydratedEvent.startTime, '2018-02-04T18:30:23.010Z');
     t.equal(rehydratedEvent.categoryName, 'cheese');
     t.equal(rehydratedEvent.level.levelStr, 'DEBUG');
-    t.equal(rehydratedEvent.data.length, 9);
+    t.equal(rehydratedEvent.data.length, 10);
     t.equal(rehydratedEvent.data[0], 'log message');
     t.equal(rehydratedEvent.data[1], '__LOG4JS_NaN__');
     t.equal(rehydratedEvent.data[2], 'NaN');
@@ -54,6 +57,11 @@ test('LoggingEvent', (batch) => {
     t.equal(rehydratedEvent.data[6], '-Infinity');
     t.equal(rehydratedEvent.data[7], '__LOG4JS_undefined__');
     t.equal(rehydratedEvent.data[8], 'undefined');
+    t.equal(
+      Object.entries(rehydratedEvent.data[9]).length,
+      Object.entries(nullPrototype).length
+    );
+    t.equal(rehydratedEvent.data[9].hello, 'world');
     t.equal(rehydratedEvent.context.user, 'bob');
     t.end();
   });
