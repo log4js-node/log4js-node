@@ -33,10 +33,6 @@ Optional appenders are available:
 - [mailgun](https://github.com/log4js-node/mailgun)
 - [InfluxDB](https://github.com/rnd-debug/log4js-influxdb-appender)
 
-## Getting help
-
-Having problems? Jump on the [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtODkzMDQ3MzExMDczLWUzZmY0MmI0YWI1ZjFhODY0YjI0YmU1N2U5ZTRkOTYyYzg3MjY5NWI4M2FjZThjYjdiOGM0NjU2NzBmYTJjOGI) channel, or create an issue. If you want to help out with the development, the slack channel is a good place to go as well.
-
 ## installation
 
 ```bash
