@@ -107,7 +107,7 @@ logger.debug("Some debug messages");
 
 ## Contributing
 
-We're always looking for people to help out. Jump on [slack](https://join.slack.com/t/log4js-node/shared_invite/enQtODkzMDQ3MzExMDczLWUzZmY0MmI0YWI1ZjFhODY0YjI0YmU1N2U5ZTRkOTYyYzg3MjY5NWI4M2FjZThjYjdiOGM0NjU2NzBmYTJjOGI) and discuss what you want to do. Also, take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) before submitting a pull request.
+We're always looking for people to help out. Take a look at the [rules](https://log4js-node.github.io/log4js-node/contrib-guidelines.html) before submitting a pull request.
 
 ## License
 
