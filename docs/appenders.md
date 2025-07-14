@@ -60,8 +60,8 @@ For example, if you were previously using the gelf appender (`type: 'gelf'`) the
 These appenders are maintained by its own authors and may be useful for you:
 
 - [udp](https://github.com/iassasin/log4js-udp-appender)
-- [cloudwatch](https://github.com/arch-group/log4js-appender-cloudwatch)
-- [sentry](https://github.com/arch-group/log4js-appender-sentry)
+- [cloudwatch](https://github.com/xseman/log4js-appender-cloudwatch)
+- [sentry](https://github.com/xseman/log4js-appender-sentry)
 
 ## Custom Appenders
 
