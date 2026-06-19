@@ -368,6 +368,49 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
+  batch.test('parseCallStack supports Node.js 8 trimStart fallback', (t) => {
+    const logger = new Logger('stack');
+    const line = '    at Foo.bar (repl:1:14)';
+    const stackLine = {
+      0: line[0],
+      1: line[1],
+      2: line[2],
+      3: line[3],
+      slice: (...args) => line.slice(...args),
+    };
+    const stack = {
+      split: () => [stackLine],
+    };
+    const results = logger.parseCallStack({ stack }, 0);
+
+    t.ok(results);
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+
+    t.end();
+  });
+
+  batch.test('parseCallStack uses trimStart when available', (t) => {
+    const logger = new Logger('stack');
+    const stackLine = {
+      trimStart: () => 'at Foo.bar (repl:1:14)',
+    };
+    const stack = {
+      split: () => [stackLine],
+    };
+    const results = logger.parseCallStack({ stack }, 0);
+
+    t.ok(results);
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+
+    t.end();
+  });
+
   batch.test(
     'should log without location when default call stack parsing fails',
     (t) => {
