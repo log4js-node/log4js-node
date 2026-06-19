@@ -351,6 +351,23 @@ test('../../lib/logger', (batch) => {
     t.end();
   });
 
+  batch.test('parseCallStack rejects malformed stack lines', (t) => {
+    const logger = new Logger('stack');
+    logger.useCallStack = true;
+
+    [
+      '    not a stack line',
+      `    at ${'a (a'.repeat(1000)}`,
+      '    at file:1',
+      '    at file:1:x',
+      '    at file:x:1',
+    ].forEach((stack) => {
+      t.equal(logger.parseCallStack({ stack }, 0), null);
+    });
+
+    t.end();
+  });
+
   batch.test(
     'should log without location when default call stack parsing fails',
     (t) => {
