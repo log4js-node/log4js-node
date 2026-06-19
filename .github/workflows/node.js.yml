@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [8.x, 10.x, 12.x, 14.x, 16.x, 18.x]
+        node-version: [8.x, 10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x, 24.x, 26.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         include:
           - node-version: 8.x
@@ -38,9 +38,9 @@ jobs:
             npm-i: "nyc@14.x tap@14.x"
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'

@@ -1,10 +1,9 @@
 const { test } = require('tap');
 const fs = require('fs');
 const os = require('os');
+const { osDelay } = require('./test-utils');
 
 const EOL = os.EOL || '\n';
-
-const osDelay = process.platform === 'win32' ? 400 : 200;
 
 function remove(filename) {
   try {

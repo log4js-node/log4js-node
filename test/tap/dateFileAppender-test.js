@@ -7,8 +7,7 @@ const EOL = require('os').EOL || '\n';
 const format = require('date-format');
 const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
-
-const osDelay = process.platform === 'win32' ? 400 : 200;
+const { osDelay } = require('./test-utils');
 
 function removeFile(filename) {
   try {
