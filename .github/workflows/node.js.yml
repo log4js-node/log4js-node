@@ -74,7 +74,7 @@ jobs:
     - run: npm ci
       if: matrix.npm-i == '' && steps.npm-version.outputs.major > 5
 
-    - name: Install optional peer-dependencies
+    - name: Install @types/express (typecheck only)
       run: npm install --no-save @types/express
 
     - name: List dependencies
