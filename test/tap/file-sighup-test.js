@@ -2,8 +2,7 @@ const { test } = require('tap');
 const path = require('path');
 const fs = require('fs');
 const sandbox = require('@log4js-node/sandboxed-module');
-
-const osDelay = process.platform === 'win32' ? 400 : 200;
+const { osDelay } = require('./test-utils');
 
 const removeFiles = async (filenames) => {
   if (!Array.isArray(filenames)) filenames = [filenames];

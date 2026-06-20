@@ -45,6 +45,7 @@ const testConfig = {
 test('../../lib/logger', (batch) => {
   batch.beforeEach((done) => {
     events.length = 0;
+    messages.length = 0;
     testConfig.level = levels.TRACE;
     if (typeof done === 'function') {
       done();
@@ -331,6 +332,128 @@ test('../../lib/logger', (batch) => {
     t.equal(results.functionName, 'bar');
     t.equal(results.functionAlias, '');
     t.equal(results.callerName, 'Foo.bar');
+
+    const callStack6 =
+      '    at RootLayout (webpack-internal:///(sc_server)/./app/layout.tsx:44:81)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)'; // eslint-disable-line max-len
+    results = logger.parseCallStack({ stack: callStack6 }, 0);
+    t.ok(results);
+    t.equal(results.className, '');
+    t.equal(results.functionName, 'RootLayout');
+    t.equal(results.functionAlias, '');
+    t.equal(results.callerName, 'RootLayout');
+    t.equal(
+      results.fileName,
+      'webpack-internal:///(sc_server)/./app/layout.tsx'
+    );
+    t.equal(results.lineNumber, 44);
+    t.equal(results.columnNumber, 81);
+
+    const callStack7 =
+      'ZodError: [\n  {\n    "code": "invalid_type"\n  }\n]\n    at Foo.bar (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)'; // eslint-disable-line max-len
+    results = logger.parseCallStack({ stack: callStack7 }, 0);
+    t.ok(results);
+    t.equal(results.className, 'Foo');
+    t.equal(results.functionName, 'bar');
+    t.equal(results.functionAlias, '');
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+    t.equal(
+      results.callStack,
+      '    at Foo.bar (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)'
+    );
+
+    t.end();
+  });
+
+  batch.test('parseCallStack rejects malformed stack lines', (t) => {
+    const logger = new Logger('stack');
+    logger.useCallStack = true;
+
+    [
+      '    not a stack line',
+      `    at ${'a (a'.repeat(1000)}`,
+      '    at file:1',
+      '    at file:1:x',
+      '    at file:x:1',
+    ].forEach((stack) => {
+      t.equal(logger.parseCallStack({ stack }, 0), null);
+    });
+
+    t.end();
+  });
+
+  batch.test('parseCallStack supports Node.js 8 trimStart fallback', (t) => {
+    const logger = new Logger('stack');
+    const line = '    at Foo.bar (repl:1:14)';
+    const stackLine = {
+      0: line[0],
+      1: line[1],
+      2: line[2],
+      3: line[3],
+      slice: (...args) => line.slice(...args),
+    };
+    const stack = {
+      split: () => [stackLine],
+    };
+    const results = logger.parseCallStack({ stack }, 0);
+
+    t.ok(results);
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+
+    t.end();
+  });
+
+  batch.test('parseCallStack uses trimStart when available', (t) => {
+    const logger = new Logger('stack');
+    const stackLine = {
+      trimStart: () => 'at Foo.bar (repl:1:14)',
+    };
+    const stack = {
+      split: () => [stackLine],
+    };
+    const results = logger.parseCallStack({ stack }, 0);
+
+    t.ok(results);
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+
+    t.end();
+  });
+
+  batch.test(
+    'should log without location when default call stack parsing fails',
+    (t) => {
+      const logger = new Logger('stack');
+      logger.level = 'debug';
+      logger.useCallStack = true;
+      logger.callStackLinesToSkip = 1000;
+
+      t.doesNotThrow(() => logger.debug('test with invalid callStack'));
+      t.equal(events.length, 1);
+      t.notMatch(events[0], { callStack: String });
+
+      t.end();
+    }
+  );
+
+  batch.test('should throw when custom call stack parsing fails', (t) => {
+    const logger = new Logger('stack');
+    logger.level = 'debug';
+    logger.useCallStack = true;
+    logger.setParseCallStackFunction(() => null);
+
+    t.throws(
+      () => logger.debug('test with invalid custom callStack'),
+      new TypeError('Invalid location type passed to LoggingEvent constructor')
+    );
+    t.equal(events.length, 0);
 
     t.end();
   });

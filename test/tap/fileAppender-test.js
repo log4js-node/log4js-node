@@ -6,8 +6,7 @@ const path = require('path');
 const sandbox = require('@log4js-node/sandboxed-module');
 const zlib = require('zlib');
 const util = require('util');
-
-const osDelay = process.platform === 'win32' ? 400 : 200;
+const { osDelay } = require('./test-utils');
 
 const sleep = util.promisify(setTimeout);
 const gunzip = util.promisify(zlib.gunzip);

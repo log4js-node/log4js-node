@@ -4,8 +4,7 @@ const debug = require('debug');
 const fs = require('fs');
 const sandbox = require('@log4js-node/sandboxed-module');
 const log4js = require('../../lib/log4js');
-
-const osDelay = process.platform === 'win32' ? 400 : 200;
+const { osDelay } = require('./test-utils');
 
 const removeFiles = async (filenames) => {
   if (!Array.isArray(filenames)) filenames = [filenames];

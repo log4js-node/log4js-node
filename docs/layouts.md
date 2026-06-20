@@ -254,3 +254,10 @@ This example outputs the following:
 {"startTime":"2017-06-05T22:23:08.483Z","categoryName":"json-test","data":["of a custom appender"],"level":{"level":40000,"levelStr":"ERROR"},"context":{}},
 {"startTime":"2017-06-05T22:23:08.483Z","categoryName":"json-test","data":["that outputs json"],"level":{"level":30000,"levelStr":"WARN"},"context":{}},
 ```
+
+## Other Layouts
+
+These layouts are maintained by its own authors and may be useful for you:
+
+- [json](https://github.com/xseman/log4js-layout-json)
+- [json](https://github.com/id0Sch/log4js-json-layout)
