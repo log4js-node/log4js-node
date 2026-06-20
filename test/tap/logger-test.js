@@ -348,6 +348,22 @@ test('../../lib/logger', (batch) => {
     t.equal(results.lineNumber, 44);
     t.equal(results.columnNumber, 81);
 
+    const callStack7 =
+      'ZodError: [\n  {\n    "code": "invalid_type"\n  }\n]\n    at Foo.bar (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)'; // eslint-disable-line max-len
+    results = logger.parseCallStack({ stack: callStack7 }, 0);
+    t.ok(results);
+    t.equal(results.className, 'Foo');
+    t.equal(results.functionName, 'bar');
+    t.equal(results.functionAlias, '');
+    t.equal(results.callerName, 'Foo.bar');
+    t.equal(results.fileName, 'repl');
+    t.equal(results.lineNumber, 1);
+    t.equal(results.columnNumber, 14);
+    t.equal(
+      results.callStack,
+      '    at Foo.bar (repl:1:14)\n    at ContextifyScript.Script.runInThisContext (vm.js:50:33)'
+    );
+
     t.end();
   });
 
