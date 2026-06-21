@@ -74,9 +74,6 @@ jobs:
     - run: npm ci
       if: matrix.npm-i == '' && steps.npm-version.outputs.major > 5
 
-    - name: Install @types/express (typecheck only)
-      run: npm install --no-save @types/express
-
     - name: List dependencies
       run: npm ls --depth=0 --dev && npm ls --depth=0 --prod
 

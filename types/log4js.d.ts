@@ -1,10 +1,13 @@
 // Type definitions for log4js
 
-import type * as express from 'express';
-
 type Format =
   | string
   | ((req: any, res: any, formatter: (str: string) => string) => string);
+
+/**
+ * Compatible with Connect/Express middleware handlers without requiring Express types
+ */
+type ConnectHandler = (req: any, res: any, next: (err?: any) => void) => void;
 
 export interface Log4js {
   getLogger(category?: string): Logger;
@@ -18,7 +21,7 @@ export interface Log4js {
   connectLogger(
     logger: Logger,
     options: { format?: Format; level?: string; nolog?: any }
-  ): express.Handler;
+  ): ConnectHandler;
   levels: Levels;
   shutdown(cb?: (error?: Error) => void): void;
 }
@@ -43,7 +46,7 @@ export function connectLogger(
     statusRules?: any[];
     context?: boolean;
   }
-): express.Handler;
+): ConnectHandler;
 
 export function recording(): Recording;
 
