@@ -1,4 +1,4 @@
-const osDelay = process.platform === 'win32' ? 500 : 200;
+const osDelay = process.platform === 'win32' ? 600 : 300;
 
 module.exports = {
   osDelay,
