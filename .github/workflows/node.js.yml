@@ -9,6 +9,11 @@ on:
   pull_request:
     branches: [ "master" ]
   workflow_dispatch: {}
+  workflow_call:
+    inputs:
+      full_matrix:
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -22,20 +27,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [8.x, 10.x, 12.x, 14.x, 16.x, 18.x, 20.x, 22.x, 24.x, 26.x]
+        node-version: ${{ fromJSON((github.event_name == 'workflow_dispatch' || inputs.full_matrix) && '["8.x", "10.x", "12.x", "14.x", "16.x", "18.x", "20.x", "22.x", "24.x", "26.x"]' || '["8.x", "26.x"]') }}
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        include:
-          - node-version: 8.x
-            npm-i: "eslint@6.x eslint-config-airbnb-base@14.x eslint-config-prettier@6.x eslint-plugin-prettier@3.x fs-extra@8.x nyc@14.x tap@14.x"
-
-          - node-version: 10.x
-            npm-i: "eslint@7.x fs-extra@9.x nyc@14.x tap@14.x"
-
-          - node-version: 12.x
-            npm-i: "fs-extra@10.x nyc@14.x tap@14.x"
-
-          - node-version: 14.x
-            npm-i: "nyc@14.x tap@14.x"
 
     steps:
     - uses: actions/checkout@v7
@@ -55,24 +48,46 @@ jobs:
         npmMajorVer=$(npm -v | cut -d. -f1)
         echo "major=$npmMajorVer" >> $GITHUB_OUTPUT
 
+    - name: Get downgraded modules
+      id: downgraded-modules
+      run: |
+        case "${{ matrix.node-version }}" in
+          8.x)
+            modules="eslint@6.x eslint-config-airbnb-base@14.x eslint-config-prettier@6.x eslint-plugin-prettier@3.x fs-extra@8.x nyc@14.x tap@14.x"
+            ;;
+          10.x)
+            modules="eslint@7.x fs-extra@9.x nyc@14.x tap@14.x"
+            ;;
+          12.x)
+            modules="fs-extra@10.x nyc@14.x tap@14.x"
+            ;;
+          14.x)
+            modules="nyc@14.x tap@14.x"
+            ;;
+          *)
+            modules=""
+            ;;
+        esac
+        echo "modules=$modules" >> $GITHUB_OUTPUT
+
     - name: Disable prettier on older Node.js (8.x, 10.x, 12.x)
       run: |
         sed -i '/"prettier": "prettier/d' package.json
       if: contains(fromJson('["8.x", "10.x", "12.x"]'), matrix.node-version)
 
-    - name: Install downgraded modules ${{ matrix.npm-i }}
+    - name: Install downgraded modules ${{ steps.downgraded-modules.outputs.modules }}
       run: |
-        npm install --save-dev ${{ matrix.npm-i }}
+        npm install --save-dev ${{ steps.downgraded-modules.outputs.modules }}
         if [ ${{ steps.npm-version.outputs.major }} -le 5 ]; then
           npm install
         fi
-      if: matrix.npm-i != ''
+      if: steps.downgraded-modules.outputs.modules != ''
 
     - run: npm install
-      if: matrix.npm-i == '' && steps.npm-version.outputs.major <= 5
+      if: steps.downgraded-modules.outputs.modules == '' && steps.npm-version.outputs.major <= 5
 
     - run: npm ci
-      if: matrix.npm-i == '' && steps.npm-version.outputs.major > 5
+      if: steps.downgraded-modules.outputs.modules == '' && steps.npm-version.outputs.major > 5
 
     - name: List dependencies
       run: npm ls --depth=0 --dev && npm ls --depth=0 --prod
