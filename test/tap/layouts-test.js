@@ -475,6 +475,24 @@ test('log4js layouts', (batch) => {
       assert.end();
     });
 
+    t.test(
+      '%n should fall back to newline when os.EOL is undefined',
+      (assert) => {
+        const eolDescriptor = Object.getOwnPropertyDescriptor(os, 'EOL');
+        Object.defineProperty(os, 'EOL', {
+          value: undefined,
+          configurable: true,
+          enumerable: true,
+        });
+        try {
+          testPattern(assert, layout, event, tokens, '%n', '\n');
+        } finally {
+          Object.defineProperty(os, 'EOL', eolDescriptor);
+        }
+        assert.end();
+      }
+    );
+
     t.test('%h should output hostname', (assert) => {
       testPattern(
         assert,
